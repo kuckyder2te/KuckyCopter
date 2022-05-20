@@ -46,8 +46,7 @@ public:
     virtual void enter() override {
         LOGGER_VERBOSE("Enter....");
      //   _sonicData->temperature = sens_temperature.getTempCByIndex(0);
-     //   _sonicData->temperature = 24;
-        _sonicData->distance = _distanceSensor->measureDistanceCm();
+          _sonicData->distance = _distanceSensor->measureDistanceCm();
         LOGGER_VERBOSE("....leave");
     }
 
@@ -57,4 +56,4 @@ public:
         LOGGER_NOTICE_FMT("Distance: %.2f cm", _distanceSensor->measureDistanceCm());
         LOGGER_VERBOSE("....leave");
     }
-};/*------------------------------ end of baro class ----------------------*/
+};/*----------------------------------- end of sonic class ----------------------------*/

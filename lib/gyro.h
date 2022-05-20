@@ -17,13 +17,15 @@ typedef struct {
 	int16_t  compassDiff;		///< Difference between two compass values
 	short 	 vectorOld[3];
 	//bool	 isMove;
+    float getAccelX_mss;
 }gyroData_t;
 
 class Gyro : public Task::Base {
     bool b;         // Klassenvariable
+    int status;
 
 private:
-    MPU9250Setting setting;
+    // MPU9250Setting setting;
  
 protected:
 	MPU9250  *_mpu9250;         // Pointer auf die platz freigemacht
@@ -32,8 +34,8 @@ protected:
 public:
     Gyro(const String& name) : Task::Base(name) ,b(false){
         LOGGER_VERBOSE("Enter....");
-        pinMode(GYRO_LED, OUTPUT);
-        digitalWrite(GYRO_LED, LOW);
+        // pinMode(GYRO_LED, OUTPUT);
+        // digitalWrite(GYRO_LED, LOW);
         LOGGER_VERBOSE("....leave");         
     }
 
@@ -50,34 +52,37 @@ public:
         LOGGER_VERBOSE("Enter....");
         Wire.begin();
         LOGGER_NOTICE("Wire initialized");
-        _mpu9250 = new MPU9250();  // Adresse in Variable speichern
+        _mpu9250 = new MPU9250(Wire, 0x68);  // Adresse in Variable speichern
         LOGGER_NOTICE("Start init MPU");
 
-        if (!_mpu9250->setup(0x68, setting)) {  // change to your own address
-            while (1) {
-            LOGGER_FATAL("MPU connection failed. Please check your connection with `connection_check` example.");
-            delay(5000);
+            // start communication with IMU 
+            status = _mpu9250->begin();
+            if (status < 0) {
+                LOGGER_FATAL("IMU initialization unsuccessful");
+                LOGGER_FATAL("Check IMU wiring or try cycling power");
+                LOGGER_NOTICE_FMT("Status: %i", status);
+                while(1) {}
             }
-        }       
-        setting.accel_fs_sel = ACCEL_FS_SEL::A16G;
-        setting.gyro_fs_sel = GYRO_FS_SEL::G2000DPS;
-        setting.mag_output_bits = MAG_OUTPUT_BITS::M16BITS;
-        setting.fifo_sample_rate = FIFO_SAMPLE_RATE::SMPL_200HZ;
-        setting.gyro_fchoice = 0x03;
-        setting.gyro_dlpf_cfg = GYRO_DLPF_CFG::DLPF_41HZ;
-        setting.accel_fchoice = 0x01;
-        setting.accel_dlpf_cfg = ACCEL_DLPF_CFG::DLPF_45HZ; 
+            // setting the accelerometer full scale range to +/-8G 
+            _mpu9250->setAccelRange(MPU9250::ACCEL_RANGE_8G);
+            // setting the gyroscope full scale range to +/-500 deg/s
+            _mpu9250->setGyroRange(MPU9250::GYRO_RANGE_500DPS);
+            // setting DLPF bandwidth to 20 Hz
+            _mpu9250->setDlpfBandwidth(MPU9250::DLPF_BANDWIDTH_20HZ);
+            // setting SRD to 19 for a 50 Hz update rate
+            _mpu9250->setSrd(19);
 		LOGGER_NOTICE("End init MPU");  
         LOGGER_VERBOSE("....leave");   
      }
 
     virtual void enter() override {
         LOGGER_VERBOSE("Enter....");
-        if(_mpu9250->update()){  
-             _gyroData->roll = _mpu9250->getRoll();
-             _gyroData->pitch = _mpu9250->getPitch();
-             _gyroData->yaw = _mpu9250->getYaw();            
-         }
+         _mpu9250->readSensor();
+
+  // display the data
+        _gyroData->getAccelX_mss = _mpu9250->getAccelX_mss();
+    
+         //   Serial.print(IMU.getAccelX_mss(),6);
         LOGGER_VERBOSE("....leave"); 
     }
 
@@ -85,8 +90,8 @@ public:
         LOGGER_VERBOSE("Enter...."); 
         //Check thresholds
         //Warnings if too stall
-        LOGGER_NOTICE_FMT("roll =%.2f,pitch =,%.2f,yaw =%.2f", _gyroData->roll, _gyroData->pitch, _gyroData->yaw);
-        LOGGER_VERBOSE("....leave"); 
+        // LOGGER_NOTICE_FMT("roll =%.2f,pitch =,%.2f,yaw =%.2f", _gyroData->roll, _gyroData->pitch, _gyroData->yaw);
+        // LOGGER_VERBOSE("....leave"); 
    }
 //    String getMonitor(){     
 //        char buf[20];
@@ -96,4 +101,4 @@ public:
    
     //  virtual void idle() override {
     //  }  
-};
+};  /*--------------------------------- end of gyro class ----------------------------*/
