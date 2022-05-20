@@ -18,10 +18,12 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
-#include "..\lib\gyro.h"
-#include "..\lib\baro.h"
+#include "..\lib\sensors.h"
+//#include "..\lib\gyro.h"
+//#include "..\lib\baro.h"
 #include "..\lib\sonic.h"
 #include "..\lib\radio.h"
+#include "..\lib\battery.h"
 #include "..\lib\calibration.h"
 #include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
@@ -37,46 +39,46 @@ void setup() {
     
     Serial.begin(COM_SPEED);
     Serial2.begin(BT_SPEED);
-    Serial.println("********************************");
-    Serial.println("*       KuCo Phantom 1         *");
-    Serial.println("*                              *");
-    Serial.print  ("*     ");Serial.print(__DATE__);Serial.print(" ");Serial.print(__TIME__);Serial.println("     *");
-    Serial.print  ("*  EEPROM PID Address   ");//Serial2.print(PID_EEPROM_ADRRESS);Serial2.println("     *");
-    Serial.println("********************************");
-    Serial.flush();
-
-  //  delay(5000);
+    Serial2.println("********************************");
+    Serial2.println("*       KuCo Phantom 1         *");
+    Serial2.println("*                              *");
+    Serial2.print  ("*     ");Serial2.print(__DATE__);Serial2.print(" ");Serial2.print(__TIME__);Serial2.println("     *");
+    Serial2.print  ("*    EEPROM PID Address   ");/*Serial2.print(PID_EEPROM_ADRRESS);*/Serial2.println("     *");
+    Serial2.println("********************************");
+    Serial2.flush();
     Wire.begin();
+
+    delay(5000);
 
 #ifdef _DEBUG_
   Logger::setOutputFunction(&localLogger);
   Logger::setLogLevel(Logger::_DEBUG_);
 #endif
   LOGGER_VERBOSE("Enter....");
-    
+    Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     // Tasks.add<Baro>("baro")->setModel(&model.baroData)->startFps(1);
-    // Tasks.add<Baro2>("baro2")->setModel(&model.baro2Data)->startFps(1);
-    Tasks.add<Gyro>("gyro")->setModel(&model.gyroData)->startFps(1);   /// Übergabe des models in das objekt gyro
+    // Tasks.add<Gyro>("gyro")->setModel(&model.gyroData)->startFps(1);   
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
 
     Tasks.add<Radio>("radio")->startFps(1);
+    Tasks.add<Battery>("Battery")->startFps(10);
     Tasks.add<Calibration>("calibration")->startFps(1);  
     Tasks.add<Gui>("gui")->port(Serial2)->startFps(1); 
-    LOGGER_NOTICE( "Init Program");
+    LOGGER_NOTICE( "Program is initialized");
   LOGGER_VERBOSE("....leave"); 
 //  Serial2.println("setup");
 }
 
 void loop() {
-//  Serial2.println("loop");
+  LOGGER_VERBOSE("loop has begun");
   
   //  unsigned long enter = micros();
     Tasks.update();
     Tasks["gyro"]->enter();
     
-    // Serial.print("/*");Serial.print(model.gyroData.yaw);Serial.print(",");  /// eigenen monitor als Klasse erzeugen
-    // Serial.print(model.gyroData.roll);Serial.print(",");
-    // Serial.print(model.gyroData.pitch);Serial.print(",");
+   Serial.print("/*");Serial.print(model.sensorData.yaw);Serial.print(",");  /// eigenen monitor als Klasse erzeugen
+                      Serial.print(model.sensorData.roll);Serial.print(",");
+                      Serial.print(model.sensorData.pitch);Serial.print(",");Serial.println("*/");
     // Serial.print(model.performance.min_loop_time);Serial.print(",");
     // Serial.print(model.performance.max_loop_time);Serial.print(",");
     // Serial.print(model.performance.last_loop_time);Serial.println("*/");
@@ -86,4 +88,5 @@ void loop() {
     //   model.performance.max_loop_time = model.performance.last_loop_time;
     // if(model.performance.last_loop_time < model.performance.min_loop_time)
     //   model.performance.min_loop_time = model.performance.last_loop_time;
+    LOGGER_VERBOSE("Loop completed successfully");
 }
