@@ -6,8 +6,9 @@
 */
 
 //#include "..\lib\gyro.h"		// müssten die nicht includiert werden?
-//#include "..\lib\baro.h"
+//#include "..\lib\baro.h"	
 //#include "..\lib\sonic.h"
+#include "..\lib\pidController.h"	// warum muss die inkludiert werden siehe Zeile 33
 #include "performance.h"
 
 typedef enum {
@@ -22,12 +23,14 @@ typedef enum {
 	ground			///< Kuckycopter stand on the ground
 } flyState_e;
 
-
 typedef struct {
-	sensorData_t sensorData;	// Data from MPU and baro
+	sensorData_t sensorData;	// Data from imu and baro
+	// gyroData_t gyroData;
+	// baroData_t baroData;
 	sonicData_t  sonicData;
 	performance_t performance;
 	interface_t interface;
+	pidData_t pidData[3];
 
 /* 	processes::baroData_t  baroData;
 	processes::usData_t    usData;

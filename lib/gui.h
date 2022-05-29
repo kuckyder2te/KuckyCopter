@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HardwareSerial.h>
+#include "myLogger.h"
 
 class Gui : public Task::Base {
 
@@ -155,7 +156,9 @@ public:
 
 	void clear() {
 	/* Clears the whole screen. */
+	LOGGER_WARNING("Enter....");
 		_serial.print("\e[2J");
+	LOGGER_WARNING("....leave");
 
 	} //-------------------------- end of clear ---------------------------------------------------
 	void red(){
