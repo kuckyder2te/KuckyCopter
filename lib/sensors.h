@@ -2,7 +2,10 @@
 
 #include <Arduino.h>
 #include <TaskManager.h>
-#include <MPU9250.h>
+#include <Adafruit_I2CDevice.h>
+#include <Adafruit_SPIDevice.h>
+#include <Adafruit_Sensor.h>
+#include <MPU9250_asukiaaa.h>
 #include <Adafruit_BMP280.h>
 #include "..\lib\def.h"
 #include "myLogger.h"
@@ -12,32 +15,22 @@ typedef struct {
     float  roll;
     float  yaw;
 	double   compass;			///< Real compass direction
-	int16_t  horz_Position;
-	float	 angularVelocity;	///< Angular velocity
-	int16_t  compassDiff;		///< Difference between two compass values
-	short 	 vectorOld[3];
-	//bool	 isMove;
-//    float getAccelX_mss;
 }sensorData_t;
 
 class Sensor : public Task::Base {
     bool b;         // Klassenvariable
-    int status;
-    
-    float _accelX_mss, _accelY_mss, _accelZ_mss;  //   MPU9250 values
-    float _gyroX_rads, _gyroY_rads, _gyroZ_rads;  
-    float _magX_uT, _magY_uT, _magZ_uT;  
-    float _temperature_C;
+ //   int status;
+    float _aX, _aY, _aZ, _aSqrt, _gX, _gY, _gZ, _mDirection, _mX, _mY, _mZ; // MPU9520 values
 
     float _pressure;        //  BMP280 values
     float _altitude;
     float _temperature_baro;
 
 private:
-    // MPU9250Setting setting;
  
-protected:
-	MPU9250  *_mpu9250;         // Speicherplatz reserviert
+ 
+protected:     
+    MPU9250_asukiaaa *_mpu9250;     // Speicherplatz reserviert
     Adafruit_BMP280 *_bmp280;
     sensorData_t *_sensorData;      
 
@@ -62,64 +55,59 @@ public:
     LOGGER_VERBOSE("Enter....");
         Wire.begin();
         LOGGER_NOTICE("MPU9250 initialized");
-        _mpu9250 = new MPU9250(Wire, 0x68);  // Adresse in Variable speichern
-        LOGGER_NOTICE("Start init MPU");
-
-            // start communication with IMU 
-            status = _mpu9250->begin();
-            if (status < 0) {
-                LOGGER_FATAL("IMU initialization unsuccessful");
-                LOGGER_FATAL("Check IMU wiring or try cycling power");
-                LOGGER_FATAL_FMT("Status: %i", status);
-                while(1) {}
-            }
-            // setting the accelerometer full scale range to +/-8G 
-            _mpu9250->setAccelRange(MPU9250::ACCEL_RANGE_8G);
-            // setting the gyroscope full scale range to +/-500 deg/s
-            _mpu9250->setGyroRange(MPU9250::GYRO_RANGE_500DPS);
-            // setting DLPF bandwidth to 20 Hz
-            _mpu9250->setDlpfBandwidth(MPU9250::DLPF_BANDWIDTH_20HZ);
-            // setting SRD to 19 for a 50 Hz update rate
-            _mpu9250->setSrd(19);
-        LOGGER_NOTICE("End init MPU");
+        _mpu9250 = new MPU9250_asukiaaa();  // Adresse in Variable speichern
+        LOGGER_NOTICE("End init MPU9250");
 
         LOGGER_NOTICE("BMP280 initialized");
-        _bmp280 = new Adafruit_BMP280();  // Adresse in Variable speichern
-
-        LOGGER_NOTICE("Start init BMP280");
-        if (!_bmp280->begin()) {
-            LOGGER_FATAL("Could not find a valid BMP280 sensor");
-        while (1) delay(10);
-        }
-        /* Default settings from datasheet. */
-        _bmp280->setSampling(Adafruit_BMP280::MODE_FORCED,     /* Operating Mode. */
-                        Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
-                        Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
-                        Adafruit_BMP280::FILTER_X16,      /* Filtering. */
-                        Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
+        _bmp280 = new Adafruit_BMP280(); // Adresse in Variable// Adresse in Variable speichern
         LOGGER_NOTICE("End init BMP280");
-    LOGGER_VERBOSE("....leave");   
+
+            _bmp280->begin(0x76);
+            _mpu9250->beginAccel();
+            _mpu9250->beginGyro();
+            _mpu9250->beginMag();
+
+            // You can set your own offset for mag values
+            // _mpu9250->magXOffset = -50;
+            // _mpu9250->magYOffset = -55;
+            // _mpu9250->magZOffset = -10;
+
+        LOGGER_VERBOSE("....leave");   
     }
 
     virtual void enter() override {
     LOGGER_VERBOSE("Enter....");
-        _mpu9250->readSensor();
+        if (_mpu9250->accelUpdate() == 0) {
+            LOGGER_NOTICE("Update accelerometer successful");
+            _aX = _mpu9250->accelX();
+            _aY = _mpu9250->accelY();
+            _aZ = _mpu9250->accelZ();
+            _aSqrt = _mpu9250->accelSqrt();
+        } else {
+            LOGGER_FATAL("Accelerometer update failed!");
+        }
 
-        _accelX_mss = _mpu9250->getAccelX_mss();
-        _accelY_mss = _mpu9250->getAccelY_mss();
-        _accelZ_mss = _mpu9250->getAccelZ_mss();
+        if (_mpu9250->gyroUpdate() == 0) {
+            LOGGER_NOTICE("Update gyrometer successful"); 
+            _gX = _mpu9250->gyroX();
+            _gY = _mpu9250->gyroY();
+            _gZ = _mpu9250->gyroZ();
+        } else {
+            LOGGER_FATAL("Gyrometer update failed!");
+        }
 
-        _gyroX_rads = _mpu9250->getGyroX_rads();
-        _gyroY_rads = _mpu9250->getGyroY_rads();
-        _gyroZ_rads = _mpu9250->getGyroZ_rads();
-
-        _magX_uT = _mpu9250->getMagX_uT();
-        _magY_uT = _mpu9250->getMagY_uT();
-        _magZ_uT = _mpu9250->getMagZ_uT();
-
-        _temperature_C = _mpu9250->getTemperature_C();
+        if (_mpu9250->magUpdate() == 0) {
+            LOGGER_NOTICE("Update magnetometer successful");
+            _mX = _mpu9250->magX();
+            _mY = _mpu9250->magY();
+            _mZ = _mpu9250->magZ();
+            _mDirection = _mpu9250->magHorizDirection();
+        } else {
+            LOGGER_FATAL("Magnetometer update failed!");
+        }
 
         if (_bmp280->takeForcedMeasurement()) {
+            LOGGER_NOTICE("ForcedMeasurement successful");
             _temperature_baro = _bmp280->readTemperature();
             _pressure = _bmp280->readPressure();
             _altitude = _bmp280->readAltitude(1013.25); /* Adjusted to local forecast! */
@@ -132,26 +120,25 @@ public:
     virtual void update() override {
     LOGGER_VERBOSE("Enter...."); 
         //Check thresholds, Warnings if too stall
-        LOGGER_NOTICE_FMT("getAccelX_mss %f", _accelX_mss);
-        LOGGER_NOTICE_FMT("getAccelY_mss %f", _accelY_mss);
-        LOGGER_NOTICE_FMT("getAccelZ_mss %f", _accelZ_mss);
-        LOGGER_NOTICE_FMT("getGyroX_rads %f", _gyroX_rads);
-        LOGGER_NOTICE_FMT("getGyroY_rads %f", _gyroY_rads);
-        LOGGER_NOTICE_FMT("getGyroZ_rads %f", _gyroZ_rads);
-        LOGGER_NOTICE_FMT("getMagX_uT %f", _magX_uT);
-        LOGGER_NOTICE_FMT("getMagY_uT %f", _magY_uT);
-        LOGGER_NOTICE_FMT("getMagZ_uT %f", _magZ_uT);
-        LOGGER_NOTICE_FMT("Temperatur Gyro %f", _temperature_C); 
+ 
+        LOGGER_NOTICE_FMT("taccelX:  %f", _aX);
+        LOGGER_NOTICE_FMT("taccelY %f", _aY);
+        LOGGER_NOTICE_FMT("taccelZ %f", _aZ);
+        LOGGER_NOTICE_FMT("taccelSqrt %f", _aSqrt);
 
-        LOGGER_NOTICE_FMT("Temperature =  %f*C", _temperature_baro);
-        LOGGER_NOTICE_FMT("Pressure =  %fPa", _pressure);
-        LOGGER_NOTICE_FMT("Approx altitude =  %fm", _altitude);
+        LOGGER_NOTICE_FMT("tgyroX:  %f", _gX);
+        LOGGER_NOTICE_FMT("tgyroY %f", _gY);
+        LOGGER_NOTICE_FMT("tgyroZ %f", _gZ);
+
+        LOGGER_NOTICE_FMT("tmagX:  %f", _mX);
+        LOGGER_NOTICE_FMT("tmagY %f", _mY);
+        LOGGER_NOTICE_FMT("tmagZ %f", _mZ);
+        LOGGER_NOTICE_FMT("thorizontalDirection %f", _mDirection);
+
+        LOGGER_NOTICE_FMT("Temperature =  %.2f*C", _bmp280->readTemperature());
+        LOGGER_NOTICE_FMT("Pressure =  %.2fPa", _bmp280->readPressure());
+        LOGGER_NOTICE_FMT("Approx altitude =  %.2fm", _bmp280->readAltitude(1013.25));
 
     LOGGER_VERBOSE("....leave");   
     }
-//    String getMonitor(){     
-//        char buf[20];
-//        //sprintf(buf,"/d,/d,/d",_gyroData.roll,_gyroData.pitch,_gyroData.yaw);
-//        return buf;
-//    }
 };  /*----------------------------------- end of sensor.h class -----------------------*/
