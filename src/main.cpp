@@ -13,14 +13,12 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HardwareSerial.h>
-//#include <SPI.h>
-//#include <Wire.h>
+
 #include <Adafruit_Sensor.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
 #include "..\lib\sensors.h"
-//#include "..\lib\gyro.h"
-//#include "..\lib\baro.h"
+
 #include "..\lib\sonic.h"
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
@@ -48,7 +46,7 @@ void setup() {
     Serial2.flush();
     Wire.begin();
 
-    delay(5000);
+    delay(500);
 
 #ifdef _DEBUG_
   Logger::setOutputFunction(&localLogger);
@@ -56,17 +54,16 @@ void setup() {
 #endif
   LOGGER_VERBOSE("Enter....");
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
-    // Tasks.add<Baro>("baro")->setModel(&model.baroData)->startFps(1);
-    // Tasks.add<Gyro>("gyro")->setModel(&model.gyroData)->startFps(1);   
+ 
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
 
-    Tasks.add<Radio>("radio")->startFps(1);
+   Tasks.add<Radio>("radio")->startFps(1);
     Tasks.add<Battery>("Battery")->startFps(10);
     Tasks.add<Calibration>("calibration")->startFps(1);  
     Tasks.add<Gui>("gui")->port(Serial2)->startFps(1); 
     LOGGER_NOTICE( "Program is initialized");
   LOGGER_VERBOSE("....leave"); 
-//  Serial2.println("setup");
+
 }
 
 void loop() {
@@ -74,7 +71,7 @@ void loop() {
   
   //  unsigned long enter = micros();
     Tasks.update();
-    Tasks["gyro"]->enter();
+    Tasks["sensor"]->enter();
     
    Serial.print("/*");Serial.print(model.sensorData.yaw);Serial.print(",");  /// eigenen monitor als Klasse erzeugen
                       Serial.print(model.sensorData.roll);Serial.print(",");

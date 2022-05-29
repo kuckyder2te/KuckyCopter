@@ -33,8 +33,8 @@ public:
     virtual void update() override {
     LOGGER_VERBOSE("Enter....");
 
-        _batteryData->battery_State = analogRead(PIN_BATTERY);
-        LOGGER_NOTICE_FMT("Battery state = %i", _batteryData->battery_State);
+     //   _batteryData->battery_State = analogRead(PIN_BATTERY);
+     //   LOGGER_NOTICE_FMT("Battery state = %i", _batteryData->battery_State);
 
     LOGGER_VERBOSE("....leave");    
     }

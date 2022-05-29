@@ -25,10 +25,8 @@ typedef enum {
 
 typedef struct {
 	sensorData_t sensorData;	// Data from MPU and baro
-	// gyroData_t  gyroData;		
 	sonicData_t  sonicData;
 	performance_t performance;
-	// baroData_t	baroData;
 	interface_t interface;
 
 /* 	processes::baroData_t  baroData;

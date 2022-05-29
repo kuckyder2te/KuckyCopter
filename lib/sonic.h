@@ -3,13 +3,14 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HCSR04.h>
-// #include <OneWire.h>
-// #include <DallasTemperature.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 #include "..\lib\def.h"
 
-// OneWire oneWire(PIN_DALLAS);
-// DallasTemperature sens_temperature(&oneWire);
+OneWire oneWire(PIN_DALLAS);
+DallasTemperature sens_temperature(&oneWire);
 
+DeviceAddress insideThermometer;
 typedef struct{
     float temperature;
     double distance;

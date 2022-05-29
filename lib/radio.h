@@ -12,24 +12,18 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <RF24.h>
-//#include <RadioHead.h>
-//#include <SPI.h>
-//#include <RH_NRF24.h>
-//#include <RHHardwareSPI.h>
 #include <def.h>
 #include "myLogger.h"
 #include <printf.h>
 
 typedef struct __attribute__((__packed__)) {
-    uint16_t rcThrottle;			//!< Get the positions of the rc joysticks.
-    double   rcDirection[3];		//!< roll 0 - nick 1 - yaw 2
-    //double rcYaw;
-    //double rcPitch;
-    //double rcRoll;
-    uint8_t  rcSwitch[5];
-    //uint8_t  rcSwi1;
-    //uint8_t  rcSwi2;
-    //uint8_t  rcSwi3;
+    uint16_t rcThrottle;			//!< Get the positions of the rc joysticks
+    double rcYaw;
+    double rcPitch;
+    double rcRoll;
+    uint8_t  rcSwi1;
+    uint8_t  rcSwi2;
+    uint8_t  rcSwi3;
     double   checksum;
 } payload_t;
 
@@ -65,16 +59,19 @@ public:
 
     virtual ~Radio() {}
 
+        Radio* setModel(interface_t* _model){    // Rückgabe wert ist das eigene Objekt (this)
+        LOGGER_VERBOSE("Enter....");
+        interface = _model;
+        LOGGER_VERBOSE("....leave");
+        return this;
+    }
+
     virtual void begin() override {
         LOGGER_VERBOSE("Enter....");
         //address[][6] = {"1Node", "2Node"};
         radioNumber = 1; // 0 uses address[0] to transmit, 1 uses address[1] to transmit
         role = false;  // true = TX role, false = RX role
         payload = 0.0;
-        // _spi = new RHSoftwareSPI();
-        // _spi->setPins(16, 19, 18);
-        // _spi->begin();
-        // hardware_spi.begin();
         _radio = new RF24(PIN_RADIO_CE, PIN_RADIO_CSN);  // Adresse in Variable speichern -> constuktor
         
         // initialize the transceiver on the SPI bus
@@ -91,7 +88,7 @@ public:
         }
         char input = Serial2.parseInt();
         radioNumber = input == 1;
-        LOGGER_NOTICE_FMT("radioNumber = %f", radioNumber);
+        LOGGER_NOTICE_FMT("RadioNumber = %f", radioNumber);
 
         // role variable is hardcoded to RX behavior, inform the user of this
         LOGGER_NOTICE("*** PRESS 'T' to begin transmitting to the other node");
@@ -184,4 +181,4 @@ public:
         }
     LOGGER_VERBOSE("....leave");
     } // end of update
-};
+};  /*----------------------------- end of radio.h ------------------*/

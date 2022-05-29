@@ -43,4 +43,4 @@
 #define PIN_LED_STATE    7
 #define PIN_LED_ALERT    8
 
-// #define PIN_DALLAS      27
+#define PIN_DALLAS      28
