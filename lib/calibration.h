@@ -1,23 +1,18 @@
 #pragma once
+/*  File name : calibration.h
+	Autor: Wilhelm Kuckelsberg
+	Date: 2021.xx.xx
+	Description: The PID values can be configured via the terminal.
+*/
 
 #include <Arduino.h>
 #include <TaskManager.h>
 #include "..\lib\def.h"
 #include "..\lib\gui.h"
+//#include "..\lib\pidController.h" //new
+//#include "..\lib\model.h" //new
 
-#define ROW_MENU 	 2		///< First position for the main menue
-#define COL_MENU     8
-
-#define ROW_SELECT 	20		///< First position for select PID type
-#define COL_SELECT   8
-
-#define ROW_COEFF	25		///< First position for new coefficients
-#define COL_COEFF	 8
-
-#define ROW_PID     31		///< First position for current coefficients
-#define COL_PID      8
-
-
+#include "myLogger.h"
 typedef enum{               // Enumarations for menu
 	pri_P = 11,
 	pri_I = 21,
@@ -33,18 +28,33 @@ typedef enum{               // Enumarations for menu
 	yaw_ef = 43
 }pidTyp_t;
 
-typedef enum{
-	axis_pri = 1,
-	axis_sec = 2,
-	axis_yaw = 3
-}itemAxis_t;
+#define	axis_pri  1
+#define	axis_sec  2
+#define	axis_yaw  3
+
+#define	kP  10
+#define	kI  20
+#define	kD  30
+#define	eF  40
+
+// typedef enum{
+// 	P = 0,
+// 	I,
+// 	D
+// }pid;
+
+// typedef struct {
+// 	float pidCoefficient[3];
+// 	float executionFrequency;
+// 	int   output_bits;
+// 	bool  output_signed;
+// } pidData_t;
 
 typedef enum{
-	kP = 10,
-	kI = 20,
-	kD = 30,
-	eF = 40
-}itemCoeff_t;
+	Primary,
+	Secondary,
+	YawAxis
+}axis_t;
 
 typedef enum{
 	P = 0,
@@ -52,7 +62,10 @@ typedef enum{
 	D
 }pid;
 
-//extern Gui gui;
+//extern PIDcontroller pid_pri;
+//extern modules::MyPid myPID_sec;
+//extern modules::MyPid myPID_yaw;
+
 
 class Calibration : public Task::Base {
     bool b;         // Klassenvariable
@@ -61,39 +74,43 @@ class Calibration : public Task::Base {
 	uint8_t _pidType;
     float   _newFactor = 0.1;	///< Multiplication factor for the PID coefficients, default setting.
 	double  _factor;
-
-	const char* c_pri_select = "Primary axis is select";		///< Strings for menu and informations
-	const char* c_sec_select = "Secondary axis is select";
-	const char* c_yaw_select = "YAW axis is select";
-	const char* c_p_select = "Coefficient P is select";
-	const char* c_i_select = "Coefficient I is select";
-	const char* c_d_select = "Coefficient D is select";
-	const char* c_ef_select = "Exec. frequency is select";
-	const char* c_whitespace = "                           ";
-	const char* c_pri_p = "Pri. P =";
-	const char* c_pri_i = "I =";
-	const char* c_pri_d = "D =";
-	const char* c_sec_p = "Sec.";
-	const char* c_sec_i = "I =";
-	const char* c_sec_d = "D =";
-	const char* c_yaw_p = "YAW";
-	const char* c_yaw_i = "I =";
-	const char* c_yaw_d = "D =";
-	const char* c_ef = "Exec. Hz. =";	
+	float _X_kP_value;
+	float _X_kI_value;
+	float _X_kD_value;
+	float _Y_kP_value;
+	float _Y_kI_value;
+	float _Y_kD_value;
+	float _Z_kP_value;
+	float _Z_kI_value;
+	float _Z_kD_value;
 
 protected:
 	Gui *_gui;
+//	pidData_t *_pidData;
+	//model_t	*_model;
 
 public:
-    Calibration(const String& name) : Task::Base(name) ,b(false){
-        pinMode(CALIBRATION_LED, OUTPUT);
-        digitalWrite(CALIBRATION_LED, LOW);
+    Calibration(const String& name) : Task::Base(name){
+		LOGGER_VERBOSE("Enter....");
+        // pinMode(GYRO_LED, OUTPUT);
+        // digitalWrite(GYRO_LED, LOW);
+        LOGGER_VERBOSE("....leave");    
     }
 
-    virtual ~Calibration() {}
+    // virtual ~Calibration() {}
+
+	//     Calibration* setModel(pidData_t* _model){    // Rückgabe wert ist das eigene Objekt (this)
+    //     LOGGER_VERBOSE("Enter....");
+    //     _pidData = _model;
+    //     LOGGER_VERBOSE("....leave");
+    //     return this;
+    // }
+
 
     virtual void begin() override {
      	LOGGER_VERBOSE("Enter...");
+			// _X_kP_value = 0;
+			// LOGGER_WARNING_FMT(" set _X_kP_value = %d", _X_kP_value);
 		LOGGER_VERBOSE("...Leave");  
     }
 
@@ -108,101 +125,69 @@ public:
 
             char key = Serial2.read();
 			switch(key){
-				case 'x':													///< Choose the axes
-					setItemAxis(itemAxis_t::axis_pri);
-					_gui->print(45, 8, c_whitespace);						///< Clears the string "Illegal button was pressed"
-					_gui->clearPart(ROW_SELECT, COL_SELECT, c_whitespace);	///< Clears the current line
-					_gui->print    (ROW_SELECT, COL_SELECT, c_pri_select);	///< Print the selected axis
+				case 'x':	
+					LOGGER_WARNING_FMT(" primaty axis is select = %d", axis_pri);												///< Choose the axes
+					setItemAxis(axis_pri);
 					break;
 				case 'y':
-					setItemAxis(itemAxis_t::axis_sec);
-					_gui->print(45, 8, c_whitespace);
-					_gui->clearPart(ROW_SELECT, COL_SELECT, c_whitespace);
-					_gui->print    (ROW_SELECT, COL_SELECT, c_sec_select);
+					LOGGER_WARNING_FMT(" secundary axis is select = %d", axis_sec);	
+					setItemAxis(axis_sec);
 					break;
 				case 'z':
-					setItemAxis(itemAxis_t::axis_yaw);
-					_gui->print(45, 8, c_whitespace);
-					_gui->clearPart(ROW_SELECT, COL_SELECT, c_whitespace);
-					_gui->print	 (ROW_SELECT, COL_SELECT, c_yaw_select);
+					LOGGER_WARNING_FMT(" YAW axis is select = %d", axis_yaw);	
+					setItemAxis(axis_yaw);
 					break;
 
-				case 'p':													///< Choose the PID Coefficient
-					setItemCoefficient(itemCoeff_t::kP);
-					_gui->print(45, 8, c_whitespace);
-					_gui->clearPart(ROW_SELECT+2, COL_SELECT, c_whitespace);
-					_gui->print    (ROW_SELECT+2, COL_SELECT, c_p_select);	///< Print the selected coefficient
+				case 'p':													///< Choose the PID Coefficient				
+					LOGGER_WARNING_FMT(" kP is select = %d", kP);
+					setItemCoefficient(kP);
 					break;
 				case 'i':
-					setItemCoefficient(itemCoeff_t::kI);
-					_gui->print(45, 8, c_whitespace);
-					_gui->clearPart(ROW_SELECT+2, COL_SELECT, c_whitespace);
-					_gui->print    (ROW_SELECT+2, COL_SELECT, c_i_select);
+					LOGGER_WARNING_FMT(" kI is select =%d", kI);
+					setItemCoefficient(kI);					
 					break;
 				case 'd':
-					setItemCoefficient(itemCoeff_t::kD);
-					_gui->print(45, 8, c_whitespace);
-					_gui->clearPart(ROW_SELECT+2, COL_SELECT, c_whitespace);
-					_gui->print    (ROW_SELECT+2, COL_SELECT, c_d_select);
+					LOGGER_WARNING_FMT(" kD is select =%d", kD);
+					setItemCoefficient(kD);
 					break;
 				case 'e':
-					setItemCoefficient(itemCoeff_t::eF);
-					_gui->print(45, 8, c_whitespace);
-					_gui->clearPart(ROW_SELECT+2, COL_SELECT, c_whitespace);
-					_gui->print    (ROW_SELECT+2, COL_SELECT, c_ef_select);
+					LOGGER_WARNING_FMT(" eF is select = %d", eF);
+					setItemCoefficient(eF);
 					break;
 
 				case '+':
-					_gui->print(45, 8, c_whitespace);
+					LOGGER_WARNING("Up");
 					coefficient_Up();			///< Coefficient increment
 					break;
 				case '-':
-					_gui->print(45, 8, c_whitespace);
+					LOGGER_WARNING("Down");
 					coefficient_Down();			///< Coefficient decrement
 					break;
 
 				case '0':						///< Choose the decimal places  0 to 0,001
-	//				setDecimalPlaces(0);
-					_gui->print(45, 8, c_whitespace);
-					_gui->clearPart(ROW_SELECT+1, COL_SELECT, c_whitespace);
-					_gui->print    (ROW_SELECT+1, COL_SELECT, "Accuracy = 1,0");
+					setDecimalPlaces(0);
 					break;
 				case '1':
-	//				setDecimalPlaces(1);
-					_gui->print(45, 8, c_whitespace);
-					_gui->clearPart(ROW_SELECT+1, COL_SELECT, c_whitespace);
-					_gui->print    (ROW_SELECT+1, COL_SELECT, "Accuracy = 0,1");
+					setDecimalPlaces(1);
 					break;
 				case '2':
-	//				setDecimalPlaces(2);
-					_gui->print(45, 8, c_whitespace);
-					_gui->clearPart(ROW_SELECT+1, COL_SELECT, c_whitespace);
-					_gui->print    (ROW_SELECT+1, COL_SELECT, "Accuracy = 0,01");
+					setDecimalPlaces(2);
 					break;
 				case '3':
-	//				setDecimalPlaces(3);
-					_gui->print(45, 8, c_whitespace);
-					_gui->clearPart(ROW_SELECT+1, COL_SELECT, c_whitespace);
-					_gui->print    (ROW_SELECT+1, COL_SELECT, "Accuracy = 0,001");
+					setDecimalPlaces(3);
 					break;
 
 				case 's':							///< Saved all coefficients into the EEPROM
 	//				myPID_pri.updateEEPROM();
 	//				myPID_sec.updateEEPROM();
 	//				myPID_yaw.updateEEPROM();
-					_gui->red();
-					_gui->print(45, 8, "PID data was backed up");
-					_gui->yellow();
-					displayPIDcoefficients();
+					// displayPIDcoefficients();
 					break;
 				case 'r':							///< Reads all coefficients from the EEPROM
 	//				myPID_pri.readEEPROM();
 	//				myPID_sec.readEEPROM();
 	//				myPID_yaw.readEEPROM();
-					_gui->red();
-					_gui->print(45, 8, "PID data was read out");
-					_gui->yellow();
-					break;
+			 	break;
 				case 'a':							///< Set all PID parameters to 0
 	//  			myPID_pri.setP(PID_P_MIN);
 	// 				myPID_pri.setI(0);
@@ -240,19 +225,16 @@ public:
 				case 'c':	///< Copies the primary values to the secondary axis
 	// 				myPID_sec.setP(myPID_pri.getP());
 	// 				myPID_sec.setI(myPID_pri.getI());
-	// 				myPID_sec.setD(myPID_pri.getD());
-	//				
+	// 				myPID_sec.setD(myPID_pri.getD());				
 					break;
 
 				case 'm':
-	//				display_Menu();
+					LOGGER_WARNING("m was pressed");	
+					display_Menu();
 					displayPIDcoefficients();
 					break;
 
 				default:{
-					_gui->red();
-					_gui->print(45, 8, "Illegal button was pressed");
-					_gui->yellow();
 				}
 			}	/* end of switch(key) */
         }	/* end of if Serial2 available */
@@ -266,9 +248,7 @@ public:
 	 * Key Y = primary axis (2)
 	 * Key Z = primary axis (3)	 */
 		_itemAxis = itemAxis;
-		LOGGER_NOTICE("setItemAxis");
-		LOGGER_NOTICE_FMT("itemAxis = %f", itemAxis);
-	//	Serial2.print("itemAxis = ");Serial2.println(itemAxis);
+	//	LOGGER_WARNING_FMT("itemAxis = %d", _itemAxis);
 	} 
 	
 	void setItemCoefficient(uint8_t itemCoefficient) {
@@ -278,32 +258,46 @@ public:
 	 * Key D = coefficient D (30)
 	 * Key E = ExecutingFrequency (40)	 */
 		_itemCoefficient = itemCoefficient;
-		LOGGER_NOTICE_FMT("itemCoefficient = %f", itemCoefficient);
-	//	Serial2.print("itemCoefficient = ");Serial2.println(itemCoefficient);
-	} 
+	//	LOGGER_WARNING_FMT("itemCoefficient = %d", _itemCoefficient);
+	}	/*----------------------------- end of setItemCoefficient ---------------------*/ 
+
+	void setDecimalPlaces(uint8_t dot){
+
+		switch(dot){
+			case 0:
+				_newFactor = 1;
+				break;
+			case 1:
+				_newFactor = 0.1;
+				break;
+			case 2:
+				_newFactor = 0.01;
+				break;
+			case 3:		
+				_newFactor = 0.001;
+				break;
+		}// end of switch
+
+		LOGGER_WARNING_FMT("New Factor = %f", _newFactor);
+
+	} 	/*----------------------------- end of setDecimalPlaces -----------------------*/
+
 	 /* Set the "PID Type",
 	  * e.g _itemAxis = 1 and _itemCoefficient = 20 ~ _pidType 21
 	  * Will say, it select the parameter for secondary axis and coefficient 'i'
 	  */
-
 	uint8_t getPidType(bool up) {   /// const deleted
 
 		_pidType = _itemAxis + _itemCoefficient;
+	//	LOGGER_WARNING_FMT("PID Type = %d", _pidType);
 
 		if(_pidType < 40){			///< P, I and D
 
-//			Serial2.print("New factor = ");Serial2.println(_newFactor, 3);
+			if(up)
+				_factor = _newFactor;
+			else
+				_factor = _newFactor *-1;
 
-//			if(_pidType == pidTyp_t::pri_P || _pidType == pidTyp_t::sec_P || _pidType == pidTyp_t::yaw_P)
-				if(up)
-					_factor = _newFactor;
-				else
-					_factor = _newFactor *-1;
-//			else
-//				if(up)
-//					_factor = FACTOR_ID;
-//				else
-//					_factor = FACTOR_ID *-1;
 		}
 		if(_pidType >= 40){		///< Executingfrequency only
 			if(up)
@@ -327,36 +321,57 @@ public:
 	   like this: Pri. P = 2.20 
 	*/
 	void select(uint8_t type) {
+		LOGGER_WARNING_FMT("Select %d", type);
 
 		switch(type){
 
 		case pidTyp_t::pri_P:
-//			myPID_pri.setP(((_model.pidData[axis_t::Primary].pidCoefficient[pid::P]) += _factor));
+		//	LOGGER_WARNING("Select");
+			_X_kP_value += _factor;
+			LOGGER_WARNING_FMT("_X_kP_value = %f", _X_kP_value);
+
+		//	pid_pri.setP(((_model.pidData[axis_t::Primary].pidCoefficient[pid::P]) += _factor));
 			break;
 		case pidTyp_t::pri_I:
+			_X_kI_value += _factor;
+			LOGGER_WARNING_FMT("_X_kI_value = %f", _X_kI_value);
 //			myPID_pri.setI(((_model.pidData[axis_t::Primary].pidCoefficient[pid::I]) += _factor));
 			break;
 		case pidTyp_t::pri_D:
+			_X_kD_value += _factor;
+			LOGGER_WARNING_FMT("_X_kD_value = %f", _X_kD_value);
 //			myPID_pri.setD(((_model.pidData[axis_t::Primary].pidCoefficient[pid::D]) += _factor));
 			break;
 
 		case pidTyp_t::sec_P:
+			_Y_kP_value += _factor;
+			LOGGER_WARNING_FMT("_Y_kP_value = %f", _Y_kP_value);
 //			myPID_sec.setP(((_model.pidData[axis_t::Secondary].pidCoefficient[pid::P]) += _factor));
 			break;
 		case pidTyp_t::sec_I:
+			_Y_kI_value += _factor;
+			LOGGER_WARNING_FMT("_Y_kI_value = %f", _Y_kI_value);
 //			myPID_sec.setI(((_model.pidData[axis_t::Secondary].pidCoefficient[pid::I]) += _factor));
 			break;
 		case pidTyp_t::sec_D:
+			_Y_kD_value += _factor;
+			LOGGER_WARNING_FMT("_Y_kD_value = %f", _Y_kD_value);
 //			myPID_sec.setD(((_model.pidData[axis_t::Secondary].pidCoefficient[pid::D]) += _factor));
 			break;
 
 		case pidTyp_t::yaw_P:
+			_Z_kP_value += _factor;
+			LOGGER_WARNING_FMT("_Z_kP_value = %f", _Z_kP_value);
 //			myPID_yaw.setP(((_model.pidData[axis_t::YawAxis].pidCoefficient[pid::P]) += _factor));
 			break;
 		case pidTyp_t::yaw_I:
+			_Z_kI_value += _factor;
+			LOGGER_WARNING_FMT("_Z_kI_value = %f", _Z_kI_value);
 //			myPID_yaw.setI(((_model.pidData[axis_t::YawAxis].pidCoefficient[pid::I]) += _factor));
 			break;
 		case pidTyp_t::yaw_D:
+			_Z_kD_value += _factor;
+			LOGGER_WARNING_FMT("_Z_kD_value = %f", _Z_kD_value);
 //			myPID_yaw.setD(((_model.pidData[axis_t::YawAxis].pidCoefficient[pid::D]) += _factor));
 			break;
 
@@ -373,39 +388,38 @@ public:
 	}// end of select
 
 	void display_Menu() {
+	LOGGER_WARNING("Enter....");
 
-	_gui->clear();
-	_gui->gray();
-	_gui->print(ROW_MENU,   COL_MENU, "-----------Menu for PID configuration (BT)-----------");
-	_gui->yellow();
-	_gui->print(ROW_MENU+2, COL_MENU, "(X) choose the primary");
-	_gui->print(ROW_MENU+3, COL_MENU, "(Y)           secondary");
-	_gui->print(ROW_MENU+4, COL_MENU, "(Z)            YAW axis");
-	_gui->print(ROW_MENU+5, COL_MENU, " P, I or D select the coefficient");
-	_gui->print(ROW_MENU+6, COL_MENU, "(0),(1),(2)or(3)select the accurarcy");
-	_gui->print(ROW_MENU+7, COL_MENU, "(E) choose the execution frequency");
-	_gui->print(ROW_MENU+8, COL_MENU, "(+) increment according to the value");
-	_gui->print(ROW_MENU+9, COL_MENU, "(-) decrement      ''");
-	_gui->print(ROW_MENU+10, COL_MENU,"(S) saves all coefficient into the EEPROM");
-	_gui->print(ROW_MENU+11, COL_MENU,"(R) reads all coefficients from the EEPROM");
-	_gui->print(ROW_MENU+12, COL_MENU,"(C) Copies the primary values to the secondary axis");
-	_gui->print(ROW_MENU+13, COL_MENU,"(A) all values are set to 0 in the EEPROM.");
-	_gui->print(ROW_MENU+14, COL_MENU,"(G) get factory defaults");
-	_gui->print(ROW_MENU+15,COL_MENU, "(M) display the menu");
-	_gui->gray();
-	_gui->print(ROW_MENU+18,COL_MENU, "-----------------------------------------------------");
-	_gui->yellow();
+		LOGGER_WARNING("-----------Menu for PID configuration (BT)-------------");
+		LOGGER_WARNING("---(X) choose the primary");
+		LOGGER_WARNING("---(Y)           secondary");
+		LOGGER_WARNING("---(Z)            YAW axis");
+		LOGGER_WARNING("--- P, I or D select the coefficient");
+		LOGGER_WARNING("---(0),(1),(2)or(3)select the accurarcy");
+		LOGGER_WARNING("---(E) choose the execution frequency");
+		LOGGER_WARNING("---(+) increment according to the value");
+		LOGGER_WARNING("---(-) decrement      ''");
+		LOGGER_WARNING("---(S) saves all coefficient into the EEPROM");
+		LOGGER_WARNING("---(R) reads all coefficients from the EEPROM");
+		LOGGER_WARNING("---(C) Copies the primary values to the secondary axis");
+		LOGGER_WARNING("---(A) all values are set to 0 in the EEPROM.");
+		LOGGER_WARNING("---(G) get factory defaults");
+		LOGGER_WARNING("---(M) display this menu");
+		LOGGER_WARNING("--------------------------------------------------------");
 
+
+	LOGGER_WARNING("....leeave");
 } //-------------------------- end of display_Menu ------------------------------------------------
 /*
  * Displayed all PID coefficients from the _model */
 
 void displayPIDcoefficients() {
 
-	_gui->gray();
-	_gui->print(ROW_PID, COL_PID, "Current PID coefficients in the EEPROM");
-	_gui->yellow();
-/* 	_gui->print(ROW_PID+2, COL_PID,    c_pri_p);_gui->print(ROW_PID+2, COL_PID+9,  2, _model.pidData[axis_t::Primary].pidCoefficient[pid::P]);
+/* 	_gui->gray();
+ 	_gui->print(ROW_PID, COL_PID, "Current PID coefficients in the EEPROM");
+ 	_gui->yellow();
+ 
+ 	_gui->print(ROW_PID+2, COL_PID,    c_pri_p);_gui->print(ROW_PID+2, COL_PID+9,  2, _model.pidData[axis_t::Primary].pidCoefficient[pid::P]);
 	_gui->print(ROW_PID+2, COL_PID+16, c_pri_i);_gui->print(ROW_PID+2, COL_PID+20, 3, _model.pidData[axis_t::Primary].pidCoefficient[pid::I]);
 	_gui->print(ROW_PID+2, COL_PID+27, c_pri_d);_gui->print(ROW_PID+2, COL_PID+31, 3, _model.pidData[axis_t::Primary].pidCoefficient[pid::D]);
 	_gui->print(ROW_PID+2, COL_PID+40, c_ef);   _gui->print(ROW_PID+2, COL_PID+52, 0, _model.pidData[axis_t::Primary].executionFrequency);

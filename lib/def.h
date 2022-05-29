@@ -7,6 +7,14 @@
     This file contains general definitions
 */    
 
+/* Enumerations */
+// typedef enum{
+// 	Primary,
+// 	Secondary,
+// 	YawAxis
+// }axis_t;
+
+/* Constance */
 #define CALIBRATION_LED 16  // Green
 #define GYRO_LED 17 //blue
 #define SONIC_LED 18  // Yellow
