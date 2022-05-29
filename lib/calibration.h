@@ -8,9 +8,6 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include "..\lib\def.h"
-#include "..\lib\gui.h"
-//#include "..\lib\pidController.h" //new
-//#include "..\lib\model.h" //new
 
 #include "myLogger.h"
 typedef enum{               // Enumarations for menu
@@ -51,7 +48,7 @@ typedef enum{               // Enumarations for menu
 // } pidData_t;
 
 typedef enum{
-	Primary,
+	Primary = 0,
 	Secondary,
 	YawAxis
 }axis_t;
@@ -65,7 +62,6 @@ typedef enum{
 //extern PIDcontroller pid_pri;
 //extern modules::MyPid myPID_sec;
 //extern modules::MyPid myPID_yaw;
-
 
 class Calibration : public Task::Base {
     bool b;         // Klassenvariable
@@ -85,9 +81,6 @@ class Calibration : public Task::Base {
 	float _Z_kD_value;
 
 protected:
-	Gui *_gui;
-//	pidData_t *_pidData;
-	//model_t	*_model;
 
 public:
     Calibration(const String& name) : Task::Base(name){
@@ -105,7 +98,6 @@ public:
     //     LOGGER_VERBOSE("....leave");
     //     return this;
     // }
-
 
     virtual void begin() override {
      	LOGGER_VERBOSE("Enter...");

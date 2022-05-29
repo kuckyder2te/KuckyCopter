@@ -26,7 +26,6 @@
 #include "..\lib\calibration.h"
 #include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
-#include "..\lib\gui.h"
 #include "..\lib\model.h"
 #include "..\lib\def.h"
 #include "..\lib\pidController.h"
@@ -66,8 +65,7 @@ void setup() {
   //Tasks.add<Baro>("baro")->setModel(&model.baroData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
     Tasks.add<Battery>("Battery")->startFps(1);
-    Tasks.add<Calibration>("calibration")->startFps(100);  
-    Tasks.add<Gui>("gui")->port(Serial2)->startFps(1); 
+    Tasks.add<Calibration>("calibration")->startFps(100);   
     Tasks.add<Radio>("radio")->startFps(1);
 
     LOGGER_NOTICE( "Program is initialized");
