@@ -77,147 +77,103 @@ public:
 		};
 
 	void disablePID(){
-	//	Serial.println("MyPID disablePID");
-		#ifdef PID_STATE
-		LOG("Disabled PID controller %d ", _pidInstance);
+		LOGGER_WARNING_FMT("Disabled PID controller %d ", _pidInstance);
 		delay(100);
-		#endif
-
+		
 		FastPID::setCoefficients(PID_P_MIN, 0.0, 0.0, getExecutionTime());
 
-		#ifdef PID_VALUES
-		LOGS(_pidData.pidCoefficient[coeffizient_t::kP]);
-		LOGS(_pidData.pidCoefficient[coeffizient_t::kI]);
-		LOGS(_pidData.pidCoefficient[coeffizient_t::kD]);
+		LOGGER_WARNING_FMT("PID coeff P = %f ", _pidData.pidCoefficient[coeffizient_t::kP]);
+		LOGGER_WARNING_FMT("PID coeff I = %f ", _pidData.pidCoefficient[coeffizient_t::kI]);
+		LOGGER_WARNING_FMT("PID coeff D = %f ", _pidData.pidCoefficient[coeffizient_t::kD]);
 		delay(100);
-		#endif
-
 	}//-------------------------------- end of deactivatePID --------------------------------------
 
 	void enablePID(){
 		/* This function has 2 tasks.
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
-	//	Serial.println("MyPID enablePID");
-		#ifdef PID_STATE
-		LOG("Enable PID controller %d ", _pidInstance);
+
+		LOGGER_WARNING_FMT("Enable PID controller %d ", _pidInstance);
 		delay(100);
-		#endif
 
  		FastPID::setCoefficients(_pidData.pidCoefficient[coeffizient_t::kP],
 								 _pidData.pidCoefficient[coeffizient_t::kI],
 								 _pidData.pidCoefficient[coeffizient_t::kD],
 								 getExecutionTime());
 
-		#ifdef PID_VALUES
-		LOGS(_pidData.pidCoefficient[coeffizient_t::kP]);
-		LOGS(_pidData.pidCoefficient[coeffizient_t::kI]);
-		LOGS(_pidData.pidCoefficient[coeffizient_t::kD]);
+		LOGGER_WARNING_FMT("PID coeff P = %f", _pidData.pidCoefficient[coeffizient_t::kP]);
+		LOGGER_WARNING_FMT("PID coeff I = %f", _pidData.pidCoefficient[coeffizient_t::kI]);
+		LOGGER_WARNING_FMT("PID coeff D = %f", _pidData.pidCoefficient[coeffizient_t::kD]);
 		delay(100);
-		#endif
-
-		#ifdef PID_VALUES_SERIAL
-		Serial3.print(_pidData.pidCoefficient[coeffizient_t::kP], 4);
-		Serial3.print(" | ");
-		Serial3.print(_pidData.pidCoefficient[coeffizient_t::kI], 4);
-		Serial3.print(" | ");
-		Serial3.println(_pidData.pidCoefficient[coeffizient_t::kD], 4);
-		delay(100);
-		#endif
-
 }//-------------------------------- end of activatePID --------------------------------------------
 
 	void setP( float p){
-		#ifdef PID_STATE
-		LOG("setP: %d",p);
-		#endif
 		_kP = p;
 		if(_kP <= PID_P_MIN)
 			_kP = PID_P_MIN;
 
 		_pidData.pidCoefficient[coeffizient_t::kP]=_kP;
-		Serial3.print("kP ");Serial3.println(_kP);
-
+		LOGGER_WARNING_FMT("Set P = %f - kP = %f" ,p, _kP);
 		enablePID();
-
 	}//-------------------------------- end of setP -----------------------------------------------
 
 	void setI( float i){
-		#ifdef PID_STATE
-		LOG("setI: %d",i);
-		#endif
 		_kI = i;
 		if(_kI <= 0)
 			_kI = 0;
 
 		_pidData.pidCoefficient[coeffizient_t::kI]=_kI;
-		Serial3.print("kI ");Serial3.println(_kI);
-
+		LOGGER_WARNING_FMT("Set I = %f - kI = %f" ,i, _kI);
 		enablePID();
-
 	}//-------------------------------- end of setI -----------------------------------------------
 
 	void setD( float d){
-		#ifdef PID_STATE
-		LOG("setD: %d",d);
-		#endif
 		_kD = d;
 		if(_kD <= 0)
 			_kD = 0;
 
 		_pidData.pidCoefficient[coeffizient_t::kD]=_kD;
-		Serial3.print("kD ");Serial3.println(_kD);
-
+		LOGGER_WARNING_FMT("Set D = %f - kD = %f", d, _kD);
 		enablePID();
-
 	}//-------------------------------- end of setD -----------------------------------------------
+	
 	void setExecutionFrequency(uint8_t ef){
-		#ifdef PID_STATE
-		LOG("setExecutionFrequency: %d", ef);
-		#endif
-
 		_pidData.executionFrequency = ef;
-		Serial3.print("Frequenz ");Serial3.println(ef);
-		
+		LOGGER_WARNING_FMT("EXE Freq. = %d", ef);		
 		enablePID();
-
 	}//-------------------------------- end of setExecutionFrequency ------------------------------
+	
 	uint8_t getExecutionTime(){
-		#ifdef PID_STATE
-		LOG("PID getExecutionTime %d", (1/_pidData.executionFrequency)*1000);
-		#endif
-
+		LOGGER_WARNING_FMT("PID getExecutionTime %d", (1/_pidData.executionFrequency)*1000);
 		return ((1.0/(float)_pidData.executionFrequency)*1000);
 		///< Convert frequency to millis
-
 	}//-------------------------------- end of getExecutionTime -----------------------------------
+	
 	void updateEEPROM(void){
 	//	EEPROM.put(_EEPROM_startAddress, _pidData);
 		enablePID();
-
 	}//-------------------------------- end of updateEEPROM ---------------------------------------
+	
 	void readEEPROM(void){
 	//	EEPROM.get(_EEPROM_startAddress,  _pidData);
 		enablePID();
-
 	}//-------------------------------- end of readEEPROM -----------------------------------------
+	
 	float getP() const {
 		return _kP;
 
 	}//-------------------------------- end of getP -----------------------------------------------
 	float getI() const {
 		return _kI;
-
 	}//-------------------------------- end of getI -----------------------------------------------
+	
 	float getD() const {
 		return _kD;
-
 	}//-------------------------------- end of getD -----------------------------------------------
+	
 	float getExFreq() const {
 		return _pidData.executionFrequency;
-
-	}//-------------------------------- end of getExTime ------------------------------------------
-
+	}//-------------------------------- end of getExFreq ------------------------------------------
 };	/*--------------------------------- end of pidController class ------------------------------*/
 
 
