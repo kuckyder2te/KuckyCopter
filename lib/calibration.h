@@ -7,6 +7,9 @@
 
 #include <Arduino.h>
 #include <TaskManager.h>
+#include <extEEPROM.h>
+#include "..\lib\pidController.h"
+//#include "..\lib\model.h"
 #include "..\lib\def.h"
 
 #include "myLogger.h"
@@ -33,12 +36,6 @@ typedef enum{               // Enumarations for menu
 #define	kI  20
 #define	kD  30
 #define	eF  40
-
-// typedef enum{
-// 	P = 0,
-// 	I,
-// 	D
-// }pid;
 
 // typedef struct {
 // 	float pidCoefficient[3];
@@ -272,8 +269,7 @@ public:
 
 		LOGGER_WARNING_FMT("New Factor = %f", _newFactor);
 
-	} 	/*----------------------------- end of setDecimalPlaces -----------------------*/
-
+	}/*----------------------------- end of setDecimalPlaces -----------------------*/
 	 /* Set the "PID Type",
 	  * e.g _itemAxis = 1 and _itemCoefficient = 20 ~ _pidType 21
 	  * Will say, it select the parameter for secondary axis and coefficient 'i'
