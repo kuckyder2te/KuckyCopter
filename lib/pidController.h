@@ -86,12 +86,12 @@ public:
 		LOGGER_WARNING_FMT("PID coeff I = %f ", _pidData.pidCoefficient[coeffizient_t::kI]);
 		LOGGER_WARNING_FMT("PID coeff D = %f ", _pidData.pidCoefficient[coeffizient_t::kD]);
 		delay(100);
-	}//-------------------------------- end of deactivatePID --------------------------------------
+	}//-------------------------------- end of disablePID --------------------------------------
 
 	void enablePID(){
-		/* This function has 2 tasks.
-		 * 1. The PID parameters are uploaded from the PID adjustment.
-		 * 2. The PID parameters are activated. */
+	/* This function has 2 tasks.
+	* 1. The PID parameters are uploaded from the PID adjustment.
+	* 2. The PID parameters are activated. */
 
 		LOGGER_WARNING_FMT("Enable PID controller %d ", _pidInstance);
 		delay(100);
@@ -105,7 +105,7 @@ public:
 		LOGGER_WARNING_FMT("PID coeff I = %f", _pidData.pidCoefficient[coeffizient_t::kI]);
 		LOGGER_WARNING_FMT("PID coeff D = %f", _pidData.pidCoefficient[coeffizient_t::kD]);
 		delay(100);
-}//-------------------------------- end of activatePID --------------------------------------------
+}//-------------------------------- end of enablePID --------------------------------------------
 
 	void setP( float p){
 		_kP = p;

@@ -56,9 +56,9 @@ typedef enum{
 	D
 }pid;
 
-//extern PIDcontroller pid_pri;
-//extern modules::MyPid myPID_sec;
-//extern modules::MyPid myPID_yaw;
+extern PIDcontroller pid_pri;
+extern PIDcontroller pid_sec;
+extern PIDcontroller pid_yaw;
 
 class Calibration : public Task::Base {
     bool b;         // Klassenvariable
