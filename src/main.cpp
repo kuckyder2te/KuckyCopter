@@ -34,9 +34,9 @@ model_t model;      /// Speicherplatz wird angelegt und instanziert
 UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
 
-PIDcontroller pid_pri(model.pidData[axis_t::Primary]);  	    ///< Enumerations show the context better.
-PIDcontroller pid_sec(model.pidData[axis_t::Secondary]);
-PIDcontroller pid_yaw(model.pidData[axis_t::YawAxis]);
+//PIDcontroller pid_pri(model.pidData[axis_t::Primary]);  	    ///< Enumerations show the context better.
+//PIDcontroller pid_sec(model.pidData[axis_t::Secondary]);
+//PIDcontroller pid_yaw(model.pidData[axis_t::YawAxis]);
 
 void setup() {
   LOGGER_NOTICE( "Program will initialized");
