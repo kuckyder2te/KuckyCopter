@@ -165,7 +165,6 @@ public:
 	
 	float getP() const {
 		return _kP;
-
 	}//-------------------------------- end of getP -----------------------------------------------
 	
 	float getI() const {
