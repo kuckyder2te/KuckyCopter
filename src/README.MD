@@ -18,6 +18,12 @@ Calibration Klasse eigefügt. Muss alle 100ms ausgeführt werden
 Stephans Logger Warning für die Calibration Klasse verwendet    
 
 !!! Wichtig:
-    Solange die Calibration Klasse getest wird, muss nach dem Haupt-Logo die "0" einmal gedrückt werden
+    Solange die Calibration Klasse getestet und ausgeführt wird,
+    muss nach dem Haupt-Logo die "0" einmal gedrückt werden   
 
-pidController.cpp    
+    The parameter P domain is [0.00390625 to 255] inclusive.
+    Last PID parameter
+    	P		I		D
+    Pri		0,14	0,18	0,102
+    Sec		0,14	0,18	0,102
+    Yaw		0,01	0		0
