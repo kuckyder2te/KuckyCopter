@@ -52,3 +52,16 @@
 #define PIN_LED_ALERT    8
 
 #define PIN_DALLAS      28
+
+//------ PID configuration begin --------------------
+// #define PID_FREQUENCY        50				///< PID parameter
+#define PID_P_MIN			  0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
+// #define PID_EEPROM_ADRRESS	 50
+// #define PID_ACTIVE_AT		  9
+// #define YAW_SENSIBILITY		  5
+// #define YAW_FINE_TUNING		  0.1
+//------ PID configuration end ----------------------
+
+#ifndef PID_EEPROM_ADRRESS
+#define PID_EEPROM_ADRRESS 50
+#endif
