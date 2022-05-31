@@ -11,7 +11,6 @@
 #include "..\lib\pidController.h"
 //#include "..\lib\model.h"
 #include "..\lib\def.h"
-
 #include "myLogger.h"
 typedef enum{               // Enumarations for menu
 	pri_P = 11,
@@ -103,7 +102,6 @@ public:
 		LOGGER_VERBOSE("...Leave");  
     }
 
-    // optional (you can remove this method)
     // virtual void enter() override {
     // }
 
