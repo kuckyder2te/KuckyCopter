@@ -41,8 +41,6 @@ protected:
 public:
     Sensor(const String& name) : Task::Base(name) {
         LOGGER_VERBOSE("Enter....");
-        // pinMode(GYRO_LED, OUTPUT);
-        // digitalWrite(GYRO_LED, LOW);
         LOGGER_VERBOSE("....leave");         
     }
 
