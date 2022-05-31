@@ -1,4 +1,9 @@
-/*  https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-python-sdk.pdf 
+#pragma once  
+/*  File name : radio.h
+	Autor: Wilhelm Kuckelsberg
+	Date: 2022-05-31 (2021.05.24)
+
+    https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-python-sdk.pdf 
     https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf
     https://www.youtube.com/watch?v=V4ziwen24Ps
 
@@ -6,8 +11,6 @@
         MOSI    19
         MISO    16
 */
-
-#pragma once
 
 #include <Arduino.h>
 #include <TaskManager.h>
@@ -181,4 +184,4 @@ public:
         }
     LOGGER_VERBOSE("....leave");
     } // end of update
-};  /*----------------------------- end of radio.h ------------------*/
+};  /*----------------------------- end of radio.h class ------------------*/
