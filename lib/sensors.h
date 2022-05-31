@@ -1,9 +1,9 @@
 #pragma once
-
 /*  File name: pidController.h
  *	Project name: KuCo_Phantom 1
  *  Date: 2022-005-28
  *  Author: Wilhelm Kuckelsberg
+ *  Description: Lage und Höhen Position
  */
  
 #include <Arduino.h>
@@ -15,7 +15,6 @@
 #include <Adafruit_BMP280.h>
 #include "..\lib\def.h"
 #include "myLogger.h"
-
 typedef struct {
     float  pitch;
     float  roll;
@@ -24,9 +23,7 @@ typedef struct {
     float _pressure;        //  BMP280 values
     float _altitude;
     float _temperature_baro;
-}sensorData_t;
-
-    
+}sensorData_t; 
 class Sensor : public Task::Base {
     //Klasssenvarialblen
     float _aX, _aY, _aZ, _aSqrt, _gX, _gY, _gZ, _mDirection, _mX, _mY, _mZ; // MPU9520 values
@@ -64,21 +61,20 @@ public:
         _bmp280 = new Adafruit_BMP280(); // Adresse in Variable// Adresse in Variable speichern
         LOGGER_NOTICE("End init BMP280");
 
-            _bmp280->begin(0x76);
-            _mpu9250->beginAccel();
-            _mpu9250->beginGyro();
-            _mpu9250->beginMag();
+        _bmp280->begin(0x76);
+        _mpu9250->beginAccel();
+        _mpu9250->beginGyro();
+        _mpu9250->beginMag();
 
-            // You can set your own offset for mag values
-            // _mpu9250->magXOffset = -50;
-            // _mpu9250->magYOffset = -55;
-            // _mpu9250->magZOffset = -10;
+        // You can set your own offset for mag values
+        // _mpu9250->magXOffset = -50;
+        // _mpu9250->magYOffset = -55;
+        // _mpu9250->magZOffset = -10;
 
         LOGGER_VERBOSE("....leave");   
     }   /* ------------------ end of begin --------------------------------------------*/
 
     virtual void enter() override {
-
 
     LOGGER_VERBOSE("Enter....");
 

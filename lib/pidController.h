@@ -1,5 +1,9 @@
 #pragma once
-
+/*  File name : pidController.h
+	Autor: Wilhelm Kuckelsberg
+	Date: 2022-05-31 (2021.05.24)
+	Description: PID Controller wird kalibriert
+*/
 
 #include <TaskManager.h>
 #include <FastPID.h>
@@ -47,8 +51,6 @@ public:
 		disablePID();
     LOGGER_VERBOSE("....leave");
     }
-
-
 
     virtual ~PidController() {}
 

@@ -1,4 +1,10 @@
 #pragma once
+/*  File name: sonic.h
+ *	Project name: KuCo_Phantom 1
+ *  Date: 2022-05-28
+ *  Author: Wilhelm Kuckelsberg
+ *  Description: Niederflug Messung
+ */
 
 #include <Arduino.h>
 #include <TaskManager.h>
@@ -15,7 +21,6 @@ typedef struct{
     float temperature;
     double distance;
 }sonicData_t;
-
 class Sonic : public Task::Base {
     bool b;         // Klassenvariable
 
@@ -57,4 +62,4 @@ public:
         LOGGER_NOTICE_FMT("Distance: %.2f cm", _distanceSensor->measureDistanceCm());
         LOGGER_VERBOSE("....leave");
     }
-};/*----------------------------------- end of sonic class ----------------------------*/
+};/*----------------------------------- end of sonic.h class ----------------------------*/
