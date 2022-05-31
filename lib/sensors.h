@@ -287,7 +287,5 @@ public:
     //     LOGGER_NOTICE_FMT("Roll %.2f", roll);
 
     // LOGGER_VERBOSE("....leave");
-    
-    // } /* ---------------------------- end of MadgwickQuaternionUpdate filter ----------*/
-    
+    // } /* ---------------------------- end of MadgwickQuaternionUpdate filter ----------*/  
 };  /*----------------------------------- end of sensor.h class -----------------------*/
