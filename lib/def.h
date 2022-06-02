@@ -21,7 +21,7 @@
 #define TASK_LED 19  // Red
 
 //------ Environment begin -------
-#define COM_SPEED 115200
+#define COM_SPEED 9600
 #define BT_SPEED    9600
 #define PUTTY_ROW			 45
 #define PUTTY_COL  			124
