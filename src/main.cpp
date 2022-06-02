@@ -24,6 +24,7 @@
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
 #include "..\lib\pidController.h"
+#include "..\lib\calibration.h"
 
 #include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
@@ -33,9 +34,9 @@
 model_t model;      /// Speicherplatz wird angelegt und instanziert
 UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
-//PIDcontroller pid_pri(model.pidData[axis_t::Primary]);  	    ///< Enumerations show the context better.
-//PIDcontroller pid_sec(model.pidData[axis_t::Secondary]);
-//PIDcontroller pid_yaw(model.pidData[axis_t::YawAxis]);
+PidController pid_pri(model.pidData[axis_t::Primary]);  	    ///< Enumerations show the context better.
+PidController pid_sec(model.pidData[axis_t::Secondary]);
+PidController pid_yaw(model.pidData[axis_t::YawAxis]);
 
 void setup() {
   LOGGER_NOTICE( "Program will initialized");
@@ -60,21 +61,18 @@ void setup() {
 #endif
   LOGGER_VERBOSE("Enter....");
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
-  //Tasks.add<Gyro>("gyro")->setModel(&model.gyroData)->startFps(1); // Übergabe des models in das objekt Sensor
-  //Tasks.add<Baro>("baro")->setModel(&model.baroData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
-    Tasks.add<PidController>("pidController")->setModel(&model.pidData[3])->startFps(1);
-
-    Tasks.add<Battery>("Battery")->startFps(1);
-      
+    //Tasks.add<PidController>("pidController")->setModel(&model.pidData[3])->startFps(1);
+    Tasks.add<Calibration>("calbration")->startFps(100);
+    Tasks.add<Battery>("Battery")->startFps(1);    
     Tasks.add<Radio>("radio")->startFps(1);
-
     LOGGER_NOTICE( "Program is initialized");
   LOGGER_VERBOSE("....leave"); 
 }
 
 void loop() {
   LOGGER_VERBOSE("loop has begun");
+  Serial.println("loop has begun Serial");
   
   //  unsigned long enter = micros();
     Tasks.update();

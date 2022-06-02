@@ -27,3 +27,10 @@ Stephans Logger Warning für die Calibration Klasse verwendet
     Pri		0,14	0,18	0,102
     Sec		0,14	0,18	0,102
     Yaw		0,01	0		0
+
+    Als nächstes:
+    calibration Zeile 355  pid_pri.setP(((_model->pidData[axis_t::Pr
+                        -model nicht gefunden
+
+    # Fixes
+    ## Fix 1    2022-06-01  Komplierfähiger Code, nach dem flash keine COM Ausgabe   
