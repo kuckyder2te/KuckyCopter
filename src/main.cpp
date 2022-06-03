@@ -34,10 +34,6 @@
 model_t model;      /// Speicherplatz wird angelegt und instanziert
 UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
-PidController pid_pri(model.pidData[axis_t::Primary]);  	    ///< Enumerations show the context better.
-PidController pid_sec(model.pidData[axis_t::Secondary]);
-PidController pid_yaw(model.pidData[axis_t::YawAxis]);
-
 void setup() {
   LOGGER_NOTICE( "Program will initialized");
     model.performance.min_loop_time = 9999999999LL;
@@ -72,7 +68,6 @@ void setup() {
 
 void loop() {
   LOGGER_VERBOSE("loop has begun");
-  Serial.println("loop has begun Serial");
   
   //  unsigned long enter = micros();
     Tasks.update();
@@ -81,14 +76,14 @@ void loop() {
   //  Serial.print("/*");Serial.print(model.sensorData.yaw);Serial.print(",");  /// eigenen monitor als Klasse erzeugen
   //                     Serial.print(model.sensorData.roll);Serial.print(",");
   //                     Serial.print(model.sensorData.pitch);Serial.print(",");Serial.println("*/");
-    // Serial.print(model.performance.min_loop_time);Serial.print(",");
-    // Serial.print(model.performance.max_loop_time);Serial.print(",");
-    // Serial.print(model.performance.last_loop_time);Serial.println("*/");
-//   delay(2000);
-    // model.performance.last_loop_time = micros() - enter;
-    // if(model.performance.last_loop_time > model.performance.max_loop_time)
-    //   model.performance.max_loop_time = model.performance.last_loop_time;
-    // if(model.performance.last_loop_time < model.performance.min_loop_time)
-    //   model.performance.min_loop_time = model.performance.last_loop_time;
+  //  Serial.print(model.performance.min_loop_time);Serial.print(",");
+  //  Serial.print(model.performance.max_loop_time);Serial.print(",");
+  //  Serial.print(model.performance.last_loop_time);Serial.println("*/");
+  //   delay(2000);
+  //  model.performance.last_loop_time = micros() - enter;
+  //  if(model.performance.last_loop_time > model.performance.max_loop_time)
+  //    model.performance.max_loop_time = model.performance.last_loop_time;
+  //  if(model.performance.last_loop_time < model.performance.min_loop_time)
+  //    model.performance.min_loop_time = model.performance.last_loop_time;
   LOGGER_VERBOSE("Loop completed successfully");
 }

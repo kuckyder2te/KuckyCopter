@@ -50,10 +50,6 @@ typedef enum{
 	D
 }pid;
 
-extern PidController pid_pri;
-extern PidController pid_sec;
-extern PidController pid_yaw;
-
 class Calibration : public Task::Base {
     bool b;         // Klassenvariable
     uint8_t _itemAxis;
@@ -62,17 +58,23 @@ class Calibration : public Task::Base {
     float   _newFactor = 0.1;	///< Multiplication factor for the PID coefficients, default setting.
 	double  _factor;
 
-	float _X_kP_value;
-	float _X_kI_value;
-	float _X_kD_value;
-	float _Y_kP_value;
-	float _Y_kI_value;
-	float _Y_kD_value;
-	float _Z_kP_value;
-	float _Z_kI_value;
-	float _Z_kD_value;
+	float _x_kP;
+	float _x_kI;
+	float _x_kD;
+	float _x_eF;
+	float _y_kP;
+	float _y_kI;
+	float _y_kD;
+	float _y_eF;
+	float _z_kP;
+	float _z_kI;
+	float _z_kD;
+	float _z_eF;
 
 protected:
+	PidController *_pid_pri;
+	PidController *_pid_sec;
+	PidController *_pid_yaw;
 
 public:
     Calibration(const String& name) : Task::Base(name){
@@ -100,32 +102,32 @@ public:
             char key = Serial2.read();
 			switch(key){
 				case 'x':	
-					LOGGER_WARNING_FMT("primaty axis is select = %d", itemAxis_t::axis_pri);												///< Choose the axes
+//					LOGGER_WARNING_FMT("primaty axis is select = %d", itemAxis_t::axis_pri);												///< Choose the axes
 					setItemAxis(itemAxis_t::axis_pri);
 					break;
 				case 'y':
-					LOGGER_WARNING_FMT("secundary axis is select = %d", axis_sec);	
+//					LOGGER_WARNING_FMT("secundary axis is select = %d", axis_sec);	
 					setItemAxis(itemAxis_t::axis_sec);
 					break;
 				case 'z':
-					LOGGER_WARNING_FMT("YAW axis is select = %d", itemAxis_t::axis_yaw);	
+//					LOGGER_WARNING_FMT("YAW axis is select = %d", itemAxis_t::axis_yaw);	
 					setItemAxis(itemAxis_t::axis_yaw);
 					break;
 
 				case 'p':													///< Choose the PID Coefficient				
-					LOGGER_WARNING_FMT("kP is select = %d", kP);
+//					LOGGER_WARNING_FMT("kP is select = %d", kP);
 					setItemCoefficient(kP);
 					break;
 				case 'i':
-					LOGGER_WARNING_FMT("kI is select =%d", kI);
+//					LOGGER_WARNING_FMT("kI is select =%d", kI);
 					setItemCoefficient(kI);					
 					break;
 				case 'd':
-					LOGGER_WARNING_FMT("kD is select =%d", kD);
+//					LOGGER_WARNING_FMT("kD is select =%d", kD);
 					setItemCoefficient(kD);
 					break;
 				case 'e':
-					LOGGER_WARNING_FMT("eF is select = %d", eF);
+//					LOGGER_WARNING_FMT("eF is select = %d", eF);
 					setItemCoefficient(eF);
 					break;
 
@@ -163,41 +165,41 @@ public:
 	//				pid_yaw.readEEPROM();
 			 	break;
 				case 'a':							///< Set all PID parameters to 0
-	 				pid_pri.setP(PID_P_MIN);
-					pid_pri.setI(0);
-					pid_pri.setD(0);
-					pid_pri.setExecutionFrequency(50);
-					pid_sec.setP(PID_P_MIN);
-					pid_sec.setI(0);
-					pid_sec.setD(0);
-					pid_sec.setExecutionFrequency(50);
-					pid_yaw.setP(PID_P_MIN);
-					pid_yaw.setI(0);
-					pid_yaw.setD(0);
-					pid_yaw.setExecutionFrequency(50);	
+	 				 _pid_pri->setP(PID_P_MIN);
+					// pid_pri.setI(0);
+					// pid_pri.setD(0);
+					// pid_pri.setExecutionFrequency(50);
+					// pid_sec.setP(PID_P_MIN);
+					// pid_sec.setI(0);
+					// pid_sec.setD(0);
+					// pid_sec.setExecutionFrequency(50);
+					// pid_yaw.setP(PID_P_MIN);
+					// pid_yaw.setI(0);
+					// pid_yaw.setD(0);
+					// pid_yaw.setExecutionFrequency(50);	
 					displayPIDcoefficients();
 					break;
 
-				case 'g':							///< get factory default
-	 				pid_pri.setP(0.2);
-					pid_pri.setI(0.041);
-					pid_pri.setD(0.1);
-					pid_pri.setExecutionFrequency(50);
-					pid_sec.setP(0.2);
-					pid_sec.setI(0.041);
-					pid_sec.setD(0.1);
-					pid_sec.setExecutionFrequency(50);
-					pid_yaw.setP(0.2);
-					pid_yaw.setI(0.01);
-					pid_yaw.setD(0);
-					pid_yaw.setExecutionFrequency(50);	
+				case 'g':	//< get factory default
+	 				// pid_pri.setP(0.2);
+					// pid_pri.setI(0.041);
+					// pid_pri.setD(0.1);
+					// pid_pri.setExecutionFrequency(50);
+					// pid_sec.setP(0.2);
+					// pid_sec.setI(0.041);
+					// pid_sec.setD(0.1);
+					// pid_sec.setExecutionFrequency(50);
+					// pid_yaw.setP(0.2);
+					// pid_yaw.setI(0.01);
+					// pid_yaw.setD(0);
+					// pid_yaw.setExecutionFrequency(50);	
 					displayPIDcoefficients();
 					break;
 
-				case 'c':	///< Copies the primary values to the secondary axis
-					pid_sec.setP(pid_pri.getP());
-					pid_sec.setI(pid_pri.getI());
-					pid_sec.setD(pid_pri.getD());				
+				case 'c':	//< Copies the primary values to the secondary axis
+					// pid_sec.setP(pid_pri.getP());
+					// pid_sec.setI(pid_pri.getI());
+					// pid_sec.setD(pid_pri.getD());				
 					break;
 
 				case 'm':
@@ -259,7 +261,7 @@ public:
 	uint8_t getPidType(bool up) {   /// const deleted
 
 		_pidType = _itemAxis + _itemCoefficient;
-		LOGGER_WARNING_FMT("PID Type = %d", _pidType);
+//		LOGGER_WARNING_FMT("PID Type = %d", _pidType);
 
 		if(_pidType < 40){			///< P, I and D
 
@@ -297,61 +299,85 @@ public:
 		switch(type){
 
 		case pidTyp_t::pri_P:
-			_X_kP_value += _factor;
-			LOGGER_WARNING_FMT("_X_kP_value = %f", _X_kP_value);
+			_x_kP += _factor;
+			LOGGER_WARNING_FMT("X kP = %f", _x_kP);
+			Serial2.println(_x_kP);
 	//		pid_pri.setP(((_model->pidData[axis_t::Primary].pidCoefficient[pid::P]) += _factor));
+//			_pid_pri->setP(_x_kP);
 			break;
 		case pidTyp_t::pri_I:
-			_X_kI_value += _factor;
-			LOGGER_WARNING_FMT("_X_kI_value = %f", _X_kI_value);
+			_x_kI += _factor;
+			LOGGER_WARNING_FMT("X kI = %f", _x_kI);
+			Serial2.println(_x_kI);
 //			pid_pri.setI(((_model->pidData[axis_t::Primary].pidCoefficient[pid::I]) += _factor));
+//			_pid_pri->setI(_x_kI);
 			break;
 		case pidTyp_t::pri_D:
-			_X_kD_value += _factor;
-			LOGGER_WARNING_FMT("_X_kD_value = %f", _X_kD_value);
+			_x_kD += _factor;
+			LOGGER_WARNING_FMT("X kD = %f", _x_kD);
+			Serial2.println(_x_kD);
 //			pid_pri.setD(((_model->pidData[axis_t::Primary].pidCoefficient[pid::D]) += _factor));
+//			_pid_pri->setD(_x_kD);
 			break;
 
 		case pidTyp_t::sec_P:
-			_Y_kP_value += _factor;
-			LOGGER_WARNING_FMT("_Y_kP_value = %f", _Y_kP_value);
+			_y_kP += _factor;
+			LOGGER_WARNING_FMT("Y kP = %f", _y_kP);
 //			pid_sec.setP(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::P]) += _factor));
+//			_pid_sec->setP(_y_kP);
 			break;
+
 		case pidTyp_t::sec_I:
-			_Y_kI_value += _factor;
-			LOGGER_WARNING_FMT("_Y_kI_value = %f", _Y_kI_value);
+			_y_kI += _factor;
+			LOGGER_WARNING_FMT("Y kI = %f", _y_kI);
 //			pid_sec.setI(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::I]) += _factor));
+//			_pid_sec->setI(_y_kI);
 			break;
+
 		case pidTyp_t::sec_D:
-			_Y_kD_value += _factor;
-			LOGGER_WARNING_FMT("_Y_kD_value = %f", _Y_kD_value);
+			_y_kD += _factor;
+			LOGGER_WARNING_FMT("Y kD = %f", _y_kD);
 //			pid_sec.setD(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::D]) += _factor));
+//			_pid_sec->setD(_y_kD);			
 			break;
 
 		case pidTyp_t::yaw_P:
-			_Z_kP_value += _factor;
-			LOGGER_WARNING_FMT("_Z_kP_value = %f", _Z_kP_value);
+			_z_kP += _factor;
+			LOGGER_WARNING_FMT("Z kP = %f", _z_kP);
 //			pid_yaw.setP(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::P]) += _factor));
+//			_pid_yaw->setD(_z_kP);
 			break;
+
 		case pidTyp_t::yaw_I:
-			_Z_kI_value += _factor;
-			LOGGER_WARNING_FMT("_Z_kI_value = %f", _Z_kI_value);
+			_z_kI += _factor;
+			LOGGER_WARNING_FMT("Z kI = %f", _z_kI);
 //			pid_yaw.setI(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::I]) += _factor));
+//			_pid_yaw->setI(_z_kI);
 			break;
 		case pidTyp_t::yaw_D:
-			_Z_kD_value += _factor;
-			LOGGER_WARNING_FMT("_Z_kD_value = %f", _Z_kD_value);
+			_z_kD += _factor;
+			LOGGER_WARNING_FMT("Z kD = %f", _z_kD);
 //			pid_yaw.setD(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::D]) += _factor));
+//			_pid_yaw->setD(_z_kD);
 			break;
 
 		case pidTyp_t::pri_ef:
-//			pid_pri.setExecutionFrequency(((_model->pidData[axis_t::Primary].executionFrequency) += _factor));
+			_x_eF += _factor;
+			LOGGER_WARNING_FMT("x eF = %f", _x_eF);
+//			_pid_pri->setExecutionFrequency(((_model->pidData[axis_t::Primary].executionFrequency) += _factor));
+//			_pid_pri->setExecutionFrequency(_x_eF);
 			break;
 		case pidTyp_t::sec_ef:
+			_y_eF += _factor;
+			LOGGER_WARNING_FMT("y eF = %f", _y_eF);
 //			pid_sec.setExecutionFrequency(((_model->pidData[axis_t::Secondary].executionFrequency) += _factor));
+//			_pid_sec->setExecutionFrequency(_y_eF);
 			break;
 		case pidTyp_t::yaw_ef:
+			_z_eF += _factor;
+			LOGGER_WARNING_FMT("z eF = %f", _z_eF);
 //			pid_yaw.setExecutionFrequency(((_model->pidData[axis_t::YawAxis].executionFrequency) += _factor));
+//			_pid_yaw->setExecutionFrequency(_z_eF);
 			break;
 		} /* end of switch */
 	}// end of select

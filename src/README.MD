@@ -34,3 +34,9 @@ Stephans Logger Warning für die Calibration Klasse verwendet
 
     # Fixes
     ## Fix 1    2022-06-01  Komplierfähiger Code, nach dem flash keine COM Ausgabe   
+    ## Fix 2            03  Code wird wieder mit allen Instanzen aufgeführt.
+                            hängt aber hier : 	case pidTyp_t::pri_P:
+			                                    _x_kP += _factor;
+			                                    LOGGER_WARNING_FMT("X kP = %f", _x_kP);
+			                                    _pid_pri->setP(_x_kP);
+                                                Y kP = 20505159319395510517760.000000
