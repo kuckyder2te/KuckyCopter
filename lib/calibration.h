@@ -58,18 +58,18 @@ class Calibration : public Task::Base {
     float   _newFactor = 0.1;	///< Multiplication factor for the PID coefficients, default setting.
 	double  _factor;
 
-	float _x_kP;
-	float _x_kI;
-	float _x_kD;
-	float _x_eF;
-	float _y_kP;
-	float _y_kI;
-	float _y_kD;
-	float _y_eF;
-	float _z_kP;
-	float _z_kI;
-	float _z_kD;
-	float _z_eF;
+	float _x_kP=0;
+	float _x_kI=0;
+	float _x_kD=0;
+	float _x_eF=0;
+	float _y_kP=0;
+	float _y_kI=0;
+	float _y_kD=0;
+	float _y_eF=0;
+	float _z_kP=0;
+	float _z_kI=0;
+	float _z_kD=0;
+	float _z_eF=0;
 
 protected:
 	PidController *_pid_pri;
