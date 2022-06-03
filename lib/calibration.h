@@ -290,6 +290,13 @@ public:
 		select(getPidType(false));
     }/*----------------------------- end of coefficient_Down --------------------------*/
 
+	bool checkValue(float a){
+		if(a >= 0)
+			return true;
+		else
+			return false;
+	}/*----------------------------- end of checkValue --------------------------------*/
+
     /* Here you sets the real coefficient into the model, and print it into the GUI. +/- _factor
 	   like this: Pri. P = 2.20 
 	*/
@@ -300,87 +307,108 @@ public:
 
 		case pidTyp_t::pri_P:
 			_x_kP += _factor;
-			LOGGER_WARNING_FMT("X kP = %f", _x_kP);
-			Serial2.println(_x_kP);
-	//		pid_pri.setP(((_model->pidData[axis_t::Primary].pidCoefficient[pid::P]) += _factor));
-//			_pid_pri->setP(_x_kP);
+			if(checkValue(_x_kP)){
+				LOGGER_WARNING_FMT("X kP = %f", _x_kP);
+		//		pid_pri.setP(((_model->pidData[axis_t::Primary].pidCoefficient[pid::P]) += _factor));
+	//			_pid_pri->setP(_x_kP);
+			}
 			break;
 		case pidTyp_t::pri_I:
 			_x_kI += _factor;
-			LOGGER_WARNING_FMT("X kI = %f", _x_kI);
-			Serial2.println(_x_kI);
-//			pid_pri.setI(((_model->pidData[axis_t::Primary].pidCoefficient[pid::I]) += _factor));
-//			_pid_pri->setI(_x_kI);
+			if(checkValue(_x_kI)){
+				LOGGER_WARNING_FMT("X kI = %f", _x_kI);
+	//			pid_pri.setI(((_model->pidData[axis_t::Primary].pidCoefficient[pid::I]) += _factor));
+	//			_pid_pri->setI(_x_kI);
+			}
 			break;
 		case pidTyp_t::pri_D:
 			_x_kD += _factor;
-			LOGGER_WARNING_FMT("X kD = %f", _x_kD);
-			Serial2.println(_x_kD);
-//			pid_pri.setD(((_model->pidData[axis_t::Primary].pidCoefficient[pid::D]) += _factor));
-//			_pid_pri->setD(_x_kD);
+			if(checkValue(_x_kD)){
+				LOGGER_WARNING_FMT("X kD = %f", _x_kD);
+	//			pid_pri.setD(((_model->pidData[axis_t::Primary].pidCoefficient[pid::D]) += _factor));
+	//			_pid_pri->setD(_x_kD);
+			}
 			break;
 
 		case pidTyp_t::sec_P:
 			_y_kP += _factor;
-			LOGGER_WARNING_FMT("Y kP = %f", _y_kP);
-//			pid_sec.setP(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::P]) += _factor));
-//			_pid_sec->setP(_y_kP);
+			if(checkValue(_y_kP)){
+				LOGGER_WARNING_FMT("Y kP = %f", _y_kP);
+	//			pid_sec.setP(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::P]) += _factor));
+	//			_pid_sec->setP(_y_kP);
+			}
 			break;
 
 		case pidTyp_t::sec_I:
 			_y_kI += _factor;
-			LOGGER_WARNING_FMT("Y kI = %f", _y_kI);
-//			pid_sec.setI(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::I]) += _factor));
-//			_pid_sec->setI(_y_kI);
+			if(checkValue(_y_kI)){
+				LOGGER_WARNING_FMT("Y kI = %f", _y_kI);
+	//			pid_sec.setI(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::I]) += _factor));
+	//			_pid_sec->setI(_y_kI);
+			}
 			break;
 
 		case pidTyp_t::sec_D:
 			_y_kD += _factor;
-			LOGGER_WARNING_FMT("Y kD = %f", _y_kD);
-//			pid_sec.setD(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::D]) += _factor));
-//			_pid_sec->setD(_y_kD);			
+			if(checkValue(_y_kD)){
+				LOGGER_WARNING_FMT("Y kD = %f", _y_kD);
+	//			pid_sec.setD(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::D]) += _factor));
+	//			_pid_sec->setD(_y_kD);	
+			}
 			break;
 
 		case pidTyp_t::yaw_P:
 			_z_kP += _factor;
-			LOGGER_WARNING_FMT("Z kP = %f", _z_kP);
-//			pid_yaw.setP(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::P]) += _factor));
-//			_pid_yaw->setD(_z_kP);
+			if(checkValue(_z_kP)){
+				LOGGER_WARNING_FMT("Z kP = %f", _z_kP);
+	//			pid_yaw.setP(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::P]) += _factor));
+	//			_pid_yaw->setD(_z_kP);
+			}
 			break;
 
 		case pidTyp_t::yaw_I:
 			_z_kI += _factor;
-			LOGGER_WARNING_FMT("Z kI = %f", _z_kI);
-//			pid_yaw.setI(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::I]) += _factor));
-//			_pid_yaw->setI(_z_kI);
+			if(checkValue(_z_kI)){
+				LOGGER_WARNING_FMT("Z kI = %f", _z_kI);
+	//			pid_yaw.setI(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::I]) += _factor));
+	//			_pid_yaw->setI(_z_kI);
+			}
 			break;
 		case pidTyp_t::yaw_D:
 			_z_kD += _factor;
-			LOGGER_WARNING_FMT("Z kD = %f", _z_kD);
-//			pid_yaw.setD(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::D]) += _factor));
-//			_pid_yaw->setD(_z_kD);
+			if(checkValue(_z_kD)){
+				LOGGER_WARNING_FMT("Z kD = %f", _z_kD);
+	//			pid_yaw.setD(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::D]) += _factor));
+	//			_pid_yaw->setD(_z_kD);
+			}
 			break;
 
 		case pidTyp_t::pri_ef:
 			_x_eF += _factor;
-			LOGGER_WARNING_FMT("x eF = %f", _x_eF);
-//			_pid_pri->setExecutionFrequency(((_model->pidData[axis_t::Primary].executionFrequency) += _factor));
-//			_pid_pri->setExecutionFrequency(_x_eF);
+			if(checkValue(_x_eF)){
+				LOGGER_WARNING_FMT("x eF = %f", _x_eF);
+	//			_pid_pri->setExecutionFrequency(((_model->pidData[axis_t::Primary].executionFrequency) += _factor));
+	//			_pid_pri->setExecutionFrequency(_x_eF);
+			}
 			break;
 		case pidTyp_t::sec_ef:
 			_y_eF += _factor;
-			LOGGER_WARNING_FMT("y eF = %f", _y_eF);
-//			pid_sec.setExecutionFrequency(((_model->pidData[axis_t::Secondary].executionFrequency) += _factor));
-//			_pid_sec->setExecutionFrequency(_y_eF);
+			if(checkValue(_y_eF)){
+				LOGGER_WARNING_FMT("y eF = %f", _y_eF);
+	//			pid_sec.setExecutionFrequency(((_model->pidData[axis_t::Secondary].executionFrequency) += _factor));
+	//			_pid_sec->setExecutionFrequency(_y_eF);
+			}
 			break;
 		case pidTyp_t::yaw_ef:
 			_z_eF += _factor;
-			LOGGER_WARNING_FMT("z eF = %f", _z_eF);
-//			pid_yaw.setExecutionFrequency(((_model->pidData[axis_t::YawAxis].executionFrequency) += _factor));
-//			_pid_yaw->setExecutionFrequency(_z_eF);
+			if(checkValue(_z_eF)){
+				LOGGER_WARNING_FMT("z eF = %f", _z_eF);
+	//			pid_yaw.setExecutionFrequency(((_model->pidData[axis_t::YawAxis].executionFrequency) += _factor));
+	//			_pid_yaw->setExecutionFrequency(_z_eF);
+			}
 			break;
 		} /* end of switch */
-	}// end of select
+	}/*----------------------------- end of select ------------------------------------*/
 
 	void display_Menu() {
 	LOGGER_WARNING("Enter....");
