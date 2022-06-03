@@ -39,4 +39,7 @@ Stephans Logger Warning für die Calibration Klasse verwendet
 			                                    _x_kP += _factor;
 			                                    LOGGER_WARNING_FMT("X kP = %f", _x_kP);
 			                                    _pid_pri->setP(_x_kP);
-                                                Y kP = 20505159319395510517760.000000
+                                                Y kP = 20505159319395510517760.000000 gefixt
+    ## Fix 3                PID values mit 0 initialisiert    
+                2022-06-03  Verhindern, dass PID Werte nicht <0 werden. gefixt:
+    ## Fix 4                                                   
