@@ -3,7 +3,7 @@
     Date : 2022-04-23
 
     Description : Drohne
-    Hardware : Raspberry Pi Pico
+    Hardware : Raspberry Pi Pico 2020
                Gyro : MPU9250
                Baro : BMP280
                Radio : NRF24
@@ -23,7 +23,8 @@
 #include "..\lib\sonic.h"
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
-#include "..\lib\pidController.h"
+//#include "..\lib\pidController.h"
+#include "..\lib\pidNew.h"
 #include "..\lib\calibration.h"
 
 #include "..\lib\myLogger.h"
@@ -58,13 +59,13 @@ void setup() {
   LOGGER_VERBOSE("Enter....");
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
-    //Tasks.add<PidController>("pidController")->setModel(&model.pidData[3])->startFps(1);
-    Tasks.add<Calibration>("calbration")->startFps(100);
-    Tasks.add<Battery>("Battery")->startFps(1);    
+    Tasks.add<NewPID>("newpid")->startFps(1);
+    Tasks.add<Calibration>("calbration")->setModel(&model.pidData[3])->startFps(100);
+    Tasks.add<Battery>("battery")->startFps(1);    
     Tasks.add<Radio>("radio")->startFps(1);
     LOGGER_NOTICE( "Program is initialized");
   LOGGER_VERBOSE("....leave"); 
-}
+}/*-------------------- end of setup ------------------------------------------*/
 
 void loop() {
   LOGGER_VERBOSE("loop has begun");
@@ -86,4 +87,4 @@ void loop() {
   //  if(model.performance.last_loop_time < model.performance.min_loop_time)
   //    model.performance.min_loop_time = model.performance.last_loop_time;
   LOGGER_VERBOSE("Loop completed successfully");
-}
+}/*-------------------- end of loop ------------------------------------------*/
