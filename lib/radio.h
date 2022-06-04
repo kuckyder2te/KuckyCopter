@@ -15,7 +15,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <RF24.h>
-#include <def.h>
+#include "..\lib\def.h"
 #include "myLogger.h"
 #include <printf.h>
 
@@ -37,7 +37,7 @@ typedef struct{
 
 //arduino::MbedSPI SPI(16,19,18);
 // Singleton instance of the radio driver
-//RH_NRF24 nrf24(PIN_RADIO_CE, PIN_RADIO_CSN);   // CE, CSN
+// RH_NRF24 nrf24(PIN_RADIO_CE, PIN_RADIO_CSN);   // CE, CSN
 // RH_NRF24 nrf24(8, 7); // use this to be electrically compatible with Mirf
 // RH_NRF24 nrf24(8, 10);// For Leonardo, need explicit SS pin
 // RH_NRF24 nrf24(8, 7); // For RFM73 on Anarduino Mini
@@ -124,7 +124,7 @@ public:
         _radio->printPrettyDetails(); // (larger) function that prints human readable data
  
         LOGGER_VERBOSE("..,.leave");    
-    } // end of begin
+    } // ----------------------------- end of begin ----------------------------------*/
 
     // optional (you can remove this method)
     // virtual void enter() override {
@@ -183,5 +183,5 @@ public:
             }
         }
     LOGGER_VERBOSE("....leave");
-    } // end of update
+    } // ------------------- end of update --------------------------------------*/
 };  /*----------------------------- end of radio.h class ------------------*/

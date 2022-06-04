@@ -9,17 +9,17 @@ Battery Klasse noch nicht Hardware getestet
 
 BMP280 Werte werden wohl nicht korrekt ausgelesen. Adresse ??
 
-MadgwickQuaternionUpdate eingefügt, noch nicht getestet
+MadgwickQuaternionUpdate eingefügt, noch nicht getestet. Entfernt
 
-Calibration Klasse eigefügt. Muss alle 100ms ausgeführt werden
+Calibration Klasse eingefügt. Muss alle 100ms ausgeführt werden
     Noch keine weiterleitung an GUI Klasse
-    Befehle werden icht an GUI weiter geleitet. Wahscheilich liegstam PUTTY Code
+    Befehle werden nicht an GUI weiter geleitet. Wahrscheilich liegt es am PUTTY Code
 
 Stephans Logger Warning für die Calibration Klasse verwendet    
 
 !!! Wichtig:
     Solange die Calibration Klasse getestet und ausgeführt wird,
-    muss nach dem Haupt-Logo die "0" einmal gedrückt werden   
+    muss nach dem Haupt-Logo die "0" einmal gedrückt werden um den NRF zu aktivieren 
 
     The parameter P domain is [0.00390625 to 255] inclusive.
     Last PID parameter
@@ -42,4 +42,6 @@ Stephans Logger Warning für die Calibration Klasse verwendet
                                                 Y kP = 20505159319395510517760.000000 gefixt
     ## Fix 3                PID values mit 0 initialisiert    
                 2022-06-03  Verhindern, dass PID Werte nicht <0 werden. gefixt:
-    ## Fix 4                                                   
+    ## Fix 4    2022-06-04  pidNew.h eingefügt und pidController.h entfernt
+                            FastPID als Objekt eingefügt. 
+                            Code wird ausgeführt. Die Eingabe der PID Werte muss noch geändert werden                                               
