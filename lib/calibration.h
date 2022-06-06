@@ -150,14 +150,14 @@ public:
 
 				case 's':							///< Saved all coefficients into the EEPROM
 					_pid_pri->updateEEPROM();
-	//				_pid_sec->updateEEPROM();
-	//				_pid_yaw->updateEEPROM();
+					_pid_sec->updateEEPROM();
+					_pid_yaw->updateEEPROM();
 					displayPIDcoefficients();
 					break;
 				case 'r':							///< Reads all coefficients from the EEPROM
-	//				_pid_pri->readEEPROM();
-	//				_pid_sec->readEEPROM();
-	//				_pid_yaw->readEEPROM();
+					_pid_pri->readEEPROM();
+					_pid_sec->readEEPROM();
+					_pid_yaw->readEEPROM();
 			 	break;
 				case 'a':							///< Set all PID parameters to 0
 	 				_pid_pri->setP(PID_P_MIN);
