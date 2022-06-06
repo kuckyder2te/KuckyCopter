@@ -47,4 +47,5 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
                             Code wird ausgeführt. Die Eingabe der PID Werte muss noch geändert werden       
     ## Fix 5    2022-06-xx  _instance in pidNew wird mehr als 3 mal erzeugt, und        nach       jedem Reset 
                             um 1 oder auch erhöht.                                                    
-    ## Fix 6    2022-06-06  EEPROM Klasse hinzu gefügt, aber nicht nicht ausführbar undefined reference to `EEPROMClass::EEPROMClass                                                
+    ## Fix 6    2022-06-06  EEPROM Klasse hinzu gefügt, aber nicht nicht ausführbar undefined reference to `EEPROMClass::EEPROMClass   
+    ## Fix 7    2022-06-06  Achsen- und Motor Klassen hinzugeführt. Nicht ausführbar, nur kompilierbar.                                             
