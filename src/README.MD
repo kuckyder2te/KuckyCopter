@@ -15,7 +15,7 @@ Calibration Klasse eingefügt. Muss alle 100ms ausgeführt werden
     Noch keine weiterleitung an GUI Klasse
     Befehle werden nicht an GUI weiter geleitet. Wahrscheilich liegt es am PUTTY Code
 
-Stephans Logger Warning für die Calibration Klasse verwendet    
+Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet    
 
 !!! Wichtig:
     Solange die Calibration Klasse getestet und ausgeführt wird,
@@ -44,4 +44,7 @@ Stephans Logger Warning für die Calibration Klasse verwendet
                 2022-06-03  Verhindern, dass PID Werte nicht <0 werden. gefixt:
     ## Fix 4    2022-06-04  pidNew.h eingefügt und pidController.h entfernt
                             FastPID als Objekt eingefügt. 
-                            Code wird ausgeführt. Die Eingabe der PID Werte muss noch geändert werden                                               
+                            Code wird ausgeführt. Die Eingabe der PID Werte muss noch geändert werden       
+    ## Fix 5    2022-06-xx  _instance in pidNew wird mehr als 3 mal erzeugt, und        nach       jedem Reset 
+                            um 1 oder auch erhöht.                                                    
+    ## Fix 6    2022-06-06  EEPROM Klasse hinzu gefügt, aber nicht nicht ausführbar undefined reference to `EEPROMClass::EEPROMClass                                                

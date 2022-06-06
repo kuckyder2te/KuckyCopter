@@ -1,5 +1,5 @@
 #pragma once
-/*  File name : newPID.h
+/*  File name : pidNew.h
 	Autor: Wilhelm Kuckelsberg
 	Date: 2022-05-31 (2021.05.24)
 	Description: PID Regler wird eingestellt
@@ -8,6 +8,7 @@
 #include <TaskManager.h>
 #include <FastPID.h>
 
+#include "..\lib\EEPROM\EEPROM.h"
 #include "..\lib\myLogger.h"
 #include "..\lib\def.h"
 
@@ -36,20 +37,22 @@ private:
 	uint8_t 	_pidInstance;    
 
 protected:
-
     FastPID *_fastPID;
+	EEPROMClass *_eeprom;
     pidData_t *_pidData;
-    uint8_t _instance;			// static entfernt
+     uint8_t _instance;			// static entfernt
 	float  RC_SP;
 	float  FB;
     
 public:
     NewPID(const String& name) : Task::Base(name) {
     LOGGER_VERBOSE("Enter....");
+	
     	_fastPID->setOutputRange(-100, 100);
 //		_EEPROM_startAddress = (_instance * sizeof(pidData_t))+PID_EEPROM_ADRRESS;  ///< calculated the the EEPROM address
 //		EEPROM.get(_EEPROM_startAddress, _pidData);	///< Reads the data from the EEPROM directly by the start.
 		_pidInstance =_instance++;
+		LOGGER_WARNING_FMT("Instance %d ", _pidInstance);
 		_fastPID->setOutputConfig(16, true);
 		disablePID();
     LOGGER_VERBOSE("....leave");         
@@ -62,6 +65,8 @@ public:
         LOGGER_NOTICE("FastPID initialized");
         _fastPID = new FastPID();  // Adresse in Variable speichern
         LOGGER_NOTICE("End init FastPID");
+	//	_eeprom = new EEPROMClass();
+	//	_eeprom->begin(512); 
     LOGGER_VERBOSE("....leave");   
     }
 
@@ -99,9 +104,9 @@ public:
 		if(_kP <= PID_P_MIN)
 			_kP = PID_P_MIN;
 
-		_pidData->pidCoefficient[coeffizient_t::kP]=_kP;
-		LOGGER_WARNING_FMT("kp = %f", kP);
-		enablePID();
+	//	_pidData->pidCoefficient[coeffizient_t::kP]=_kP;
+		LOGGER_WARNING_FMT("kp = %f", _kP);
+	//	enablePID();
 	}//-------------------------------- end of setP -------------------------------------
 
 	void setI( float _kI){
