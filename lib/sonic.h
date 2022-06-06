@@ -20,6 +20,7 @@ DeviceAddress insideThermometer;
 typedef struct{
     float temperature;
     double distance;
+//    float coreTemperature;
 }sonicData_t;
 class Sonic : public Task::Base {
     bool b;         // Klassenvariable
@@ -46,6 +47,7 @@ public:
         LOGGER_VERBOSE("Enter....");
      //   sens_temperature.requestTemperatures();   // wird nicht ausgeführt, auch nicht im Testcode
         _distanceSensor = new UltraSonicDistanceSensor(PIN_TRIGGER, PIN_ECHO);
+    //    coreTemperature = analogReadTemp();
         LOGGER_VERBOSE("....leave");
     }
 

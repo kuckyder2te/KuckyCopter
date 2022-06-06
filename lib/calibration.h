@@ -7,7 +7,7 @@
 
 #include <Arduino.h>
 #include <TaskManager.h>
-#include <extEEPROM.h>
+
 #include "..\lib\def.h"
 #include "myLogger.h"
 
@@ -43,6 +43,11 @@ typedef enum{
 	I,
 	D
 }pid;
+
+#define kP 10
+#define kI 20
+#define kD 30
+#define eF 40
 
 class Calibration : public Task::Base {
     bool b;         // Klassenvariable
@@ -144,15 +149,15 @@ public:
 					break;
 
 				case 's':							///< Saved all coefficients into the EEPROM
-	//				pid_pri.updateEEPROM();
-	//				pid_sec.updateEEPROM();
-	//				pid_yaw.updateEEPROM();
+					_pid_pri->updateEEPROM();
+	//				_pid_sec->updateEEPROM();
+	//				_pid_yaw->updateEEPROM();
 					displayPIDcoefficients();
 					break;
 				case 'r':							///< Reads all coefficients from the EEPROM
-	//				pid_pri.readEEPROM();
-	//				pid_sec.readEEPROM();
-	//				pid_yaw.readEEPROM();
+	//				_pid_pri->readEEPROM();
+	//				_pid_sec->readEEPROM();
+	//				_pid_yaw->readEEPROM();
 			 	break;
 				case 'a':							///< Set all PID parameters to 0
 	 				_pid_pri->setP(PID_P_MIN);
@@ -296,57 +301,57 @@ public:
 		switch(type){
 
 		case pidTyp_t::pri_P:
-		//		LOGGER_WARNING_FMT("X kP = %f", _x_kP);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_pri->setP(((_pidData[axis_t::Primary].pidCoefficient[pid::P]) += _factor));
 			break;
 		case pidTyp_t::pri_I:
-		//		LOGGER_WARNING_FMT("X kI = %f", _x_kI);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_pri->setI(((_pidData[axis_t::Primary].pidCoefficient[pid::I]) += _factor));
 			break;
 		case pidTyp_t::pri_D:
-		//		LOGGER_WARNING_FMT("X kD = %f", _x_kD);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_pri->setD(((_pidData[axis_t::Primary].pidCoefficient[pid::D]) += _factor));
 			break;
 
 		case pidTyp_t::sec_P:
-		//		LOGGER_WARNING_FMT("Y kP = %f", _y_kP);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_sec->setP(((_pidData[axis_t::Secondary].pidCoefficient[pid::P]) += _factor));
 			break;
 
 		case pidTyp_t::sec_I:
-		//		LOGGER_WARNING_FMT("Y kI = %f", _y_kI);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_sec->setI(((_pidData[axis_t::Secondary].pidCoefficient[pid::I]) += _factor));
 			break;
 
 		case pidTyp_t::sec_D:
-		//		LOGGER_WARNING_FMT("Y kD = %f", _y_kD);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_sec->setD(((_pidData[axis_t::Secondary].pidCoefficient[pid::D]) += _factor));
 			break;
 
 		case pidTyp_t::yaw_P:
-		//		LOGGER_WARNING_FMT("Z kP = %f", _z_kP);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_yaw->setP(((_pidData[axis_t::YawAxis].pidCoefficient[pid::P]) += _factor));
 			break;
 
 		case pidTyp_t::yaw_I:
-		//		LOGGER_WARNING_FMT("Z kI = %f", _z_kI);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_yaw->setI(((_pidData[axis_t::YawAxis].pidCoefficient[pid::I]) += _factor));
 			break;
 		case pidTyp_t::yaw_D:
-		//		LOGGER_WARNING_FMT("Z kD = %f", _z_kD);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_yaw->setD(((_pidData[axis_t::YawAxis].pidCoefficient[pid::D]) += _factor));
 			break;
 
 		case pidTyp_t::pri_ef:
-		//		LOGGER_WARNING_FMT("x eF = %f", _x_eF);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_pri->setExecutionFrequency(((_pidData[axis_t::Primary].executionFrequency) += _factor));
 			break;
 		case pidTyp_t::sec_ef:
-		//		LOGGER_WARNING_FMT("y eF = %f", _y_eF);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_sec->setExecutionFrequency(((_pidData[axis_t::Secondary].executionFrequency) += _factor));
 			break;
 		case pidTyp_t::yaw_ef:
-		//		LOGGER_WARNING_FMT("z eF = %f", _z_eF);
+				LOGGER_WARNING_FMT("Typ = %d", type);
 				_pid_yaw->setExecutionFrequency(((_pidData[axis_t::YawAxis].executionFrequency) += _factor));
 			break;
 		} /* end of switch */
