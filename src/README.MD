@@ -49,4 +49,5 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
                             um 1 oder auch erhöht.                                                    
     ## Fix 6    2022-06-06  EEPROM Klasse hinzu gefügt, aber nicht nicht ausführbar undefined reference to `EEPROMClass::EEPROMClass   
     ## Fix 7    2022-06-06  Achsen- und Motor Klassen hinzugeführt. Nicht ausführbar, nur kompilierbar.  
-    ## Fix 8    2022-06-08  Achsen und Motor-Klassen wieder entfernt                                                                                                   
+    ## Fix 8    2022-06-08  Achsen und Motor-Klassen wieder entfernt     
+    ##  Fix 9 2022-06-13 Calibration und PID entfernt                                                                                                  
