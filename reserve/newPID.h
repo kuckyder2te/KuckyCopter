@@ -8,9 +8,11 @@
 #include <TaskManager.h>
 #include <FastPID.h>
 
-#include "..\lib\EEPROM\EEPROM.h"
-#include "..\lib\myLogger.h"
-#include "..\lib\def.h"
+#include ".\EEPROM\EEPROM.h"
+#include "myLogger.h"
+#include "def.h"
+
+
 
 typedef struct {
 	float pidCoefficient[3];
@@ -19,6 +21,7 @@ typedef struct {
 	bool  output_signed;
 } pidData_t;
 
+
 typedef enum {
 	kP,
 	kI,
@@ -26,7 +29,7 @@ typedef enum {
     eF
 }coeffizient_t;
 
-class NewPID : public Task::Base {
+class NewPID {
 
 private:
 	float 	  	_kP;
@@ -39,13 +42,14 @@ private:
 protected:
     FastPID *_fastPID;
 	EEPROMClass *_eeprom;
-    pidData_t *_pidData;
-     uint8_t _instance;			// static entfernt
+    pidData_t &_pidData;
+    static uint8_t _instance;			// static entfernt
 	float  RC_SP;
 	float  FB;
     
 public:
-    NewPID(const String& name) : Task::Base(name) {
+
+    NewPID((pidData_t &_pidData) : _pidData(pidData)) {
     LOGGER_VERBOSE("Enter....");
 	
     	_fastPID->setOutputRange(-100, 100);
@@ -60,27 +64,15 @@ public:
 
     virtual ~NewPID() {}
    
-    virtual void begin() override {
-    LOGGER_VERBOSE("Enter....");
-        LOGGER_NOTICE("FastPID initialized");
-        _fastPID = new FastPID();  // Adresse in Variable speichern
-        LOGGER_NOTICE("End init FastPID");
-	//	_eeprom = new EEPROMClass();
-	//	_eeprom->begin(512); 
-    LOGGER_VERBOSE("....leave");   
-    }
-
-    virtual void update() override {
-    }
-
+ 
     void disablePID(){
     LOGGER_WARNING_FMT("Disabled PID controller %d ", _pidInstance);
 
     _fastPID->setCoefficients(PID_P_MIN, 0.0, 0.0, getExecutionTime());
 
-    LOGGER_WARNING_FMT("PID Coeff. P = %f", _pidData->pidCoefficient[coeffizient_t::kP]);
-    LOGGER_WARNING_FMT("PID Coeff. I = %f", _pidData->pidCoefficient[coeffizient_t::kI]);
-    LOGGER_WARNING_FMT("PID Coeff. D = %f", _pidData->pidCoefficient[coeffizient_t::kD]);
+    // LOGGER_WARNING_FMT("PID Coeff. P = %f", _pidData->pidCoefficient[coeffizient_t::kP]);
+    // LOGGER_WARNING_FMT("PID Coeff. I = %f", _pidData->pidCoefficient[coeffizient_t::kI]);
+    // LOGGER_WARNING_FMT("PID Coeff. D = %f", _pidData->pidCoefficient[coeffizient_t::kD]);
 	}//-------------------------------- end of disablePID() -----------------------------
 
 	void enablePID(){
@@ -89,14 +81,14 @@ public:
 		 * 2. The PID parameters are activated. */
 		LOGGER_WARNING_FMT("Enable PID controller %d ", _pidInstance);
 
- 		_fastPID->setCoefficients(_pidData->pidCoefficient[coeffizient_t::kP],
-								  _pidData->pidCoefficient[coeffizient_t::kI],
-								  _pidData->pidCoefficient[coeffizient_t::kD],
-								  getExecutionTime());
+ 		// _fastPID->setCoefficients(_pidData->pidCoefficient[coeffizient_t::kP],
+		// 						  _pidData->pidCoefficient[coeffizient_t::kI],
+		// 						  _pidData->pidCoefficient[coeffizient_t::kD],
+		// 						  getExecutionTime());
 	
-		LOGGER_WARNING_FMT("PID Coeff. P = %f", _pidData->pidCoefficient[coeffizient_t::kP]);
-		LOGGER_WARNING_FMT("PID Coeff. I = %f", _pidData->pidCoefficient[coeffizient_t::kI]);
-		LOGGER_WARNING_FMT("PID Coeff. D = %f", _pidData->pidCoefficient[coeffizient_t::kD]);
+		// LOGGER_WARNING_FMT("PID Coeff. P = %f", _pidData->pidCoefficient[coeffizient_t::kP]);
+		// LOGGER_WARNING_FMT("PID Coeff. I = %f", _pidData->pidCoefficient[coeffizient_t::kI]);
+		// LOGGER_WARNING_FMT("PID Coeff. D = %f", _pidData->pidCoefficient[coeffizient_t::kD]);
 	}//-------------------------------- end of activatePID ------------------------------
 
 	void setP( float _kP){
@@ -114,7 +106,7 @@ public:
 		if(_kI <= 0)
 			_kI = 0;
 
-		_pidData->pidCoefficient[coeffizient_t::kI]=_kI;
+	//	_pidData->pidCoefficient[coeffizient_t::kI]=_kI;
 		LOGGER_WARNING_FMT("kI = %f", _kI);
 		enablePID();
 	}//-------------------------------- end of setI -------------------------------------
@@ -124,20 +116,20 @@ public:
 		if(_kD <= 0)
 			_kD = 0;
 
-		_pidData->pidCoefficient[coeffizient_t::kD]=_kD;
+		// _pidData->pidCoefficient[coeffizient_t::kD]=_kD;
 		LOGGER_WARNING_FMT("kD = %f", _kD);
 		enablePID();
 	}//-------------------------------- end of setD -------------------------------------
 	
 	void setExecutionFrequency(uint8_t _ef){
-		_pidData->executionFrequency = _ef;
+		// _pidData->executionFrequency = _ef;
 		LOGGER_WARNING_FMT("setExecutionFrequency: %d", _ef);
 		enablePID();
 	}//-------------------------------- end of setExecutionFrequency --------------------
 	uint8_t getExecutionTime(){
-		LOGGER_WARNING_FMT("PID getExecutionTime %d", (1/_pidData->executionFrequency)*1000);
+	//	LOGGER_WARNING_FMT("PID getExecutionTime %d", (1/_pidData->executionFrequency)*1000);
 	//< Convert frequency to millis
-		return ((1.0/(float)_pidData->executionFrequency)*1000);	
+	//	return ((1.0/(float)_pidData->executionFrequency)*1000);	
 	}//-------------------------------- end of getExecutionTime -------------------------
 	
 	void updateEEPROM(void){
@@ -162,7 +154,7 @@ public:
 		return _kD;
 	}//-------------------------------- end of getD -------------------------------------
 	
-	float getExFreq() const {
-	 	return _pidData->executionFrequency;
-	}//-------------------------------- end of getExFreq --------------------------------
+	// float getExFreq() const {
+	//  	return _pidData->executionFrequency;
+	// }//-------------------------------- end of getExFreq --------------------------------
 };/*--------------------------- end of pidNew.h class ----------------------------*/

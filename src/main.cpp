@@ -24,8 +24,8 @@
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
 //#include "..\lib\pidController.h"
-#include "..\lib\pidNew.h"
-#include "..\lib\calibration.h"
+//#include "..\lib\newPID.h"
+//#include "..\lib\calibration.h"
 
 #include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
@@ -57,10 +57,11 @@ void setup() {
   Logger::setLogLevel(Logger::_DEBUG_);
 #endif
   LOGGER_VERBOSE("Enter....");
+    Tasks.add<BaseAxis>("axisbase")->startFps(1);
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
-    Tasks.add<NewPID>("newpid")->startFps(1);
-    Tasks.add<Calibration>("calbration")->setModel(&model.pidData[3])->startFps(100);
+//    Tasks.add<NewPID>("newpid")->startFps(1);
+    // Tasks.add<Calibration>("calbration")->setModel(&model.pidData[3])->startFps(100);
     Tasks.add<Battery>("battery")->startFps(1);    
     Tasks.add<Radio>("radio")->startFps(1);
     LOGGER_NOTICE( "Program is initialized");

@@ -61,7 +61,7 @@ protected:
 	NewPID *_pid_pri;
 	NewPID *_pid_sec;
 	NewPID *_pid_yaw;
-	pidData_t *_pidData;
+//	pidData_t *_pidData;
 
 public:
     Calibration(const String& name) : Task::Base(name){
@@ -72,12 +72,12 @@ public:
 
 	virtual ~Calibration() {}
 
-	Calibration* setModel(pidData_t* _model){    // Rückgabe wert ist das eigene Objekt (this)
-	LOGGER_VERBOSE("Enter....");
-	_pidData = _model;
-	LOGGER_VERBOSE("....leave");
-	return this;
-    }
+	// Calibration* setModel(pidData_t* _model){    // Rückgabe wert ist das eigene Objekt (this)
+	// LOGGER_VERBOSE("Enter....");
+	// _pidData = _model;
+	// LOGGER_VERBOSE("....leave");
+	// return this;
+    // }
 
 
     virtual void begin() override {
@@ -302,57 +302,57 @@ public:
 
 		case pidTyp_t::pri_P:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_pri->setP(((_pidData[axis_t::Primary].pidCoefficient[pid::P]) += _factor));
+			//	_pid_pri->setP(((_pidData[axis_t::Primary].pidCoefficient[pid::P]) += _factor));
 			break;
 		case pidTyp_t::pri_I:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_pri->setI(((_pidData[axis_t::Primary].pidCoefficient[pid::I]) += _factor));
+			//	_pid_pri->setI(((_pidData[axis_t::Primary].pidCoefficient[pid::I]) += _factor));
 			break;
 		case pidTyp_t::pri_D:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_pri->setD(((_pidData[axis_t::Primary].pidCoefficient[pid::D]) += _factor));
+			//	_pid_pri->setD(((_pidData[axis_t::Primary].pidCoefficient[pid::D]) += _factor));
 			break;
 
 		case pidTyp_t::sec_P:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_sec->setP(((_pidData[axis_t::Secondary].pidCoefficient[pid::P]) += _factor));
+			//	_pid_sec->setP(((_pidData[axis_t::Secondary].pidCoefficient[pid::P]) += _factor));
 			break;
 
 		case pidTyp_t::sec_I:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_sec->setI(((_pidData[axis_t::Secondary].pidCoefficient[pid::I]) += _factor));
+			//	_pid_sec->setI(((_pidData[axis_t::Secondary].pidCoefficient[pid::I]) += _factor));
 			break;
 
 		case pidTyp_t::sec_D:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_sec->setD(((_pidData[axis_t::Secondary].pidCoefficient[pid::D]) += _factor));
+			//	_pid_sec->setD(((_pidData[axis_t::Secondary].pidCoefficient[pid::D]) += _factor));
 			break;
 
 		case pidTyp_t::yaw_P:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_yaw->setP(((_pidData[axis_t::YawAxis].pidCoefficient[pid::P]) += _factor));
+			//	_pid_yaw->setP(((_pidData[axis_t::YawAxis].pidCoefficient[pid::P]) += _factor));
 			break;
 
 		case pidTyp_t::yaw_I:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_yaw->setI(((_pidData[axis_t::YawAxis].pidCoefficient[pid::I]) += _factor));
+			//	_pid_yaw->setI(((_pidData[axis_t::YawAxis].pidCoefficient[pid::I]) += _factor));
 			break;
 		case pidTyp_t::yaw_D:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_yaw->setD(((_pidData[axis_t::YawAxis].pidCoefficient[pid::D]) += _factor));
+			//	_pid_yaw->setD(((_pidData[axis_t::YawAxis].pidCoefficient[pid::D]) += _factor));
 			break;
 
 		case pidTyp_t::pri_ef:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_pri->setExecutionFrequency(((_pidData[axis_t::Primary].executionFrequency) += _factor));
+			//	_pid_pri->setExecutionFrequency(((_pidData[axis_t::Primary].executionFrequency) += _factor));
 			break;
 		case pidTyp_t::sec_ef:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_sec->setExecutionFrequency(((_pidData[axis_t::Secondary].executionFrequency) += _factor));
+			//	_pid_sec->setExecutionFrequency(((_pidData[axis_t::Secondary].executionFrequency) += _factor));
 			break;
 		case pidTyp_t::yaw_ef:
 				LOGGER_WARNING_FMT("Typ = %d", type);
-				_pid_yaw->setExecutionFrequency(((_pidData[axis_t::YawAxis].executionFrequency) += _factor));
+			//	_pid_yaw->setExecutionFrequency(((_pidData[axis_t::YawAxis].executionFrequency) += _factor));
 			break;
 		} /* end of switch */
 	}/*----------------------------- end of select ------------------------------------*/

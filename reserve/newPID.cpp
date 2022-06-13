@@ -4,6 +4,6 @@
  *      Author: willy
  */
 
-#include "..\lib\pidNew.h"
+#include "newPID.h"
 
-uint8_t NewPID::_instance = 0;
+uint8_t NewPID::_instance;// = 0;

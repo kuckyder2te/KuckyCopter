@@ -6,10 +6,14 @@
 */
 
 #include "performance.h"
+#include "baseAxis.h"
+// #include "AxisYaw.h"
+// #include "AxisMotor.h"
+// #include "Motor.h"
 typedef struct {
 	sensorData_t sensorData;	// Data from imu and baro
 	sonicData_t  sonicData;
 	performance_t performance;
 	interface_t interface;
-	pidData_t pidData[3];
+//	pidData_t pidData[3];
 } model_t;
