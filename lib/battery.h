@@ -1,5 +1,10 @@
 #pragma once
-
+/*  File name : battery.h
+    Project name : KuCo_Phantom 1
+	Author: Wilhelm Kuckelsberg
+    Date : 2022-06-13
+    Description : Kontrolle des Ladezustands
+*/
 #include <Arduino.h>
 #include <TaskManager.h>
 #include "..\lib\def.h"

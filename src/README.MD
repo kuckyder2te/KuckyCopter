@@ -34,20 +34,19 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
 
     # Fixes
     ## Fix 1    2022-06-01  Komplierfähiger Code, nach dem flash keine COM Ausgabe   
-    ## Fix 2            03  Code wird wieder mit allen Instanzen aufgeführt.
-                            hängt aber hier : 	case pidTyp_t::pri_P:
+    ## Fix 2    2022-06-03  Code wird wieder mit allen Instanzen aufgeführt.
+    hängt aber hier :case pidTyp_t::pri_P: 
 			                                    _x_kP += _factor;
 			                                    LOGGER_WARNING_FMT("X kP = %f", _x_kP);
 			                                    _pid_pri->setP(_x_kP);
                                                 Y kP = 20505159319395510517760.000000 gefixt
-    ## Fix 3                PID values mit 0 initialisiert    
+    ## Fix 3    PID values mit 0 initialisiert    
                 2022-06-03  Verhindern, dass PID Werte nicht <0 werden. gefixt:
     ## Fix 4    2022-06-04  pidNew.h eingefügt und pidController.h entfernt
-                            FastPID als Objekt eingefügt. 
-                            Code wird ausgeführt. Die Eingabe der PID Werte muss noch geändert werden       
-    ## Fix 5    2022-06-xx  _instance in pidNew wird mehr als 3 mal erzeugt, und        nach       jedem Reset 
-                            um 1 oder auch erhöht.                                                    
+    FastPID als Objekt eingefügt. Code wird ausgeführt. Die Eingabe der PID Werte muss noch geändert werden       
+    ## Fix 5    2022-06-xx  _instance in pidNew wird mehr als 3 mal erzeugt, und   nach jedem Reset um 1 oder auch mehr erhöht
     ## Fix 6    2022-06-06  EEPROM Klasse hinzu gefügt, aber nicht nicht ausführbar undefined reference to `EEPROMClass::EEPROMClass   
     ## Fix 7    2022-06-06  Achsen- und Motor Klassen hinzugeführt. Nicht ausführbar, nur kompilierbar.  
     ## Fix 8    2022-06-08  Achsen und Motor-Klassen wieder entfernt     
-    ##  Fix 9 2022-06-13 Calibration und PID entfernt                                                                                                  
+    ## Fix 9    2022-06-13 Calibration und PID entfernt      
+    ## Fix 10   2022- 06-13  baseAxis und newPID hinzugefügt Instance Problem besteht weiter, _newPID->step(*_sp, *_fb)   ->step erscheint nicht in der Auswahlliste. Telefon mit Stephan. Klassen umbenannt axisyaw entfernt. static entfernt um die App komplierbar zu machen. Adafruit_PWMServoDriver.h eingefügt.

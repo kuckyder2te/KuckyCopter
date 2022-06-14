@@ -1,7 +1,9 @@
 #pragma once  
 /*  File name : radio.h
+    Project: Phantom 1
 	Autor: Wilhelm Kuckelsberg
 	Date: 2022-05-31 (2021.05.24)
+    Description: Kommunikation zwischen Drohne und RC
 
     https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-python-sdk.pdf 
     https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf
