@@ -1,5 +1,5 @@
 #pragma once
-/*  File name: pidController.h
+/*  File name: sensors.h
  *	Project name: KuCo_Phantom 1
  *  Date: 2022-005-28
  *  Author: Wilhelm Kuckelsberg
@@ -142,5 +142,5 @@ public:
         LOGGER_NOTICE_FMT("Approx altitude =  %.2fm", _sensorData->_altitude);
 
     LOGGER_VERBOSE("....leave");   
-    }   /*------------------------------- end of update -------------------------------*/
+    }  /*------------------------------- end of update -------------------------------*/
 };  /*----------------------------------- end of sensor.h class -----------------------*/
