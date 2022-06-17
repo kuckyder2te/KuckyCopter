@@ -13,22 +13,16 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HardwareSerial.h>
-
 #include <Adafruit_Sensor.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
 
 #include "..\lib\sensors.h"
-
 #include "..\lib\sonic.h"
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
-//#include "..\lib\pidController.h"
-//#include "..\lib\newPID.h"
-//#include "..\lib\calibration.h"
 #include  "..\lib\axisMotor.h"
-//#include  "..\lib\axisYaw.h"
-
+#include  "..\lib\axisYaw.h"
 #include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
 #include "..\lib\model.h"
@@ -40,6 +34,8 @@ UART Serial2(PIN_BT_TX, PIN_BT_RX);
 void setup() {
   LOGGER_NOTICE( "Program will initialized");
     model.performance.min_loop_time = 0xffff;
+    model.yawData.axisData[0] = &model.axisData[0];  // axisData wird mit yawData.axisData verknüpft
+    model.yawData.axisData[1] = &model.axisData[1];
 
     Serial.begin(COM_SPEED);
     Serial2.begin(BT_SPEED);
@@ -59,11 +55,11 @@ void setup() {
   Logger::setLogLevel(Logger::_DEBUG_);
 #endif
   LOGGER_VERBOSE("Enter....");
+    Tasks.add<AxisYaw>("axisyaw")->setModel(&model.yawData)->startFps(_AXIS_FPS);
     Tasks.add<AxisMotor>("axismotor_a")->setModel(&model.axisData[0])->startFps(_AXIS_FPS);
     Tasks.add<AxisMotor>("axismotor_b")->setModel(&model.axisData[1])->InvertRoll()->startFps(_AXIS_FPS);
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
-    // Tasks.add<Calibration>("calbration")->setModel(&model.pidData[3])->startFps(100);
     Tasks.add<Battery>("battery")->startFps(1);    
     Tasks.add<Radio>("radio")->startFps(1);
     LOGGER_NOTICE( "Program is initialized");

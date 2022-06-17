@@ -11,21 +11,6 @@
 #include "motor.h"
 #include "myLogger.h"
 
-typedef struct {
-	uint16_t power;			/// power from YAW Axis
-	int16_t  pidError;
-	int16_t  setpoint;	    ///< Memory for detuning the physical axis.
-	int16_t* feedback;		///< Current value from the IMU
-	double*  rcX;			///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
-	double*  rcY;			///< virtual axis. Corresponds to the PITCH axis.
-	pidData_t pidData;
-} axisData_t;
-
-typedef enum{
-	first,
-	second
-}motor_t;
-
 typedef enum{
 	arming_start = 0,
 	arming_busy,
@@ -34,20 +19,29 @@ typedef enum{
 	enablePID,
 	standby,
 	ready
-}state_e;
+}motor_state_e;
+typedef struct {
+	uint16_t power;			/// power from YAW Axis
+	int16_t  pidError;
+	int16_t  setpoint;	    ///< Memory for detuning the physical axis.
+	int16_t* feedback;		///< Current value from the IMU
+	double*  rcX;			///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
+	double*  rcY;			///< virtual axis. Corresponds to the PITCH axis.
+	pidData_t pidData;
+	motor_state_e state;
+} axisData_t;
 
-//extern Motor motor;
+typedef enum{
+	first,
+	second
+}motor_t;
 class AxisMotor : public AxisBase {
 
 private:
 	axisData_t *_axisData;
 	Motor* 	   _motor[2];
-//	bool 	   _invertRoll;
 	double 	   _roll;
-	state_e     _state;
-	bool 	   _invertRoll;
-    //static uint8_t _instance;
-//	uint8_t     _motoraxis_address;	///< Gives everyone axis a title    
+	bool 	   _invertRoll;  
 
 public:
     AxisMotor(const String& name)  : AxisBase(name) {
@@ -62,8 +56,6 @@ public:
 		_motor[motor_t::first]  = priMotor;
 		_motor[motor_t::second] = secMotor;
 		_roll 			  = 0;
-		_state 			  = standby;
-//		_motoraxis_address 	 = AxisBase::_instance++;
     }
 
 	virtual ~AxisMotor() {}
@@ -72,6 +64,7 @@ public:
 												//_axis_data  wird aus dem Model i9n die Achsed geschriene
     LOGGER_VERBOSE("Enter....");
         _axisData = _model;
+		_axisData->state = standby;
     LOGGER_VERBOSE("....leave");
     return this;
 	}
@@ -97,14 +90,14 @@ public:
 		
 		LOGGER_NOTICE_FMT("AxisMotor service AxisNo %d", _axis_address);
 		
-		switch( _state){
+		switch(_axisData->state){
 			case arming_start:
 				LOGGER_NOTICE_FMT("AxisMotor arming start %d ", _axis_address);		
 				_motor[motor_t::first]->setMotorStates(Motor::arming);
 				_motor[motor_t::second]->setMotorStates(Motor::arming);
 				// _motor[motor_t::first]->armingProcedure(false);
 				// _motor[motor_t::second]->armingProcedure(false);
-				_state = arming_busy;
+				_axisData->state = arming_busy;
 				break;
 
 			case arming_busy:		
@@ -157,3 +150,6 @@ public:
 		//_motor[motor_t::second]->updateState();
     }/*................................... end of update ------------------------------*/
 };/*................................... end of MotorAxis.h class ----------------------*/
+
+
+
