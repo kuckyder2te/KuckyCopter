@@ -40,7 +40,7 @@ UART Serial2(PIN_BT_TX, PIN_BT_RX);
 void setup() {
   LOGGER_NOTICE( "Program will initialized");
     model.performance.min_loop_time = 0xffff;
-    
+
     Serial.begin(COM_SPEED);
     Serial2.begin(BT_SPEED);
     Serial2.println("********************************");
@@ -59,7 +59,8 @@ void setup() {
   Logger::setLogLevel(Logger::_DEBUG_);
 #endif
   LOGGER_VERBOSE("Enter....");
-    Tasks.add<AxisMotor>("axismotor_a")->setModel(&model.axisData)->startFps(100);
+    Tasks.add<AxisMotor>("axismotor_a")->setModel(&model.axisData[0])->startFps(_AXIS_FPS);
+    Tasks.add<AxisMotor>("axismotor_b")->setModel(&model.axisData[1])->InvertRoll()->startFps(_AXIS_FPS);
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
     // Tasks.add<Calibration>("calbration")->setModel(&model.pidData[3])->startFps(100);

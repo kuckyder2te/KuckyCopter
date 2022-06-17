@@ -15,7 +15,7 @@ typedef struct {
 	sonicData_t  sonicData;
 	performance_t performance;
 	interface_t interface;
-	baseData_t baseData;
-	axisData_t axisData;
-	pidData_t pidData[3];
+//	baseData_t baseData;
+	axisData_t axisData[2];
+//	pidData_t pidData[3];
 } model_t;

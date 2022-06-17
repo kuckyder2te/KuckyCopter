@@ -18,6 +18,7 @@ typedef struct {
 	int16_t* feedback;		///< Current value from the IMU
 	double*  rcX;			///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
 	double*  rcY;			///< virtual axis. Corresponds to the PITCH axis.
+	pidData_t pidData;
 } axisData_t;
 
 typedef enum{
@@ -41,9 +42,10 @@ class AxisMotor : public AxisBase {
 private:
 	axisData_t *_axisData;
 	Motor* 	   _motor[2];
-	bool 	   _invertRoll;
+//	bool 	   _invertRoll;
 	double 	   _roll;
 	state_e     _state;
+	bool 	   _invertRoll;
     //static uint8_t _instance;
 //	uint8_t     _motoraxis_address;	///< Gives everyone axis a title    
 
@@ -52,6 +54,7 @@ public:
 		AxisBase::_sp = &_axisData->setpoint;		/// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisDatat->setpoint holt
 		AxisBase::_fb = _axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
+		_invertRoll = false;
 
 		Motor* priMotor;			// von Kucky hinzugefügt
 		Motor* secMotor;
@@ -66,15 +69,22 @@ public:
 	virtual ~AxisMotor() {}
 
     AxisMotor* setModel(axisData_t* _model){    // Rückgabe wert ist das eigene Objekt (this)
+												//_axis_data  wird aus dem Model i9n die Achsed geschriene
     LOGGER_VERBOSE("Enter....");
         _axisData = _model;
     LOGGER_VERBOSE("....leave");
     return this;
 	}
+
+	AxisMotor* InvertRoll(){
+		_invertRoll = true;
+	return this;
+	}
     /*---------------------------------------------------------------------------------*/
 
     virtual void begin() override {
     LOGGER_VERBOSE("Enter....");
+	LOGGER_VERBOSE_FMT("%s",this->getName().c_str());		// Adresse von array of char
 		AxisBase::begin();                
 		_motor[motor_t::first]->setup();
 		_motor[motor_t::second]->setup();
@@ -98,11 +108,11 @@ public:
 				break;
 
 			case arming_busy:		
-			LOGGER_NOTICE_FMT("AxisMotor arming_busy %d ", _axis_address);
+			LOGGER_NOTICE_FMT("AxisMotor arming_busy %s ", this->getName().c_str());
 				break;
 
 			case arming_end:
-			LOGGER_NOTICE_FMT("AxisMotor arming end %d ", _axis_address);
+			LOGGER_NOTICE_FMT("AxisMotor arming end %s ", this->getName().c_str());
 				// _motor[motor_t::first]->armingProcedure(true);
 				// _motor[motor_t::second]->armingProcedure(true);
 				_motor[motor_t::first]->setMotorStates(Motor::off);
