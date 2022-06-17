@@ -53,3 +53,7 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Fix 11   2022-06-14 Logger in motor hinzugefügt. Motor Klasse geändert (axisMotor Zeile 58) 
     ## Fix 12   Instance  Problem geklärt
     ## Fix 13   MotorAxis released
+    ## Fix 14   2022-06-17 axisyaw hinzugefügt, motor_state_e in axisMotor hinzugeführt bzw. von state_e umbenannt.
+    _motorAxis[axis_t::Primary]->setState(modules::AxisMotor::disablePID); geändert in
+    _yawData->axisData[0]->state = motor_state_e::disablePID;
+    Zeile 120 axisYaw.

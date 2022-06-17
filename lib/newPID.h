@@ -16,149 +16,133 @@
 #include <FastPID.h>
 #include "myLogger.h"
 
-typedef struct {
+typedef struct
+{
 	float pidCoefficient[3];
 	float executionFrequency;
-	int   output_bits;
-	bool  output_signed;
+	int output_bits;
+	bool output_signed;
 } pidData_t;
 
-typedef enum {
+typedef enum
+{
 	kP,
 	kI,
 	kD
-}coeffizient_t;
+} coeffizient_t;
 
-class NewPID {			/// MyPid is an FastPit
+class NewPID
+{ 
 
 private:
-	float 	  	_kP;
-	float       _kI;
-	float       _kD;
-	float		_exFreq;
-	uint8_t     _EEPROM_startAddress;
-	uint8_t 	_pidInstance;
+	float _kP;
+	float _kI;
+	float _kD;
+	float _exFreq;
+	uint8_t _EEPROM_startAddress;
+	uint8_t _pidInstance;
 
 protected:
-	pidData_t     *_pidData;				/// MyPid has a PidData
+	pidData_t *_pidData; /// MyPid has a PidData
 	static uint8_t _instance;
-	float          RC_SP;
-	float          FB;
+	float RC_SP;
+	float FB;
 
 public:
-		 	// setOutputRange(-100, 100);
-			// _pidInstance =_instance++;
-			// setOutputConfig(16, true);
-			// disablePID();
-		
+	// setOutputRange(-100, 100);
+	// _pidInstance =_instance++;
+	// setOutputConfig(16, true);
+	// disablePID();
 
-	void disablePID(){
+	void disablePID()
+	{
+	LOGGER_NOTICE_FMT("Disabled PID controller %d ", _pidInstance);
+		//		FastPID::setCoefficients(PID_P_MIN, 0.0, 0.0, getExecutionTime());
+	} //-------------------------------- end of deactivatePID --------------------------------------
 
-		LOGGER_NOTICE_FMT("Disabled PID controller %d ", _pidInstance);
-
-//		FastPID::setCoefficients(PID_P_MIN, 0.0, 0.0, getExecutionTime());
-
-	}//-------------------------------- end of deactivatePID --------------------------------------
-
-	void enablePID(){
+	void enablePID()
+	{
 		/* This function has 2 tasks.
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
-	
 
-}//-------------------------------- end of activatePID --------------------------------------------
+	} //-------------------------------- end of activatePID --------------------------------------------
 
-	void setP( float p){
-		
-		LOGGER_NOTICE_FMT("setP: %d",p);
-		
+	void setP(float p)
+	{
+		LOGGER_NOTICE_FMT("setP: %d", p);
+
 		_kP = p;
-		if(_kP <= PID_P_MIN)
+		if (_kP <= PID_P_MIN)
 			_kP = PID_P_MIN;
-
-//		_pidData.pidCoefficient[coeffizient_t::kP]=_kP;
-
-
+		//		_pidData.pidCoefficient[coeffizient_t::kP]=_kP;
 		enablePID();
+	} //-------------------------------- end of setP -----------------------------------------------
 
-	}//-------------------------------- end of setP -----------------------------------------------
-
-	void setI( float i){
-		
-		LOGGER_NOTICE_FMT("setI: %d",i);
-		
+	void setI(float i)
+	{
+		LOGGER_NOTICE_FMT("setI: %d", i);
 		_kI = i;
-		if(_kI <= 0)
+		if (_kI <= 0)
 			_kI = 0;
-
-	//	_pidData.pidCoefficient[coeffizient_t::kI]=_kI;
-	
-
+		//	_pidData.pidCoefficient[coeffizient_t::kI]=_kI;
 		enablePID();
+	} //-------------------------------- end of setI -----------------------------------------------
 
-	}//-------------------------------- end of setI -----------------------------------------------
-
-	void setD( float d){
-		
-		LOGGER_NOTICE_FMT("setD: %d",d);
-		
+	void setD(float d)
+	{
+		LOGGER_NOTICE_FMT("setD: %d", d);
 		_kD = d;
-		if(_kD <= 0)
+		if (_kD <= 0)
 			_kD = 0;
-
-	//	_pidData.pidCoefficient[coeffizient_t::kD]=_kD;
-	
-
+		//	_pidData.pidCoefficient[coeffizient_t::kD]=_kD;
 		enablePID();
+	} //-------------------------------- end of setD -----------------------------------------------
 
-	}//-------------------------------- end of setD -----------------------------------------------
-	void setExecutionFrequency(uint8_t ef){
-		
+	void setExecutionFrequency(uint8_t ef)
+	{
 		LOGGER_WARNING_FMT("setExecutionFrequency: %d", ef);
-		
-
-	//	_pidData.executionFrequency = ef;
-	
-		
+		//	_pidData.executionFrequency = ef;
 		enablePID();
+	} //-------------------------------- end of setExecutionFrequency ------------------------------
 
-	}//-------------------------------- end of setExecutionFrequency ------------------------------
-	uint8_t getExecutionTime(){
-		
-		LOGGER_WARNING_FMT("PID getExecutionTime %d", (1/_pidData->executionFrequency)*1000);
-		
-
-	//	return ((1.0/(float)_pidData.executionFrequency)*1000);
+	uint8_t getExecutionTime()
+	{
+		LOGGER_WARNING_FMT("PID getExecutionTime %d", (1 / _pidData->executionFrequency) * 1000);
+		//	return ((1.0/(float)_pidData.executionFrequency)*1000);
 		///< Convert frequency to millis
 
-	}//-------------------------------- end of getExecutionTime -----------------------------------
-	void updateEEPROM(void){
-	//	EEPROM.put(_EEPROM_startAddress, _pidData);
+	} //-------------------------------- end of getExecutionTime -----------------------------------
+	void updateEEPROM(void)
+	{
+		//	EEPROM.put(_EEPROM_startAddress, _pidData);
 		enablePID();
+	} //-------------------------------- end of updateEEPROM ---------------------------------------
 
-	}//-------------------------------- end of updateEEPROM ---------------------------------------
-	void readEEPROM(void){
-	
+	void readEEPROM(void)
+	{
 		enablePID();
+	} //-------------------------------- end of readEEPROM -----------------------------------------
 
-	}//-------------------------------- end of readEEPROM -----------------------------------------
-	float getP() const {
+	float getP() const
+	{
 		return _kP;
+	} //-------------------------------- end of getP -----------------------------------------------
 
-	}//-------------------------------- end of getP -----------------------------------------------
-	float getI() const {
+	float getI() const
+	{
 		return _kI;
+	} //-------------------------------- end of getI -----------------------------------------------
 
-	}//-------------------------------- end of getI -----------------------------------------------
-	float getD() const {
+	float getD() const
+	{
 		return _kD;
+	} //-------------------------------- end of getD -----------------------------------------------
 
-	}//-------------------------------- end of getD -----------------------------------------------
-	float getExFreq() const {
-	//	return _pidData.executionFrequency;
-
-	}//-------------------------------- end of getExTime ------------------------------------------
-
+	float getExFreq() const
+	{
+		//	return _pidData.executionFrequency;
+	} //-------------------------------- end of getExTime ------------------------------------------
 };
 
 /*--------------------------- end of MyPid class ------------------------------------------------*/

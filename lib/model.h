@@ -17,5 +17,6 @@ typedef struct {
 	interface_t interface;
 //	baseData_t baseData;
 	axisData_t axisData[2];
+	yawData_t  yawData;
 //	pidData_t pidData[3];
 } model_t;

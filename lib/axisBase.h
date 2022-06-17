@@ -6,7 +6,6 @@
     Description : 
 */
 
-//#include <Arduino.h>
 #include <TaskManager.h>
 #include "newPID.h"
 #include "def.h"
@@ -31,15 +30,15 @@ private:
 	uint8_t 	_pidInstance;
 
 protected:
-    NewPID        *_newPID;
-    baseData_t    *_baseData;
-     static       uint8_t 	_instance;      ///< static entfernt
-    uint8_t  		_axis_address;	///< Gives everyone axis a title
-    int16_t* 		_sp;
-    int16_t* 		_fb;
-    int16_t* 		_error;
-    uint32_t 		_lastMillis;
-    uint32_t		_temp;
+    NewPID      *_newPID;
+    baseData_t  *_baseData;
+    uint8_t 	_instance;      ///< static entfernt
+    uint8_t  	_axis_address;	///< Gives everyone axis a title
+    int16_t* 	_sp;
+    int16_t* 	_fb;
+    int16_t* 	_error;
+    uint32_t 	_lastMillis;
+    uint32_t	_temp;
 
 public:
     AxisBase(const String& name) : Task::Base(name) {
@@ -48,7 +47,6 @@ public:
         _error			 = 0;
         _sp				 = 0;
         _fb				 = 0;
-    //    _axis_address 	 = _instance++;
     }
 
     virtual ~AxisBase() {}
@@ -69,7 +67,7 @@ public:
 
     virtual void update() override {
     /* _sp Position of the joysticks.
-        * _fb Position of the drohne.  */
+       _fb Position of the drohne.  */
 
 			// if(millis()-_lastMillis >= _newPID->getExecutionTime()){	/// muss hier so sein? wird in der service loop immer wieder aufgerufen
 			//  	*_error = _newPID->step(*_sp, *_fb);					///< Calculate PID error
