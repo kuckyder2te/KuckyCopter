@@ -33,7 +33,7 @@ private:
 protected:
     NewPID        *_newPID;
     baseData_t    *_baseData;
-            uint8_t 	_instance;      ///< static entfernt
+     static       uint8_t 	_instance;      ///< static entfernt
     uint8_t  		_axis_address;	///< Gives everyone axis a title
     int16_t* 		_sp;
     int16_t* 		_fb;

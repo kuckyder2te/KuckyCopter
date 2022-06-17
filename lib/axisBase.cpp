@@ -8,6 +8,6 @@
 
 #include "axisBase.h"
 
-//uint8_t AxisBase::_instance = 0;			///< Speicherstelle zuweisen
+uint8_t AxisBase::_instance = 0;			///< Speicherstelle zuweisen
 
 /* -------------------------- end of axisBase Class ---------------------------------------------*/
