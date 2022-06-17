@@ -39,7 +39,7 @@ UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
 void setup() {
   LOGGER_NOTICE( "Program will initialized");
-    model.performance.min_loop_time = 9999999999LL;
+    model.performance.min_loop_time = 0xffff;
     
     Serial.begin(COM_SPEED);
     Serial2.begin(BT_SPEED);

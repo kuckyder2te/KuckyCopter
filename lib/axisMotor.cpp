@@ -7,5 +7,5 @@
 
 #include "axisMotor.h"
 
-uint8_t AxisBase::_instance = 0;
+
 /* -------------------------- end of axisMotor Class --------------------------------------------*/

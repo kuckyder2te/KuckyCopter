@@ -3,7 +3,7 @@ alle Wire und SPI auskommentiert
 
 Der NRF24 scheint keinen CE und CSN Pin zu benötigen
 
-Der Dallas SEnsonr funktioniert nicht
+Der Dallas Sensonr funktioniert nicht
 
 Battery Klasse noch nicht Hardware getestet
 
@@ -50,3 +50,5 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Fix 8    2022-06-08  Achsen und Motor-Klassen wieder entfernt     
     ## Fix 9    2022-06-13 Calibration und PID entfernt      
     ## Fix 10   2022- 06-13  baseAxis und newPID hinzugefügt Instance Problem besteht weiter, _newPID->step(*_sp, *_fb)   ->step erscheint nicht in der Auswahlliste. Telefon mit Stephan. Klassen umbenannt axisyaw entfernt. static entfernt um die App komplierbar zu machen. Adafruit_PWMServoDriver.h eingefügt.
+    ## Fix 11   2022-06-14 Logger in motor hinzugefügt. Motor Klasse geändert (axisMotor Zeile 58) 
+    ## Fix 12   Instance  Problem geklärt
