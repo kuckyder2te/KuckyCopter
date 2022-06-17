@@ -52,3 +52,4 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Fix 10   2022- 06-13  baseAxis und newPID hinzugefügt Instance Problem besteht weiter, _newPID->step(*_sp, *_fb)   ->step erscheint nicht in der Auswahlliste. Telefon mit Stephan. Klassen umbenannt axisyaw entfernt. static entfernt um die App komplierbar zu machen. Adafruit_PWMServoDriver.h eingefügt.
     ## Fix 11   2022-06-14 Logger in motor hinzugefügt. Motor Klasse geändert (axisMotor Zeile 58) 
     ## Fix 12   Instance  Problem geklärt
+    ## Fix 13   MotorAxis released
