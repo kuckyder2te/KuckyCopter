@@ -44,13 +44,14 @@ protected:
 	//	_motor_address  = _instance++;
 	};
 
-	void virtual setup() {
+	void setup() {
 		LOGGER_VERBOSE("Enter....");
-		_motor.attach(_pin, ARM_MIN, ARM_MAX);
+		LOGGER_VERBOSE("Not implemented yet");
+		//_motor.attach(_pin, ARM_MIN, ARM_MAX);
 		delay(20);
 		LOGGER_NOTICE_FMT("Motor setup Pin%d, Motor%d", _pin, _motor_address);
 		LOGGER_VERBOSE("....leave");
-	} /* end of virtual setup */
+	} 
 
 	void updateState() {
 	LOGGER_VERBOSE("Enter....");
