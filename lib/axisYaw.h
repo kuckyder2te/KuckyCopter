@@ -2,7 +2,7 @@
 /*  File name : axisYaw.h
 	Project name : KuCo_Phantom 1
 	Author: Wilhelm Kuckelsberg
-	Date : 2022-06-117
+	Date : 2022-06-17
 	Description : Drohne
 */
 

@@ -1,6 +1,7 @@
 #pragma once
 /*  File name : axisBase.h
     Project name : KuCo_Phantom 1
+    Author: Wilhelm Kuckelsberg
     Date : 2022-06-16
 
     Description : 
