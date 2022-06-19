@@ -21,8 +21,9 @@
 #include "..\lib\sonic.h"
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
-#include  "..\lib\axisMotor.h"
-#include  "..\lib\axisYaw.h"
+#include "..\lib\axisMotor.h"
+#include "..\lib\axisYaw.h"
+//#include "..\lib\motorNew.h"
 #include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
 #include "..\lib\model.h"
@@ -30,6 +31,9 @@
 
 model_t model;      /// Speicherplatz wird angelegt und instanziert
 UART Serial2(PIN_BT_TX, PIN_BT_RX);
+
+Motor motorFL(PIN_MOTOR_FL), motorBR(PIN_MOTOR_BR), motorBL(PIN_MOTOR_BL), motorFR(PIN_MOTOR_FR); 	///< Create 4 motors
+
 
 void setup() {
   LOGGER_NOTICE( "Program will initialized");

@@ -95,8 +95,8 @@ public:
 				LOGGER_NOTICE_FMT("AxisMotor arming start %d ", _axis_address);		
 				_motor[motor_t::first]->setMotorStates(Motor::arming);
 				_motor[motor_t::second]->setMotorStates(Motor::arming);
-				// _motor[motor_t::first]->armingProcedure(false);
-				// _motor[motor_t::second]->armingProcedure(false);
+				_motor[motor_t::first]->armingProcedure(false);
+				_motor[motor_t::second]->armingProcedure(false);
 				_axisData->state = arming_busy;
 				break;
 
@@ -106,8 +106,8 @@ public:
 
 			case arming_end:
 			LOGGER_NOTICE_FMT("AxisMotor arming end %s ", this->getName().c_str());
-				// _motor[motor_t::first]->armingProcedure(true);
-				// _motor[motor_t::second]->armingProcedure(true);
+				_motor[motor_t::first]->armingProcedure(true);
+				_motor[motor_t::second]->armingProcedure(true);
 				_motor[motor_t::first]->setMotorStates(Motor::off);
 				_motor[motor_t::second]->setMotorStates(Motor::off);
 				 break;
@@ -146,8 +146,8 @@ public:
 				break;
 		} /* end of switch */
 
-		//_motor[motor_t::first]->updateState();
-		//_motor[motor_t::second]->updateState();
+		_motor[motor_t::first]->updateState();
+		_motor[motor_t::second]->updateState();
     }/*................................... end of update ------------------------------*/
 };/*................................... end of MotorAxis.h class ----------------------*/
 
