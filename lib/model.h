@@ -19,4 +19,5 @@ typedef struct {
 	axisData_t axisData[2];
 	yawData_t  yawData;
 //	pidData_t pidData[3];
+//	flyState_e flyState;
 } model_t;
