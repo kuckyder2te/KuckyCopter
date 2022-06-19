@@ -2,8 +2,6 @@
     Project name : KuCo_Phantom 1
     Date : 2022-04-23
 
-    Test 123
-
     Description : Drohne
     Hardware : Raspberry Pi Pico 2020
                Gyro : MPU9250
