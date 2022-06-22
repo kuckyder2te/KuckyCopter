@@ -8,7 +8,6 @@
 
 #include "AxisBase.h"
 #include "AxisMotor.h"
-#include "def.h"
 #include "myLogger.h"
 
 #define YAW_SENSIBILITY 5
@@ -25,6 +24,12 @@ typedef struct
 	axisData_t *axisData[2];
 } yawData_t;
 
+typedef enum{
+	Primary,
+	Secondary,
+	YawAxis
+}axis_t;
+
 class AxisYaw : public AxisBase
 {
 
@@ -40,6 +45,8 @@ public:
 	} state_e;
 
 private:
+	AxisMotor *_axisMotor[2];
+	//AxisMotor *_secAxis;
 	yawData_t *_yawData;
 	state_e _state;
 	int16_t _lastCompass;
@@ -53,10 +60,24 @@ public:
 		AxisBase::_sp = &_virtualSetpoint;		// -Zuweisen des Modells zu den PID Parametern �ber Zeiger
 		AxisBase::_fb = &_virtualFeedback;		// -Ist notwendig um AxisBase.Service den PID error f�r beliebige Achsen berechnen z lassen
 		AxisBase::_error = &_yawData->yawError; // -
-		//_motorAxis[motor_t::first] = priAxis;
-		//_motorAxis[motor_t::second] = secAxis;
+		
+		//_axisMotor[0] = new AxisMotor();
+		
+		AxisMotor* priAxis;
+		AxisMotor* secAxis;
+		_axisMotor[motor_t::first] = priAxis;
+		_axisMotor[motor_t::second] = secAxis;
 		_state = disablePID;
 		_lastCompass = 0;
+
+	typedef enum{
+		arming_start,
+		arming_power_on,
+		arming_finished,
+		disablePID,
+		enablePID,
+		ready
+	}state_e;
 	};
 
 	virtual ~AxisYaw(){};
@@ -84,7 +105,8 @@ public:
 		case arming_start:
 			/* The arming procedure will start. */
 			LOGGER_NOTICE("AxisYAW arming_start");
-			//_motorAxis[axis_t::Primary]->setState(modules::AxisMotor::arming_start);
+			
+			_axisMotor[axis_t::Primary]->setState(AxisMotor::arming_start);
 			//_motorAxis[axis_t::Secondary]->setState(modules::AxisMotor::arming_start);
 			_state = arming_power_on;
 			break;
@@ -108,10 +130,10 @@ public:
 			/* Disables the YawAxis PID controller and initiates deactivation for the motor axes. */
 			LOGGER_NOTICE("AxisYaw deactivatePID");
 			_newPID->disablePID();
-			_yawData->axisData[0]->state = motor_state_e::disablePID;
-			_yawData->axisData[1]->state = motor_state_e::disablePID;
-			//_motorAxis[axis_t::Primary]->setState(modules::AxisMotor::disablePID);
-			//_motorAxis[axis_t::Secondary]->setState(modules::AxisMotor::disablePID);
+//			_yawData->axisData[0]->state = motor_state_e::disablePID;
+//			_yawData->axisData[1]->state = motor_state_e::disablePID;
+	//		_axisMotor[axis_t::Primary]->setState(AxisMotor::disablePID);
+	//		_axisMotor[axis_t::Secondary]->setState(AxisMotor::disablePID);
 			break;
 
 		case enablePID:
@@ -119,8 +141,8 @@ public:
 			LOGGER_NOTICE("AxisYaw enablePID");
 			_newPID->enablePID();
 			*_yawData->horz_Position = 0;
-			_yawData->axisData[0]->state = motor_state_e::enablePID;
-			_yawData->axisData[1]->state = motor_state_e::enablePID;
+	//		_yawData->axisData[0]->state = motor_state_e::enablePID;
+	//		_yawData->axisData[1]->state = motor_state_e::enablePID;
 			//_motorAxis[axis_t::Primary]->setState(modules::AxisMotor::enablePID);
 			//_motorAxis[axis_t::Secondary]->setState(modules::AxisMotor::enablePID);
 			_lastCompass = *_yawData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
@@ -159,7 +181,6 @@ public:
 
 	boolean isArmed()
 	{
-
 		return ((_state == arming_finished)); // && (_motorAxis[axis_t::Primary]->isArmed()) && (_motorAxis[axis_t::Secondary]->isArmed()));
 		LOGGER_NOTICE_FMT("get YawAxis State %d ", _state);
 	} //---------------------- end of isArmed ------------------------------------------------------

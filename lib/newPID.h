@@ -16,6 +16,9 @@
 #include <FastPID.h>
 #include "myLogger.h"
 
+#define PID_FREQUENCY        50				///< PID parameter
+#define PID_P_MIN			  0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
+#define PID_EEPROM_ADRRESS 50
 typedef struct
 {
 	float pidCoefficient[3];
@@ -143,6 +146,4 @@ public:
 	{
 		//	return _pidData.executionFrequency;
 	} //-------------------------------- end of getExTime ------------------------------------------
-};
-
-/*--------------------------- end of MyPid class ------------------------------------------------*/
+};/*--------------------------- end of MyPid class ------------------------------------------------*/

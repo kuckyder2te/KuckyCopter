@@ -19,7 +19,8 @@ typedef enum{
 	enablePID,
 	standby,
 	ready
-}motor_state_e;
+}motorState_e;
+
 typedef struct {
 	uint16_t power;			/// power from YAW Axis
 	int16_t  pidError;
@@ -28,7 +29,7 @@ typedef struct {
 	double*  rcX;			///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
 	double*  rcY;			///< virtual axis. Corresponds to the PITCH axis.
 	pidData_t pidData;
-	motor_state_e state;
+	motorState_e state;
 } axisData_t;
 
 typedef enum{
@@ -42,6 +43,7 @@ private:
 	Motor* 	   _motor[2];
 	double 	   _roll;
 	bool 	   _invertRoll;  
+//	motorState_e state;
 
 public:
     AxisMotor(const String& name)  : AxisBase(name) {
@@ -149,6 +151,55 @@ public:
 		_motor[motor_t::first]->updateState();
 		_motor[motor_t::second]->updateState();
     }/*................................... end of update ------------------------------*/
+
+	void setPower(int16_t _power){
+		if(_power < 0)
+			_axisData->power = 0;
+		else
+			_axisData->power = _power;
+
+	}//---------------------- end of setPower -----------------------------------------------------
+
+	void setState(motorState_e state) {
+		state = state;
+		#ifdef AXISMOTOR_STATE
+		LOG("set AxisMotor State = %d",  _state);
+		delay(DEBUG_DWELL_TIME);
+		#endif
+
+	}//---------------------- end of setState -----------------------------------------------------
+
+	boolean isArmed() const {
+
+		return ((_motor[motor_t::first]->isMotorOff())
+			  &&(_motor[motor_t::second]->isMotorOff()));
+
+	}//---------------------- end of isArmed ------------------------------------------------------
+/*
+	boolean isDeactivatePID(){
+		#ifdef AXISMOTOR_STATE
+		LOG("AxisMotor isDeactivatePID %d", _motoraxis_address);
+		delay(DEBUG_DWELL_TIME);
+		#endif
+		return(state == disablePID);
+
+	}//---------------------- end of isDeactivatePID ----------------------------------------------
+
+	boolean isStandby() const {
+		return ( state == standby);
+
+	}//---------------------- end of isStandby ----------------------------------------------------
+
+	boolean isReady() const {
+		return ( state == ready);
+
+	}//---------------------- end of isReady ------------------------------------------------------
+
+	Motor** getMotor() {
+		return motor;
+
+	}//---------------------- end of getMotor -----------------------------------------------------
+*/
 };/*................................... end of MotorAxis.h class ----------------------*/
 
 

@@ -17,6 +17,7 @@
 #define POWER_MIN 0			//
 #define POWER_MAX 100		//
 #define BASE_MOTOR_POWER 10 //< 10% minimal throttle in fly mode for preventing stop of the motors
+#define PIN_ESC_ON 14
 
 #define _PWM_LOGLEVEL_ 3
 
@@ -89,7 +90,7 @@ public:
 		delay(20);
 		LOGGER_NOTICE_FMT("Motor setup Pin=%d, Motor=%d", _pin, _motor_address);
 		LOGGER_VERBOSE("....leave");
-	}
+	} /*------------------------------- end of setup ----------------------------------*/
 
 	void updateState()
 	{
@@ -177,7 +178,7 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		return _maxPower;
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of getMaxPower ----------------------------------------------
+	} //-------------------------- end of getMaxPower -----------------------------------
 
 	void setMaxPower(uint8_t maxPower)
 	{
@@ -187,19 +188,19 @@ public:
 		else
 			_maxPower = maxPower;
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of setMaxPower ----------------------------------------------
+	} //-------------------------- end of setMaxPower -----------------------------------
 
 	bool isMotorOff()
 	{
 		LOGGER_VERBOSE("Enter....");
 		return (_motorstate == off);
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of isMotorOn ------------------------------------------------
+	} //-------------------------- end of isMotorOn -------------------------------------
 
 	void setMotorStates(motorstate_e state)
 	{
 		LOGGER_VERBOSE("Enter....");
 		_motorstate = state;
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of setMotorStates -------------------------------------------
-};	  /*--------------------------- end of Motor class ------------------------------------------------*/
+	} //-------------------------- end of setMotorStates --------------------------------
+};	  /*--------------------------- end of Motor class --------------------------------*/
