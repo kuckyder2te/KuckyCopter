@@ -27,13 +27,21 @@
 #include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
 #include "..\lib\model.h"
-#include "..\lib\def.h"
+
+// #define PIN_MOTOR_FL    10
+// #define PIN_MOTOR_FR    11
+// #define PIN_MOTOR_BL    12
+// #define PIN_MOTOR_BR    13
+
+#define PIN_BT_TX       8
+#define PIN_BT_RX       9
+#define COM_SPEED     9600
+#define BT_SPEED      9600
 
 model_t model;      /// Speicherplatz wird angelegt und instanziert
 UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
-Motor motorFL(PIN_MOTOR_FL), motorBR(PIN_MOTOR_BR), motorBL(PIN_MOTOR_BL), motorFR(PIN_MOTOR_FR); 	///< Create 4 motors
-
+//Motor motorFL(PIN_MOTOR_FL), motorBR(PIN_MOTOR_BR), motorBL(PIN_MOTOR_BL), motorFR(PIN_MOTOR_FR); 	///< Create 4 motors
 
 void setup() {
   LOGGER_NOTICE( "Program will initialized");

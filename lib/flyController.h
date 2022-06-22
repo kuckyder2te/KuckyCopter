@@ -25,6 +25,7 @@ typedef enum
     fly_ground    ///< Kuckycopter stand on the ground
 } flyState_e;
 
+#define PIN_LED_STATE    7
 #define POWER_LIFT_UP    60					///< The KuckyCopter will start, if throttle > 60
 #define DOWN_TIME	   2000					///< Time to turn off the engines (in Microseconds).
 

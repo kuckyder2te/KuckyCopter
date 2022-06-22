@@ -14,54 +14,22 @@
 // 	YawAxis
 // }axis_t;
 
-/* Constance */
-#define CALIBRATION_LED 16  // Green
-#define GYRO_LED 17 //blue
-#define SONIC_LED 18  // Yellow
-#define TASK_LED 19  // Red
 
-//------ Environment begin -------
-#define COM_SPEED 9600
-#define BT_SPEED    9600
-#define PUTTY_ROW			 45
-#define PUTTY_COL  			124
-//------ Environment end ---------
 
-//------ PIN declarations --------
 
-#define PIN_BT_TX        8
-#define PIN_BT_RX        9
 
-#define PIN_ECHO        21
-#define PIN_TRIGGER     22
 
-#define PIN_RADIO_CE    20
-#define PIN_RADIO_CSN   17
-#define PIN_RADIO_LED    0
 
-#define PIN_BATTERY     26  // analog
 
-#define PIN_ESC_ON      14
-#define PIN_MOTOR_FL    10
-#define PIN_MOTOR_FR    11
-#define PIN_MOTOR_BL    12
-#define PIN_MOTOR_BR    13
 
-#define PIN_LED_RC       6
-#define PIN_LED_STATE    7
-#define PIN_LED_ALERT    8
 
-#define PIN_DALLAS      28
+
+
 
 //------ PID configuration begin -------------------- 
-#define PID_FREQUENCY        50				///< PID parameter
-#define PID_P_MIN			  0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
 // #define PID_EEPROM_ADRRESS	 50
 // #define PID_ACTIVE_AT		  9
 // #define YAW_SENSIBILITY		  5
 // #define YAW_FINE_TUNING		  0.1
 //------ PID configuration end ----------------------
 
-#ifndef PID_EEPROM_ADRRESS
-#define PID_EEPROM_ADRRESS 50
-#endif

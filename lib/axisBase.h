@@ -16,10 +16,6 @@ typedef struct{
 	int16_t* error;
 }baseData_t;
 
-#define	kP
-#define	kI
-#define	kD
-
 class AxisBase : public Task::Base {
 
 private:
