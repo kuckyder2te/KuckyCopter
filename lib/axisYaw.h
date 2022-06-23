@@ -61,7 +61,6 @@ public:
 		AxisBase::_fb = &_virtualFeedback;		// -Ist notwendig um AxisBase.Service den PID error f�r beliebige Achsen berechnen z lassen
 		AxisBase::_error = &_yawData->yawError; // -
 		
-		//_axisMotor[0] = new AxisMotor();
 		
 		AxisMotor* priAxis;
 		AxisMotor* secAxis;
