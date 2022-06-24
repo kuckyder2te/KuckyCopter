@@ -21,14 +21,15 @@ typedef struct
 	int16_t *feedback;		///< " ""
 	double *rotationSpeed;	///< Speed which the copter should turn
 	int16_t *horz_Position; ///< Current YAW Position from Gyro
-	axisData_t *axisData[2];
+	AxisMotor::axisData_t *axisData[2];
 } yawData_t;
 
-typedef enum{
+typedef enum
+{
 	Primary,
 	Secondary,
 	YawAxis
-}axis_t;
+} axis_t;
 
 class AxisYaw : public AxisBase
 {
@@ -46,7 +47,7 @@ public:
 
 private:
 	AxisMotor *_axisMotor[2];
-	//AxisMotor *_secAxis;
+	// AxisMotor *_secAxis;
 	yawData_t *_yawData;
 	state_e _state;
 	int16_t _lastCompass;
@@ -60,23 +61,11 @@ public:
 		AxisBase::_sp = &_virtualSetpoint;		// -Zuweisen des Modells zu den PID Parametern �ber Zeiger
 		AxisBase::_fb = &_virtualFeedback;		// -Ist notwendig um AxisBase.Service den PID error f�r beliebige Achsen berechnen z lassen
 		AxisBase::_error = &_yawData->yawError; // -
-		
-		
-		AxisMotor* priAxis;
-		AxisMotor* secAxis;
-		_axisMotor[motor_t::first] = priAxis;
-		_axisMotor[motor_t::second] = secAxis;
+
+		_axisMotor[axis_t::Primary] = NULL;
+		_axisMotor[axis_t::Secondary] = NULL;
 		_state = disablePID;
 		_lastCompass = 0;
-
-	typedef enum{
-		arming_start,
-		arming_power_on,
-		arming_finished,
-		disablePID,
-		enablePID,
-		ready
-	}state_e;
 	};
 
 	virtual ~AxisYaw(){};
@@ -85,6 +74,26 @@ public:
 	{ // Rückgabe wert ist das eigene Objekt (this)
 		LOGGER_VERBOSE("Enter....");
 		_yawData = _model;
+		LOGGER_VERBOSE("....leave");
+		return this;
+	}
+	AxisYaw *setAxisOrdered(AxisMotor *_axis)
+	{
+		LOGGER_VERBOSE("Enter....");
+		if (_axisMotor[axis_t::Primary] == NULL)
+		{
+			LOGGER_NOTICE("Set first Axis");
+			_axisMotor[axis_t::Primary] = _axis;
+		}
+		else if (_axisMotor[axis_t::Secondary] == NULL)
+		{
+			LOGGER_NOTICE("Set second Axis");
+			_axisMotor[axis_t::Secondary] = _axis;
+		}
+		else
+		{
+			LOGGER_FATAL("Too much Axis initialized!!");
+		}
 		LOGGER_VERBOSE("....leave");
 		return this;
 	}
@@ -104,8 +113,8 @@ public:
 		case arming_start:
 			/* The arming procedure will start. */
 			LOGGER_NOTICE("AxisYAW arming_start");
-			
-			_axisMotor[axis_t::Primary]->setState(AxisMotor::arming_start);
+
+			_axisMotor[axis_t::Primary]->setState(AxisMotor::motorState_e::arming_start);
 			//_motorAxis[axis_t::Secondary]->setState(modules::AxisMotor::arming_start);
 			_state = arming_power_on;
 			break;
@@ -121,18 +130,18 @@ public:
 		case arming_finished:
 			/* Arming procedure is finished */
 			LOGGER_NOTICE("Axis YAW arming_finished");
-			//_motorAxis[axis_t::Primary]->setState(modules::AxisMotor::arming_end);
-			//_motorAxis[axis_t::Secondary]->setState(modules::AxisMotor::arming_end);
+			_axisMotor[axis_t::Primary]->setState(AxisMotor::arming_end);
+			_axisMotor[axis_t::Secondary]->setState(AxisMotor::arming_end);
 			break;
 
 		case disablePID:
 			/* Disables the YawAxis PID controller and initiates deactivation for the motor axes. */
 			LOGGER_NOTICE("AxisYaw deactivatePID");
 			_newPID->disablePID();
-//			_yawData->axisData[0]->state = motor_state_e::disablePID;
-//			_yawData->axisData[1]->state = motor_state_e::disablePID;
-	//		_axisMotor[axis_t::Primary]->setState(AxisMotor::disablePID);
-	//		_axisMotor[axis_t::Secondary]->setState(AxisMotor::disablePID);
+			//			_yawData->axisData[0]->state = motor_state_e::disablePID;
+			//			_yawData->axisData[1]->state = motor_state_e::disablePID;
+			_axisMotor[axis_t::Primary]->setState(AxisMotor::disablePID);
+			_axisMotor[axis_t::Secondary]->setState(AxisMotor::disablePID);
 			break;
 
 		case enablePID:
@@ -140,8 +149,8 @@ public:
 			LOGGER_NOTICE("AxisYaw enablePID");
 			_newPID->enablePID();
 			*_yawData->horz_Position = 0;
-	//		_yawData->axisData[0]->state = motor_state_e::enablePID;
-	//		_yawData->axisData[1]->state = motor_state_e::enablePID;
+			//		_yawData->axisData[0]->state = motor_state_e::enablePID;
+			//		_yawData->axisData[1]->state = motor_state_e::enablePID;
 			//_motorAxis[axis_t::Primary]->setState(modules::AxisMotor::enablePID);
 			//_motorAxis[axis_t::Secondary]->setState(modules::AxisMotor::enablePID);
 			_lastCompass = *_yawData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.

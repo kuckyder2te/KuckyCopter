@@ -11,6 +11,15 @@
 #include "motor.h"
 #include "myLogger.h"
 
+class AxisMotor : public AxisBase {
+
+public:
+
+typedef enum{
+	first,
+	second
+}motor_t;
+
 typedef enum{
 	arming_start = 0,
 	arming_busy,
@@ -29,35 +38,26 @@ typedef struct {
 	double*  rcX;			///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
 	double*  rcY;			///< virtual axis. Corresponds to the PITCH axis.
 	pidData_t pidData;
-	motorState_e state;
+	//motorState_e state;
 } axisData_t;
-
-typedef enum{
-	first,
-	second
-}motor_t;
-class AxisMotor : public AxisBase {
 
 private:
 	axisData_t *_axisData;
 	Motor* 	   _motor[2];
 	double 	   _roll;
 	bool 	   _invertRoll;  
-//	motorState_e state;
+	motorState_e state;
 
 public:
     AxisMotor(const String& name)  : AxisBase(name) {
-		AxisBase::_sp = &_axisData->setpoint;		/// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisDatat->setpoint holt
-		AxisBase::_fb = _axisData->feedback;
-		AxisBase::_error = &_axisData->pidError;
+		LOGGER_VERBOSE("Enter....");
+		
 		_invertRoll = false;
 
-		Motor* priMotor;			// von Kucky hinzugefügt
-		Motor* secMotor;
-
-		_motor[motor_t::first]  = priMotor;
-		_motor[motor_t::second] = secMotor;
+		_motor[motor_t::first]  = NULL;
+		_motor[motor_t::second] = NULL;
 		_roll 			  = 0;
+		LOGGER_VERBOSE("....leave");
     }
 
 	virtual ~AxisMotor() {}
@@ -66,9 +66,28 @@ public:
 												//_axis_data  wird aus dem Model i9n die Achsed geschriene
     LOGGER_VERBOSE("Enter....");
         _axisData = _model;
-		_axisData->state = standby;
+		state = standby;
+		AxisBase::_sp = &_axisData->setpoint;		/// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisDatat->setpoint holt
+		AxisBase::_fb = _axisData->feedback;
+		AxisBase::_error = &_axisData->pidError;
     LOGGER_VERBOSE("....leave");
     return this;
+	}
+
+	AxisMotor* setMotorPinOrdered(uint8_t _pin){
+		LOGGER_VERBOSE("Enter....");
+		LOGGER_NOTICE_FMT("PIN:%d",_pin);
+		if(_motor[motor_t::first]==NULL){
+			LOGGER_NOTICE("Set first Motor");
+			_motor[motor_t::first]=new Motor(_pin);
+		}else if(_motor[motor_t::second]==NULL){
+			LOGGER_NOTICE("Set second Motor");
+			_motor[motor_t::second]=new Motor(_pin);
+		}else{
+			LOGGER_FATAL("Too much Motors initialized!!");
+		}
+		LOGGER_VERBOSE("....leave");
+		return this;
 	}
 
 	AxisMotor* InvertRoll(){
@@ -92,14 +111,14 @@ public:
 		
 		LOGGER_NOTICE_FMT("AxisMotor service AxisNo %d", _axis_address);
 		
-		switch(_axisData->state){
+		switch(state){
 			case arming_start:
 				LOGGER_NOTICE_FMT("AxisMotor arming start %d ", _axis_address);		
 				_motor[motor_t::first]->setMotorStates(Motor::arming);
 				_motor[motor_t::second]->setMotorStates(Motor::arming);
 				_motor[motor_t::first]->armingProcedure(false);
 				_motor[motor_t::second]->armingProcedure(false);
-				_axisData->state = arming_busy;
+				state = arming_busy;
 				break;
 
 			case arming_busy:		

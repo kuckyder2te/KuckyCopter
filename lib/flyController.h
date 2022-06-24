@@ -83,7 +83,7 @@ public:
 
             break;
 
-        case arming_busy:
+        case AxisMotor::arming_busy:
             LOGGER_NOTICE("arming is finished");
             LOGGER_NOTICE("not implemented yet");
             // if (axisYaw->isArmed())
@@ -102,7 +102,7 @@ public:
             LOGGER_NOTICE("disable PID is finished");
             break;
 
-        case standby:          
+        case AxisMotor::standby:          
             /* Make sure the throttle lever is set to 0 and RC is connected. */
             //_model.interface.isconnect = true;
             //_model.interface.payload.rcThrottle = 1;
