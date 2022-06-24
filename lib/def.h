@@ -14,7 +14,10 @@
 // 	YawAxis
 // }axis_t;
 
-
+#define PIN_MOTOR_FL    10
+#define PIN_MOTOR_FR    11
+#define PIN_MOTOR_BL    12
+#define PIN_MOTOR_BR    13
 
 
 

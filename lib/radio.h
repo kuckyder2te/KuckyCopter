@@ -68,6 +68,8 @@ public:
     Radio(const String &name)
         : Task::Base(name)
     {
+        LOGGER_VERBOSE("Enter....");
+        LOGGER_VERBOSE("....leave");
     }
 
     virtual ~Radio() {}

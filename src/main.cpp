@@ -27,11 +27,9 @@
 #include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
 #include "..\lib\model.h"
+#include "..\lib\def.h"
 
-// #define PIN_MOTOR_FL    10
-// #define PIN_MOTOR_FR    11
-// #define PIN_MOTOR_BL    12
-// #define PIN_MOTOR_BR    13
+
 
 #define PIN_BT_TX       8
 #define PIN_BT_RX       9
@@ -67,9 +65,22 @@ void setup() {
   Logger::setLogLevel(Logger::_DEBUG_);
 #endif
   LOGGER_VERBOSE("Enter....");
-    Tasks.add<AxisYaw>("axisyaw")->setModel(&model.yawData)->startFps(_AXIS_FPS);
-    Tasks.add<AxisMotor>("axismotor_a")->setModel(&model.axisData[0])->startFps(_AXIS_FPS);
-    Tasks.add<AxisMotor>("axismotor_b")->setModel(&model.axisData[1])->InvertRoll()->startFps(_AXIS_FPS);
+    Tasks.add<AxisMotor>("axismotor_a")
+      ->setModel(&model.axisData[0])
+      ->setMotorPinOrdered(PIN_MOTOR_FL)
+      ->setMotorPinOrdered(PIN_MOTOR_BR)
+      ->startFps(_AXIS_FPS);
+    Tasks.add<AxisMotor>("axismotor_b")
+      ->setModel(&model.axisData[1])
+      ->setMotorPinOrdered(PIN_MOTOR_FR)
+      ->setMotorPinOrdered(PIN_MOTOR_BL)
+      ->InvertRoll()
+      ->startFps(_AXIS_FPS);
+    Tasks.add<AxisYaw>("axisyaw")
+      ->setModel(&model.yawData)
+      ->setAxisOrdered(reinterpret_cast<AxisMotor*>(Tasks["axismotor_a"].get()))
+      ->setAxisOrdered(reinterpret_cast<AxisMotor*>(Tasks["axismotor_b"].get()))
+      ->startFps(_AXIS_FPS);
     Tasks.add<FlyController>("flycontroller")->startFps(100);
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);

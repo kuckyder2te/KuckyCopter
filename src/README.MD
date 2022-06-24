@@ -58,3 +58,4 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     _yawData->axisData[0]->state = motor_state_e::disablePID;
     Zeile 120 axisYaw.
     ## Fix 15    2022-06-19 Flycontroller template hinzugefügt
+    ## Fix 17    2022-06-24 Achsen Klassen hizugefügt. Kein Kompiler Fehler. Muss noch aufgerämt werden.
