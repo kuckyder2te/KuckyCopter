@@ -6,7 +6,7 @@
 */
 
 #include "performance.h"
-#include "axisBase.h"
+//#include "axisBase.h" // auskommentziert 2022-06-25
 // #include "AxisYaw.h"
 //#include "motorAxis.h"
 // #include "Motor.h"

@@ -59,3 +59,4 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     Zeile 120 axisYaw.
     ## Fix 15    2022-06-19 Flycontroller template hinzugefügt
     ## Fix 17    2022-06-24 Achsen Klassen hizugefügt. Kein Kompiler Fehler. Muss noch aufgerämt werden.
+    ## Fix 18    2022-06-25 Flycontroller.h teileweise implementiert (ohne model Abhänigkeiten)
