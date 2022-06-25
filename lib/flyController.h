@@ -25,16 +25,16 @@ typedef enum
     fly_ground    ///< Kuckycopter stand on the ground
 } flyState_e;
 
-#define PIN_LED_STATE    7
-#define POWER_LIFT_UP    60					///< The KuckyCopter will start, if throttle > 60
-#define DOWN_TIME	   2000					///< Time to turn off the engines (in Microseconds).
+#define PIN_LED_STATE 7
+#define POWER_LIFT_UP 60 ///< The KuckyCopter will start, if throttle > 60
+#define DOWN_TIME 2000   ///< Time to turn off the engines (in Microseconds).
 
 class FlyController : public Task::Base
 {
 
 private:
     flyState_e _flyState;
-    
+    AxisYaw *_axisYaw;
 
 public:
     FlyController(const String &name)
@@ -61,10 +61,6 @@ public:
         LOGGER_VERBOSE("....leave");
     }
 
-    // optional (you can remove this method)
-    // virtual void enter() override {
-    // }
-
     virtual void update() override
     {
         static uint16_t downTime = 0;
@@ -76,33 +72,32 @@ public:
              * Main Power ON/ OFF or option switch. */
 
             LOGGER_NOTICE("arming start");
-            LOGGER_NOTICE("not implemented yet");
+//            LOGGER_NOTICE("not implemented yet");
 
-//            axisYaw->setState(AxisYaw::arming_start);
+            _axisYaw->setState(AxisYaw::arming_start);
             _flyState = fly_arming_busy;
 
             break;
 
         case AxisMotor::arming_busy:
             LOGGER_NOTICE("arming is finished");
-            LOGGER_NOTICE("not implemented yet");
-            // if (axisYaw->isArmed())
-            // {
-            //     _flyState = fly_disablePID; /// -> goes to "disablePID"
-            // }
+//            LOGGER_NOTICE("not implemented yet");
+            if (_axisYaw->isArmed())
+            {
+                _flyState = fly_disablePID; /// -> goes to "disablePID"
+            }
             break;
 
         case fly_disablePID:
             /* Deactivate the PID controller from all axis, and report the state. */
             LOGGER_NOTICE("disablePID");
-            LOGGER_NOTICE("not implemented yet");
-
-//            axisYaw->setState(AxisYaw::disablePID);
+//            LOGGER_NOTICE("not implemented yet");
+            _axisYaw->setState(AxisYaw::disablePID);
             _flyState = fly_standby;
             LOGGER_NOTICE("disable PID is finished");
             break;
 
-        case AxisMotor::standby:          
+        case AxisMotor::standby:
             /* Make sure the throttle lever is set to 0 and RC is connected. */
             //_model.interface.isconnect = true;
             //_model.interface.payload.rcThrottle = 1;
@@ -119,46 +114,45 @@ public:
             // }
 
             // //	uint16_t battery = analogRead(A1);
-            // //	Serial.print("Battery ");Serial.println(battery);
             LOGGER_NOTICE("standby fineshed");
             break;
 
         case fly_prestart:
             LOGGER_NOTICE("prestart");
-            LOGGER_NOTICE("not implemented yet");
+//            LOGGER_NOTICE("not implemented yet");
             /* Checked if all axes are OK. */
 
-            // axisYaw->setState(AxisYaw::ready);
-            // if (axisYaw->isReady())
-            // {
-            //     _flyState = fly_takeoff;
-            // }
-            // else
-            // {
-            //     _flyState = fly_prestart; /// new 23.05.21
-            // }
-            // break;
+            _axisYaw->setState(AxisYaw::ready);
+            if (_axisYaw->isReady())
+            {
+                _flyState = fly_takeoff;
+            }
+            else
+            {
+                _flyState = fly_prestart; /// new 23.05.21
+            }
+            break;
 
-        // case fly_takeoff:
-        //     LOGGER_NOTICE("take off");
+            // case fly_takeoff:
+            //     LOGGER_NOTICE("take off");
 
-        //     /* Throttle greater than POWER_LIFT_UP and RC is connected, go to the next state. */
+            //     /* Throttle greater than POWER_LIFT_UP and RC is connected, go to the next state. */
 
-        //     _model.yawData.throttle = _model.interface.payload.rcThrottle;
-        //     if (_model.interface.isconnect && (_model.interface.payload.rcThrottle < POWER_LIFT_UP))
-        //     {
-        //         _flyState = fly_set_pid;
-        //     }
-        //     else
-        //     {
-        //         _flyState = fly_takeoff;
-        //     }
-        //     LOGGER_NOTICE("take off fineshed");
-        //     break;
+            //     _model.yawData.throttle = _model.interface.payload.rcThrottle;
+            //     if (_model.interface.isconnect && (_model.interface.payload.rcThrottle < POWER_LIFT_UP))
+            //     {
+            //         _flyState = fly_set_pid;
+            //     }
+            //     else
+            //     {
+            //         _flyState = fly_takeoff;
+            //     }
+            //     LOGGER_NOTICE("take off fineshed");
+            //     break;
 
         case fly_set_pid:
-            
-/* If everything is checked, the PID controller is activated. */
+
+            /* If everything is checked, the PID controller is activated. */
 
             LOGGER_NOTICE("FlyController set_pid");
             LOGGER_NOTICE("not implemented yet");
@@ -176,12 +170,12 @@ public:
             // }
             break;
 
-        case fly_fly:     
-/* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, the status is set to ground. */
+        case fly_fly:
+            /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, the status is set to ground. */
 
             LOGGER_NOTICE("fly");
             LOGGER_NOTICE("not implemented yet");
-            
+
             // _model.yawData.throttle = _model.interface.payload.rcThrottle;
             // //			if ((_model.interface.payload.rcThrottle <= POWER_LIFT_UP) || (_model.usData.distance[US::usNo_e::down] < PID_ACTIVE_AT)) {
             // if ((_model.interface.payload.rcThrottle <= POWER_LIFT_UP))
@@ -199,8 +193,8 @@ public:
             break;
 
         case fly_ground:
-/* If the quadrocopter is on the ground for more than DOWN_TIME, disable the engines. */
-            LOGGER_NOTICE("ground");          
+            /* If the quadrocopter is on the ground for more than DOWN_TIME, disable the engines. */
+            LOGGER_NOTICE("ground");
             LOGGER_NOTICE("not implemented yet");
 
             if (millis() - downTime >= DOWN_TIME)
@@ -210,7 +204,7 @@ public:
             else
             {
                 _flyState = fly_disablePID;
-//                _model.yawData.throttle = 0;
+                //                _model.yawData.throttle = 0;
             }
             break;
 
@@ -219,18 +213,5 @@ public:
             break;
 
         } /* end of switch flyState */
-
-    } /*------------------------- end of update ------------------------------*/
-
-    // optional (you can remove this method)
-    // virtual void exit() override {
-    // }
-
-    // optional (you can remove this method)
-    // virtual void idle() override {
-    // }
-
-    // optional (you can remove this method)
-    // virtual void reset() override {
-    // }
-}; /*------------------------------ end of flyController -------------------*/
+    } /*------------------------------- end of update ---------------------------------*/
+}; /*---------------------------------- end of flyController --------------------------*/
