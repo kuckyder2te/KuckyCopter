@@ -60,10 +60,12 @@ class Radio : public Task::Base
     bool role;        // true = TX role, false = RX role
     float payload;
 
-protected:
-    RF24 *_radio; // CE, CSN        // Pointer auf die Adresse setzen
+public:    
     interface_t *interface;
 
+protected:
+    RF24 *_radio; // CE, CSN        // Pointer auf die Adresse setzen
+    
 public:
     Radio(const String &name)
         : Task::Base(name)
