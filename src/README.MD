@@ -60,3 +60,9 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Fix 15    2022-06-19 Flycontroller template hinzugefügt
     ## Fix 17    2022-06-24 Achsen Klassen hizugefügt. Kein Kompiler Fehler. Muss noch aufgerämt werden.
     ## Fix 18    2022-06-25 Flycontroller.h teileweise implementiert (ohne model Abhänigkeiten)
+    ## Fix 19    2022-06-25 Flycontroller fertig. Stichworte
+                    flyState_e _flyState;
+                    AxisYaw *_axisYaw;
+                    yawData_t *_yawData;
+                    Radio *_radio;
+                    Sonic *_sonicData;

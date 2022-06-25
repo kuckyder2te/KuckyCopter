@@ -29,9 +29,12 @@ typedef struct{
 class Sonic : public Task::Base {
     bool b;         // Klassenvariable
 
+public:    
+   sonicData_t *_sonicData;
+   
 protected:
     UltraSonicDistanceSensor *_distanceSensor;  
-    sonicData_t *_sonicData;
+ 
         
 public:
     Sonic(const String& name) : Task::Base(name) ,b(false){
