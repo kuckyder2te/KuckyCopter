@@ -107,7 +107,7 @@ public:
 			LOGGER_NOTICE_FMT("Motor off %d ", _motor_address);
 			_power = 0;
 			LOGGER_VERBOSE("Not implemented yet");
-			//_motor.write(0);
+			
 			break;
 
 		case on:
