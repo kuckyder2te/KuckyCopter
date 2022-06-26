@@ -12,14 +12,10 @@
 #include "def.h"
 #include "myLogger.h"
 
-#define ARM_MIN 1000		//
-#define ARM_MAX 2000		//
-#define POWER_MIN 0			//
-#define POWER_MAX 100		//
-#define BASE_MOTOR_POWER 10 //< 10% minimal throttle in fly mode for preventing stop of the motors
-#define PIN_ESC_ON 14
 
-#define _PWM_LOGLEVEL_ 3
+
+
+#define _PWM_LOGLEVEL_ 0
 
 #if (defined(ARDUINO_NANO_RP2040_CONNECT) || defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || \
 	 defined(ARDUINO_GENERIC_RP2040)) &&                                                                                       \
@@ -39,6 +35,18 @@
 #else
 #error This code is intended to run on the RP2040 mbed_nano, mbed_rp2040 or arduino-pico platform! Please check your Tools->Board setting.
 #endif
+
+#define ARM_MIN 1000		//
+#define ARM_MAX 2000		//
+#define POWER_MIN 0			//
+#define POWER_MAX 100		//
+#define BASE_MOTOR_POWER 10 //< 10% minimal throttle in fly mode for preventing stop of the motors
+#define PIN_ESC_ON 14
+ 
+#define PWM_FREQUENCY 100.0
+#define DUTY_CYCLE__MAX 20000.0
+#define DUTY_CYCLE__MIN 10000.0
+
 class Motor
 {
 	float frequency;
@@ -58,7 +66,7 @@ protected:
 	uint16_t _power;
 	int16_t _maxPower;
 	motorstate_e _motorstate;
-	static uint8_t _instance;
+	uint8_t _instance;
 	uint8_t _motor_address; ///< Gives everyone axis a title
 
 public:
@@ -67,7 +75,7 @@ public:
 		_power = 0;
 		_maxPower = 180;
 		_motorstate = off;
-		//	_motor_address  = _instance++;
+	//	_motor_address  = _instance++;
 	};
 
 	void setup()
@@ -78,17 +86,19 @@ public:
 		LOGGER_NOTICE(BOARD_NAME);
 		LOGGER_NOTICE(RP2040_PWM_VERSION);
 
-		frequency = 1000;
-		_motor = new RP2040_PWM(_pin, frequency, 50);
+		LOGGER_NOTICE_FMT("Pin = %d", _pin);
+		_motor = new RP2040_PWM(_pin, PWM_FREQUENCY, 20);
 
 		if (_motor)
 		{
 			_motor->setPWM();
 		}
+		LOGGER_NOTICE_FMT("Pin = %d", _pin);
 
-		//_motor.attach(_pin, ARM_MIN, ARM_MAX);
+		//_motor->setPWM_Int(_pin, PWM_FREQUENCY, DUTY_CYCLE__MIN);
+
 		delay(20);
-		LOGGER_NOTICE_FMT("Motor setup Pin=%d, Motor=%d", _pin, _motor_address);
+		
 		LOGGER_VERBOSE("....leave");
 	} /*------------------------------- end of setup ----------------------------------*/
 
@@ -107,7 +117,6 @@ public:
 			LOGGER_NOTICE_FMT("Motor off %d ", _motor_address);
 			_power = 0;
 			LOGGER_VERBOSE("Not implemented yet");
-			
 			break;
 
 		case on:
@@ -117,7 +126,7 @@ public:
 				resultingPower = BASE_MOTOR_POWER;
 			}
 			LOGGER_VERBOSE("Not implemented yet");
-			// _motor.write((resultingPower * 10) + 0);
+			
 			break;
 		}
 		LOGGER_VERBOSE("....leave");

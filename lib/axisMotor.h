@@ -10,7 +10,6 @@
 #include "axisBase.h"
 #include "motor.h"
 #include "myLogger.h"
-
 class AxisMotor : public AxisBase
 {
 
@@ -20,7 +19,6 @@ public:
 		first,
 		second
 	} motor_t;
-
 	typedef enum
 	{
 		arming_start = 0,
@@ -74,7 +72,7 @@ public:
 		AxisBase::_error = &_axisData->pidError;
 		LOGGER_VERBOSE("....leave");
 		return this;
-	}/*---------------------- setModel -----------------------------------------------------------*/
+	}/*---------------------- setModel ------------------------------------------------*/
 
 	AxisMotor *setMotorPinOrdered(uint8_t _pin)
 	{
@@ -96,15 +94,13 @@ public:
 		}
 		LOGGER_VERBOSE("....leave");
 		return this;
-	}/*---------------------- setMotorPinOrdered -----------------------------------------------------------*/
-
+	} /*---------------------- setMotorPinOrdered -------------------------------------*/
 
 	AxisMotor *InvertRoll()
 	{
 		_invertRoll = true;
 		return this;
-	}
-	/*---------------------- InvertRoll -----------------------------------------------------------*/
+	} /*---------------------- InvertRoll ---------------------------------------------*/
 
 	virtual void begin() override
 	{
@@ -114,7 +110,7 @@ public:
 		_motor[motor_t::first]->setup();
 		_motor[motor_t::second]->setup();
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of begin ----------------------------------*/
+	} /*-------------------------------- end of begin ---------------------------------*/
 
 	virtual void update() override
 	{
@@ -182,7 +178,7 @@ public:
 
 		_motor[motor_t::first]->updateState();
 		_motor[motor_t::second]->updateState();
-	} /*................................... end of update ------------------------------*/
+	} /*..................... end of update -------------------------------------------*/
 
 	void setPower(int16_t _power)
 	{
@@ -191,7 +187,7 @@ public:
 		else
 			_axisData->power = _power;
 
-	} //---------------------- end of setPower -----------------------------------------------------
+	} /*--------------------- end of setPower -----------------------------------------*/
 
 	void setState(motorState_e state)
 	{
@@ -201,33 +197,33 @@ public:
 		delay(DEBUG_DWELL_TIME);
 #endif
 
-	} //---------------------- end of setState -----------------------------------------------------
+	} /*--------------------- end of setState -----------------------------------------*/
 
 	boolean isArmed() const
 	{
 
 		return ((_motor[motor_t::first]->isMotorOff()) && (_motor[motor_t::second]->isMotorOff()));
 
-	} //---------------------- end of isArmed ------------------------------------------------------
+	} /*---------------------- end of isArmed -----------------------------------------*/
 	
-		boolean isDeactivatePID(){	
+	boolean isDeactivatePID(){	
 			LOGGER_VERBOSE("Enter....");
 			return(state == disablePID);
-		}//---------------------- end of isDeactivatePID ----------------------------------------------
+	} /*--------------------- end of isDeactivatePID ----------------------------------*/
 
-		boolean isStandby() const {
+	boolean isStandby() const {
 			LOGGER_VERBOSE("Enter....");
 			return ( state == standby);
-		}//---------------------- end of isStandby ----------------------------------------------------
+	} /*--------------------- end of isStandby ----------------------------------------*/
 
-		boolean isReady() const {
+	boolean isReady() const {
 			LOGGER_VERBOSE("Enter....");
 			return ( state == ready);
-		}//---------------------- end of isReady ------------------------------------------------------
+	} /*---------------------- end of isReady -----------------------------------------*/
 
 		// Motor** getMotor() {
 		// 	return motor;
 
-		// }//---------------------- end of getMotor -----------------------------------------------------
+		// } /*---------------------- end of getMotor ---------------------------------*/
 	
-}; /*................................... end of AxisMotor class ----------------------*/
+}; /*.................................. end of AxisMotor class ------------------------*/
