@@ -7,5 +7,5 @@
 
 #include "Motor.h"
 
-uint8_t Motor::_instance = 0;
+//uint8_t Motor::_instance = 0;
 

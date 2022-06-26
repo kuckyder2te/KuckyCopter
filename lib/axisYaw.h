@@ -75,7 +75,8 @@ public:
 		_yawData = _model;
 		LOGGER_VERBOSE("....leave");
 		return this;
-	}
+	} /*------------------------------- end of setModel ------------------------------*/
+	
 	AxisYaw *setAxisOrdered(AxisMotor *_axis)
 	{
 		LOGGER_VERBOSE("Enter....");
@@ -95,12 +96,12 @@ public:
 		}
 		LOGGER_VERBOSE("....leave");
 		return this;
-	}
+	} /*------------------------------- end of setAxisOrdered -------------------------*/
 
 	virtual void begin()
 	{
 		AxisBase::begin();
-	} /*----------------------------- end of virtual begin ------------------------------*/
+	} /*------------------------------- end of virtual begin --------------------------*/
 
 	virtual void update()
 	{

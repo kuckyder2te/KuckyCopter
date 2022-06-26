@@ -57,12 +57,13 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     _motorAxis[axis_t::Primary]->setState(modules::AxisMotor::disablePID); geändert in
     _yawData->axisData[0]->state = motor_state_e::disablePID;
     Zeile 120 axisYaw.
-    ## Fix 15    2022-06-19 Flycontroller template hinzugefügt
-    ## Fix 17    2022-06-24 Achsen Klassen hizugefügt. Kein Kompiler Fehler. Muss noch aufgerämt werden.
-    ## Fix 18    2022-06-25 Flycontroller.h teileweise implementiert (ohne model Abhänigkeiten)
-    ## Fix 19    2022-06-25 Flycontroller fertig. Stichworte
+    ## Fix 15   2022-06-19 Flycontroller template hinzugefügt
+    ## Fix 17   2022-06-24 Achsen Klassen hizugefügt. Kein Kompiler Fehler. Muss noch aufgerämt werden.
+    ## Fix 18   2022-06-25 Flycontroller.h teileweise implementiert (ohne model Abhänigkeiten)
+    ## Fix 19   2022-06-25 Flycontroller fertig. Stichworte
                     flyState_e _flyState;
                     AxisYaw *_axisYaw;
                     yawData_t *_yawData;
                     Radio *_radio;
                     Sonic *_sonicData;
+    ## Fix 20   2022-06-26 PWM_RP2040 implementiert. Fehler bei motor.h Zeile 98                
