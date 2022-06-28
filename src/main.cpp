@@ -80,7 +80,7 @@ void setup() {
     Tasks.add<FlyController>("flycontroller")->startFps(100);
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
-    Tasks.add<Battery>("battery")->startFps(1);    
+    Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);    
     Tasks.add<Radio>("radio")->startFps(1);
     LOGGER_NOTICE( "Program is initialized");
   LOGGER_VERBOSE("....leave"); 

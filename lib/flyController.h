@@ -16,7 +16,7 @@
 
 typedef enum
 {
-    fly_arming = 0, ///< When the Kuckycopter is first turned on, the arming starts.
+    arming = 0, ///< When the Kuckycopter is first turned on, the arming starts.
     fly_arming_busy,    /// ist das nötig?
     fly_disablePID,
     fly_standby,  ///< All motors on POWER_MIN
@@ -39,7 +39,9 @@ private:
     AxisYaw *_axisYaw;
     yawData_t *_yawData;
     Radio *_radio;
-    Sonic *_sonicData;
+    Sonic *_sonic;
+    sonicData_t *_sonicData;
+
 
 public:
     FlyController(const String &name)
@@ -62,7 +64,7 @@ public:
     virtual void begin() override
     {
         LOGGER_VERBOSE("Enter....");
-        _flyState = fly_arming;
+        _flyState = arming;
         LOGGER_VERBOSE("....leave");
     }
 
@@ -72,7 +74,7 @@ public:
         switch (_flyState)
         {
 
-        case fly_arming:
+        case arming:
             /* This is only setting, for the first start from the airplane.
              * Main Power ON/ OFF or option switch. */
             LOGGER_NOTICE("arming start");
@@ -81,7 +83,8 @@ public:
             _flyState = fly_arming_busy;
             break;
 
-        case AxisMotor::arming_busy:
+        //case AxisMotor::arming_busy:  // geändert 27-06-2022
+        case fly_arming_busy:
             LOGGER_NOTICE("arming is finished");
 //            LOGGER_NOTICE("not implemented yet");
             if (_axisYaw->isArmed())
@@ -101,8 +104,8 @@ public:
 
         case fly_standby:
             /* Make sure the throttle lever is set to 0 and RC is connected. */
-            //_model.interface.isconnect = true;
-            //_model.interface.payload.rcThrottle = 1;
+            //_radio->interface->isconnect = true;
+            //_radio->interface->payload.rcThrottle = 1;
             LOGGER_NOTICE("standby");
 //            LOGGER_NOTICE("not implemented yet");
             if (_radio->interface->isconnect && (_radio->interface->payload.rcThrottle <= POWER_MIN))
@@ -152,7 +155,7 @@ public:
             /* If everything is checked, the PID controller is activated. */
             LOGGER_NOTICE("FlyController set_pid");
 //            LOGGER_NOTICE("not implemented yet");
-            _yawData->throttle= _radio->interface->payload.rcThrottle;
+            _yawData->throttle = _radio->interface->payload.rcThrottle;
             if (_radio->interface->isconnect && (_radio->interface->payload.rcThrottle >= POWER_LIFT_UP))
             {
                 _axisYaw->setState(AxisYaw::enablePID);
@@ -170,8 +173,8 @@ public:
             LOGGER_NOTICE("fly");
 //            LOGGER_NOTICE("not implemented yet");
             _yawData->throttle= _radio->interface->payload.rcThrottle;
-            //			if ((_model.interface.payload.rcThrottle <= POWER_LIFT_UP) || (_model.usData.distance[US::usNo_e::down] < PID_ACTIVE_AT)) {
-            if ((_radio->interface->payload.rcThrottle <= POWER_LIFT_UP))
+            if ((_radio->interface->payload.rcThrottle <= POWER_LIFT_UP) || (_sonicData->distance < PID_ACTIVE_AT))
+            //if ((_radio->interface->payload.rcThrottle <= POWER_LIFT_UP))
             {
                 _flyState = fly_ground;
             }

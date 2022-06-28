@@ -8,8 +8,8 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 
-#define PIN_BATTERY   26 // analog
-#define PIN_LED_ALERT 8
+#define PIN_BATTERY 26 // analog
+#define PIN_LED_ALERT 10
 
 typedef struct
 {
@@ -26,7 +26,7 @@ public:
     Battery(const String &name)
         : Task::Base(name)
     {
-        LOGGER_VERBOSE("Enter....");
+        LOGGER_VERBOSE("Enter public....");
         LOGGER_VERBOSE("....leave");
     }
 
@@ -36,7 +36,7 @@ public:
 
     Battery *setModel(batteryData_t *_model)
     { // Rückgabe wert ist das eigene Objekt (this)
-        LOGGER_VERBOSE("Enter....");
+        LOGGER_VERBOSE("Enter setModel....");
         _batteryData = _model;
         LOGGER_VERBOSE("....leave");
         return this;
@@ -44,13 +44,15 @@ public:
 
     virtual void begin()
     {
+        LOGGER_VERBOSE("Enter begin....");  
         pinMode(PIN_LED_ALERT, OUTPUT);
         digitalWrite(PIN_LED_ALERT, LOW);
+        LOGGER_VERBOSE("....leave");
     }
 
     virtual void update() override
     {
-        LOGGER_VERBOSE("Enter....");
+        LOGGER_VERBOSE("Enter update....");
 
         //   _batteryData->battery_State = analogRead(PIN_BATTERY);
         //   LOGGER_NOTICE_FMT("Battery state = %i", _batteryData->battery_State);

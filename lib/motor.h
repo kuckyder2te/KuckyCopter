@@ -12,9 +12,6 @@
 #include "def.h"
 #include "myLogger.h"
 
-
-
-
 #define _PWM_LOGLEVEL_ 0
 
 #if (defined(ARDUINO_NANO_RP2040_CONNECT) || defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || \
@@ -72,6 +69,7 @@ protected:
 public:
 	Motor(uint8_t pin) : _pin(pin)
 	{
+		LOGGER_NOTICE_FMT("Pin = %d  %d", _pin, pin);
 		_power = 0;
 		_maxPower = 180;
 		_motorstate = off;
@@ -93,7 +91,7 @@ public:
 		{
 			_motor->setPWM();
 		}
-		LOGGER_NOTICE_FMT("Pin = %d", _pin);
+		//LOGGER_NOTICE_FMT("Pin = %d", _pin);
 
 		//_motor->setPWM_Int(_pin, PWM_FREQUENCY, DUTY_CYCLE__MIN);
 

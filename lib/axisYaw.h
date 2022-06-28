@@ -12,7 +12,6 @@
 
 #define YAW_SENSIBILITY 5
 #define YAW_FINE_TUNING 0.1
-
 typedef struct
 {
 	uint16_t throttle;		///< Corresponds to the "rcThrottle" from rcData
@@ -120,7 +119,7 @@ public:
 			break;
 
 		case arming_power_on:
-			/* All ESC�s will connected with the main power. */
+			/* All ESCs will connected with the main power. */
 			LOGGER_VERBOSE("Enter....");
 			digitalWrite(PIN_ESC_ON, HIGH);
 			delay(20);
@@ -184,30 +183,30 @@ public:
 			break;
 		default:;
 		} /* end of switch */
-	}/* end of virtual service ------------------------------------------------------------------*/
+	} /*--------------------- end of virtual service ----------------------------------*/
 
 	void setState(state_e state)
 	{
-		_state = state;
 		LOGGER_NOTICE_FMT("set YawAxis State = %d", _state);
-	} /*---------------------- end of setState -----------------------------------------------------*/
+		_state = state;
+		LOGGER_NOTICE("Leave  setState");
+	} /*---------------------- end of setState ----------------------------------------*/
 
 	boolean isArmed()
 	{
 		return ((_state == arming_finished)) && (_axisMotor[axis_t::Primary]->isArmed()) && (_axisMotor[axis_t::Secondary]->isArmed());
 		LOGGER_NOTICE_FMT("get YawAxis State %d ", _state);
-	} /*---------------------- end of isArmed ------------------------------------------------------*/
+	} /*---------------------- end of isArmed -----------------------------------------*/
 
 	boolean isDeactivatePID()
 	{
 		return ((_state == disablePID)) && (_axisMotor[axis_t::Primary]->isDeactivatePID()) && (_axisMotor[axis_t::Secondary]->isDeactivatePID());
 		LOGGER_NOTICE_FMT("Yaw isDeactivatePID ", _state);
-	} /*---------------------- end of isDeactivatePID ----------------------------------------------*/
+	} /*---------------------- end of isDeactivatePID ---------------------------------*/
 
 	boolean isReady()
 	{
 		return ((_state == ready))  && (_axisMotor[axis_t::Primary]->isReady()) && (_axisMotor[axis_t::Secondary]->isReady());
 		LOGGER_NOTICE_FMT("getYawAxisState %d ", _state);
-	} /*---------------------- end of isReady ------------------------------------------------------*/
-};
-/* -------------------------- end of AxisYaw Class ----------------------------------------------*/
+	} /*---------------------- end of isReady -----------------------------------------*/
+}; /* ------------------------ end of AxisYaw Class -----------------------------------*/
