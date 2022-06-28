@@ -34,8 +34,7 @@ public:
    
 protected:
     UltraSonicDistanceSensor *_distanceSensor;  
- 
-        
+   
 public:
     Sonic(const String& name) : Task::Base(name) ,b(false){
     

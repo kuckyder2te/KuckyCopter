@@ -18,6 +18,7 @@ typedef struct {
 //	baseData_t baseData;
 	AxisMotor::axisData_t axisData[2];
 	yawData_t  yawData;
+	batteryData_t batteryData;
 //	pidData_t pidData[3];
 //	flyState_e flyState;
 } model_t;
