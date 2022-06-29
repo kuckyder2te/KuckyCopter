@@ -185,6 +185,10 @@ public:
 		} /* end of switch */
 	} /*--------------------- end of virtual service ----------------------------------*/
 
+	void test(){
+		LOGGER_NOTICE("Dies ist ein Testaufruf");
+	}  /*---------------------- end of test -------------------------------------------*/
+
 	void setState(state_e state)
 	{
 		LOGGER_NOTICE_FMT("set YawAxis State = %d", _state);
@@ -194,8 +198,10 @@ public:
 
 	boolean isArmed()
 	{
-		return ((_state == arming_finished)) && (_axisMotor[axis_t::Primary]->isArmed()) && (_axisMotor[axis_t::Secondary]->isArmed());
 		LOGGER_NOTICE_FMT("get YawAxis State %d ", _state);
+	//	return true;
+		return ((_state == arming_finished)) && (_axisMotor[axis_t::Primary]->isArmed()) && (_axisMotor[axis_t::Secondary]->isArmed());
+		
 	} /*---------------------- end of isArmed -----------------------------------------*/
 
 	boolean isDeactivatePID()
