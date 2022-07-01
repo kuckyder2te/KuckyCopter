@@ -4,21 +4,37 @@
     Author: Wilhelm Kuckelsberg
 	Description: Global constance
 */
+#pragma once
 
+#include "sensors.h"
+#include "sonic.h"
+#include "radio.h"
 #include "performance.h"
-//#include "axisBase.h" // auskommentziert 2022-06-25
-// #include "AxisYaw.h"
-//#include "motorAxis.h"
-// #include "Motor.h"
+#include "axisYaw.h"
+#include "axisMotor.h"
+#include "battery.h"
+
+typedef enum
+    {
+        arming_begin = 0, ///< When the Kuckycopter is first turned on, the arming starts.
+        arming_busy,    /// ist das nötig?
+        disablePID,
+        standby,  ///< All motors on POWER_MIN
+        prestart, ///< All motors on standby and ready to fly. (POWER_MIN)
+        takeoff,  ///< The Quadrocopter takes off.
+        set_pid,  ///< Fly without PID-Output = 0
+        fly,      ///< Normal fly mode
+        ground    ///< Kuckycopter stand on the ground
+    } flyState_e;
+
 typedef struct {
 	sensorData_t sensorData;	// Data from imu and baro
 	sonicData_t  sonicData;
 	performance_t performance;
 	interface_t interface;
-//	baseData_t baseData;
 	AxisMotor::axisData_t axisData[2];
 	yawData_t  yawData;
 	batteryData_t batteryData;
 //	pidData_t pidData[3];
-//	flyState_e flyState;
+	flyState_e flyState;
 } model_t;

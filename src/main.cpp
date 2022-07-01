@@ -63,13 +63,13 @@ void setup() {
   LOGGER_VERBOSE("Enter....");
     Tasks.add<AxisMotor>("axismotor_a")
       ->setModel(&model.axisData[0])
-      ->setMotorPinOrdered(PIN_MOTOR_FL)
-      ->setMotorPinOrdered(PIN_MOTOR_BR)
+      ->initMotorOrdered(PIN_MOTOR_FL)
+      ->initMotorOrdered(PIN_MOTOR_BR)
       ->startFps(_AXIS_FPS);
     Tasks.add<AxisMotor>("axismotor_b")
       ->setModel(&model.axisData[1])
-      ->setMotorPinOrdered(PIN_MOTOR_FR)
-      ->setMotorPinOrdered(PIN_MOTOR_BL)
+      ->initMotorOrdered(PIN_MOTOR_FR)
+      ->initMotorOrdered(PIN_MOTOR_BL)
       ->InvertRoll()
       ->startFps(_AXIS_FPS);
     Tasks.add<AxisYaw>("axisyaw")
@@ -77,7 +77,10 @@ void setup() {
       ->setAxisOrdered(reinterpret_cast<AxisMotor*>(Tasks["axismotor_a"].get()))
       ->setAxisOrdered(reinterpret_cast<AxisMotor*>(Tasks["axismotor_b"].get()))
       ->startFps(_AXIS_FPS);
-    Tasks.add<FlyController>("flycontroller")->startFps(100);
+    Tasks.add<FlyController>("flycontroller")
+      ->init(&model)    // bekommt das komplette Model, Master of Desater!!
+      ->setYawAxis(reinterpret_cast<AxisYaw*>(Tasks["axisyaw"].get()))
+      ->startFps(100);
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
     Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);    

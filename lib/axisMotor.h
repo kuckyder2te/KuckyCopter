@@ -70,11 +70,13 @@ public:
 		AxisBase::_sp = &_axisData->setpoint; /// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisDatat->setpoint holt
 		AxisBase::_fb = _axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
+		
+		
 		LOGGER_VERBOSE("....leave");
 		return this;
 	}/*---------------------- setModel ------------------------------------------------*/
 
-	AxisMotor *setMotorPinOrdered(uint8_t _pin)
+	AxisMotor *initMotorOrdered(uint8_t _pin)
 	{
 		LOGGER_VERBOSE("Enter....");
 		LOGGER_NOTICE_FMT("PIN:%d", _pin);
@@ -82,11 +84,13 @@ public:
 		{
 			LOGGER_NOTICE("Set first Motor");
 			_motor[motor_t::first] = new Motor(_pin);
+			_motor[motor_t::first]->setup();
 		}
 		else if (_motor[motor_t::second] == NULL)
 		{
 			LOGGER_NOTICE("Set second Motor");
 			_motor[motor_t::second] = new Motor(_pin);
+			_motor[motor_t::second]->setup();
 		}
 		else
 		{
@@ -107,8 +111,7 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		LOGGER_VERBOSE_FMT("%s", this->getName().c_str()); // Adresse von array of char
 		AxisBase::begin();
-		_motor[motor_t::first]->setup();
-		_motor[motor_t::second]->setup();
+		
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of begin ---------------------------------*/
 

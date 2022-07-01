@@ -38,7 +38,7 @@
 #define POWER_MIN 0			//
 #define POWER_MAX 100		//
 #define BASE_MOTOR_POWER 10 //< 10% minimal throttle in fly mode for preventing stop of the motors
-#define PIN_ESC_ON 14
+#define PIN_ESC_ON 15
  
 #define PWM_FREQUENCY 100.0
 #define DUTY_CYCLE__MAX 20000.0
@@ -73,7 +73,7 @@ public:
 		_power = 0;
 		_maxPower = 180;
 		_motorstate = off;
-	//	_motor_address  = _instance++;
+		_motor_address  = _instance++;
 	};
 
 	void setup()
@@ -91,9 +91,11 @@ public:
 		{
 			_motor->setPWM();
 		}
-		//LOGGER_NOTICE_FMT("Pin = %d", _pin);
+		LOGGER_NOTICE_FMT("Pin = %d", _pin);
 
-		//_motor->setPWM_Int(_pin, PWM_FREQUENCY, DUTY_CYCLE__MIN);
+		if(!_motor->setPWM_Int(_pin, PWM_FREQUENCY, DUTY_CYCLE__MIN)){
+			LOGGER_FATAL_FMT("PWM-Pin %d not known",_pin);
+		};
 
 		delay(20);
 		
