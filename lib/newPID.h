@@ -61,7 +61,7 @@ public:
 	{
 	LOGGER_NOTICE_FMT("Disabled PID controller %d ", _pidInstance);
 		//		FastPID::setCoefficients(PID_P_MIN, 0.0, 0.0, getExecutionTime());
-	} //-------------------------------- end of deactivatePID --------------------------------------
+	} /*-------------------------------- end of deactivatePID -------------------------*/
 
 	void enablePID()
 	{
@@ -69,7 +69,7 @@ public:
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
 
-	} //-------------------------------- end of activatePID --------------------------------------------
+	} /*-------------------------------- end of activatePID ---------------------------*/
 
 	void setP(float p)
 	{
@@ -80,7 +80,7 @@ public:
 			_kP = PID_P_MIN;
 		//		_pidData.pidCoefficient[coeffizient_t::kP]=_kP;
 		enablePID();
-	} //-------------------------------- end of setP -----------------------------------------------
+	} /*-------------------------------- end of setP ----------------------------------*/
 
 	void setI(float i)
 	{
@@ -90,7 +90,7 @@ public:
 			_kI = 0;
 		//	_pidData.pidCoefficient[coeffizient_t::kI]=_kI;
 		enablePID();
-	} //-------------------------------- end of setI -----------------------------------------------
+	} /*-------------------------------- end of setI ----------------------------------*/
 
 	void setD(float d)
 	{
@@ -100,14 +100,14 @@ public:
 			_kD = 0;
 		//	_pidData.pidCoefficient[coeffizient_t::kD]=_kD;
 		enablePID();
-	} //-------------------------------- end of setD -----------------------------------------------
+	} /*-------------------------------- end of setD ----------------------------------*/
 
 	void setExecutionFrequency(uint8_t ef)
 	{
 		LOGGER_WARNING_FMT("setExecutionFrequency: %d", ef);
 		//	_pidData.executionFrequency = ef;
 		enablePID();
-	} //-------------------------------- end of setExecutionFrequency ------------------------------
+	} /*-------------------------------- end of setExecutionFrequency -----------------*/
 
 	uint8_t getExecutionTime()
 	{
@@ -115,35 +115,35 @@ public:
 		//	return ((1.0/(float)_pidData.executionFrequency)*1000);
 		///< Convert frequency to millis
 
-	} //-------------------------------- end of getExecutionTime -----------------------------------
+	} /*-------------------------------- end of getExecutionTime ----------------------*/
 	void updateEEPROM(void)
 	{
 		//	EEPROM.put(_EEPROM_startAddress, _pidData);
 		enablePID();
-	} //-------------------------------- end of updateEEPROM ---------------------------------------
+	} /*-------------------------------- end of updateEEPROM --------------------------*/
 
 	void readEEPROM(void)
 	{
 		enablePID();
-	} //-------------------------------- end of readEEPROM -----------------------------------------
+	} /*-------------------------------- end of readEEPROM ----------------------------*/
 
 	float getP() const
 	{
 		return _kP;
-	} //-------------------------------- end of getP -----------------------------------------------
+	} /*-------------------------------- end of getP ----------------------------------*/
 
 	float getI() const
 	{
 		return _kI;
-	} //-------------------------------- end of getI -----------------------------------------------
+	} /*-------------------------------- end of getI ----------------------------------*/
 
 	float getD() const
 	{
 		return _kD;
-	} //-------------------------------- end of getD -----------------------------------------------
+	} /*-------------------------------- end of getD ----------------------------------*/
 
 	float getExFreq() const
 	{
 		//	return _pidData.executionFrequency;
-	} //-------------------------------- end of getExTime ------------------------------------------
-};/*--------------------------- end of MyPid class ------------------------------------------------*/
+	} /*-------------------------------- end of getExTime -----------------------------*/
+};/*--------------------------- end of MyPid class ------------------------------------*/

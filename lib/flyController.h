@@ -15,8 +15,6 @@
 #include "sonic.h"
 #include "model.h"
 
-
-
 #define PIN_LED_STATE 7
 #define POWER_LIFT_UP 60 ///< The KuckyCopter will start, if throttle > 60
 #define DOWN_TIME 2000   ///< Time to turn off the engines (in Microseconds).
@@ -26,12 +24,7 @@ class FlyController : public Task::Base
 public:
     
 private:
-    //flyState_e _flyState;
      AxisYaw *_axisYaw;
-    // yawData_t *_yawData;
-    // Radio *_radio;
-    // Sonic *_sonic;
-    // sonicData_t *_sonicData;
     model_t *_model;
 
 public:
@@ -43,7 +36,7 @@ public:
     virtual ~FlyController() {}
 
     FlyController *init(model_t *model){ // Rückgabe wert ist das eigene Objekt (this)
-      //_axis_data  wird aus dem Model i9n die Achsed geschriene
+                                         //_axis_data  wird aus dem Model in die Achsen geschrieben
         LOGGER_VERBOSE("Enter....");
         _model = model;
         _model->flyState = arming_begin;
@@ -59,7 +52,6 @@ public:
 
     virtual void begin() override   // Wird nach dem Erzeugen das Tasks automatisch aufgerufen. _model ist hier noch nicht bekannt
     {
-
     }
 
     virtual void update() override
@@ -71,13 +63,12 @@ public:
         case arming_begin:
             /* This is only setting, for the first start from the airplane.
              * Main Power ON/OFF or option-switch. */
-            LOGGER_NOTICE("arming start");
+            LOGGER_NOTICE("arming begin");
             _axisYaw->setState(AxisYaw::arming_start);     /// hier bleibt es hängen
             _model->flyState = arming_busy;
-            LOGGER_NOTICE("Leave arming start");
+            LOGGER_NOTICE("Leave arming begin");
             break;
 
-        //case AxisMotor::arming_busy:  // geändert 27-06-2022
         case arming_busy:
             LOGGER_NOTICE("arming is finished");
             if (_axisYaw->isArmed())
@@ -99,7 +90,6 @@ public:
             //_radio->interface->isconnect = true;          // nur zum testen, ob Flycontroller
             //_radio->interface->payload.rcThrottle = 1;    // durchläuft
             LOGGER_NOTICE("standby");
-//            LOGGER_NOTICE("not implemented yet");
             if (_model->interface.isconnect && (_model->interface.payload.rcThrottle <= POWER_MIN))
             {
                 _model->flyState = prestart;
@@ -114,7 +104,6 @@ public:
 
         case prestart:
             LOGGER_NOTICE("prestart");
-//            LOGGER_NOTICE("not implemented yet");
             /* Checked if all axes are OK. */
             _axisYaw->setState(AxisYaw::ready);
             if (_axisYaw->isReady())
@@ -129,7 +118,6 @@ public:
 
             case takeoff:
                 LOGGER_NOTICE("take off");
-                LOGGER_NOTICE("not implemented yet");
                 /* Throttle greater than POWER_LIFT_UP and RC is connected, go to the next state. */
                 //_radio->interface->isconnect = true;          // nur zum testen, ob Flycontroller           
                  _model->yawData.throttle = _model->interface.payload.rcThrottle;
@@ -148,7 +136,6 @@ public:
         case set_pid:
             /* If everything is checked, the PID controller is activated. */
             LOGGER_NOTICE("FlyController set_pid");
-//            LOGGER_NOTICE("not implemented yet");
             //_radio->interface->isconnect = true;          // nur zum testen, ob Flycontroller           
             _model->yawData.throttle = _model->interface.payload.rcThrottle;
             //_radio->interface->payload.rcThrottle = 1;    // durchläuft
@@ -167,7 +154,6 @@ public:
         case fly:
             /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, the status is set to ground. */
             LOGGER_NOTICE("fly");
-//            LOGGER_NOTICE("not implemented yet");
                 //_sonicData->distance > 9;          // nur zum testen, ob Flycontroller             
             _model->yawData.throttle= _model->interface.payload.rcThrottle;
                 //_radio->interface->payload.rcThrottle >= 60;    // durchläuft
@@ -186,8 +172,6 @@ public:
         case ground:
             /* If the quadrocopter is on the ground for more than DOWN_TIME, disable the engines. */
             LOGGER_NOTICE("ground");
-//            LOGGER_NOTICE("not implemented yet");
-
             if (millis() - downTime >= DOWN_TIME)
             {
                 _model->flyState = fly;

@@ -74,7 +74,7 @@ public:
 		_yawData = _model;
 		LOGGER_VERBOSE("....leave");
 		return this;
-	} /*------------------------------- end of setModel ------------------------------*/
+	} /*------------------------------- end of setModel -------------------------------*/
 	
 	AxisYaw *setAxisOrdered(AxisMotor *_axis)
 	{
@@ -108,7 +108,6 @@ public:
 
 		switch (_state)
 		{
-
 		case arming_start:
 			/* The arming procedure will start. */
 			LOGGER_VERBOSE("Enter....");
@@ -199,7 +198,6 @@ public:
 	boolean isArmed()
 	{
 		LOGGER_NOTICE_FMT("get YawAxis State %d ", _state);
-	//	return true;
 		return ((_state == arming_finished)) && (_axisMotor[axis_t::Primary]->isArmed()) && (_axisMotor[axis_t::Secondary]->isArmed());
 		
 	} /*---------------------- end of isArmed -----------------------------------------*/
