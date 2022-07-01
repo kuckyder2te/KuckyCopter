@@ -13,61 +13,67 @@
 #include <DallasTemperature.h>
 #include "myLogger.h"
 
-#define PIN_ECHO        21
-#define PIN_TRIGGER     22
-#define PIN_DALLAS      28
+#define PIN_ECHO 21
+#define PIN_TRIGGER 22
+#define PIN_DALLAS 28
 
 OneWire oneWire(PIN_DALLAS);
 DallasTemperature sens_temperature(&oneWire);
 
 DeviceAddress insideThermometer;
-typedef struct{
+typedef struct
+{
     float temperature;
     double distance;
-//    float coreTemperature;
-}sonicData_t;
-class Sonic : public Task::Base {
-    bool b;         // Klassenvariable
+    //    float coreTemperature;
+} sonicData_t;
+class Sonic : public Task::Base
+{
+    bool b; // Klassenvariable
 
-public:    
-   sonicData_t *_sonicData;
-   
-protected:
-    UltraSonicDistanceSensor *_distanceSensor;  
-   
 public:
-    Sonic(const String& name) : Task::Base(name) ,b(false){
-    
+    sonicData_t *_sonicData;
+
+protected:
+    UltraSonicDistanceSensor *_distanceSensor;
+
+public:
+    Sonic(const String &name) : Task::Base(name), b(false)
+    {
     }
 
     virtual ~Sonic() {}
 
-    Sonic* setModel(sonicData_t* _model){    // Rückgabe wert ist das eigene Objekt (this)
-    LOGGER_VERBOSE("Enter....");
+    Sonic *setModel(sonicData_t *_model)
+    { // Rückgabe wert ist das eigene Objekt (this)
+        LOGGER_VERBOSE("Enter....");
         _sonicData = _model;
-    LOGGER_VERBOSE("....leave");
+        LOGGER_VERBOSE("....leave");
         return this;
     }
 
-    virtual void begin() override {
+    virtual void begin() override
+    {
         LOGGER_VERBOSE("Enter....");
-     //   sens_temperature.requestTemperatures();   // wird nicht ausgeführt, auch nicht im Testcode
+        //   sens_temperature.requestTemperatures();   // wird nicht ausgeführt, auch nicht im Testcode
         _distanceSensor = new UltraSonicDistanceSensor(PIN_TRIGGER, PIN_ECHO);
-    //    coreTemperature = analogReadTemp();
+        //    coreTemperature = analogReadTemp();
         LOGGER_VERBOSE("....leave");
     }
 
-    virtual void enter() override {
+    virtual void enter() override
+    {
         LOGGER_VERBOSE("Enter....");
-     //   _sonicData->temperature = sens_temperature.getTempCByIndex(0);
-          _sonicData->distance = _distanceSensor->measureDistanceCm();
+        //   _sonicData->temperature = sens_temperature.getTempCByIndex(0);
+        _sonicData->distance = _distanceSensor->measureDistanceCm();
         LOGGER_VERBOSE("....leave");
     }
 
-    virtual void update() override {
+    virtual void update() override
+    {
         LOGGER_VERBOSE("Enter....");
-     //   LOGGER_NOTICE_FMT("Temperature: %.2f *C", _sonicData->temperature);
+        //   LOGGER_NOTICE_FMT("Temperature: %.2f *C", _sonicData->temperature);
         LOGGER_NOTICE_FMT("Distance: %.2f cm", _distanceSensor->measureDistanceCm());
         LOGGER_VERBOSE("....leave");
     }
-};/*----------------------------------- end of sonic.h class ----------------------------*/
+};/*----------------------------------- end of sonic.h class --------------------------*/

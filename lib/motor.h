@@ -79,11 +79,6 @@ public:
 	void setup()
 	{
 		LOGGER_VERBOSE("Enter....");
-		LOGGER_VERBOSE("Not implemented yet");
-		LOGGER_NOTICE("Starting PWM_DynamicDutyCycle on ");
-		LOGGER_NOTICE(BOARD_NAME);
-		LOGGER_NOTICE(RP2040_PWM_VERSION);
-
 		LOGGER_NOTICE_FMT("Pin = %d", _pin);
 		_motor = new RP2040_PWM(_pin, PWM_FREQUENCY, 20);
 
@@ -130,7 +125,7 @@ public:
 			break;
 		}
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of updateState ----------------------------------------------
+	} /*-------------------------- end of updateState ---------------------------------*/
 
 	/* Motor is attached with a PIN and set the power to 2000 ms.
 	 * After this set the power to 1000 ms and the arming is finished.*/
@@ -143,25 +138,25 @@ public:
 			if (!step)
 			{
 				LOGGER_NOTICE_FMT("Arming begin max: %d", ARM_MAX);
-				LOGGER_VERBOSE("Not implemented yet");
+				LOGGER_FATAL("Not implemented yet");
 				//	_motor.write(180);		///< Arming begin
 			}
 			else
 			{
 				//	_motor.write(0);		///< Arming end
 				LOGGER_NOTICE_FMT("Arming fineshed min %d", ARM_MIN);
-				LOGGER_VERBOSE("Not implemented yet");
+				LOGGER_FATAL("Not implemented yet");
 			}
 		}
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of armingProcedure ---------------------------------------------------
+	} /*-------------------------- end of armingProcedure -----------------------------*/
 
 	uint16_t getPower() const
 	{
 		LOGGER_VERBOSE("Enter....");
 		return _power;
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of getPower -------------------------------------------------
+	} /*-------------------------- end of getPower ------------------------------------*/
 
 	uint16_t setPower(int16_t power)
 	{
@@ -180,14 +175,14 @@ public:
 		}
 		return _power;
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of setPower -------------------------------------------------
+	} /*-------------------------- end of setPower ------------------------------------*/
 
 	uint8_t getMaxPower() const
 	{
 		LOGGER_VERBOSE("Enter....");
 		return _maxPower;
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of getMaxPower -----------------------------------
+	} /*-------------------------- end of getMaxPower ---------------------------------*/
 
 	void setMaxPower(uint8_t maxPower)
 	{
@@ -197,19 +192,19 @@ public:
 		else
 			_maxPower = maxPower;
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of setMaxPower -----------------------------------
+	} /*-------------------------- end of setMaxPower ---------------------------------*/
 
 	bool isMotorOff()
 	{
 		LOGGER_VERBOSE("Enter....");
 		return (_motorstate == off);
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of isMotorOn -------------------------------------
+	} /*-------------------------- end of isMotorOn -----------------------------------*/
 
 	void setMotorStates(motorstate_e state)
 	{
 		LOGGER_VERBOSE("Enter....");
 		_motorstate = state;
 		LOGGER_VERBOSE("....leave");
-	} //-------------------------- end of setMotorStates --------------------------------
+	} /*-------------------------- end of setMotorStates ------------------------------*/
 };	  /*--------------------------- end of Motor class --------------------------------*/

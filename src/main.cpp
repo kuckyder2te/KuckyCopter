@@ -34,6 +34,11 @@
 #define COM_SPEED     9600
 #define BT_SPEED      9600
 
+#define PIN_MOTOR_FL    11
+#define PIN_MOTOR_FR    12
+#define PIN_MOTOR_BL    13
+#define PIN_MOTOR_BR    14
+
 model_t model;      /// Speicherplatz wird angelegt und instanziert
 UART Serial2(PIN_BT_TX, PIN_BT_RX);
 

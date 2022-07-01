@@ -70,11 +70,10 @@ public:
 		AxisBase::_sp = &_axisData->setpoint; /// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisDatat->setpoint holt
 		AxisBase::_fb = _axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
-		
-		
+
 		LOGGER_VERBOSE("....leave");
 		return this;
-	}/*---------------------- setModel ------------------------------------------------*/
+	} /*---------------------- setModel ------------------------------------------------*/
 
 	AxisMotor *initMotorOrdered(uint8_t _pin)
 	{
@@ -111,7 +110,7 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		LOGGER_VERBOSE_FMT("%s", this->getName().c_str()); // Adresse von array of char
 		AxisBase::begin();
-		
+
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of begin ---------------------------------*/
 
@@ -194,12 +193,8 @@ public:
 
 	void setState(motorState_e state)
 	{
-		state = state;
-#ifdef AXISMOTOR_STATE
-		LOG("set AxisMotor State = %d", _state);
-		delay(DEBUG_DWELL_TIME);
-#endif
-
+		//	_state = state;
+		//	LOGGER_NOTICE_FMT("set AxisMotor State = %d", _state);
 	} /*--------------------- end of setState -----------------------------------------*/
 
 	boolean isArmed() const
@@ -208,25 +203,28 @@ public:
 		return ((_motor[motor_t::first]->isMotorOff()) && (_motor[motor_t::second]->isMotorOff()));
 
 	} /*---------------------- end of isArmed -----------------------------------------*/
-	
-	boolean isDeactivatePID(){	
-			LOGGER_VERBOSE("Enter....");
-			return(state == disablePID);
+
+	boolean isDeactivatePID()
+	{
+		LOGGER_VERBOSE("Enter....");
+		return (state == disablePID);
 	} /*--------------------- end of isDeactivatePID ----------------------------------*/
 
-	boolean isStandby() const {
-			LOGGER_VERBOSE("Enter....");
-			return ( state == standby);
+	boolean isStandby() const
+	{
+		LOGGER_VERBOSE("Enter....");
+		return (state == standby);
 	} /*--------------------- end of isStandby ----------------------------------------*/
 
-	boolean isReady() const {
-			LOGGER_VERBOSE("Enter....");
-			return ( state == ready);
+	boolean isReady() const
+	{
+		LOGGER_VERBOSE("Enter....");
+		return (state == ready);
 	} /*---------------------- end of isReady -----------------------------------------*/
 
-		// Motor** getMotor() {
-		// 	return motor;
+	// Motor** getMotor() {
+	// 	return motor;
 
-		// } /*---------------------- end of getMotor ---------------------------------*/
-	
+	// } /*---------------------- end of getMotor ---------------------------------*/
+
 }; /*.................................. end of AxisMotor class ------------------------*/

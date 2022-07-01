@@ -149,7 +149,7 @@ public:
         _radio->printPrettyDetails(); // (larger) function that prints human readable data
 
         LOGGER_VERBOSE("..,.leave");
-    } // ----------------------------- end of begin ----------------------------------*/
+    } /*----------------------------- end of begin ------------------------------------*/
 
     // optional (you can remove this method)
     // virtual void enter() override {
@@ -220,5 +220,5 @@ public:
             }
         }
         LOGGER_VERBOSE("....leave");
-    } // ------------------- end of update --------------------------------------*/
-};    /*----------------------------- end of radio.h class ------------------*/
+    } // ------------------- end of update --------------------------------------------*/
+}; /*----------------------------- end of radio.h class -------------------------------*/
