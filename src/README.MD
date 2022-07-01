@@ -68,4 +68,5 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
                     Sonic *_sonicData;
     ## Fix 20   2022-06-26 PWM_RP2040 implementiert. Fehler bei motor.h Zeile 98  und battery.h Zeile 49   
     ## Fix 21   2022-06-27 Platformio.ini upload_port = picotool. Keine Änderung zu erkennen   
-    ## Fix 22   2022-06-28 Prgramm läuft durch bis Flycontroller.h Zeile 82. Stats werden nicht richtig übergeben       
+    ## Fix 22   2022-06-28 Prgramm läuft durch bis Flycontroller.h Zeile 82. Stats werden nicht richtig übergeben   
+    ## Fix 23   2022-06-29 Im Flycontroller eine Testaufruf auf AxisYaw hinzugefügt und funktioniert    
