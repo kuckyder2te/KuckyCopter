@@ -77,3 +77,5 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
                                                 Def.h geleert Define MotorPins in main.
                                                 Sensors 123
                                                 sonic Temperature
+    ## Fix 26   2022-07-04  Siehe Fix 25
+                            NewPID Funktionen wieder einkommentiert

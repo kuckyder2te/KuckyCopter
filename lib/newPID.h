@@ -11,6 +11,7 @@
  *      Sec		0,14	0,18	0,102
  *      Yaw		0,01	0		0
  */
+#pragma once
 
 #include "def.h"
 #include <FastPID.h>
@@ -78,7 +79,8 @@ public:
 		_kP = p;
 		if (_kP <= PID_P_MIN)
 			_kP = PID_P_MIN;
-		//		_pidData.pidCoefficient[coeffizient_t::kP]=_kP;
+
+		_pidData->pidCoefficient[coeffizient_t::kP]=_kP;
 		enablePID();
 	} /*-------------------------------- end of setP ----------------------------------*/
 
@@ -88,7 +90,8 @@ public:
 		_kI = i;
 		if (_kI <= 0)
 			_kI = 0;
-		//	_pidData.pidCoefficient[coeffizient_t::kI]=_kI;
+
+		_pidData->pidCoefficient[coeffizient_t::kI]=_kI;
 		enablePID();
 	} /*-------------------------------- end of setI ----------------------------------*/
 
@@ -98,21 +101,22 @@ public:
 		_kD = d;
 		if (_kD <= 0)
 			_kD = 0;
-		//	_pidData.pidCoefficient[coeffizient_t::kD]=_kD;
+
+		_pidData->pidCoefficient[coeffizient_t::kD]=_kD;
 		enablePID();
 	} /*-------------------------------- end of setD ----------------------------------*/
 
 	void setExecutionFrequency(uint8_t ef)
 	{
 		LOGGER_WARNING_FMT("setExecutionFrequency: %d", ef);
-		//	_pidData.executionFrequency = ef;
+		_pidData->executionFrequency = ef;
 		enablePID();
 	} /*-------------------------------- end of setExecutionFrequency -----------------*/
 
 	uint8_t getExecutionTime()
 	{
 		LOGGER_WARNING_FMT("PID getExecutionTime %d", (1 / _pidData->executionFrequency) * 1000);
-		//	return ((1.0/(float)_pidData.executionFrequency)*1000);
+		return ((1.0/(float)_pidData->executionFrequency)*1000);
 		///< Convert frequency to millis
 
 	} /*-------------------------------- end of getExecutionTime ----------------------*/
@@ -144,6 +148,6 @@ public:
 
 	float getExFreq() const
 	{
-		//	return _pidData.executionFrequency;
+		return _pidData->executionFrequency;
 	} /*-------------------------------- end of getExTime -----------------------------*/
 };/*--------------------------- end of MyPid class ------------------------------------*/
