@@ -17,8 +17,8 @@
 #include <FastPID.h>
 #include "myLogger.h"
 
-#define PID_FREQUENCY        50				///< PID parameter
-#define PID_P_MIN			  0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
+#define PID_FREQUENCY      50				///< PID parameter
+#define PID_P_MIN			0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
 #define PID_EEPROM_ADRRESS 50
 typedef struct
 {
@@ -35,7 +35,7 @@ typedef enum
 	kD
 } coeffizient_t;
 
-class NewPID
+class NewPID : public FastPID
 { 
 
 private:
@@ -61,7 +61,7 @@ public:
 	void disablePID()
 	{
 	LOGGER_NOTICE_FMT("Disabled PID controller %d ", _pidInstance);
-		//		FastPID::setCoefficients(PID_P_MIN, 0.0, 0.0, getExecutionTime());
+			FastPID::setCoefficients(PID_P_MIN, 0.0, 0.0, getExecutionTime());
 	} /*-------------------------------- end of deactivatePID -------------------------*/
 
 	void enablePID()
@@ -69,6 +69,10 @@ public:
 		/* This function has 2 tasks.
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
+			FastPID::setCoefficients(_pidData->pidCoefficient[coeffizient_t::kP],
+								 	 _pidData->pidCoefficient[coeffizient_t::kI],
+								 	 _pidData->pidCoefficient[coeffizient_t::kD],
+								 	 getExecutionTime());
 
 	} /*-------------------------------- end of activatePID ---------------------------*/
 
