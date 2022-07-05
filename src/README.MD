@@ -79,3 +79,4 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
                                                 sonic Temperature
     ## Fix 26   2022-07-04  Siehe Fix 25
                             NewPID Funktionen wieder einkommentiert
+                            FastPID nach NewPID vererbt
