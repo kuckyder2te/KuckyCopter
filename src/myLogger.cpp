@@ -22,16 +22,16 @@ char logBuf[100];
 void localLogger(Logger::Level level, const char* module, const char* message)
 {
 #ifdef LOG_TIMESTAMP
-  Serial2.print(millis());
-  Serial2.print(" - ");
+  Serial.print(millis());
+  Serial.print(" - ");
 #endif
-  Serial2.print(F("["));
-  Serial2.print(Logger::asString(level));
-  Serial2.print(F("]:"));
+  Serial.print(F("["));
+  Serial.print(Logger::asString(level));
+  Serial.print(F("]:"));
   if (strlen(module) > 0)
   {
-      Serial2.print(module);
-      Serial2.print(":");
+      Serial.print(module);
+      Serial.print(":");
   }
-  Serial2.println(message);
+  Serial.println(message);
 }
