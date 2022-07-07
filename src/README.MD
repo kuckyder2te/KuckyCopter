@@ -83,3 +83,4 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Task 28  2022-07-07  PID_adjust und GUI erolgreich implementiert. 
     ## Task 29  2022-07-07  PID Menü wir kurz angezeigt und dann vom Logger überschrieben fix
     ## Task 30  2022-07-07  PID Anzeige auf BT Modul, Logger auf miniterm
+    ## Task 31  2022-07-07  LOGGER via Platformio.ini -_MINITERM ein ausschalten
