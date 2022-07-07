@@ -113,7 +113,7 @@ public:
         }
         char input = Serial2.parseInt();
         radioNumber = input == 1;
-        LOGGER_NOTICE_FMT("RadioNumber = %f", radioNumber);
+        LOGGER_NOTICE_FMT("RadioNumber = %.1f", radioNumber);
 
         // role variable is hardcoded to RX behavior, inform the user of this
         LOGGER_NOTICE("*** PRESS 'T' to begin transmitting to the other node");

@@ -168,9 +168,9 @@ public:
 
 	virtual void begin() override
 	{
-		//	LOGGER_VERBOSE("Enter....");
-			display_Menu();
-		//	LOGGER_VERBOSE("....leave");
+	LOGGER_VERBOSE("Enter....");
+	//	display_Menu();
+	LOGGER_VERBOSE("....leave");
 	}
 
 	virtual void update() override
@@ -354,7 +354,7 @@ public:
 
 	void display_Menu()
 	{
-		//	LOGGER_VERBOSE("Enter....");
+	LOGGER_VERBOSE("Enter....");
 		_gui->clear();
 		_gui->clear();
 		_gui->gray();
@@ -379,7 +379,7 @@ public:
 		_gui->gray();
 		_gui->print(ROW_MENU + 19, COL_MENU, "-----------------------------------------------------");
 		_gui->yellow();
-		//	LOGGER_VERBOSE("....leave");
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of display_Menu --------------------------------*/
 
 	void displayPIDcoefficients()
