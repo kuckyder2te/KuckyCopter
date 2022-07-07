@@ -80,3 +80,4 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Fix 26   2022-07-04  Siehe Fix 25
                             NewPID Funktionen wieder einkommentiert
                             FastPID nach NewPID vererbt
+    ## Task 28  2021-07-07  PID_adjust und GUI erolgreich implementiert. 

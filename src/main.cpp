@@ -26,6 +26,8 @@
 #include "..\lib\flyController.h"
 #include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
+#include "..\lib\PID_adjust.h"
+//#include "..\lib\GUI.h"
 #include "..\lib\model.h"
 #include "..\lib\def.h"
 
@@ -41,6 +43,8 @@
 
 model_t model;      /// Speicherplatz wird angelegt und instanziert
 UART Serial2(PIN_BT_TX, PIN_BT_RX);
+
+PID_adjust *_pid_adjust;
 
 void setup() {
   LOGGER_NOTICE( "Program will initialized");
@@ -90,6 +94,11 @@ void setup() {
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
     Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);    
     Tasks.add<Radio>("radio")->startFps(1);
+
+	  Tasks.add<PID_adjust>("pidadjust")->setSerial(&Serial2)->startFps(10);
+   // _pid_adjust = reinterpret_cast<PID_adjust *>(Tasks["pidadjust"].get());
+   // _pid_adjust->display_Menu();
+
     LOGGER_NOTICE( "Program is initialized");
   LOGGER_VERBOSE("....leave"); 
 }/*-------------------- end of setup ------------------------------------------*/
