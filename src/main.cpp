@@ -96,8 +96,8 @@ void setup() {
     Tasks.add<Radio>("radio")->startFps(1);
 
 	  Tasks.add<PID_adjust>("pidadjust")->setSerial(&Serial2)->startFps(10);
-   // _pid_adjust = reinterpret_cast<PID_adjust *>(Tasks["pidadjust"].get());
-   // _pid_adjust->display_Menu();
+   _pid_adjust = reinterpret_cast<PID_adjust *>(Tasks["pidadjust"].get());
+   _pid_adjust->display_Menu();
 
     LOGGER_NOTICE( "Program is initialized");
   LOGGER_VERBOSE("....leave"); 
