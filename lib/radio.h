@@ -169,7 +169,7 @@ public:
             if (report)
             {
                 LOGGER_NOTICE("Transmission successful! ");                           // payload was delivered
-                LOGGER_NOTICE_FMT("Time to transmit = %f/", end_timer - start_timer); // print the timer result
+                LOGGER_NOTICE_FMT("Time to transmit = %i", end_timer - start_timer); // print the timer result
                 LOGGER_NOTICE_FMT("us. Sent: %f", payload);                           // print payload sent
                 payload += 0.01;                                                      // increment float payload
             }
@@ -187,7 +187,7 @@ public:
                 digitalWrite(PIN_RADIO_LED, LOW);
                 uint8_t bytes = _radio->getPayloadSize(); // get the size of the payload
                 _radio->read(&payload, bytes);            // fetch payload from FIFO
-                LOGGER_NOTICE_FMT("Received %f bytes of pipe %f : %f", bytes, pipe, payload);
+                LOGGER_NOTICE_FMT("Received %d bytes of pipe %d : %f", bytes, pipe, payload);
                 // Serial.print(bytes);                    // print the size of the payload
                 // LOGGER_NOTICE(" bytes on pipe ");
                 // Serial.print(pipe);                     // print the pipe number

@@ -13,6 +13,12 @@ daraus wird
 https://www.tutorialspoint.com/c_standard_library/c_function_sprintf.htm
 
 Die Gesamtlänge der Nachricht darf 100 Bytes nicht überschreiten
+
+Erweitert : 2022:07:08
+Autor: Wilhelm Kuckelsberg
+       via "#ifdef _MINITERM" kann nun die Ausgabe zwischen Serial und Serial2 gewechselt werden
+       MINITERM ist das interne Terminal von PlatformIO
+
 */
 
 #include "..\lib\myLogger.h"

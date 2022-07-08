@@ -78,7 +78,7 @@ public:
 
 	void setP(float p)
 	{
-		LOGGER_NOTICE_FMT("setP: %d", p);
+		LOGGER_NOTICE_FMT("setP: %f", p);
 
 		_kP = p;
 		if (_kP <= PID_P_MIN)
@@ -90,7 +90,7 @@ public:
 
 	void setI(float i)
 	{
-		LOGGER_NOTICE_FMT("setI: %d", i);
+		LOGGER_NOTICE_FMT("setI: %f", i);
 		_kI = i;
 		if (_kI <= 0)
 			_kI = 0;
@@ -101,7 +101,7 @@ public:
 
 	void setD(float d)
 	{
-		LOGGER_NOTICE_FMT("setD: %d", d);
+		LOGGER_NOTICE_FMT("setD: %f", d);
 		_kD = d;
 		if (_kD <= 0)
 			_kD = 0;
@@ -119,7 +119,7 @@ public:
 
 	uint8_t getExecutionTime()
 	{
-		LOGGER_WARNING_FMT("PID getExecutionTime %d", (1 / _pidData->executionFrequency) * 1000);
+		LOGGER_WARNING_FMT("PID getExecutionTime %f", (1 / _pidData->executionFrequency) * 1000);
 		return ((1.0/(float)_pidData->executionFrequency)*1000);
 		///< Convert frequency to millis
 

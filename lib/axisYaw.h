@@ -205,7 +205,7 @@ public:
 	boolean isDeactivatePID()
 	{
 		return ((_state == disablePID)) && (_axisMotor[axis_t::Primary]->isDeactivatePID()) && (_axisMotor[axis_t::Secondary]->isDeactivatePID());
-		LOGGER_NOTICE_FMT("Yaw isDeactivatePID ", _state);
+		LOGGER_NOTICE_FMT("Yaw isDeactivatePID %d", _state);
 	} /*---------------------- end of isDeactivatePID ---------------------------------*/
 
 	boolean isReady()
