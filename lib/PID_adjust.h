@@ -175,10 +175,11 @@ public:
 
 	virtual void update() override
 	{
-		//	LOGGER_VERBOSE("Enter....");
+	LOGGER_VERBOSE("Enter....");
 
 		if (_serial->available() > 0) // Hier werden die gedrückten keys abgefragt
 		{
+			LOGGER_FATAL("Enter...._serial->available");
 			char key = _serial->read();
 			switch (key)
 			{
@@ -348,8 +349,9 @@ public:
 				_gui->yellow();
 			}
 			} /* end of switch(key) */
+		LOGGER_FATAL("Leave...._serial->available");
 		}	  /* end of _serial.available */
-			  //	LOGGER_VERBOSE("....leave");
+	LOGGER_VERBOSE("....leave");
 	}		  /* -------------------- end of update -------------------------------------------*/
 
 	void display_Menu()
