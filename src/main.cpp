@@ -41,6 +41,8 @@
 #define PIN_MOTOR_BL    13
 #define PIN_MOTOR_BR    14
 
+#define AXIS_FPS 100
+
 model_t model;      /// Speicherplatz wird angelegt und instanziert
 UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
@@ -74,18 +76,18 @@ void setup() {
       ->setModel(&model.axisData[0])
       ->initMotorOrdered(PIN_MOTOR_FL)
       ->initMotorOrdered(PIN_MOTOR_BR)
-      ->startFps(_AXIS_FPS);
+      ->startFps(AXIS_FPS);
     Tasks.add<AxisMotor>("axismotor_b")
       ->setModel(&model.axisData[1])
       ->initMotorOrdered(PIN_MOTOR_FR)
       ->initMotorOrdered(PIN_MOTOR_BL)
       ->InvertRoll()
-      ->startFps(_AXIS_FPS);
+      ->startFps(AXIS_FPS);
     Tasks.add<AxisYaw>("axisyaw")
       ->setModel(&model.yawData)
       ->setAxisOrdered(reinterpret_cast<AxisMotor*>(Tasks["axismotor_a"].get()))
       ->setAxisOrdered(reinterpret_cast<AxisMotor*>(Tasks["axismotor_b"].get()))
-      ->startFps(_AXIS_FPS);
+      ->startFps(AXIS_FPS);
     Tasks.add<FlyController>("flycontroller")
       ->init(&model)    // bekommt das komplette Model, Master of Desater!!
       ->setYawAxis(reinterpret_cast<AxisYaw*>(Tasks["axisyaw"].get()))
