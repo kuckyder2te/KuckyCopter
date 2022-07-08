@@ -27,7 +27,7 @@
 #define ROW_MENU 3 ///< First position for the main menue
 #define COL_MENU 10
 
-#define ROW_SELECT 26 ///< First position for select PID type
+#define ROW_SELECT 25 ///< First position for select PID type
 #define COL_SELECT 20
 
 #define ROW_COEFF 28 ///< First position for new coefficients
@@ -40,7 +40,7 @@
 #define COL_OUTPUT 70
 #define COL_OUTPUT_VALUE 88
 
-#define ROW_ILLEGAL 40 // Position for errors
+#define ROW_ILLEGAL 39 // Position for errors
 #define COL_ILLEGAL 20
 
 // extern modules::MyPid myPID_pri;
@@ -109,6 +109,11 @@ class PID_adjust : public Task::Base
 	const char *c_i_select = "Coefficient I = ";
 	const char *c_d_select = "Coefficient D = ";
 
+	const char *c_accuracy10 =   "Accuracy 1.0  ";
+	const char *c_accuracy01 =   "Accuracy 0.1  ";
+	const char *c_accuracy001 =  "Accuracy 0.01 ";
+	const char *c_accuracy0001 = "Accuracy 0.001";
+
 	const char *c_whitespace = "                           ";
 	// const char *c_equal_sign = " = ";
 	//  const char *c_pri_i = "I =";
@@ -170,6 +175,7 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 	//	display_Menu();
+	//_gui->print(ROW_SELECT + 8, COL_SELECT, "Accuracy = 1,0");
 	LOGGER_VERBOSE("....leave");
 	}
 
@@ -209,32 +215,32 @@ public:
 				setItemCoefficient(itemCoeff_t::xkP);
 				_gui->yellow();
 				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 2, COL_SELECT + 10, c_whitespace);
-				_gui->print(ROW_SELECT + 2, COL_SELECT + 10, c_p_select); ///< Print the selected coefficient
+				_gui->clearPart(ROW_SELECT + 1, COL_SELECT + 10, c_whitespace);
+				_gui->print(ROW_SELECT + 1, COL_SELECT + 10, c_p_select); ///< Print the selected coefficient
 				break;
 
 			case 'i':
 				setItemCoefficient(itemCoeff_t::xkI);
 				_gui->yellow();
 				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 3, COL_SELECT + 10, c_whitespace);
-				_gui->print(ROW_SELECT + 3, COL_SELECT + 10, c_i_select);
+				_gui->clearPart(ROW_SELECT + 2, COL_SELECT + 10, c_whitespace);
+				_gui->print(ROW_SELECT + 2, COL_SELECT + 10, c_i_select);
 				break;
 
 			case 'd':
 				setItemCoefficient(itemCoeff_t::xkD);
 				_gui->yellow();
 				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 4, COL_SELECT + 10, c_whitespace);
-				_gui->print(ROW_SELECT + 4, COL_SELECT + 10, c_d_select);
+				_gui->clearPart(ROW_SELECT + 3, COL_SELECT + 10, c_whitespace);
+				_gui->print(ROW_SELECT + 3, COL_SELECT + 10, c_d_select);
 				break;
 
 			case 'e':
 				setItemCoefficient(itemCoeff_t::xeF);
 				_gui->yellow();
 				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT, COL_SELECT + 5, c_whitespace);
-				_gui->print(ROW_SELECT, COL_SELECT + 5, c_ef_select);
+				_gui->clearPart(ROW_SELECT +6, COL_SELECT + 5, c_whitespace);
+				_gui->print(ROW_SELECT +6, COL_SELECT + 5, c_ef_select);
 				break;
 
 			case '+':
@@ -251,27 +257,31 @@ public:
 
 			case '0': ///< Choose the decimal places  0 to 0,001
 				setDecimalPlaces(0);
+				_gui->yellow();
 				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 1, COL_SELECT, c_whitespace);
-				_gui->print(ROW_SELECT + 1, COL_SELECT, "Accuracy = 1,0");
+				_gui->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
+				_gui->print(ROW_SELECT + 8, COL_SELECT, c_accuracy10);
 				break;
 			case '1':
 				setDecimalPlaces(1);
+				_gui->yellow();
 				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 1, COL_SELECT, c_whitespace);
-				_gui->print(ROW_SELECT + 1, COL_SELECT, "Accuracy = 0,1");
+				_gui->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
+				_gui->print(ROW_SELECT + 8, COL_SELECT, c_accuracy01);
 				break;
 			case '2':
 				setDecimalPlaces(2);
+				_gui->yellow();
 				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 1, COL_SELECT, c_whitespace);
-				_gui->print(ROW_SELECT + 1, COL_SELECT, "Accuracy = 0,01");
+				_gui->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
+				_gui->print(ROW_SELECT + 8, COL_SELECT, c_accuracy001);
 				break;
 			case '3':
 				setDecimalPlaces(3);
+				_gui->yellow();
 				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_ILLEGAL + 1, COL_SELECT, c_whitespace);
-				_gui->print(ROW_SELECT + 1, COL_SELECT, "Accuracy = 0,001");
+				_gui->clearPart(ROW_ILLEGAL + 8, COL_SELECT, c_whitespace);
+				_gui->print(ROW_SELECT + 8, COL_SELECT, c_accuracy0001);
 				break;
 
 			case 's': ///< Saved all coefficients into the EEPROM
@@ -281,7 +291,7 @@ public:
 				_gui->red();
 				_gui->print(45, 8, "PID data was backed up");
 				_gui->yellow();
-				displayPIDcoefficients();
+				displayPIDcoefficientsTemp();
 				break;
 			case 'r': ///< Reads all coefficients from the EEPROM
 				// myPID_pri.readEEPROM();
@@ -304,7 +314,7 @@ public:
 				// myPID_yaw.setI(0);
 				// myPID_yaw.setD(0);
 				// myPID_yaw.setExecutionFrequency(50);
-				displayPIDcoefficients();
+				displayPIDcoefficientsTemp();
 				break;
 
 			case 'g': ///< get factory default
@@ -320,7 +330,7 @@ public:
 				// myPID_yaw.setI(0.01);
 				// myPID_yaw.setD(0);
 				// myPID_yaw.setExecutionFrequency(50);
-				displayPIDcoefficients();
+				displayPIDcoefficientsTemp();
 				break;
 
 			case 'c': ///< Copies the primary values to the secondary axis
@@ -331,15 +341,15 @@ public:
 
 			case 'm':
 				display_Menu();
-				displayPIDcoefficients();
+				displayPIDcoefficientsTemp();
 				break;
 
 			case 'h':
-				// LOGGER_NOTICE("not implemented");
+				LOGGER_NOTICE(" Altitude is not implemented");
 				break;
 
 			case 'n':
-				// LOGGER_NOTICE("not implemented");
+				LOGGER_NOTICE(" Near ground is not implemented");
 				break;
 
 			default:
@@ -381,6 +391,7 @@ public:
 		_gui->gray();
 		_gui->print(ROW_MENU + 19, COL_MENU, "-----------------------------------------------------");
 		_gui->yellow();
+		_gui->print(ROW_SELECT + 8, COL_SELECT, "Accuracy = 1,0");
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of display_Menu --------------------------------*/
 
@@ -557,7 +568,7 @@ public:
 			if (checkValue(_x_kP))
 			{
 				// LOGGER_WARNING_FMT("X Axis kP = %f", _x_kP);
-				_gui->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _x_kP);
+				_gui->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, _x_kP);
 				displayPIDcoefficientsTemp();
 				// pid_pri.setP(((_model->pidData[axis_t::Primary].pidCoefficient[pid::P]) += _addOn));
 				//_pid_pri->setP(_x_kP);
@@ -568,7 +579,7 @@ public:
 			if (checkValue(_x_kI))
 			{
 				// LOGGER_WARNING_FMT("X Axis kI = %f", _x_kI);
-				_gui->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, _x_kI);
+				_gui->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _x_kI);
 				displayPIDcoefficientsTemp();
 				// pid_pri.setI(((_model->pidData[axis_t::Primary].pidCoefficient[pid::I]) += _addOn));
 				//_pid_pri->setI(_x_kI);
