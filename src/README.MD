@@ -86,3 +86,5 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Task 31  2022-07-07  LOGGER via Platformio.ini -_MINITERM ein ausschalten
     ## Task 32  2022-07-08  Eingabe via BT funktioniert, kleine Probleme in der Logger-Ausgabe behoben 
     ## Task 33              Nachkommastellen der Werte via BT einstellen fixed
+    ## Task 34  2022-07-09  Ordner EEPROM gelöscht
+                            DallasTemperature und onewire auskommentiert

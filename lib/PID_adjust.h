@@ -9,7 +9,7 @@
 
 #include <TaskManager.h>
 #include <Arduino.h>
-#include <Config.h>
+//#include <Config.h>
 #include <HardwareSerial.h>
 #include "..\lib\myLogger.h"
 //#include <EEPROM.h>
@@ -130,14 +130,6 @@ class PID_adjust : public Task::Base
 	const char *c_ef_pri = "Exec. freq. Pri  = ";
 	const char *c_ef_sec = "            Sec. = ";
 	const char *c_ef_yaw = "            YAW  = ";
-
-	// const char *c_sec_p = "Sec.";
-	// const char *c_sec_i = "I =";
-	// const char *c_sec_d = "D =";
-	// const char *c_yaw_p = "YAW";
-	// const char *c_yaw_i = "I =";
-	// const char *c_yaw_d = "D =";
-	// const char *c_ef = "Exec. Hz. =";
 
 	float _x_kP = 0;
 	float _x_kI = 0;
