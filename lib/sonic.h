@@ -9,18 +9,18 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HCSR04.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
+//#include <OneWire.h>
+//#include <DallasTemperature.h>
 #include "myLogger.h"
 
 #define PIN_ECHO 21
 #define PIN_TRIGGER 22
 #define PIN_DALLAS 28
 
-OneWire oneWire(PIN_DALLAS);
-DallasTemperature sens_temperature(&oneWire);
+//OneWire oneWire(PIN_DALLAS);
+//DallasTemperature sens_temperature(&oneWire);
 
-DeviceAddress insideThermometer;
+//DeviceAddress insideThermometer;
 typedef struct
 {
     float temperature;
