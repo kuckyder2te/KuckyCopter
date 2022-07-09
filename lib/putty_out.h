@@ -1,4 +1,4 @@
-/*  File name : GUI.h
+/*  File name : putty_out.h
 	Project name : KuCo_Phantom 1
 	Author: Wilhelm Kuckelsberg
 	Date : 2022-07-05
@@ -14,13 +14,13 @@
 
 #include <HardwareSerial.h>
 
-class GUI {
+class PUTTY_out {
 
 private:
 	HardwareSerial &_serial;
 
 public:
-	GUI(HardwareSerial &serial) :	_serial(serial) {}
+	PUTTY_out(HardwareSerial &serial) :	_serial(serial) {}
 
 	virtual void setup() {
 	_serial.print("\eSP F");  	// tell to use 7-bit control codes

@@ -88,3 +88,4 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Task 33              Nachkommastellen der Werte via BT einstellen fixed
     ## Task 34  2022-07-09  Ordner EEPROM gelöscht
                             DallasTemperature und onewire auskommentiert
+                            GUI in putty_out umbenannt
