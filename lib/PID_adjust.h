@@ -13,7 +13,7 @@
 #include <HardwareSerial.h>
 #include "..\lib\myLogger.h"
 //#include <EEPROM.h>
-#include "..\lib\GUI.h"
+#include "..\lib\putty_out.h"
 //#include "MyPid.h"
 //#include "Model.h"
 
@@ -46,8 +46,6 @@
 // extern modules::MyPid myPID_pri;
 // extern modules::MyPid myPID_sec;
 // extern modules::MyPid myPID_yaw;
-
-// extern GUI gui;
 
 typedef enum
 {
@@ -89,7 +87,6 @@ typedef enum
 
 class PID_adjust : public Task::Base
 {
-
 	//	model_t		   &_model;
 	HardwareSerial *_serial;
 
@@ -115,9 +112,6 @@ class PID_adjust : public Task::Base
 	const char *c_accuracy0001 = "Accuracy 0.001";
 
 	const char *c_whitespace = "                           ";
-	// const char *c_equal_sign = " = ";
-	//  const char *c_pri_i = "I =";
-	//  const char *c_pri_d = "D =";
 	const char *c_primary_p = "Primary axis   P = ";
 	const char *c_primary_i = "               I = ";
 	const char *c_primary_d = "               D = ";
@@ -144,7 +138,7 @@ class PID_adjust : public Task::Base
 	float _z_kD = 0;
 	float _z_eF = 0;
 
-	GUI *_gui;
+	PUTTY_out *_putty_out;
 
 public:
 	PID_adjust(const String &name)
@@ -158,8 +152,8 @@ public:
 
 	PID_adjust *setSerial(HardwareSerial *serial)
 	{
-		_serial = serial;
-		_gui = new GUI(*serial);
+	//	_serial = serial;
+		_putty_out = new PUTTY_out(*serial);
 		return this;
 	}
 
@@ -167,7 +161,7 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 	//	display_Menu();
-	//_gui->print(ROW_SELECT + 8, COL_SELECT, "Accuracy = 1,0");
+	//_putty_out->print(ROW_SELECT + 8, COL_SELECT, "Accuracy = 1,0");
 	LOGGER_VERBOSE("....leave");
 	}
 
@@ -177,121 +171,121 @@ public:
 
 		if (_serial->available() > 0) // Hier werden die gedrückten keys abgefragt
 		{
-			LOGGER_FATAL("Enter...._serial->available");
+			LOGGER_NOTICE("Enter...._serial->available");
 			char key = _serial->read();
 			switch (key)
 			{
 			case 'x': ///< Choose the axes
 				setItemAxis(itemAxis_t::axis_pri);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);	   ///< Clears the string "Illegal button was pressed"
-				_gui->clearPart(ROW_SELECT, COL_SELECT + 5, c_whitespace); ///< Clears the current line
-				_gui->print(ROW_SELECT, COL_SELECT + 5, c_pri_select);	   ///< Print the selected axis
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);	   ///< Clears the string "Illegal button was pressed"
+				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, c_whitespace); ///< Clears the current line
+				_putty_out->print(ROW_SELECT, COL_SELECT + 5, c_pri_select);	   ///< Print the selected axis
 				break;
 			case 'y':
 				setItemAxis(itemAxis_t::axis_sec);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT, COL_SELECT + 5, c_whitespace);
-				_gui->print(ROW_SELECT, COL_SELECT + 5, c_sec_select);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, c_whitespace);
+				_putty_out->print(ROW_SELECT, COL_SELECT + 5, c_sec_select);
 				break;
 			case 'z':
 				setItemAxis(itemAxis_t::axis_yaw);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT, COL_SELECT + 5, c_whitespace);
-				_gui->print(ROW_SELECT, COL_SELECT + 5, c_yaw_select);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, c_whitespace);
+				_putty_out->print(ROW_SELECT, COL_SELECT + 5, c_yaw_select);
 				break;
 
 			case 'p': ///< Choose the PID parameter
 				setItemCoefficient(itemCoeff_t::xkP);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 1, COL_SELECT + 10, c_whitespace);
-				_gui->print(ROW_SELECT + 1, COL_SELECT + 10, c_p_select); ///< Print the selected coefficient
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + 1, COL_SELECT + 10, c_whitespace);
+				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 10, c_p_select); ///< Print the selected coefficient
 				break;
 
 			case 'i':
 				setItemCoefficient(itemCoeff_t::xkI);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 2, COL_SELECT + 10, c_whitespace);
-				_gui->print(ROW_SELECT + 2, COL_SELECT + 10, c_i_select);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + 2, COL_SELECT + 10, c_whitespace);
+				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 10, c_i_select);
 				break;
 
 			case 'd':
 				setItemCoefficient(itemCoeff_t::xkD);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 3, COL_SELECT + 10, c_whitespace);
-				_gui->print(ROW_SELECT + 3, COL_SELECT + 10, c_d_select);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + 3, COL_SELECT + 10, c_whitespace);
+				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 10, c_d_select);
 				break;
 
 			case 'e':
 				setItemCoefficient(itemCoeff_t::xeF);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT +6, COL_SELECT + 5, c_whitespace);
-				_gui->print(ROW_SELECT +6, COL_SELECT + 5, c_ef_select);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->clearPart(ROW_SELECT +6, COL_SELECT + 5, c_whitespace);
+				_putty_out->print(ROW_SELECT +6, COL_SELECT + 5, c_ef_select);
 				break;
 
 			case '+':
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
 				coefficient_Up(); ///< Coefficient increment
 				break;
 
 			case '-':
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
 				coefficient_Down(); ///< Coefficient decrement
 				break;
 
 			case '0': ///< Choose the decimal places  0 to 0,001
 				setDecimalPlaces(0);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
-				_gui->print(ROW_SELECT + 8, COL_SELECT, c_accuracy10);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
+				_putty_out->print(ROW_SELECT + 8, COL_SELECT, c_accuracy10);
 				break;
 			case '1':
 				setDecimalPlaces(1);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
-				_gui->print(ROW_SELECT + 8, COL_SELECT, c_accuracy01);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
+				_putty_out->print(ROW_SELECT + 8, COL_SELECT, c_accuracy01);
 				break;
 			case '2':
 				setDecimalPlaces(2);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
-				_gui->print(ROW_SELECT + 8, COL_SELECT, c_accuracy001);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
+				_putty_out->print(ROW_SELECT + 8, COL_SELECT, c_accuracy001);
 				break;
 			case '3':
 				setDecimalPlaces(3);
-				_gui->yellow();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_gui->clearPart(ROW_ILLEGAL + 8, COL_SELECT, c_whitespace);
-				_gui->print(ROW_SELECT + 8, COL_SELECT, c_accuracy0001);
+				_putty_out->yellow();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->clearPart(ROW_ILLEGAL + 8, COL_SELECT, c_whitespace);
+				_putty_out->print(ROW_SELECT + 8, COL_SELECT, c_accuracy0001);
 				break;
 
 			case 's': ///< Saved all coefficients into the EEPROM
 				// myPID_pri.updateEEPROM();
 				// myPID_sec.updateEEPROM();
 				// myPID_yaw.updateEEPROM();
-				_gui->red();
-				_gui->print(45, 8, "PID data was backed up");
-				_gui->yellow();
+				_putty_out->red();
+				_putty_out->print(45, 8, "PID data was backed up");
+				_putty_out->yellow();
 				displayPIDcoefficientsTemp();
 				break;
 			case 'r': ///< Reads all coefficients from the EEPROM
 				// myPID_pri.readEEPROM();
 				// myPID_sec.readEEPROM();
 				// myPID_yaw.readEEPROM();
-				_gui->red();
-				_gui->print(45, 8, "PID data was read out");
-				_gui->yellow();
+				_putty_out->red();
+				_putty_out->print(45, 8, "PID data was read out");
+				_putty_out->yellow();
 				break;
 			case 'a': ///< Set all PID parameters to 0
 				// myPID_pri.setP(PID_P_MIN);
@@ -346,9 +340,9 @@ public:
 
 			default:
 			{
-				_gui->red();
-				_gui->print(ROW_ILLEGAL, COL_ILLEGAL, "Illegal button was pressed");
-				_gui->yellow();
+				_putty_out->red();
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, "Illegal button was pressed");
+				_putty_out->yellow();
 			}
 			} /* end of switch(key) */
 		LOGGER_FATAL("Leave...._serial->available");
@@ -359,100 +353,100 @@ public:
 	void display_Menu()
 	{
 	LOGGER_VERBOSE("Enter....");
-		_gui->clear();
-		_gui->clear();
-		_gui->gray();
-		_gui->print(ROW_MENU, COL_MENU, "-----------Menu for PID configuration (BT)-----------");
-		_gui->yellow();
-		_gui->print(ROW_MENU + 2, COL_MENU, "(X) choose the primary");
-		_gui->print(ROW_MENU + 3, COL_MENU, "(Y)           secondary");
-		_gui->print(ROW_MENU + 4, COL_MENU, "(Z)            YAW axis");
-		_gui->print(ROW_MENU + 5, COL_MENU, " P, I or D select the coefficient");
-		_gui->print(ROW_MENU + 6, COL_MENU, "(0),(1),(2)or(3)select the accurarcy");
-		_gui->print(ROW_MENU + 7, COL_MENU, "(E) choose the execution frequency");
-		_gui->print(ROW_MENU + 8, COL_MENU, "(+) increment according to the value");
-		_gui->print(ROW_MENU + 9, COL_MENU, "(-) decrement      ''");
-		_gui->print(ROW_MENU + 10, COL_MENU, "(S) saves all coefficient into the EEPROM");
-		_gui->print(ROW_MENU + 11, COL_MENU, "(R) reads all coefficients from the EEPROM");
-		_gui->print(ROW_MENU + 12, COL_MENU, "(C) Copies the primary values to the secondary axis");
-		_gui->print(ROW_MENU + 13, COL_MENU, "(A) all values are set to 0 in the EEPROM.");
-		_gui->print(ROW_MENU + 14, COL_MENU, "(G) get factory defaults");
-		_gui->print(ROW_MENU + 15, COL_MENU, "(H) set the maximal altitude");
-		_gui->print(ROW_MENU + 16, COL_MENU, "(N) set the maximal near field altitude");
-		_gui->print(ROW_MENU + 17, COL_MENU, "(M) display the menu");
-		_gui->gray();
-		_gui->print(ROW_MENU + 19, COL_MENU, "-----------------------------------------------------");
-		_gui->yellow();
-		_gui->print(ROW_SELECT + 8, COL_SELECT, "Accuracy = 1,0");
+		_putty_out->clear();
+		_putty_out->clear();
+		_putty_out->gray();
+		_putty_out->print(ROW_MENU, COL_MENU, "-----------Menu for PID configuration (BT)-----------");
+		_putty_out->yellow();
+		_putty_out->print(ROW_MENU + 2, COL_MENU, "(X) choose the primary");
+		_putty_out->print(ROW_MENU + 3, COL_MENU, "(Y)           secondary");
+		_putty_out->print(ROW_MENU + 4, COL_MENU, "(Z)            YAW axis");
+		_putty_out->print(ROW_MENU + 5, COL_MENU, " P, I or D select the coefficient");
+		_putty_out->print(ROW_MENU + 6, COL_MENU, "(0),(1),(2)or(3)select the accurarcy");
+		_putty_out->print(ROW_MENU + 7, COL_MENU, "(E) choose the execution frequency");
+		_putty_out->print(ROW_MENU + 8, COL_MENU, "(+) increment according to the value");
+		_putty_out->print(ROW_MENU + 9, COL_MENU, "(-) decrement      ''");
+		_putty_out->print(ROW_MENU + 10, COL_MENU, "(S) saves all coefficient into the EEPROM");
+		_putty_out->print(ROW_MENU + 11, COL_MENU, "(R) reads all coefficients from the EEPROM");
+		_putty_out->print(ROW_MENU + 12, COL_MENU, "(C) Copies the primary values to the secondary axis");
+		_putty_out->print(ROW_MENU + 13, COL_MENU, "(A) all values are set to 0 in the EEPROM.");
+		_putty_out->print(ROW_MENU + 14, COL_MENU, "(G) get factory defaults");
+		_putty_out->print(ROW_MENU + 15, COL_MENU, "(H) set the maximal altitude");
+		_putty_out->print(ROW_MENU + 16, COL_MENU, "(N) set the maximal near field altitude");
+		_putty_out->print(ROW_MENU + 17, COL_MENU, "(M) display the menu");
+		_putty_out->gray();
+		_putty_out->print(ROW_MENU + 19, COL_MENU, "-----------------------------------------------------");
+		_putty_out->yellow();
+		_putty_out->print(ROW_SELECT + 8, COL_SELECT, "Accuracy = 1,0");
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of display_Menu --------------------------------*/
 
 	void displayPIDcoefficients()
 	{
-		_gui->gray();
-		_gui->print(ROW_PID, COL_PID, "Current PID coefficients in the EEPROM");
-		_gui->yellow();
-		// _gui->print(ROW_PID+2, COL_PID,    c_equal_sign);_gui->print(ROW_PID+2, COL_PID+9,  2, _model.pidData[axis_t::Primary].pidCoefficient[pid::P]);
-		// _gui->print(ROW_PID+2, COL_PID+16, c_pri_i);_gui->print(ROW_PID+2, COL_PID+20, 3, _model.pidData[axis_t::Primary].pidCoefficient[pid::I]);
-		// _gui->print(ROW_PID+2, COL_PID+27, c_pri_d);_gui->print(ROW_PID+2, COL_PID+31, 3, _model.pidData[axis_t::Primary].pidCoefficient[pid::D]);
-		// _gui->print(ROW_PID+2, COL_PID+40, c_ef);   _gui->print(ROW_PID+2, COL_PID+52, 0, _model.pidData[axis_t::Primary].executionFrequency);
+		_putty_out->gray();
+		_putty_out->print(ROW_PID, COL_PID, "Current PID coefficients in the EEPROM");
+		_putty_out->yellow();
+		// _putty_out->print(ROW_PID+2, COL_PID,    c_equal_sign);_putty_out->print(ROW_PID+2, COL_PID+9,  2, _model.pidData[axis_t::Primary].pidCoefficient[pid::P]);
+		// _putty_out->print(ROW_PID+2, COL_PID+16, c_pri_i);_putty_out->print(ROW_PID+2, COL_PID+20, 3, _model.pidData[axis_t::Primary].pidCoefficient[pid::I]);
+		// _putty_out->print(ROW_PID+2, COL_PID+27, c_pri_d);_putty_out->print(ROW_PID+2, COL_PID+31, 3, _model.pidData[axis_t::Primary].pidCoefficient[pid::D]);
+		// _putty_out->print(ROW_PID+2, COL_PID+40, c_ef);   _putty_out->print(ROW_PID+2, COL_PID+52, 0, _model.pidData[axis_t::Primary].executionFrequency);
 
-		// _gui->print(ROW_PID+3, COL_PID,    c_sec_p);_gui->print(ROW_PID+3, COL_PID+9,  2, _model.pidData[axis_t::Secondary].pidCoefficient[pid::P]);
-		// 										  _gui->print(ROW_PID+3, COL_PID+20, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pid::I]);
-		// 										  _gui->print(ROW_PID+3, COL_PID+31, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pid::D]);
-		// 										  _gui->print(ROW_PID+3, COL_PID+52, 0, _model.pidData[axis_t::Secondary].executionFrequency);
+		// _putty_out->print(ROW_PID+3, COL_PID,    c_sec_p);_putty_out->print(ROW_PID+3, COL_PID+9,  2, _model.pidData[axis_t::Secondary].pidCoefficient[pid::P]);
+		// 										  _putty_out->print(ROW_PID+3, COL_PID+20, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pid::I]);
+		// 										  _putty_out->print(ROW_PID+3, COL_PID+31, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pid::D]);
+		// 										  _putty_out->print(ROW_PID+3, COL_PID+52, 0, _model.pidData[axis_t::Secondary].executionFrequency);
 
-		// _gui->print(ROW_PID+4, COL_PID,    c_yaw_p);_gui->print(ROW_PID+4, COL_PID+9,  2, _model.pidData[axis_t::YawAxis].pidCoefficient[P]);
-		// 										  _gui->print(ROW_PID+4, COL_PID+20, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pid::I]);
-		// 										  _gui->print(ROW_PID+4, COL_PID+31, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pid::D]);
-		// 										  _gui->print(ROW_PID+4, COL_PID+52, 0, _model.pidData[axis_t::YawAxis].executionFrequency);
+		// _putty_out->print(ROW_PID+4, COL_PID,    c_yaw_p);_putty_out->print(ROW_PID+4, COL_PID+9,  2, _model.pidData[axis_t::YawAxis].pidCoefficient[P]);
+		// 										  _putty_out->print(ROW_PID+4, COL_PID+20, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pid::I]);
+		// 										  _putty_out->print(ROW_PID+4, COL_PID+31, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pid::D]);
+		// 										  _putty_out->print(ROW_PID+4, COL_PID+52, 0, _model.pidData[axis_t::YawAxis].executionFrequency);
 
 	} /*--------------------- end of displayPIDcoefficients ---------------------------*/
 
 	void displayPIDcoefficientsTemp() ///  only Template for the positions
 	{
-		_gui->blue();
-		_gui->print(ROW_OUTPUT, COL_OUTPUT, "Temp PID coefficients");
-		_gui->print(ROW_OUTPUT + 1, COL_OUTPUT, "   in the EEPROM");
-		_gui->gray();
-		_gui->print(ROW_OUTPUT + 3, COL_OUTPUT, c_primary_p);
-		_gui->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 2, _x_kP);
-		_gui->print(ROW_OUTPUT + 4, COL_OUTPUT, c_primary_i);
-		_gui->print(ROW_OUTPUT + 4, COL_OUTPUT_VALUE, 2, _x_kI);
-		_gui->print(ROW_OUTPUT + 5, COL_OUTPUT, c_primary_d);
-		_gui->print(ROW_OUTPUT + 5, COL_OUTPUT_VALUE, 2, _x_kD);
-		_gui->print(ROW_OUTPUT + 7, COL_OUTPUT, c_secondary_p);
-		_gui->print(ROW_OUTPUT + 7, COL_OUTPUT_VALUE, 2, _y_kP);
-		_gui->print(ROW_OUTPUT + 8, COL_OUTPUT, c_secondary_i);
-		_gui->print(ROW_OUTPUT + 8, COL_OUTPUT_VALUE, 2, _y_kI);
-		_gui->print(ROW_OUTPUT + 9, COL_OUTPUT, c_secondary_d);
-		_gui->print(ROW_OUTPUT + 9, COL_OUTPUT_VALUE, 2, _y_kD);
-		_gui->print(ROW_OUTPUT + 11, COL_OUTPUT, c_yaw_p);
-		_gui->print(ROW_OUTPUT + 11, COL_OUTPUT_VALUE, 2, _z_kP);
-		_gui->print(ROW_OUTPUT + 12, COL_OUTPUT, c_yaw_i);
-		_gui->print(ROW_OUTPUT + 12, COL_OUTPUT_VALUE, 2, _z_kI);
-		_gui->print(ROW_OUTPUT + 13, COL_OUTPUT, c_yaw_d);
-		_gui->print(ROW_OUTPUT + 13, COL_OUTPUT_VALUE, 2, _z_kD);
-		_gui->print(ROW_OUTPUT + 15, COL_OUTPUT, c_ef_pri);
-		_gui->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 2, _x_eF);
-		_gui->print(ROW_OUTPUT + 16, COL_OUTPUT, c_ef_sec);
-		_gui->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 2, _y_eF);
-		_gui->print(ROW_OUTPUT + 17, COL_OUTPUT, c_ef_yaw);
-		_gui->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 2, _z_eF);
+		_putty_out->blue();
+		_putty_out->print(ROW_OUTPUT, COL_OUTPUT, "Temp PID coefficients");
+		_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT, "   in the EEPROM");
+		_putty_out->gray();
+		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, c_primary_p);
+		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 2, _x_kP);
+		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT, c_primary_i);
+		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT_VALUE, 2, _x_kI);
+		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT, c_primary_d);
+		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT_VALUE, 2, _x_kD);
+		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT, c_secondary_p);
+		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT_VALUE, 2, _y_kP);
+		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT, c_secondary_i);
+		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT_VALUE, 2, _y_kI);
+		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT, c_secondary_d);
+		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT_VALUE, 2, _y_kD);
+		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT, c_yaw_p);
+		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT_VALUE, 2, _z_kP);
+		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT, c_yaw_i);
+		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT_VALUE, 2, _z_kI);
+		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT, c_yaw_d);
+		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT_VALUE, 2, _z_kD);
+		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT, c_ef_pri);
+		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 2, _x_eF);
+		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT, c_ef_sec);
+		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 2, _y_eF);
+		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT, c_ef_yaw);
+		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 2, _z_eF);
 
-		// _gui->print(ROW_PID+2, COL_PID+16, c_pri_i);_gui->print(ROW_PID+2, COL_PID+20, 3, _model.pidData[axis_t::Primary].pidCoefficient[pid::I]);
-		// _gui->print(ROW_PID+2, COL_PID+27, c_pri_d);_gui->print(ROW_PID+2, COL_PID+31, 3, _model.pidData[axis_t::Primary].pidCoefficient[pid::D]);
-		// _gui->print(ROW_PID+2, COL_PID+40, c_ef);   _gui->print(ROW_PID+2, COL_PID+52, 0, _model.pidData[axis_t::Primary].executionFrequency);
+		// _putty_out->print(ROW_PID+2, COL_PID+16, c_pri_i);_putty_out->print(ROW_PID+2, COL_PID+20, 3, _model.pidData[axis_t::Primary].pidCoefficient[pid::I]);
+		// _putty_out->print(ROW_PID+2, COL_PID+27, c_pri_d);_putty_out->print(ROW_PID+2, COL_PID+31, 3, _model.pidData[axis_t::Primary].pidCoefficient[pid::D]);
+		// _putty_out->print(ROW_PID+2, COL_PID+40, c_ef);   _putty_out->print(ROW_PID+2, COL_PID+52, 0, _model.pidData[axis_t::Primary].executionFrequency);
 
-		// _gui->print(ROW_PID+3, COL_PID,    c_sec_p);_gui->print(ROW_PID+3, COL_PID+9,  2, _model.pidData[axis_t::Secondary].pidCoefficient[pid::P]);
-		// 										  _gui->print(ROW_PID+3, COL_PID+20, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pid::I]);
-		// 										  _gui->print(ROW_PID+3, COL_PID+31, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pid::D]);
-		// 										  _gui->print(ROW_PID+3, COL_PID+52, 0, _model.pidData[axis_t::Secondary].executionFrequency);
+		// _putty_out->print(ROW_PID+3, COL_PID,    c_sec_p);_putty_out->print(ROW_PID+3, COL_PID+9,  2, _model.pidData[axis_t::Secondary].pidCoefficient[pid::P]);
+		// 										  _putty_out->print(ROW_PID+3, COL_PID+20, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pid::I]);
+		// 										  _putty_out->print(ROW_PID+3, COL_PID+31, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pid::D]);
+		// 										  _putty_out->print(ROW_PID+3, COL_PID+52, 0, _model.pidData[axis_t::Secondary].executionFrequency);
 
-		// _gui->print(ROW_PID+4, COL_PID,    c_yaw_p);_gui->print(ROW_PID+4, COL_PID+9,  2, _model.pidData[axis_t::YawAxis].pidCoefficient[P]);
-		// 										  _gui->print(ROW_PID+4, COL_PID+20, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pid::I]);
-		// 										  _gui->print(ROW_PID+4, COL_PID+31, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pid::D]);
-		// 										  _gui->print(ROW_PID+4, COL_PID+52, 0, _model.pidData[axis_t::YawAxis].executionFrequency);
+		// _putty_out->print(ROW_PID+4, COL_PID,    c_yaw_p);_putty_out->print(ROW_PID+4, COL_PID+9,  2, _model.pidData[axis_t::YawAxis].pidCoefficient[P]);
+		// 										  _putty_out->print(ROW_PID+4, COL_PID+20, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pid::I]);
+		// 										  _putty_out->print(ROW_PID+4, COL_PID+31, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pid::D]);
+		// 										  _putty_out->print(ROW_PID+4, COL_PID+52, 0, _model.pidData[axis_t::YawAxis].executionFrequency);
 
 	} /*--------------------- end of displayPIDcoefficients ---------------------------*/
 	void setItemAxis(uint8_t itemAxis)
@@ -560,7 +554,7 @@ public:
 			if (checkValue(_x_kP))
 			{
 				// LOGGER_WARNING_FMT("X Axis kP = %f", _x_kP);
-				_gui->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, _x_kP);
+				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, _x_kP);
 				displayPIDcoefficientsTemp();
 				// pid_pri.setP(((_model->pidData[axis_t::Primary].pidCoefficient[pid::P]) += _addOn));
 				//_pid_pri->setP(_x_kP);
@@ -571,7 +565,7 @@ public:
 			if (checkValue(_x_kI))
 			{
 				// LOGGER_WARNING_FMT("X Axis kI = %f", _x_kI);
-				_gui->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _x_kI);
+				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _x_kI);
 				displayPIDcoefficientsTemp();
 				// pid_pri.setI(((_model->pidData[axis_t::Primary].pidCoefficient[pid::I]) += _addOn));
 				//_pid_pri->setI(_x_kI);
@@ -582,7 +576,7 @@ public:
 			if (checkValue(_x_kD))
 			{
 				// LOGGER_WARNING_FMT("X Axis kD = %f", _x_kD);
-				_gui->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _x_kD);
+				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _x_kD);
 				displayPIDcoefficientsTemp();
 				// pid_pri.setD(((_model->pidData[axis_t::Primary].pidCoefficient[pid::D]) += _addOn));
 				//_pid_pri->setD(_x_kD);
@@ -594,7 +588,7 @@ public:
 			if (checkValue(_y_kP))
 			{
 				// LOGGER_WARNING_FMT("Y Axis kP = %f", _y_kP);
-				_gui->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _y_kP);
+				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _y_kP);
 				displayPIDcoefficientsTemp();
 				// pid_sec.setP(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::P]) += _addOn));
 				//_pid_sec->setP(_y_kP);
@@ -606,7 +600,7 @@ public:
 			if (checkValue(_y_kI))
 			{
 				//			LOGGER_WARNING_FMT("Y Axis kI = %f", _y_kI);
-				_gui->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, _y_kI);
+				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, _y_kI);
 				displayPIDcoefficientsTemp();
 				//			pid_sec.setI(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::I]) += _addOn));
 				//			_pid_sec->setI(_y_kI);
@@ -618,7 +612,7 @@ public:
 			if (checkValue(_y_kD))
 			{
 				// LOGGER_WARNING_FMT("Y Axis kD = %f", _y_kD);
-				_gui->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _y_kD);
+				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _y_kD);
 				displayPIDcoefficientsTemp();
 				// pid_sec.setD(((_model->pidData[axis_t::Secondary].pidCoefficient[pid::D]) += _addOn));
 				//_pid_sec->setD(_y_kD);
@@ -630,7 +624,7 @@ public:
 			if (checkValue(_z_kP))
 			{
 				// LOGGER_WARNING_FMT("Z Axis kP = %f", _z_kP);
-				_gui->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _z_kP);
+				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _z_kP);
 				displayPIDcoefficientsTemp();
 				// pid_yaw.setP(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::P]) += _addOn));
 				//_pid_yaw->setD(_z_kP);
@@ -642,7 +636,7 @@ public:
 			if (checkValue(_z_kI))
 			{
 				// LOGGER_WARNING_FMT("Z Axis kI = %f", _z_kI);
-				_gui->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, _z_kI);
+				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, _z_kI);
 				displayPIDcoefficientsTemp();
 				// pid_yaw.setI(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::I]) += _addOn));
 				//_pid_yaw->setI(_z_kI);
@@ -654,7 +648,7 @@ public:
 			if (checkValue(_z_kD))
 			{
 				// LOGGER_WARNING_FMT("Z Axis kD = %f", _z_kD);
-				_gui->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _z_kD);
+				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _z_kD);
 				displayPIDcoefficientsTemp();
 				// pid_yaw.setD(((_model->pidData[axis_t::YawAxis].pidCoefficient[pid::D]) += _addOn));
 				//_pid_yaw->setD(_z_kD);
@@ -666,7 +660,7 @@ public:
 			if (checkValue(_x_eF))
 			{
 				// LOGGER_WARNING_FMT("X Axis eF = %f", _x_eF);
-				_gui->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _x_eF);
+				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _x_eF);
 				displayPIDcoefficientsTemp();
 				//_pid_pri->setExecutionFrequency(((_model->pidData[axis_t::Primary].executionFrequency) += _addOn));
 				//_pid_pri->setExecutionFrequency(_x_eF);
@@ -678,7 +672,7 @@ public:
 			if (checkValue(_y_eF))
 			{
 				// LOGGER_WARNING_FMT("Y Axis eF = %f", _y_eF);
-				_gui->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _y_eF);
+				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _y_eF);
 				displayPIDcoefficientsTemp();
 				// pid_sec.setExecutionFrequency(((_model->pidData[axis_t::Secondary].executionFrequency) += _addOn));
 				//_pid_sec->setExecutionFrequency(_y_eF);
@@ -689,7 +683,7 @@ public:
 			if (checkValue(_z_eF))
 			{
 				// LOGGER_WARNING_FMT("Z Axis eF = %f", _z_eF);
-				_gui->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _z_eF);
+				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _z_eF);
 				displayPIDcoefficientsTemp();
 				// pid_yaw.setExecutionFrequency(((_model->pidData[axis_t::YawAxis].executionFrequency) += _addOn));
 				//_pid_yaw->setExecutionFrequency(_z_eF);
