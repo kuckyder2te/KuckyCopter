@@ -91,3 +91,7 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
                             GUI in putty_out umbenannt
                             coeffizient_t; in 'DEFINE
                             _newPID_pri teilweise eingefügt
+    ## Task 35              _newPID als array
+                            displayPIDcoefficientsTemp -> displayPIDcoefficients
+                            _newPID[PID_PRI]->setP ... eingefügt
+                            Tastatureingabe seltsam, mal reagiert das Terminal meistens aber nicht

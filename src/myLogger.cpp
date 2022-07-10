@@ -45,11 +45,11 @@ void localLogger(Logger::Level level, const char* module, const char* message)
   #else
     #ifdef LOG_TIMESTAMP
       Serial2.print(millis());
-      Serial.print(" - ");
+      Serial2.print(" - ");
     #endif
       Serial2.print(F("["));
       Serial2.print(Logger::asString(level));
-      Serial.print(F("]:"));
+      Serial2.print(F("]:"));
       if (strlen(module) > 0)
       {
           Serial2.print(module);
