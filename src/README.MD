@@ -89,3 +89,5 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Task 34  2022-07-09  Ordner EEPROM gelöscht
                             DallasTemperature und onewire auskommentiert
                             GUI in putty_out umbenannt
+                            coeffizient_t; in 'DEFINE
+                            _newPID_pri teilweise eingefügt
