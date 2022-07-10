@@ -17,9 +17,14 @@
 #include <FastPID.h>
 #include "myLogger.h"
 
-#define PID_FREQUENCY      50				///< PID parameter
+#define PID_FREQUENCY      50			///< PID parameter
 #define PID_P_MIN			0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
 #define PID_EEPROM_ADRRESS 50
+
+#define COEFF_P	0
+#define COEFF_I 1
+#define COEFF_D 2
+
 typedef struct
 {
 	float pidCoefficient[3];
@@ -28,12 +33,12 @@ typedef struct
 	bool output_signed;
 } pidData_t;
 
-typedef enum
-{
-	kP,
-	kI,
-	kD
-} coeffizient_t;
+// typedef enum
+// {
+// 	kP,
+// 	kI,
+// 	kD
+// } coeffizient_t;
 
 class NewPID : public FastPID
 { 
@@ -54,9 +59,9 @@ protected:
 
 public:
 	// setOutputRange(-100, 100);
-	// _pidInstance =_instance++;
+	//_pidInstance =_instance++;
 	// setOutputConfig(16, true);
-	// disablePID();
+	//disablePID();
 
 	void disablePID()
 	{
@@ -69,9 +74,9 @@ public:
 		/* This function has 2 tasks.
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
-			FastPID::setCoefficients(_pidData->pidCoefficient[coeffizient_t::kP],
-								 	 _pidData->pidCoefficient[coeffizient_t::kI],
-								 	 _pidData->pidCoefficient[coeffizient_t::kD],
+			FastPID::setCoefficients(_pidData->pidCoefficient[COEFF_P],
+								 	 _pidData->pidCoefficient[COEFF_I],
+								 	 _pidData->pidCoefficient[COEFF_D],
 								 	 getExecutionTime());
 
 	} /*-------------------------------- end of activatePID ---------------------------*/
@@ -84,7 +89,7 @@ public:
 		if (_kP <= PID_P_MIN)
 			_kP = PID_P_MIN;
 
-		_pidData->pidCoefficient[coeffizient_t::kP]=_kP;
+		_pidData->pidCoefficient[COEFF_P]=_kP;
 		enablePID();
 	} /*-------------------------------- end of setP ----------------------------------*/
 
@@ -95,7 +100,7 @@ public:
 		if (_kI <= 0)
 			_kI = 0;
 
-		_pidData->pidCoefficient[coeffizient_t::kI]=_kI;
+		_pidData->pidCoefficient[COEFF_I]=_kI;
 		enablePID();
 	} /*-------------------------------- end of setI ----------------------------------*/
 
@@ -106,7 +111,7 @@ public:
 		if (_kD <= 0)
 			_kD = 0;
 
-		_pidData->pidCoefficient[coeffizient_t::kD]=_kD;
+		_pidData->pidCoefficient[COEFF_D]=_kD;
 		enablePID();
 	} /*-------------------------------- end of setD ----------------------------------*/
 

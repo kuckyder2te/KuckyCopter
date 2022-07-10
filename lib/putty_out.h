@@ -4,6 +4,7 @@
 	Date : 2022-07-05
 	Description : Convertieren der Serial.print Ausgaben in ESC Sequenzen
 	Putty Einstellungen: 	col 100 row 40
+							Font Courier New bold 12 point
 						    forbid resizing compleytely
 							Disable scrollbar
 							local echo beide force off
