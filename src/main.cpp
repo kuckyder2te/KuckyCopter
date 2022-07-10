@@ -95,7 +95,7 @@ void setup() {
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
     Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);    
-    Tasks.add<Radio>("radio")->startFps(1);
+    Tasks.add<Radio>("radio")->startFps(10);
 
 	  Tasks.add<PID_adjust>("pidadjust")->setSerial(&Serial2)->startFps(10);
    _pid_adjust = reinterpret_cast<PID_adjust *>(Tasks["pidadjust"].get());
@@ -103,14 +103,14 @@ void setup() {
 
     LOGGER_NOTICE( "Program is initialized");
   LOGGER_VERBOSE("....leave"); 
-}/*-------------------- end of setup ------------------------------------------*/
+}/*------------------------ end of setup ----------------------------------------------*/
 
 void loop() {
   LOGGER_VERBOSE("loop has begun");
   
   //  unsigned long enter = micros();
-    Tasks.update();
-    Tasks["sensor"]->enter();
+  Tasks.update();
+  Tasks["sensor"]->enter();
     
   //  Serial.print("/*");Serial.print(model.sensorData.yaw);Serial.print(",");  /// eigenen monitor als Klasse erzeugen
   //                     Serial.print(model.sensorData.roll);Serial.print(",");
@@ -125,4 +125,4 @@ void loop() {
   //  if(model.performance.last_loop_time < model.performance.min_loop_time)
   //    model.performance.min_loop_time = model.performance.last_loop_time;
   LOGGER_VERBOSE("Loop completed successfully");
-}/*-------------------- end of loop ------------------------------------------*/
+}/*------------------------ end of loop -----------------------------------------------*/
