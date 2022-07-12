@@ -94,4 +94,8 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Task 35              _newPID als array
                             displayPIDcoefficientsTemp -> displayPIDcoefficients
                             _newPID[PID_PRI]->setP ... eingefügt
-                            Tastatureingabe seltsam, mal reagiert das Terminal meistens aber nicht
+                            Tastatureingabe seltsam, mal reagiert das Terminal meistens aber nicht  / fix
+    ## Task 36              Lösung _serial = serial ??
+                            Zeile u.f. auskommentiert
+                            _MINITERM für Logger eingefügt
+

@@ -85,7 +85,7 @@ class PID_adjust : public Task::Base
 {
 	model_t		   *_model;  // Warum diesmal Zeiger und keine Adresse?
 	HardwareSerial *_serial;
-	NewPID *_newPID[3];	// kann ich auch als array machen
+	NewPID *_newPID[3];	
 //	NewPID *_newPID_sec;
 //	NewPID *_newPID_yaw;
 
@@ -151,6 +151,7 @@ public:
 
 	PID_adjust *setSerial(HardwareSerial *serial)
 	{
+		_serial = serial;
 		_putty_out = new PUTTY_out(*serial);
 		return this;
 	}
@@ -554,8 +555,8 @@ public:
 			LOGGER_NOTICE_FMT("X Axis kP = %f", _x_kP);
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, _x_kP);
 				displayPIDcoefficients();
-				//_newPID[PID_PRI]->setP(_x_kP);
-				_newPID[PID_PRI]->setP(_model->pidData[axis_t::Primary].pidCoefficient[pid::P] = _x_kP);
+			//	_newPID[PID_PRI]->setP(_x_kP);																// Programm bleibt hier hängen
+			//	_newPID[PID_PRI]->setP(_model->pidData[axis_t::Primary].pidCoefficient[pid::P] = _x_kP);
 			}
 			break;
 		case pidTyp_t::pri_I:
@@ -566,7 +567,7 @@ public:
 				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _x_kI);
 				displayPIDcoefficients();
 				//_newPID[PID_PRI]->setI(_x_kP);
-				_newPID[PID_PRI]->setI(_model->pidData[axis_t::Primary].pidCoefficient[pid::I] = _x_kI);
+			//	_newPID[PID_PRI]->setI(_model->pidData[axis_t::Primary].pidCoefficient[pid::I] = _x_kI);
 			}
 			break;
 		case pidTyp_t::pri_D:
@@ -574,10 +575,10 @@ public:
 			if (checkValue(_x_kD))
 			{
 			LOGGER_NOTICE_FMT("X Axis kD = %f", _x_kD);
-				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _x_kD);
+				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, _x_kD);
 				displayPIDcoefficients();
 				//_newPID[PID_PRI]->setD(_x_kP);
-				_newPID[PID_PRI]->setD(_model->pidData[axis_t::Primary].pidCoefficient[pid::D] = _x_kD);
+			//	_newPID[PID_PRI]->setD(_model->pidData[axis_t::Primary].pidCoefficient[pid::D] = _x_kD);
 			}
 			break;
 
@@ -586,10 +587,10 @@ public:
 			if (checkValue(_y_kP))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kP = %f", _y_kP);
-				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _y_kP);
+				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, _y_kP);
 				displayPIDcoefficients();
 				//_newPID[1]->setP(_x_kP);
-				_newPID[1]->setP(_model->pidData[axis_t::Secondary].pidCoefficient[pid::P] = _y_kP);
+			//	_newPID[1]->setP(_model->pidData[axis_t::Secondary].pidCoefficient[pid::P] = _y_kP);
 			}
 			break;
 
@@ -598,9 +599,9 @@ public:
 			if (checkValue(_y_kI))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kI = %f", _y_kI);
-				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, _y_kI);
+				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _y_kI);
 				displayPIDcoefficients();
-				_newPID[1]->setI(_model->pidData[axis_t::Secondary].pidCoefficient[pid::I] = _y_kI);
+			//	_newPID[1]->setI(_model->pidData[axis_t::Secondary].pidCoefficient[pid::I] = _y_kI);
 			}
 			break;
 
@@ -609,9 +610,9 @@ public:
 			if (checkValue(_y_kD))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kD = %f", _y_kD);
-				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _y_kD);
+				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, _y_kD);
 				displayPIDcoefficients();
-				_newPID[1]->setD(_model->pidData[axis_t::Secondary].pidCoefficient[pid::D] = _y_kD);
+			//	_newPID[1]->setD(_model->pidData[axis_t::Secondary].pidCoefficient[pid::D] = _y_kD);
 			}
 			break;
 
@@ -620,9 +621,9 @@ public:
 			if (checkValue(_z_kP))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kP = %f", _z_kP);
-				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _z_kP);
+				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, _z_kP);
 				displayPIDcoefficients();
-				_newPID[2]->setP(_model->pidData[axis_t::YawAxis].pidCoefficient[pid::P] = _z_kP);
+			//	_newPID[2]->setP(_model->pidData[axis_t::YawAxis].pidCoefficient[pid::P] = _z_kP);
 			}
 			break;
 
@@ -631,9 +632,9 @@ public:
 			if (checkValue(_z_kI))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kI = %f", _z_kI);
-				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, _z_kI);
+				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, _z_kI);
 				displayPIDcoefficients();
-				_newPID[2]->setI(_model->pidData[axis_t::YawAxis].pidCoefficient[pid::I] = _z_kI);
+			//	_newPID[2]->setI(_model->pidData[axis_t::YawAxis].pidCoefficient[pid::I] = _z_kI);
 			}
 			break;
 
@@ -642,9 +643,9 @@ public:
 			if (checkValue(_z_kD))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kD = %f", _z_kD);
-				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _z_kD);
+				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, _z_kD);
 				displayPIDcoefficients();
-				_newPID[2]->setD(_model->pidData[axis_t::YawAxis].pidCoefficient[pid::D] = _z_kD);
+			//	_newPID[2]->setD(_model->pidData[axis_t::YawAxis].pidCoefficient[pid::D] = _z_kD);
 			}
 			break;
 
@@ -655,7 +656,7 @@ public:
 				LOGGER_NOTICE_FMT("X Axis eF = %f", _x_eF);
 				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _x_eF);
 				displayPIDcoefficients();
-				_newPID[0]->setExecutionFrequency((_model->pidData[axis_t::Primary].executionFrequency) = _x_eF);
+			//	_newPID[0]->setExecutionFrequency((_model->pidData[axis_t::Primary].executionFrequency) = _x_eF);
 			}
 			break;
 
@@ -666,7 +667,7 @@ public:
 				LOGGER_NOTICE_FMT("Y Axis eF = %f", _y_eF);
 				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _y_eF);
 				displayPIDcoefficients();
-				_newPID[1]->setExecutionFrequency((_model->pidData[axis_t::Secondary].executionFrequency) = _y_eF);
+			//	_newPID[1]->setExecutionFrequency((_model->pidData[axis_t::Secondary].executionFrequency) = _y_eF);
 			}
 			break;
 		case pidTyp_t::yaw_ef:
@@ -676,7 +677,7 @@ public:
 				LOGGER_NOTICE_FMT("Z Axis eF = %f", _z_eF);
 				_putty_out->print(ROW_SELECT + 4, COL_SELECT + 26, _dotPlaces, _z_eF);
 				displayPIDcoefficients();
-				_newPID[2]->setExecutionFrequency((_model->pidData[axis_t::YawAxis].executionFrequency) = _z_eF);
+			//	_newPID[2]->setExecutionFrequency((_model->pidData[axis_t::YawAxis].executionFrequency) = _z_eF);
 			}
 			break;
 		} /* end of switch */
