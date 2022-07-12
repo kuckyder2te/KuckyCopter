@@ -97,7 +97,7 @@ void setup() {
     Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);    
     Tasks.add<Radio>("radio")->startFps(10);
 
-	  Tasks.add<PID_adjust>("pidadjust")->setSerial(&Serial2)->startFps(10);
+	  Tasks.add<PID_adjust>("pidadjust")->setSerial(&Serial2)->startFps(100);
    _pid_adjust = reinterpret_cast<PID_adjust *>(Tasks["pidadjust"].get());
    _pid_adjust->display_Menu();
 
