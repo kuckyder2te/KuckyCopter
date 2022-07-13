@@ -72,7 +72,7 @@ typedef enum
 	xkI = 20,
 	xkD = 30,
 	xeF = 40
-} itemCoeff_t;	// offset, to added to 
+} itemOffset_t;	// offset, to added to 
 
 typedef enum
 {
@@ -195,7 +195,7 @@ public:
 				break;
 
 			case 'p': ///< Choose the PID parameter
-				setItemOffset(itemCoeff_t::xkP);
+				setItemOffset(itemOffset_t::xkP);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 1, COL_SELECT + 10, c_whitespace);
@@ -203,7 +203,7 @@ public:
 				break;
 
 			case 'i':
-				setItemOffset(itemCoeff_t::xkI);
+				setItemOffset(itemOffset_t::xkI);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 2, COL_SELECT + 10, c_whitespace);
@@ -211,7 +211,7 @@ public:
 				break;
 
 			case 'd':
-				setItemOffset(itemCoeff_t::xkD);
+				setItemOffset(itemOffset_t::xkD);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 3, COL_SELECT + 10, c_whitespace);
@@ -219,7 +219,7 @@ public:
 				break;
 
 			case 'e':
-				setItemOffset(itemCoeff_t::xeF);
+				setItemOffset(itemOffset_t::xeF);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
 				_putty_out->clearPart(ROW_SELECT +6, COL_SELECT + 5, c_whitespace);
