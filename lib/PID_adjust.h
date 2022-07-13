@@ -38,9 +38,9 @@
 #define ROW_ILLEGAL 39 // Position for errors
 #define COL_ILLEGAL 20
 
-#define PID_PRI 0
-#define PID_SEC 1
-#define PID_YAW 2
+// #define PID_PRI 0
+// #define PID_SEC 1
+// #define PID_YAW 2
 
 
 typedef enum

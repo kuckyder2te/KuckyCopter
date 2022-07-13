@@ -95,7 +95,8 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
                             displayPIDcoefficientsTemp -> displayPIDcoefficients
                             _newPID[PID_PRI]->setP ... eingefügt
                             Tastatureingabe seltsam, mal reagiert das Terminal meistens aber nicht  / fix
-    ## Task 36              Lösung _serial = serial ??
+    ## Task 36              Lösung _serial = serial warum??
                             Zeile u.f. auskommentiert
                             _MINITERM für Logger eingefügt
+    ## Task 36a             Alles OK, siehe aber Task 36
 
