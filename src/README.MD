@@ -99,4 +99,5 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
                             Zeile u.f. auskommentiert
                             _MINITERM für Logger eingefügt
     ## Task 36a             Alles OK, siehe aber Task 36
+    ## Task 36b             OK
 
