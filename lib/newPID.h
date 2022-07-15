@@ -15,6 +15,7 @@
 
 #include "def.h"
 #include <FastPID.h>
+#include <extEEPROM.h>
 #include "myLogger.h"
 
 #define PID_FREQUENCY      50			///< PID parameter
@@ -24,6 +25,8 @@
 //#define COEFF_P	0
 //#define COEFF_I 1
 //#define COEFF_D 2
+
+extEEPROM eep(kbits_256, 1, 64, 0x57); // oder new??
 
 typedef struct
 {
@@ -65,7 +68,7 @@ public:
 	// setOutputConfig(16, true);
 	
 
-	// void initFastPID(){							//Ist das hier richtig?
+	// void initFastPID(){							//Wäre das hier richtig?
 	// 	FastPID::setOutputRange(-100, 100);
 	// 	FastPID::setOutputConfig(16, true);
 	// 	_pidInstance =_instance++;
@@ -139,6 +142,7 @@ public:
 	} /*-------------------------------- end of getExecutionTime ----------------------*/
 	void updateEEPROM(void)
 	{
+	//	eep.write(PID_EEPROM_ADRRESS, _pidData);
 		//	EEPROM.put(_EEPROM_startAddress, _pidData);
 		enablePID();
 	} /*-------------------------------- end of updateEEPROM --------------------------*/

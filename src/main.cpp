@@ -21,6 +21,7 @@
 #include "..\lib\sonic.h"
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
+#include "..\lib\axisBase.h"
 #include "..\lib\axisMotor.h"
 #include "..\lib\axisYaw.h"
 #include "..\lib\flyController.h"
@@ -97,7 +98,12 @@ void setup() {
     Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);    
     Tasks.add<Radio>("radio")->startFps(10);
 
-	  Tasks.add<PID_adjust>("pidadjust")->setSerial(&Serial2)->startFps(100);
+	  Tasks.add<PID_adjust>("pidadjust")
+      ->setSerial(&Serial2)
+      ->addPID(reinterpret_cast<AxisBase*>(Tasks["axismotor_a"].get())->getPid(),"axismotor_a")
+      ->addPID(reinterpret_cast<AxisBase*>(Tasks["axismotor_b"].get())->getPid(),"axismotor_b")
+      ->addPID(reinterpret_cast<AxisBase*>(Tasks["axisyaw"].get())->getPid(),"axisyaw")
+      ->startFps(100);
    _pid_adjust = reinterpret_cast<PID_adjust *>(Tasks["pidadjust"].get());
    _pid_adjust->display_Menu();
 

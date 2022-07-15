@@ -55,6 +55,9 @@ public:
         return this;
     }
 
+    NewPID* getPid(){
+        return _newPID;
+    }
     virtual void begin() override {
         LOGGER_NOTICE("New PID initialized");
      
