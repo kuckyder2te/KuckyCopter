@@ -42,6 +42,7 @@
 #define PID_SEC 1
 #define PID_YAW 2
 
+#define PID_NUM 3
 
 typedef enum
 {
@@ -78,12 +79,9 @@ typedef enum
 
 class PID_adjust : public Task::Base
 {
-	model_t		   *_model;  // Warum diesmal Zeiger und keine Adresse?
-	HardwareSerial *_serial;
-	NewPID *_newPID[3];	
+	
 
-	PUTTY_out *_putty_out;
-
+	uint8_t _pidCount;
 	uint8_t _itemAxis;
 	uint8_t _itemCoefficient;
 	uint8_t _pidType;
@@ -104,12 +102,24 @@ class PID_adjust : public Task::Base
 	float yaw_kD_value = 0;
 	float yaw_EF_value = 0;
 
+	typedef struct{
+		NewPID* _pid;
+		String _name;
+	}namedPid_t;
+
 	typedef enum
 	{
 		kP = 0,
 		kI,
 		kD
 	} pidCoeff_t;
+
+	model_t		   *_model;  // Warum diesmal Zeiger und keine Adresse?
+	HardwareSerial *_serial;
+	namedPid_t _newPID[PID_NUM+1];	// Refactoring zu einer dynamischen Liste mit CPP Templates (Stephan)
+
+	PUTTY_out *_putty_out;
+
 
 	const char *c_pri_select = "Primary axis is select"; ///< Strings for menu and informations
 	const char *c_sec_select = "Secondary axis is select";
@@ -145,6 +155,8 @@ public:
 	PID_adjust(const String &name)
 		: Task::Base(name)
 	{
+		_pidCount = 0;
+		_newPID[PID_NUM]._pid = nullptr;
 	}
 
 	virtual ~PID_adjust()
@@ -155,6 +167,18 @@ public:
 	{
 		_serial = serial;  // Warum?
 		_putty_out = new PUTTY_out(*serial);
+		return this;
+	}
+
+	PID_adjust *addPID(NewPID* pid, String name){
+		_newPID[_pidCount]._pid = pid;
+		_newPID[_pidCount]._name = name;
+		_pidCount++;
+		uint8_t i = 0;
+		while(_newPID[i]._pid!=nullptr){
+			LOGGER_VERBOSE_FMT("PID: %s initialized!",_newPID[i]._name.c_str());
+			i++;
+		}
 		return this;
 	}
 
@@ -557,8 +581,8 @@ public:
 			LOGGER_NOTICE_FMT("X Axis kP = %f", pri_kP_value);
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, pri_kP_value);
 				displayPIDcoefficients();
-			//	_newPID[PID_PRI]->setP(pri_kP_value);																// Programm bleibt hier hängen
-			//	_newPID[PID_PRI]->setP(_model->pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::kP] = pri_kP_value);
+				_newPID[PID_PRI]._pid->setP(pri_kP_value);																// Programm bleibt hier hängen
+				//_newPID[PID_PRI]._pid->setP(_model->pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::kP] = pri_kP_value);
 			}
 			break;
 		case pidTyp_t::pri_I:

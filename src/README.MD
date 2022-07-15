@@ -104,5 +104,6 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Task 36c             Typenbezeichnungen harmonisiert z.B. itemOffset_t;
     ## Task 37              PID Werte umbenannt
     ## Task 37a             enum in Class verschoben
-                            
+    ## Task 38              extEEPROM eingefügt 
+                            PID Werte den Achsen zugewiesen
 
