@@ -75,7 +75,7 @@ public:
         // _mpu9250->magZOffset = -10;
 
         LOGGER_VERBOSE("....leave");
-    } /* ------------------ end of begin --------------------------------------------*/
+    } /* ------------------ end of begin ----------------------------------------------*/
 
     virtual void enter() override
     {
@@ -112,7 +112,7 @@ public:
             LOGGER_NOTICE("Update magnetometer successful");
             _mX = _mpu9250->magX();
             _mY = _mpu9250->magY();
-            //    _mZ = _mpu9250->magZ();
+            _mZ = _mpu9250->magZ();
             _mDirection = _mpu9250->magHorizDirection();
         }
         else
@@ -130,7 +130,7 @@ public:
         // }
 
         LOGGER_VERBOSE("....leave");
-    } /* ------------------ end of enter -------------------------------------------*/
+    } /* ------------------ end of enter ---------------------------------------------*/
 
     virtual void update() override
     {
@@ -156,5 +156,5 @@ public:
         LOGGER_NOTICE_FMT("Approx altitude =  %.2fm", _sensorData->_altitude);
 
         LOGGER_VERBOSE("....leave");
-    } /*------------------------------- end of update -------------------------------*/
-};    /*----------------------------------- end of sensor.h class -----------------------*/
+    } /*------------------------------- end of update ---------------------------------*/
+};    /*----------------------------------- end of sensor.h class ---------------------*/

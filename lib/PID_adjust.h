@@ -74,12 +74,7 @@ typedef enum
 	offset_EF = 40
 } itemOffset_t;	// Offset is added to itemaxis
 
-typedef enum
-{
-	kP = 0,
-	kI,
-	kD
-} pidCoeff_t;
+
 
 class PID_adjust : public Task::Base
 {
@@ -95,6 +90,26 @@ class PID_adjust : public Task::Base
 	uint8_t _dotPlaces = 3; ///< Decimal places.
 	float _newAddOn = 0.1;	///< Multiplication factor for the PID coefficients, default setting.
 	double _addOn;
+
+	float pri_kP_value = 0;
+	float pri_kI_value = 0;
+	float pri_kD_value = 0;
+	float pri_EF_value = 0;
+	float sec_kP_value = 0;
+	float sec_kI_value = 0;
+	float sec_kD_value = 0;
+	float sec_EF_value = 0;
+	float yaw_kP_value = 0;
+	float yaw_kI_value = 0;
+	float yaw_kD_value = 0;
+	float yaw_EF_value = 0;
+
+	typedef enum
+	{
+		kP = 0,
+		kI,
+		kD
+	} pidCoeff_t;
 
 	const char *c_pri_select = "Primary axis is select"; ///< Strings for menu and informations
 	const char *c_sec_select = "Secondary axis is select";
@@ -124,18 +139,7 @@ class PID_adjust : public Task::Base
 	const char *c_ef_sec = "            Sec. = ";
 	const char *c_ef_yaw = "            YAW  = ";
 
-	float pri_kP_value = 0;
-	float pri_kI_value = 0;
-	float pri_kD_value = 0;
-	float pri_EF_value = 0;
-	float sec_kP_value = 0;
-	float sec_kI_value = 0;
-	float sec_kD_value = 0;
-	float sec_EF_value = 0;
-	float yaw_kP_value = 0;
-	float yaw_kI_value = 0;
-	float yaw_kD_value = 0;
-	float yaw_EF_value = 0;
+
 
 public:
 	PID_adjust(const String &name)

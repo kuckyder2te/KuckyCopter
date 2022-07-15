@@ -21,9 +21,9 @@
 #define PID_P_MIN			0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
 #define PID_EEPROM_ADRRESS 50
 
-#define COEFF_P	0
-#define COEFF_I 1
-#define COEFF_D 2
+//#define COEFF_P	0
+//#define COEFF_I 1
+//#define COEFF_D 2
 
 typedef struct
 {
@@ -33,23 +33,25 @@ typedef struct
 	bool output_signed;
 } pidData_t;
 
-// typedef enum
-// {
-// 	kP,
-// 	kI,
-// 	kD
-// } coeffizient_t;
 
 class NewPID : public FastPID
 { 
 
 private:
-	float _kP;
-	float _kI;
-	float _kD;
+	float _kP_value;
+	float _kI_value;
+	float _kD_value;
 	float _exFreq;
 	uint8_t _EEPROM_startAddress;
 	uint8_t _pidInstance;
+
+	typedef enum
+	{
+		kP,			// die werden schon in PID_adjust verdendet
+		kI,
+		kD
+	} pidCoeff_t;
+
 
 protected:
 	pidData_t *_pidData; /// MyPid has a PidData
@@ -61,7 +63,13 @@ public:
 	// setOutputRange(-100, 100);
 	//_pidInstance =_instance++;
 	// setOutputConfig(16, true);
-	//disablePID();
+	
+
+	// void initFastPID(){							//Ist das hier richtig?
+	// 	FastPID::setOutputRange(-100, 100);
+	// 	FastPID::setOutputConfig(16, true);
+	// 	_pidInstance =_instance++;
+	// }
 
 	void disablePID()
 	{
@@ -74,9 +82,9 @@ public:
 		/* This function has 2 tasks.
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
-			FastPID::setCoefficients(_pidData->pidCoefficient[COEFF_P],
-								 	 _pidData->pidCoefficient[COEFF_I],
-								 	 _pidData->pidCoefficient[COEFF_D],
+			FastPID::setCoefficients(_pidData->pidCoefficient[pidCoeff_t::kP],
+								 	 _pidData->pidCoefficient[pidCoeff_t::kI],
+								 	 _pidData->pidCoefficient[pidCoeff_t::kD],
 								 	 getExecutionTime());
 
 	} /*-------------------------------- end of activatePID ---------------------------*/
@@ -85,33 +93,33 @@ public:
 	{
 		LOGGER_NOTICE_FMT("setP: %f", p);
 
-		_kP = p;
-		if (_kP <= PID_P_MIN)
-			_kP = PID_P_MIN;
+		_kP_value = p;
+		if (_kP_value <= PID_P_MIN)
+			_kP_value = PID_P_MIN;
 
-		_pidData->pidCoefficient[COEFF_P]=_kP;
+		_pidData->pidCoefficient[pidCoeff_t::kP]=_kP_value;
 		enablePID();
 	} /*-------------------------------- end of setP ----------------------------------*/
 
 	void setI(float i)
 	{
 		LOGGER_NOTICE_FMT("setI: %f", i);
-		_kI = i;
-		if (_kI <= 0)
-			_kI = 0;
+		_kI_value = i;
+		if (_kI_value <= 0)
+			_kI_value = 0;
 
-		_pidData->pidCoefficient[COEFF_I]=_kI;
+		_pidData->pidCoefficient[pidCoeff_t::kI]=_kI_value;
 		enablePID();
 	} /*-------------------------------- end of setI ----------------------------------*/
 
 	void setD(float d)
 	{
 		LOGGER_NOTICE_FMT("setD: %f", d);
-		_kD = d;
-		if (_kD <= 0)
-			_kD = 0;
+		_kD_value = d;
+		if (_kD_value <= 0)
+			_kD_value = 0;
 
-		_pidData->pidCoefficient[COEFF_D]=_kD;
+		_pidData->pidCoefficient[pidCoeff_t::kD]=_kD_value;
 		enablePID();
 	} /*-------------------------------- end of setD ----------------------------------*/
 
@@ -142,17 +150,17 @@ public:
 
 	float getP() const
 	{
-		return _kP;
+		return _kP_value;
 	} /*-------------------------------- end of getP ----------------------------------*/
 
 	float getI() const
 	{
-		return _kI;
+		return _kI_value;
 	} /*-------------------------------- end of getI ----------------------------------*/
 
 	float getD() const
 	{
-		return _kD;
+		return _kD_value;
 	} /*-------------------------------- end of getD ----------------------------------*/
 
 	float getExFreq() const
