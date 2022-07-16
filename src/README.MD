@@ -106,4 +106,4 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Task 37a             enum in Class verschoben
     ## Task 38              extEEPROM eingefügt 
                             PID Werte den Achsen zugewiesen
-
+    ##  Task 39             Flycontrollen überprüfen bis standby OK
