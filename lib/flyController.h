@@ -87,19 +87,19 @@ public:
 
         case standby:
             /* Make sure the throttle lever is set to 0 and RC is connected. */
-            //_radio->interface->isconnect = true;          // nur zum testen, ob Flycontroller
-            //_radio->interface->payload.rcThrottle = 1;    // durchläuft
+            _model->interface.isconnect = true;          // nur zum testen, ob Flycontroller
+            _model->interface.payload.rcThrottle = 1;    // durchläuft
             LOGGER_NOTICE("standby");
-            if (_model->interface.isconnect && (_model->interface.payload.rcThrottle <= POWER_MIN))
+            if (_model->interface.isconnect && (_model->interface.payload.rcThrottle >= POWER_MIN))
             {
                 _model->flyState = prestart;
+                LOGGER_NOTICE("standby fineshed");
             }
             else
             {
                 _model->yawData.throttle = 0;
                 _model->flyState = standby;
-            }
-            LOGGER_NOTICE("standby fineshed");
+            }          
             break;
 
         case prestart:
