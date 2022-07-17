@@ -19,12 +19,6 @@ typedef struct{
 class AxisBase : public Task::Base {
 
 private:
-	float 	  	_kP;
-	float       _kI;
-	float       _kD;
-	float		_exFreq;
-	uint8_t     _EEPROM_startAddress;
-	uint8_t 	_pidInstance;
 
 protected:
     NewPID      *_newPID;
@@ -35,7 +29,6 @@ protected:
     int16_t* 	_fb;
     int16_t* 	_error;
     uint32_t 	_lastMillis;
-    uint32_t	_temp;
 
 public:
     AxisBase(const String& name) : Task::Base(name) {
@@ -53,26 +46,26 @@ public:
         _baseData = _model;
         LOGGER_VERBOSE("....leave");
         return this;
-    }
+    } /*----------------------------------- end of setModel ---------------------------*/
 
     NewPID* getPid(){
         return _newPID;
-    }
-    virtual void begin() override {
-        LOGGER_NOTICE("New PID initialized");
-     
+    } /*----------------------------------- end of getPid -----------------------------*/
+
+    virtual void begin() override
+    {
+        LOGGER_NOTICE("New PID initialized");   
         _newPID->setExecutionFrequency(PID_FREQUENCY);
         LOGGER_NOTICE("End init New PID");
-    }
+    } /*----------------------------------- end of begin ------------------------------*/
 
     virtual void update() override {
     /* _sp Position of the joysticks.
        _fb Position of the drohne.  */
 
-			// if(millis()-_lastMillis >= _newPID->getExecutionTime()){	/// muss hier so sein? wird in der service loop immer wieder aufgerufen
-			//  	*_error = _newPID->step(*_sp, *_fb);					///< Calculate PID error
-
-			//  	_lastMillis = millis();
-			// }       
-    }
+        if(millis()-_lastMillis >= _newPID->getExecutionTime()){	/// muss hier so sein? wird in der service loop immer wieder aufgerufen
+            *_error = _newPID->step(*_sp, *_fb);					///< Calculate PID error
+            _lastMillis = millis();
+        }       
+    } /*----------------------------------- end of update -----------------------------*/
 };/*----------------------------------- end of axisBase class -------------------------*/

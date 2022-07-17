@@ -12,6 +12,7 @@
 #include "def.h"
 #include "myLogger.h"
 
+/*
 #define _PWM_LOGLEVEL_ 0
 
 #if (defined(ARDUINO_NANO_RP2040_CONNECT) || defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) || \
@@ -32,20 +33,22 @@
 #else
 #error This code is intended to run on the RP2040 mbed_nano, mbed_rp2040 or arduino-pico platform! Please check your Tools->Board setting.
 #endif
+*/
 
-#define ARM_MIN 1000		//
-#define ARM_MAX 2000		//
+//#define ARM_MIN 1000		//
+//#define ARM_MAX 2000		//
 #define POWER_MIN 0			//
 #define POWER_MAX 100		//
 #define BASE_MOTOR_POWER 10 //< 10% minimal throttle in fly mode for preventing stop of the motors
 #define PIN_ESC_ON 15
  
-#define PWM_FREQUENCY 100.0
-#define DUTY_CYCLE__MAX 20000.0
-#define DUTY_CYCLE__MIN 10000.0
+// #define PWM_FREQUENCY 100.0
+// #define DUTY_CYCLE__MAX 20000.0
+// #define DUTY_CYCLE__MIN 10000.0
 
 class Motor
 {
+private:	
 	float frequency;
 	float dutyCycle;
 
@@ -80,15 +83,16 @@ public:
 	{
 		LOGGER_VERBOSE("Enter....");
 		LOGGER_NOTICE_FMT("Pin = %d", _pin);
-		_motor = new RP2040_PWM(_pin, PWM_FREQUENCY, 20);
+		frequency = 400.0f; 
+
+		_motor = new RP2040_PWM(_pin, frequency, 80);	//2mS
 
 		if (_motor)
 		{
 			_motor->setPWM();
 		}
-		LOGGER_NOTICE_FMT("Pin = %d", _pin);
 
-		if(!_motor->setPWM_Int(_pin, PWM_FREQUENCY, DUTY_CYCLE__MIN)){
+		if(!_motor->setPWM_Int(_pin, frequency, 80)){
 			LOGGER_FATAL_FMT("PWM-Pin %d not known",_pin);
 		};
 
@@ -111,7 +115,6 @@ public:
 		case off:
 			LOGGER_NOTICE_FMT("Motor off %d ", _motor_address);
 			_power = 0;
-			LOGGER_VERBOSE("Not implemented yet");
 			break;
 
 		case on:
@@ -120,8 +123,6 @@ public:
 			if (resultingPower < BASE_MOTOR_POWER) {
 				resultingPower = BASE_MOTOR_POWER;
 			}
-			LOGGER_VERBOSE("Not implemented yet");
-			
 			break;
 		}
 		LOGGER_VERBOSE("....leave");
@@ -137,15 +138,13 @@ public:
 		{
 			if (!step)
 			{
-				LOGGER_NOTICE_FMT("Arming begin max: %d", ARM_MAX);
-				LOGGER_FATAL("Not implemented yet");
-				//	_motor.write(180);		///< Arming begin
+				LOGGER_NOTICE("Arming begin max.");
+				_motor->setPWM_Int(_pin, frequency, 80*1000);
 			}
 			else
 			{
-				//	_motor.write(0);		///< Arming end
-				LOGGER_NOTICE_FMT("Arming fineshed min %d", ARM_MIN);
-				LOGGER_FATAL("Not implemented yet");
+				_motor->setPWM_Int(_pin, frequency, 40*1000);
+				LOGGER_NOTICE("Arming fineshed min.");
 			}
 		}
 		LOGGER_VERBOSE("....leave");

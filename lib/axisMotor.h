@@ -10,6 +10,7 @@
 #include "axisBase.h"
 #include "motor.h"
 #include "myLogger.h"
+
 class AxisMotor : public AxisBase
 {
 
@@ -29,7 +30,7 @@ public:
 		standby,
 		ready
 	} motorState_e;
-
+	
 	typedef struct
 	{
 		uint16_t power; /// power from YAW Axis
@@ -46,7 +47,8 @@ private:
 	Motor *_motor[2];
 	double _roll;
 	bool _invertRoll;
-	motorState_e state;
+	motorState_e _state;
+	uint8_t _axis_address;
 
 public:
 	AxisMotor(const String &name) : AxisBase(name)
@@ -66,7 +68,7 @@ public:
 	  //_axis_data  wird aus dem Model in die Achse geschrieben
 		LOGGER_VERBOSE("Enter....");
 		_axisData = _model;
-		state = standby;
+		_state = standby;
 		AxisBase::_sp = &_axisData->setpoint; /// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisDatat->setpoint holt
 		AxisBase::_fb = _axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
@@ -108,9 +110,9 @@ public:
 	virtual void begin() override
 	{
 		LOGGER_VERBOSE("Enter....");
-		LOGGER_VERBOSE_FMT("%s", this->getName().c_str()); // Adresse von array of char
+		LOGGER_NOTICE_FMT("%s", this->getName().c_str()); // Adresse von array of char
 		AxisBase::begin();
-
+		_axis_address++;
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of begin ---------------------------------*/
 
@@ -121,7 +123,7 @@ public:
 
 		LOGGER_NOTICE_FMT("AxisMotor service AxisNo %d", _axis_address);
 
-		switch (state)
+		switch (_state)
 		{
 		case arming_start:
 			LOGGER_NOTICE_FMT("AxisMotor arming start %d ", _axis_address);
@@ -129,7 +131,7 @@ public:
 			_motor[motor_t::second]->setMotorStates(Motor::arming);
 			_motor[motor_t::first]->armingProcedure(false);
 			_motor[motor_t::second]->armingProcedure(false);
-			state = arming_busy;
+			_state = arming_busy;
 			break;
 
 		case arming_busy:
@@ -188,43 +190,41 @@ public:
 			_axisData->power = 0;
 		else
 			_axisData->power = _power;
-
 	} /*--------------------- end of setPower -----------------------------------------*/
 
 	void setState(motorState_e state)
 	{
-		//	_state = state;
-		//	LOGGER_NOTICE_FMT("set AxisMotor State = %d", _state);
+		_state = state;
+		LOGGER_NOTICE_FMT("set AxisMotor State = %d", _state);
 	} /*--------------------- end of setState -----------------------------------------*/
 
 	boolean isArmed() const
 	{
-
+		LOGGER_VERBOSE("Enter....isArmed");
 		return ((_motor[motor_t::first]->isMotorOff()) && (_motor[motor_t::second]->isMotorOff()));
-
 	} /*---------------------- end of isArmed -----------------------------------------*/
 
 	boolean isDeactivatePID()
 	{
-		LOGGER_VERBOSE("Enter....");
-		return (state == disablePID);
+		LOGGER_VERBOSE("Enter....isDeactivatePID");
+		return (_state == disablePID);
 	} /*--------------------- end of isDeactivatePID ----------------------------------*/
 
 	boolean isStandby() const
 	{
-		LOGGER_VERBOSE("Enter....");
-		return (state == standby);
+		LOGGER_VERBOSE("Enter....isStandby");
+		return (_state == standby);
 	} /*--------------------- end of isStandby ----------------------------------------*/
 
 	boolean isReady() const
 	{
-		LOGGER_VERBOSE("Enter....");
-		return (state == ready);
+		LOGGER_VERBOSE("Enter....isReady");
+		return (_state == ready);
 	} /*---------------------- end of isReady -----------------------------------------*/
 
 	// Motor** getMotor() {
-	// 	return motor;
+	//  	return _motor;
 
-	// } /*---------------------- end of getMotor ---------------------------------*/
+	// } /*---------------------- end of getMotor -------------------------------------*/
 
 }; /*.................................. end of AxisMotor class ------------------------*/

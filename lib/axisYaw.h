@@ -23,12 +23,6 @@ typedef struct
 	AxisMotor::axisData_t *axisData[2];
 } yawData_t;
 
-typedef enum
-{
-	Primary,
-	Secondary,
-	YawAxis
-} axis_t;
 
 class AxisYaw : public AxisBase
 {
@@ -51,6 +45,13 @@ private:
 	int16_t _lastCompass;
 	int16_t _virtualFeedback; ///< The calculated feedback due to the yaw rotation
 	int16_t _virtualSetpoint;
+
+	typedef enum
+	{
+		Primary,
+		Secondary,
+		YawAxis
+	} axis_t;
 
 public:
 	AxisYaw(const String &name) : AxisBase(name)
@@ -184,9 +185,9 @@ public:
 		} /* end of switch */
 	} /*--------------------- end of virtual service ----------------------------------*/
 
-	void test(){
-		LOGGER_NOTICE("Dies ist ein Testaufruf");
-	}  /*---------------------- end of test -------------------------------------------*/
+	// void test(){
+	// 	LOGGER_NOTICE("Dies ist ein Testaufruf");
+	// }  /*---------------------- end of test -------------------------------------------*/
 
 	void setState(state_e state)
 	{
@@ -198,19 +199,22 @@ public:
 	boolean isArmed()
 	{
 		LOGGER_NOTICE_FMT("get YawAxis State %d ", _state);
-		return ((_state == arming_finished)) && (_axisMotor[axis_t::Primary]->isArmed()) && (_axisMotor[axis_t::Secondary]->isArmed());
+		return ((_state == arming_finished)) && (_axisMotor[axis_t::Primary]->isArmed()) 
+											 && (_axisMotor[axis_t::Secondary]->isArmed());
 		
 	} /*---------------------- end of isArmed -----------------------------------------*/
 
 	boolean isDeactivatePID()
 	{
-		return ((_state == disablePID)) && (_axisMotor[axis_t::Primary]->isDeactivatePID()) && (_axisMotor[axis_t::Secondary]->isDeactivatePID());
+		return ((_state == disablePID)) && (_axisMotor[axis_t::Primary]->isDeactivatePID()) 
+										&& (_axisMotor[axis_t::Secondary]->isDeactivatePID());
 		LOGGER_NOTICE_FMT("Yaw isDeactivatePID %d", _state);
 	} /*---------------------- end of isDeactivatePID ---------------------------------*/
 
 	boolean isReady()
 	{
-		return ((_state == ready))  && (_axisMotor[axis_t::Primary]->isReady()) && (_axisMotor[axis_t::Secondary]->isReady());
 		LOGGER_NOTICE_FMT("getYawAxisState %d ", _state);
+		return ((_state == ready))  && (_axisMotor[axis_t::Primary]->isReady()) 
+									&& (_axisMotor[axis_t::Secondary]->isReady());
 	} /*---------------------- end of isReady -----------------------------------------*/
 }; /* ------------------------ end of AxisYaw Class -----------------------------------*/
