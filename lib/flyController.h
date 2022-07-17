@@ -63,23 +63,24 @@ public:
         case arming_begin:
             /* This is only setting, for the first start from the airplane.
              * Main Power ON/OFF or option-switch. */
-            LOGGER_NOTICE("arming begin");
+            LOGGER_VERBOSE("arming begin");
             _axisYaw->setState(AxisYaw::arming_start);     /// hier bleibt es hängen
             _model->flyState = arming_busy;
-            LOGGER_NOTICE("Leave arming begin");
+            LOGGER_NOTICE("arming begin is fineshed");
             break;
 
         case arming_busy:
-            LOGGER_NOTICE("arming is finished");
+            LOGGER_VERBOSE("arming busy");
             if (_axisYaw->isArmed())
             {
                 _model->flyState = disablePID; 
+                LOGGER_NOTICE("arming busy is fineshed");
             }
             break;
 
         case disablePID:
             /* Deactivate the PID controller from all axis. */
-            LOGGER_NOTICE("disablePID");
+            LOGGER_VERBOSE("disablePID");
             _axisYaw->setState(AxisYaw::state_e::disablePID);
             _model->flyState = standby;
             LOGGER_NOTICE("disable PID is finished");
@@ -89,11 +90,11 @@ public:
             /* Make sure the throttle lever is set to 0 and RC is connected. */
             _model->interface.isconnect = true;          // nur zum testen, ob Flycontroller
             _model->interface.payload.rcThrottle = 1;    // durchläuft
-            LOGGER_NOTICE("standby");
+            LOGGER_NOTICE("arming begin fineshed");("standby");
             if (_model->interface.isconnect && (_model->interface.payload.rcThrottle >= POWER_MIN))
             {
                 _model->flyState = prestart;
-                LOGGER_NOTICE("standby fineshed");
+                LOGGER_NOTICE("standby is fineshed");
             }
             else
             {
@@ -103,12 +104,13 @@ public:
             break;
 
         case prestart:
-            LOGGER_NOTICE("prestart");
+            LOGGER_VERBOSE("prestart");
             /* Checked if all axes are OK. */
             _axisYaw->setState(AxisYaw::ready);
             if (_axisYaw->isReady())
             {
                 _model->flyState = takeoff;
+                LOGGER_NOTICE("prestart is fineshed");
             }
             else
             {
@@ -117,7 +119,7 @@ public:
             break;
 
             case takeoff:
-                LOGGER_NOTICE("take off");
+                LOGGER_VERBOSE("take off");
                 /* Throttle greater than POWER_LIFT_UP and RC is connected, go to the next state. */
                 //_radio->interface->isconnect = true;          // nur zum testen, ob Flycontroller           
                  _model->yawData.throttle = _model->interface.payload.rcThrottle;
@@ -130,20 +132,21 @@ public:
                 {
                     _model->flyState = takeoff;
                 }
-                LOGGER_NOTICE("take off fineshed");
+                LOGGER_NOTICE("take off is fineshed");
                 break;
 
         case set_pid:
             /* If everything is checked, the PID controller is activated. */
-            LOGGER_NOTICE("FlyController set_pid");
-            //_radio->interface->isconnect = true;          // nur zum testen, ob Flycontroller           
+            LOGGER_VERBOSE("set pid");
+            _model->interface.isconnect = true;          // nur zum testen, ob Flycontroller           
             _model->yawData.throttle = _model->interface.payload.rcThrottle;
-            //_radio->interface->payload.rcThrottle = 1;    // durchläuft
+            _model->interface.payload.rcThrottle = 65;    // durchläuft
             if (_model->interface.isconnect && (_model->interface.payload.rcThrottle >= POWER_LIFT_UP))
             {
                 _axisYaw->setState(AxisYaw::enablePID);
                 _model->yawData.horz_Position = 0; ///< Reset YAW Position before lift off
                 _model->flyState = fly;
+                LOGGER_NOTICE("set pid is fineshed");
             }
             else
             {
@@ -153,7 +156,7 @@ public:
 
         case fly:
             /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, the status is set to ground. */
-            LOGGER_NOTICE("fly");
+            LOGGER_VERBOSE("fly");
                 //_sonicData->distance > 9;          // nur zum testen, ob Flycontroller             
             _model->yawData.throttle= _model->interface.payload.rcThrottle;
                 //_radio->interface->payload.rcThrottle >= 60;    // durchläuft
@@ -161,6 +164,7 @@ public:
             //if ((_radio->interface->payload.rcThrottle <= POWER_LIFT_UP))
             {
                 _model->flyState = ground;
+                LOGGER_NOTICE("fly is fineshed");
             }
             else
             {
@@ -171,10 +175,11 @@ public:
 
         case ground:
             /* If the quadrocopter is on the ground for more than DOWN_TIME, disable the engines. */
-            LOGGER_NOTICE("ground");
+            LOGGER_VERBOSE("ground");
             if (millis() - downTime >= DOWN_TIME)
             {
                 _model->flyState = fly;
+                LOGGER_NOTICE("ground fineshed");
             }
             else
             {

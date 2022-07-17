@@ -35,6 +35,8 @@
 #define COL_OUTPUT 70
 #define COL_OUTPUT_VALUE 88
 
+#define ROW_ACCURAY_ADD 12
+
 #define ROW_ILLEGAL 39 // Position for error message
 #define COL_ILLEGAL 20
 
@@ -130,10 +132,10 @@ class PID_adjust : public Task::Base
 	const char *c_i_select = "Coefficient I = ";
 	const char *c_d_select = "Coefficient D = ";
 
-	const char *c_accuracy10 =   "Accuracy 1.0  ";
-	const char *c_accuracy01 =   "Accuracy 0.1  ";
-	const char *c_accuracy001 =  "Accuracy 0.01 ";
-	const char *c_accuracy0001 = "Accuracy 0.001";
+	const char *c_accuracy10 =   "Accuracy = 1.0  ";
+	const char *c_accuracy01 =   "Accuracy = 0.1  ";
+	const char *c_accuracy001 =  "Accuracy = 0.01 ";
+	const char *c_accuracy0001 = "Accuracy = 0.001";
 
 	const char *c_whitespace = "                           ";
 	const char *c_primary_p = "Primary axis   P = ";
@@ -186,7 +188,7 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 	//	display_Menu();
-	//_putty_out->print(ROW_SELECT + 8, COL_SELECT, "Accuracy = 1,0");
+	
 	LOGGER_VERBOSE("....leave");
 	}
 
@@ -196,7 +198,7 @@ public:
 
 		if (_serial->available() > 0) // Hier werden die gedrückten keys abgefragt
 		{
-			LOGGER_FATAL("Enter...._serial->available");
+			LOGGER_VERBOSE("Enter....");
 			char key = _serial->read();
 			switch (key)
 			{
@@ -270,29 +272,29 @@ public:
 				setDecimalPlaces(0);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
-				_putty_out->print(ROW_SELECT + 8, COL_SELECT, c_accuracy10);
+				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_whitespace);
+				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_accuracy10);
 				break;
 			case '1':
 				setDecimalPlaces(1);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
-				_putty_out->print(ROW_SELECT + 8, COL_SELECT, c_accuracy01);
+				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_whitespace);
+				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_accuracy01);
 				break;
 			case '2':
 				setDecimalPlaces(2);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 8, COL_SELECT, c_whitespace);
-				_putty_out->print(ROW_SELECT + 8, COL_SELECT, c_accuracy001);
+				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_whitespace);
+				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_accuracy001);
 				break;
 			case '3':
 				setDecimalPlaces(3);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_ILLEGAL + 8, COL_SELECT, c_whitespace);
-				_putty_out->print(ROW_SELECT + 8, COL_SELECT, c_accuracy0001);
+				_putty_out->clearPart(ROW_ILLEGAL + ROW_ACCURAY_ADD, COL_SELECT, c_whitespace);
+				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_accuracy0001);
 				break;
 
 			case 's': ///< Saved all coefficients into the EEPROM
@@ -370,7 +372,7 @@ public:
 				_putty_out->yellow();
 			}
 			} /* end of switch(key) */
-		LOGGER_FATAL("Leave...._serial->available");
+		LOGGER_VERBOSE("....leave");
 		}	  /* end of _serial.available */
 	LOGGER_VERBOSE("....leave");
 	}		  /* -------------------- end of update -------------------------------------------*/
@@ -402,7 +404,7 @@ public:
 		_putty_out->gray();
 		_putty_out->print(ROW_MENU + 19, COL_MENU, "-----------------------------------------------------");
 		_putty_out->yellow();
-		_putty_out->print(ROW_SELECT + 8, COL_SELECT, "Accuracy = 1,0");
+		_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, "Accuracy = 1,0");
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of display_Menu --------------------------------*/
 

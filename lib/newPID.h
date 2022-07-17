@@ -128,14 +128,14 @@ public:
 
 	void setExecutionFrequency(uint8_t ef)
 	{
-		LOGGER_WARNING_FMT("setExecutionFrequency: %d", ef);
+		LOGGER_NOTICE_FMT("setExecutionFrequency: %d", ef);
 		_pidData->executionFrequency = ef;
 		enablePID();
 	} /*-------------------------------- end of setExecutionFrequency -----------------*/
 
 	uint8_t getExecutionTime()
 	{
-		LOGGER_WARNING_FMT("PID getExecutionTime %f", (1 / _pidData->executionFrequency) * 1000);
+		LOGGER_NOTICE_FMT("PID getExecutionTime %f", (1 / _pidData->executionFrequency) * 1000);
 		return ((1.0/(float)_pidData->executionFrequency)*1000);
 		///< Convert frequency to millis
 
