@@ -72,7 +72,7 @@ protected:
 public:
 	Motor(uint8_t pin) : _pin(pin)
 	{
-		LOGGER_NOTICE_FMT("Pin = %d  %d", _pin, pin);
+		LOGGER_NOTICE_FMT("Pin = %d", _pin);
 		_power = 0;
 		_maxPower = 180;
 		_motorstate = off;

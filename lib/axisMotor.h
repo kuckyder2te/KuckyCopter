@@ -80,7 +80,7 @@ public:
 	AxisMotor *initMotorOrdered(uint8_t _pin)
 	{
 		LOGGER_VERBOSE("Enter....");
-		LOGGER_NOTICE_FMT("PIN:%d", _pin);
+		LOGGER_NOTICE_FMT("Pin = %d", _pin);
 		if (_motor[motor_t::first] == NULL)
 		{
 			LOGGER_NOTICE("Set first Motor");
@@ -121,12 +121,12 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		AxisBase::update();
 
-		LOGGER_NOTICE_FMT("AxisMotor service AxisNo %d", _axis_address);
+		LOGGER_NOTICE_FMT("AxisNo %d", _axis_address);
 
 		switch (_state)
 		{
 		case arming_start:
-			LOGGER_NOTICE_FMT("AxisMotor arming start %d ", _axis_address);
+			LOGGER_NOTICE_FMT("arming start %d ", _axis_address);
 			_motor[motor_t::first]->setMotorStates(Motor::arming);
 			_motor[motor_t::second]->setMotorStates(Motor::arming);
 			_motor[motor_t::first]->armingProcedure(false);
@@ -135,11 +135,11 @@ public:
 			break;
 
 		case arming_busy:
-			LOGGER_NOTICE_FMT("AxisMotor arming_busy %s ", this->getName().c_str());
+			LOGGER_NOTICE_FMT("arming_busy %s ", this->getName().c_str());
 			break;
 
 		case arming_end:
-			LOGGER_NOTICE_FMT("AxisMotor arming end %s ", this->getName().c_str());
+			LOGGER_NOTICE_FMT("arming end %s ", this->getName().c_str());
 			_motor[motor_t::first]->armingProcedure(true);
 			_motor[motor_t::second]->armingProcedure(true);
 			_motor[motor_t::first]->setMotorStates(Motor::off);
@@ -149,18 +149,18 @@ public:
 		case disablePID:
 			/* Deactivate the PID controller from the motor axes. Does it have to be that way?
 			 * Look at module AxisYaw */
-			LOGGER_NOTICE_FMT("AxisMotor deactivate PID %d ", _axis_address);
+			LOGGER_NOTICE_FMT("deactivate PID %d ", _axis_address);
 			AxisBase::_newPID->disablePID();
 			break;
 
 		case enablePID:
 			/* Activate the PID controller from the MotorAxis with the current coefficients. */
-			LOGGER_NOTICE_FMT("AxisMotor activate PID %d ", _axis_address);
+			LOGGER_NOTICE_FMT("activate PID %d ", _axis_address);
 			AxisBase::_newPID->enablePID();
 			break;
 
 		case standby:
-			LOGGER_NOTICE_FMT("AxisMotor standby %d ", _axis_address);
+			LOGGER_NOTICE_FMT("standby %d ", _axis_address);
 			_motor[motor_t::first]->setMotorStates(Motor::off);
 			_motor[motor_t::second]->setMotorStates(Motor::off);
 			break;

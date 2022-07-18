@@ -88,8 +88,7 @@ public:
 			FastPID::setCoefficients(_pidData->pidCoefficient[pidCoeff_t::kP],
 								 	 _pidData->pidCoefficient[pidCoeff_t::kI],
 								 	 _pidData->pidCoefficient[pidCoeff_t::kD],
-								 	 getExecutionTime());
-
+								 	 getExecutionTime());								
 	} /*-------------------------------- end of activatePID ---------------------------*/
 
 	void setP(float p)
