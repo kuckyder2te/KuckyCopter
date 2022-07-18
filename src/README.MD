@@ -107,4 +107,6 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
     ## Task 38              extEEPROM eingefügt 
                             PID Werte den Achsen zugewiesen
     ## Task 39              FlyController überprüft bis ground OK.
+    ## Task 40              PID_adjust, enum in die Klasse verschoben
+                            Dictionary als Übersetzungstabelle implementiert
                                                        

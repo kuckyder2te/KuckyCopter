@@ -12,33 +12,29 @@
 #include <Arduino.h>
 #include <HardwareSerial.h>
 #include "..\lib\myLogger.h"
-//#include <EEPROM.h>
 #include "..\lib\putty_out.h"
-//#include "newPid.h"
-//#include "model.h"
+#include "dictionary.h"
 
-//#ifdef _PID_ADJUST
+// #define ROW_MENU 3 ///< First position for the main menue
+// #define COL_MENU 10
 
-#define ROW_MENU 3 ///< First position for the main menue
-#define COL_MENU 10
+// #define ROW_SELECT 25 ///< First position for select PID type
+// #define COL_SELECT 20
 
-#define ROW_SELECT 25 ///< First position for select PID type
-#define COL_SELECT 20
+// #define ROW_COEFF 28 ///< First position for new coefficients
+// #define COL_COEFF 20
 
-#define ROW_COEFF 28 ///< First position for new coefficients
-#define COL_COEFF 20
+// #define ROW_PID 33 ///< First position for current coefficients
+// #define COL_PID 20
 
-#define ROW_PID 33 ///< First position for current coefficients
-#define COL_PID 20
+// #define ROW_OUTPUT 5
+// #define COL_OUTPUT 70
+// #define COL_OUTPUT_VALUE 88
 
-#define ROW_OUTPUT 5
-#define COL_OUTPUT 70
-#define COL_OUTPUT_VALUE 88
+// #define ROW_ACCURAY_ADD 12
 
-#define ROW_ACCURAY_ADD 12
-
-#define ROW_ILLEGAL 39 // Position for error message
-#define COL_ILLEGAL 20
+// #define ROW_ILLEGAL 39 // Position for error message
+// #define COL_ILLEGAL 20
 
 #define PID_PRI 0
 #define PID_SEC 1
@@ -46,43 +42,45 @@
 
 #define PID_NUM 3
 
-typedef enum
-{
-	pri_P = 11,
-	pri_I = 21,
-	pri_D = 31,
-	sec_P = 12,
-	sec_I = 22,
-	sec_D = 32,
-	yaw_P = 13,
-	yaw_I = 23,
-	yaw_D = 33,
-	pri_ef = 41,
-	sec_ef = 42,
-	yaw_ef = 43
-} pidTyp_t;			// for function select
 
-typedef enum
-{
-	axis_pri = 1,		// besser mit 0 beginnen??
-	axis_sec = 2,
-	axis_yaw = 3
-} itemAxis_t;		// choose which axis to configure
-
-typedef enum
-{
-	offset_P = 10,
-	offset_I = 20,
-	offset_D = 30,
-	offset_EF = 40
-} itemOffset_t;	// Offset is added to itemaxis
 
 
 
 class PID_adjust : public Task::Base
 {
-	
+	private:
+	typedef enum
+	{
+		pri_P = 11,
+		pri_I = 21,
+		pri_D = 31,
+		sec_P = 12,
+		sec_I = 22,
+		sec_D = 32,
+		yaw_P = 13,
+		yaw_I = 23,
+		yaw_D = 33,
+		pri_ef = 41,
+		sec_ef = 42,
+		yaw_ef = 43
+	} pidTyp_t;			// for function select
 
+	typedef enum
+	{
+		axis_pri = 1,		
+		axis_sec = 2,
+		axis_yaw = 3
+	} itemAxis_t;		// choose which axis to configure
+
+	typedef enum
+	{
+		offset_P = 10,
+		offset_I = 20,
+		offset_D = 30,
+		offset_EF = 40
+	} itemOffset_t;	// Offset is added to itemaxis
+
+	
 	uint8_t _pidCount;
 	uint8_t _itemAxis;
 	uint8_t _itemCoefficient;
@@ -122,34 +120,35 @@ class PID_adjust : public Task::Base
 
 	PUTTY_out *_putty_out;
 
+	Dictionary *_dict;
 
-	const char *c_pri_select = "Primary axis is select"; ///< Strings for menu and informations
-	const char *c_sec_select = "Secondary axis is select";
-	const char *c_yaw_select = "YAW axis is select";
-	const char *c_ef_select = "Exec. frequency is select";
+	// const char *c_pri_select = "Primary axis is select"; ///< Strings for menu and informations
+	// const char *c_sec_select = "Secondary axis is select";
+	// const char *c_yaw_select = "YAW axis is select";
+	// const char *c_ef_select = "Exec. frequency is select";
 
-	const char *c_p_select = "Coefficient P = ";
-	const char *c_i_select = "Coefficient I = ";
-	const char *c_d_select = "Coefficient D = ";
+	// const char *c_p_select = "Coefficient P = ";
+	// const char *c_i_select = "Coefficient I = ";
+	// const char *c_d_select = "Coefficient D = ";
 
-	const char *c_accuracy10 =   "Accuracy = 1.0  ";
-	const char *c_accuracy01 =   "Accuracy = 0.1  ";
-	const char *c_accuracy001 =  "Accuracy = 0.01 ";
-	const char *c_accuracy0001 = "Accuracy = 0.001";
+	// const char *c_accuracy10 =   "Accuracy = 1.0  ";
+	// const char *c_accuracy01 =   "Accuracy = 0.1  ";
+	// const char *c_accuracy001 =  "Accuracy = 0.01 ";
+	// const char *c_accuracy0001 = "Accuracy = 0.001";
 
-	const char *c_whitespace = "                           ";
-	const char *c_primary_p = "Primary axis   P = ";
-	const char *c_primary_i = "               I = ";
-	const char *c_primary_d = "               D = ";
-	const char *c_secondary_p = "Secondary axis P = ";
-	const char *c_secondary_i = "               I = ";
-	const char *c_secondary_d = "               D = ";
-	const char *c_yaw_p = "YAW axis       P = ";
-	const char *c_yaw_i = "               I = ";
-	const char *c_yaw_d = "               D = ";
-	const char *c_ef_pri = "Exec. freq. Pri  = ";
-	const char *c_ef_sec = "            Sec. = ";
-	const char *c_ef_yaw = "            YAW  = ";
+//	const char *c_whitespace = "                           ";
+	// const char *c_primary_p = "Primary axis   P = ";
+	// const char *c_primary_i = "               I = ";
+	// const char *c_primary_d = "               D = ";
+	// const char *c_secondary_p = "Secondary axis P = ";
+	// const char *c_secondary_i = "               I = ";
+	// const char *c_secondary_d = "               D = ";
+	// const char *c_yaw_p = "YAW axis       P = ";
+	// const char *c_yaw_i = "               I = ";
+	// const char *c_yaw_d = "               D = ";
+	// const char *c_ef_pri = "Exec. freq. Pri  = ";
+	// const char *c_ef_sec = "            Sec. = ";
+	// const char *c_ef_yaw = "            YAW  = ";
 
 
 
@@ -188,6 +187,8 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 	//	display_Menu();
+
+	_dict = new(Dictionary);
 	
 	LOGGER_VERBOSE("....leave");
 	}
@@ -205,96 +206,96 @@ public:
 			case 'x': ///< Choose the axes
 				setItemAxis(itemAxis_t::axis_pri);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);	   ///< Clears the string "Illegal button was pressed"
-				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, c_whitespace); ///< Clears the current line
-				_putty_out->print(ROW_SELECT, COL_SELECT + 5, c_pri_select);	   ///< Print the selected axis
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);	   ///< Clears the string "Illegal button was pressed"
+				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
+				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_pri_select);	   ///< Print the selected axis
 				break;
 			case 'y':
 				setItemAxis(itemAxis_t::axis_sec);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, c_whitespace);
-				_putty_out->print(ROW_SELECT, COL_SELECT + 5, c_sec_select);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_sec_select);
 				break;
 			case 'z':
 				setItemAxis(itemAxis_t::axis_yaw);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, c_whitespace);
-				_putty_out->print(ROW_SELECT, COL_SELECT + 5, c_yaw_select);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_yaw_select);
 				break;
 
 			case 'p': ///< Choose the PID parameter
 				setItemOffset(itemOffset_t::offset_P);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 1, COL_SELECT + 10, c_whitespace);
-				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 10, c_p_select); ///< Print the selected coefficient
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + 1, COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 10, _dict->c_p_select); ///< Print the selected coefficient
 				break;
 
 			case 'i':
 				setItemOffset(itemOffset_t::offset_I);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 2, COL_SELECT + 10, c_whitespace);
-				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 10, c_i_select);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + 2, COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 10, _dict->c_i_select);
 				break;
 
 			case 'd':
 				setItemOffset(itemOffset_t::offset_D);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 3, COL_SELECT + 10, c_whitespace);
-				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 10, c_d_select);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + 3, COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 10, _dict->c_d_select);
 				break;
 
 			case 'e':
 				setItemOffset(itemOffset_t::offset_EF);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT +6, COL_SELECT + 5, c_whitespace);
-				_putty_out->print(ROW_SELECT +6, COL_SELECT + 5, c_ef_select);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT +6, COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT +6, COL_SELECT + 5, _dict->c_ef_select);
 				break;
 
 			case '+':
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
 				coefficient_Up(); ///< Coefficient increment
 				break;
 
 			case '-':
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
 				coefficient_Down(); ///< Coefficient decrement
 				break;
 
 			case '0': ///< Choose the decimal places  0 to 0,001
 				setDecimalPlaces(0);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_whitespace);
-				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_accuracy10);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy10);
 				break;
 			case '1':
 				setDecimalPlaces(1);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_whitespace);
-				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_accuracy01);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy01);
 				break;
 			case '2':
 				setDecimalPlaces(2);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_whitespace);
-				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_accuracy001);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy001);
 				break;
 			case '3':
 				setDecimalPlaces(3);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, c_whitespace);
-				_putty_out->clearPart(ROW_ILLEGAL + ROW_ACCURAY_ADD, COL_SELECT, c_whitespace);
-				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, c_accuracy0001);
+				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_ILLEGAL + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy0001);
 				break;
 
 			case 's': ///< Saved all coefficients into the EEPROM
@@ -436,29 +437,29 @@ public:
 		_putty_out->print(ROW_OUTPUT, COL_OUTPUT, "Temp PID coefficients");
 		_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT, "   in the EEPROM");
 		_putty_out->gray();
-		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, c_primary_p);
+		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, _dict->c_primary_p);
 		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 2, pri_kP_value);
-		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT, c_primary_i);
+		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT, _dict->c_primary_i);
 		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT_VALUE, 2, pri_kI_value);
-		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT, c_primary_d);
+		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT, _dict->c_primary_d);
 		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT_VALUE, 2, pri_kD_value);
-		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT, c_secondary_p);
+		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT, _dict->c_secondary_p);
 		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT_VALUE, 2, sec_kP_value);
-		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT, c_secondary_i);
+		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT, _dict->c_secondary_i);
 		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT_VALUE, 2, sec_kI_value);
-		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT, c_secondary_d);
+		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT, _dict->c_secondary_d);
 		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT_VALUE, 2, sec_kD_value);
-		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT, c_yaw_p);
+		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT, _dict->c_yaw_p);
 		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT_VALUE, 2, yaw_kP_value);
-		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT, c_yaw_i);
+		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT, _dict->c_yaw_i);
 		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT_VALUE, 2, yaw_kI_value);
-		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT, c_yaw_d);
+		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT, _dict->c_yaw_d);
 		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT_VALUE, 2, yaw_kD_value);
-		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT, c_ef_pri);
+		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT, _dict->c_ef_pri);
 		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 2, pri_EF_value);
-		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT, c_ef_sec);
+		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT, _dict->c_ef_sec);
 		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 2, sec_EF_value);
-		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT, c_ef_yaw);
+		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT, _dict->c_ef_yaw);
 		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 2, yaw_EF_value);
 
 		// _putty_out->print(ROW_PID+2, COL_PID+16, c_pri_i);_putty_out->print(ROW_PID+2, COL_PID+20, 3, _model.pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::I]);
