@@ -28,9 +28,7 @@
 #include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
 #include "..\lib\PID_adjust.h"
-//#include "..\lib\GUI.h"
 #include "..\lib\model.h"
-#include "..\lib\def.h"
 
 #define PIN_BT_TX       8
 #define PIN_BT_RX       9
