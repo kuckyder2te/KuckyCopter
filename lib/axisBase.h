@@ -9,16 +9,15 @@
 
 #include <TaskManager.h>
 #include "newPID.h"
-#include "def.h"
 #include "myLogger.h"
 
-typedef struct{
-	int16_t* error;
-}baseData_t;
 
 class AxisBase : public Task::Base {
 
 private:
+typedef struct{
+	int16_t* error;
+}baseData_t;
 
 protected:
     NewPID      *_newPID;
