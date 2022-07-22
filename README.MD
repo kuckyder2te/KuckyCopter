@@ -117,4 +117,6 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
                             PID_adjust setModel eingefügt
                             radio.h Zeilen 107-112 
                              und           189-207 auskommentiert alles OK
+    ##  Task 43             CleanUp
+                    
                                                        
