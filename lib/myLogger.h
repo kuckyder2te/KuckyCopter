@@ -31,3 +31,4 @@ extern char logBuf[100];
     #define LOGGER_SILENT(...) asm volatile ("nop\n\t")
 #endif
 void localLogger(Logger::Level level, const char* module, const char* message);
+
