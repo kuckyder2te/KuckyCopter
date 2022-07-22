@@ -98,6 +98,7 @@ void setup() {
 
 	  Tasks.add<PID_adjust>("pidadjust")
       ->setSerial(&Serial2)
+      ->setModel(&model)
       ->addPID(reinterpret_cast<AxisBase*>(Tasks["axismotor_a"].get())->getPid(),"axismotor_a")
       ->addPID(reinterpret_cast<AxisBase*>(Tasks["axismotor_b"].get())->getPid(),"axismotor_b")
       ->addPID(reinterpret_cast<AxisBase*>(Tasks["axisyaw"].get())->getPid(),"axisyaw")
