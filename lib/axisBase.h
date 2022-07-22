@@ -31,7 +31,7 @@ protected:
 
 public:
     AxisBase(const String& name) : Task::Base(name) {
-	       _newPID = new NewPID();  // Adresse in Variable speichern
+	    _newPID = new NewPID(this->getName());  // Adresse in Variable speichern
         _lastMillis 	 = millis();
         _error			 = 0;
         _sp				 = 0;

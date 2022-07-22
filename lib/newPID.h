@@ -36,29 +36,24 @@ typedef struct
 	bool output_signed;
 } pidData_t;
 
-
 class NewPID : public FastPID
 { 
 
 private:
-	float _kP_value;
-	float _kI_value;
-	float _kD_value;
-	float _exFreq;
+
+typedef struct{
+	float kP;
+	float kI;
+	float kD;
+	float exFreq;
+}pidParameter_t;
+
+	pidParameter_t _pidParameter;
 	uint8_t _EEPROM_startAddress;
-	uint8_t _pidInstance;
-
-	typedef enum
-	{
-		kP,			// die werden schon in PID_adjust verdendet
-		kI,
-		kD
-	} pidCoeff_t;
-
+	bool _isEnabled;
+	String _ParentName;
 
 protected:
-	pidData_t *_pidData; /// MyPid has a PidData
-	static uint8_t _instance;
 	float RC_SP;
 	float FB;
 
@@ -66,18 +61,22 @@ public:
 	// setOutputRange(-100, 100);
 	//_pidInstance =_instance++;
 	// setOutputConfig(16, true);
-	
+	NewPID(String name){
+		_ParentName = name;
+		_isEnabled = false;
+		this->setOutputRange(-100, 100);
+		this->setOutputConfig(16, true);
+		_pidParameter.kP = 0;
+		_pidParameter.exFreq = 0;
+		disablePID();
+	}
 
-	// void initFastPID(){							//Wäre das hier richtig?
-	// 	FastPID::setOutputRange(-100, 100);
-	// 	FastPID::setOutputConfig(16, true);
-	// 	_pidInstance =_instance++;
-	// }
 
 	void disablePID()
 	{
-	LOGGER_NOTICE_FMT("Disabled PID controller %d ", _pidInstance);
-			FastPID::setCoefficients(PID_P_MIN, 0.0, 0.0, getExecutionTime());
+	LOGGER_NOTICE_FMT("Disabled PID controller %s ", _ParentName.c_str());
+			this->setCoefficients(_pidParameter.kP,0.0,0.0,_pidParameter.exFreq);
+			_isEnabled = false;
 	} /*-------------------------------- end of deactivatePID -------------------------*/
 
 	void enablePID()
@@ -85,57 +84,53 @@ public:
 		/* This function has 2 tasks.
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
-			FastPID::setCoefficients(_pidData->pidCoefficient[pidCoeff_t::kP],
-								 	 _pidData->pidCoefficient[pidCoeff_t::kI],
-								 	 _pidData->pidCoefficient[pidCoeff_t::kD],
-								 	 getExecutionTime());								
+			LOGGER_WARNING("enablePID");
+			this->setCoefficients(_pidParameter.kP,_pidParameter.kI,_pidParameter.kD,_pidParameter.exFreq);
+		_isEnabled = true;
 	} /*-------------------------------- end of activatePID ---------------------------*/
 
 	void setP(float p)
 	{
-		LOGGER_NOTICE_FMT("setP: %f", p);
+		LOGGER_WARNING_FMT("setP: %f", p);
+		_pidParameter.kP = p;
+		if (_pidParameter.kP <= PID_P_MIN)
+			_pidParameter.kP = PID_P_MIN;
+		
+		if(_isEnabled)enablePID();
 
-		_kP_value = p;
-		if (_kP_value <= PID_P_MIN)
-			_kP_value = PID_P_MIN;
-
-		_pidData->pidCoefficient[pidCoeff_t::kP]=_kP_value;
-		enablePID();
 	} /*-------------------------------- end of setP ----------------------------------*/
 
 	void setI(float i)
 	{
 		LOGGER_NOTICE_FMT("setI: %f", i);
-		_kI_value = i;
-		if (_kI_value <= 0)
-			_kI_value = 0;
+		_pidParameter.kI = i;
+		if (_pidParameter.kI <= 0)
+			_pidParameter.kI = 0;
 
-		_pidData->pidCoefficient[pidCoeff_t::kI]=_kI_value;
-		enablePID();
+		(_isEnabled?enablePID():void());
 	} /*-------------------------------- end of setI ----------------------------------*/
 
 	void setD(float d)
 	{
 		LOGGER_NOTICE_FMT("setD: %f", d);
-		_kD_value = d;
-		if (_kD_value <= 0)
-			_kD_value = 0;
+		_pidParameter.kD = d;
+		if (_pidParameter.kD <= 0)
+			_pidParameter.kD = 0;
 
-		_pidData->pidCoefficient[pidCoeff_t::kD]=_kD_value;
-		enablePID();
+		(_isEnabled?enablePID():void());
 	} /*-------------------------------- end of setD ----------------------------------*/
 
 	void setExecutionFrequency(uint8_t ef)
 	{
 		LOGGER_NOTICE_FMT("setExecutionFrequency: %d", ef);
-		_pidData->executionFrequency = ef;
-		enablePID();
+		_pidParameter.exFreq = ef;
+		(_isEnabled?enablePID():void());
 	} /*-------------------------------- end of setExecutionFrequency -----------------*/
 
 	uint8_t getExecutionTime()
 	{
-		LOGGER_NOTICE_FMT("PID getExecutionTime %f", (1 / _pidData->executionFrequency) * 1000);
-		return ((1.0/(float)_pidData->executionFrequency)*1000);
+		LOGGER_NOTICE_FMT("PID getExecutionTime %f", (1 / _pidParameter.exFreq) * 1000);
+		return ((1.0/(float)_pidParameter.exFreq)*1000);
 		///< Convert frequency to millis
 
 	} /*-------------------------------- end of getExecutionTime ----------------------*/
@@ -153,21 +148,21 @@ public:
 
 	float getP() const
 	{
-		return _kP_value;
+		return _pidParameter.kP;
 	} /*-------------------------------- end of getP ----------------------------------*/
 
 	float getI() const
 	{
-		return _kI_value;
+		return _pidParameter.kI;
 	} /*-------------------------------- end of getI ----------------------------------*/
 
 	float getD() const
 	{
-		return _kD_value;
+		return _pidParameter.kD;
 	} /*-------------------------------- end of getD ----------------------------------*/
 
 	float getExFreq() const
 	{
-		return _pidData->executionFrequency;
+		return _pidParameter.exFreq;
 	} /*-------------------------------- end of getExTime -----------------------------*/
 };/*--------------------------- end of MyPid class ------------------------------------*/

@@ -111,4 +111,10 @@ Stephans LOGGER_WARNING_FMT für die Calibration Klasse verwendet
                             Dictionary als Übersetzungstabelle implementiert
     ##  Task 41             axisBase enum in Klasse verschoben
                             def.h gelöscht
+    ##  Task 42             PID_new intFastPID eingefügt
+                            getExecutionTime wird nicht ausgeführt
+                            axisName_t statt #define
+                            PID_adjust setModel eingefügt
+                            radio.h Zeilen 107-112 
+                             und           189-207 auskommentiert alles OK
                                                        

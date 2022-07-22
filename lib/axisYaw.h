@@ -77,17 +77,17 @@ public:
 		return this;
 	} /*------------------------------- end of setModel -------------------------------*/
 	
-	AxisYaw *setAxisOrdered(AxisMotor *_axis)
+	AxisYaw *setAxisOrdered(AxisMotor *_axis)	// *_axis ist die Adresse
 	{
 		LOGGER_VERBOSE("Enter....");
 		if (_axisMotor[axis_t::Primary] == NULL)
 		{
-			LOGGER_NOTICE("Set first Axis");
+			LOGGER_NOTICE_FMT("Set adress first Axis %p", _axis->getName().c_str());
 			_axisMotor[axis_t::Primary] = _axis;
 		}
 		else if (_axisMotor[axis_t::Secondary] == NULL)
 		{
-			LOGGER_NOTICE("Set second Axis");
+			LOGGER_NOTICE_FMT("Set adress second Axis %p", _axis->getName().c_str());
 			_axisMotor[axis_t::Secondary] = _axis;
 		}
 		else
@@ -184,10 +184,6 @@ public:
 		default:;
 		} /* end of switch */
 	} /*--------------------- end of virtual service ----------------------------------*/
-
-	// void test(){
-	// 	LOGGER_NOTICE("Dies ist ein Testaufruf");
-	// }  /*---------------------- end of test -------------------------------------------*/
 
 	void setState(state_e state)
 	{
