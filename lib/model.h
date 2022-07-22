@@ -39,3 +39,5 @@ typedef struct {
 	pidData_t pidData[3];
 	flyState_e flyState;
 } model_t;
+
+#undef _DEBUG_

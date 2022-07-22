@@ -6,6 +6,8 @@
  *  Description: Lage und Höhen Position
  */
 
+
+
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <Adafruit_I2CDevice.h>
@@ -14,6 +16,8 @@
 #include <MPU9250_asukiaaa.h>
 #include <Adafruit_BMP280.h>
 #include "myLogger.h"
+
+
 typedef struct
 {
     float pitch;
@@ -158,3 +162,6 @@ public:
         LOGGER_VERBOSE("....leave");
     } /*------------------------------- end of update ---------------------------------*/
 };    /*----------------------------------- end of sensor.h class ---------------------*/
+
+
+#undef _DEBUG_

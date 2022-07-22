@@ -58,3 +58,5 @@ public:
         LOGGER_VERBOSE("....leave");
     }
 }; /*--------------------------------- end of class battery.h --------------------------*/
+
+#undef _DEBUG_

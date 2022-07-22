@@ -17,18 +17,23 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
 
+#define _DEBUG_ DEBUG
 #include "..\lib\sensors.h"
+#define _DEBUG_ DEBUG
 #include "..\lib\sonic.h"
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
 #include "..\lib\axisBase.h"
+//#define _DEBUG_ DEBUG
 #include "..\lib\axisMotor.h"
 #include "..\lib\axisYaw.h"
 #include "..\lib\flyController.h"
-#include "..\lib\myLogger.h"
 #include "..\lib\performance.h"
 #include "..\lib\PID_adjust.h"
 #include "..\lib\model.h"
+
+
+#include "..\lib\myLogger.h"
 
 #define PIN_BT_TX       8
 #define PIN_BT_RX       9
@@ -48,13 +53,16 @@ UART Serial2(PIN_BT_TX, PIN_BT_RX);
 PID_adjust *_pid_adjust;
 
 void setup() {
-  LOGGER_NOTICE( "Program will initialized");
+    Serial.begin(COM_SPEED);
+    Serial2.begin(BT_SPEED);
+    Logger::setOutputFunction(&localLogger);
+    delay(50);
+    Logger::setLogLevel(Logger::DEBUG);           // Muss immer einen Wert in platformio.ini haben (SILENT)
+    LOGGER_NOTICE( "Program will initialized");
     model.performance.min_loop_time = 0xffff;
     model.yawData.axisData[0] = &model.axisData[0];  // axisData wird mit yawData.axisData verknüpft
     model.yawData.axisData[1] = &model.axisData[1];
 
-    Serial.begin(COM_SPEED);
-    Serial2.begin(BT_SPEED);
     Serial2.println("********************************");
     Serial2.println("*       KuCo Phantom 1         *");
     Serial2.println("*                              *");
@@ -63,13 +71,9 @@ void setup() {
     Serial2.println("********************************");
     Serial2.flush();
     Wire.begin();
-
+    
     delay(500);
 
-#ifdef _DEBUG_
-  Logger::setOutputFunction(&localLogger);
-  Logger::setLogLevel(Logger::_DEBUG_);
-#endif
   LOGGER_VERBOSE("Enter....");
     Tasks.add<AxisMotor>("axismotor_a")
       ->setModel(&model.axisData[0])
@@ -111,7 +115,7 @@ void setup() {
 }/*------------------------ end of setup ----------------------------------------------*/
 
 void loop() {
-  LOGGER_VERBOSE("loop has begun");
+  LOGGER_NOTICE("loop has begun");
   
   //  unsigned long enter = micros();
   Tasks.update();
@@ -131,3 +135,5 @@ void loop() {
   //    model.performance.min_loop_time = model.performance.last_loop_time;
   LOGGER_VERBOSE("Loop completed successfully");
 }/*------------------------ end of loop -----------------------------------------------*/
+
+#undef _DEBUG_
