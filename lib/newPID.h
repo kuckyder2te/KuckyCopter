@@ -22,10 +22,6 @@
 #define PID_P_MIN			0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
 #define PID_EEPROM_ADRRESS 50
 
-//#define COEFF_P	0
-//#define COEFF_I 1
-//#define COEFF_D 2
-
 extEEPROM eep(kbits_256, 1, 64, 0x57); // oder new??
 
 typedef struct
@@ -40,7 +36,6 @@ class NewPID : public FastPID
 { 
 
 private:
-
 typedef struct{
 	float kP;
 	float kI;
@@ -58,9 +53,6 @@ protected:
 	float FB;
 
 public:
-	// setOutputRange(-100, 100);
-	//_pidInstance =_instance++;
-	// setOutputConfig(16, true);
 	NewPID(String name){
 		_ParentName = name;
 		_isEnabled = false;
@@ -96,8 +88,8 @@ public:
 		if (_pidParameter.kP <= PID_P_MIN)
 			_pidParameter.kP = PID_P_MIN;
 		
-		if(_isEnabled)enablePID();
-
+		if(_isEnabled)
+			enablePID();
 	} /*-------------------------------- end of setP ----------------------------------*/
 
 	void setI(float i)
@@ -107,7 +99,8 @@ public:
 		if (_pidParameter.kI <= 0)
 			_pidParameter.kI = 0;
 
-		(_isEnabled?enablePID():void());
+		if(_isEnabled)
+			enablePID();
 	} /*-------------------------------- end of setI ----------------------------------*/
 
 	void setD(float d)
@@ -117,14 +110,16 @@ public:
 		if (_pidParameter.kD <= 0)
 			_pidParameter.kD = 0;
 
-		(_isEnabled?enablePID():void());
+		if(_isEnabled)
+			enablePID();
 	} /*-------------------------------- end of setD ----------------------------------*/
 
 	void setExecutionFrequency(uint8_t ef)
 	{
 		LOGGER_NOTICE_FMT("setExecutionFrequency: %d", ef);
 		_pidParameter.exFreq = ef;
-		(_isEnabled?enablePID():void());
+		if(_isEnabled)
+			enablePID();
 	} /*-------------------------------- end of setExecutionFrequency -----------------*/
 
 	uint8_t getExecutionTime()
@@ -166,3 +161,4 @@ public:
 		return _pidParameter.exFreq;
 	} /*-------------------------------- end of getExTime -----------------------------*/
 };/*--------------------------- end of MyPid class ------------------------------------*/
+#undef _DEBUG_

@@ -35,23 +35,17 @@
 #endif
 */
 
-//#define ARM_MIN 1000		//
-//#define ARM_MAX 2000		//
 #define POWER_MIN 0			//
 #define POWER_MAX 100		//
 #define BASE_MOTOR_POWER 10 //< 10% minimal throttle in fly mode for preventing stop of the motors
 #define PIN_ESC_ON 15
- 
-// #define PWM_FREQUENCY 100.0
-// #define DUTY_CYCLE__MAX 20000.0
-// #define DUTY_CYCLE__MIN 10000.0
 
 class Motor
 {
 private:	
 	float frequency;
 	float dutyCycle;
-
+//	static uint8_t _instance=0;
 public:
 	typedef enum
 	{
@@ -66,18 +60,18 @@ protected:
 	uint16_t _power;
 	int16_t _maxPower;
 	motorstate_e _motorstate;
-	uint8_t _instance;
+	
 	uint8_t _motor_address; ///< Gives everyone axis a title
 
 public:
 	Motor(uint8_t pin) : _pin(pin)
 	{
-		LOGGER_NOTICE_FMT("Pin = %d", _pin);
 		_power = 0;
-		_maxPower = 180;
+		_maxPower = 100;		// %
 		_motorstate = off;
-		_motor_address  = _instance++;
-	};
+	//	_motor_address  = _instance++;
+		LOGGER_NOTICE_FMT("Pin = %d", _pin);
+	};/*--------------------------------------------------------------*/
 
 	void setup()
 	{
@@ -109,16 +103,16 @@ public:
 		switch (_motorstate)
 		{
 		case arming:
-			LOGGER_NOTICE_FMT("Motor arming %d ", _motor_address);
+			LOGGER_NOTICE_FMT("Motor arming %d ", _pin);
 			break;
 
 		case off:
-			LOGGER_NOTICE_FMT("Motor off %d ", _motor_address);
+			LOGGER_NOTICE_FMT("Motor off %d ", _pin);
 			_power = 0;
 			break;
 
 		case on:
-			LOGGER_NOTICE_FMT("Motor on %d ", _motor_address);
+			LOGGER_NOTICE_FMT("Motor on %d ", _pin);
 			resultingPower = _power;
 			if (resultingPower < BASE_MOTOR_POWER) {
 				resultingPower = BASE_MOTOR_POWER;
@@ -207,3 +201,5 @@ public:
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of setMotorStates ------------------------------*/
 };	  /*--------------------------- end of Motor class --------------------------------*/
+
+#undef _DEBUG_

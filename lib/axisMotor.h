@@ -53,12 +53,12 @@ private:
 public:
 	AxisMotor(const String &name) : AxisBase(name)
 	{
-		LOGGER_VERBOSE("Enter....");
+		LOGGER_NOTICE("Enter....");
 		_invertRoll = false;
 		_motor[motor_t::first] = NULL;
 		_motor[motor_t::second] = NULL;
 		_roll = 0;
-		LOGGER_VERBOSE("....leave");
+		LOGGER_NOTICE("....leave");
 	}
 
 	virtual ~AxisMotor() {}
@@ -66,14 +66,14 @@ public:
 	AxisMotor *setModel(axisData_t *_model)
 	{ // Rückgabe wert ist das eigene Objekt (this)
 	  //_axis_data  wird aus dem Model in die Achse geschrieben
-		LOGGER_VERBOSE("Enter....");
+		LOGGER_NOTICE("Enter....");
 		_axisData = _model;
 		_state = standby;
 		AxisBase::_sp = &_axisData->setpoint; /// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisDatat->setpoint holt
 		AxisBase::_fb = _axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
 
-		LOGGER_VERBOSE("....leave");
+		LOGGER_NOTICE("....leave");
 		return this;
 	} /*---------------------- setModel ------------------------------------------------*/
 

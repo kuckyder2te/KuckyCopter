@@ -60,8 +60,8 @@ class Radio : public Task::Base
     float payload;
 
 public:    
-    interface_t *interface;  /// besser in protected??
-
+    interface_t *interface;
+    
 protected:
     RF24 *_radio; // CE, CSN        // Pointer auf die Adresse setzen
     
@@ -100,36 +100,13 @@ public:
             {
             } // hold in infinite loop
         }
-        LOGGER_NOTICE("RF24 is initialized");
-
-        // To set the radioNumber via the Serial monitor on startup
-        // LOGGER_NOTICE("Which radio is this? Enter '0' or '1'. Defaults to '0'");
-        // while (!Serial2.available())
-        // {
-        //     // wait for user input
-        // }
-        // char input = Serial2.parseInt();
-        // radioNumber = input == 1;
-        LOGGER_WARNING_FMT("RadioNumber = %.i", radioNumber);
+         LOGGER_WARNING_FMT("RF24 is initialized - RadioNumber = %.i", radioNumber);
         //role variable is hardcoded to RX behavior, inform the user of this
-        LOGGER_NOTICE("*** PRESS 'T' to begin transmitting to the other node");
-
-        // Set the PA Level low to try preventing power supply related problems
-        // because these examples are likely run with nodes in close proximity to
-        // each other.
+        //LOGGER_NOTICE("*** PRESS 'T' to begin transmitting to the other node");
         _radio->setPALevel(RF24_PA_LOW); // RF24_PA_MAX is default.
-
-        // save on transmission time by setting the radio to only transmit the
-        // number of bytes we need to transmit a float
         _radio->setPayloadSize(sizeof(payload_t)); // float datatype occupies 4 bytes
-
-        // set the TX address of the RX node into the TX pipe
         _radio->openWritingPipe(address[radioNumber]); // always uses pipe 0
-
-        // set the RX address of the TX node into a RX pipe
         _radio->openReadingPipe(1, address[!radioNumber]); // using pipe 1
-
-        // additional setup specific to the node's role
         if (role)
         {
             _radio->stopListening(); // put radio in TX mode
@@ -147,10 +124,6 @@ public:
         LOGGER_VERBOSE("...leave");
     } /*----------------------------- end of begin ------------------------------------*/
 
-    // optional (you can remove this method)
-    // virtual void enter() override {
-    // }
-
     virtual void update() override
     {
         LOGGER_VERBOSE("Enter....");
@@ -164,7 +137,7 @@ public:
 
             if (report)
             {
-                LOGGER_NOTICE_FMT("Transmission successful! - %i payload %f  ", end_timer - start_timer, interface);                           // payload was delivered
+                LOGGER_NOTICE_FMT("Transmission successful! - %i payload %f  ", end_timer - start_timer, payload);                           // payload was delivered
               //   payload += 0.01;                                                      // increment float payload
             }
             else
