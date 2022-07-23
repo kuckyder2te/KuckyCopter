@@ -24,7 +24,7 @@ class FlyController : public Task::Base
 public:
     
 private:
-     AxisYaw *_axisYaw;
+    AxisYaw *_axisYaw;
     model_t *_model;
 
 public:

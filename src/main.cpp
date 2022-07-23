@@ -17,15 +17,17 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
 
-#define _DEBUG_ DEBUG
+//#define _DEBUG_ DEBUG
 #include "..\lib\sensors.h"
-#define _DEBUG_ DEBUG
+//#define _DEBUG_ DEBUG
 #include "..\lib\sonic.h"
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
-#include "..\lib\axisBase.h"
 //#define _DEBUG_ DEBUG
+#include "..\lib\axisBase.h"
+#define _DEBUG_ DEBUG
 #include "..\lib\axisMotor.h"
+//#define _DEBUG_ DEBUG
 #include "..\lib\axisYaw.h"
 #include "..\lib\flyController.h"
 #include "..\lib\performance.h"
@@ -38,7 +40,7 @@
 #define PIN_BT_TX       8
 #define PIN_BT_RX       9
 #define COM_SPEED     9600
-#define BT_SPEED      9600
+#define BT_SPEED      115200
 
 #define PIN_MOTOR_FL    11
 #define PIN_MOTOR_FR    12

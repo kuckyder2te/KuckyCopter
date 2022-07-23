@@ -93,7 +93,7 @@ private:
 		kD
 	} pidCoeff_t;
 
-	const model_t *_model; // Warum diesmal Zeiger und keine Adresse?
+	const model_t *_model; 
 	HardwareSerial *_serial;
 	namedPid_t _newPID[PID_NUM + 1]; // Refactoring zu einer dynamischen Liste mit CPP Templates (Stephan)
 	PUTTY_out *_putty_out;
@@ -118,14 +118,14 @@ public:
 		// _model->interface.isconnect = true;		// darf nicht funktionieren da const und nur gelesen werden soll
         LOGGER_VERBOSE("....leave");
         return this;
-    }	
+    } /* -------------------- end of PID_adjust *setModel -----------------------------*/	
 
 	PID_adjust *setSerial(HardwareSerial *serial)
 	{
 		_serial = serial;
 		_putty_out = new PUTTY_out(*serial);
 		return this;
-	}
+	} /* -------------------- end of PID_adjust *setSerial ----------------------------*/ 
 
 	PID_adjust *addPID(NewPID *pid, String name)
 	{
@@ -139,18 +139,14 @@ public:
 			i++;
 		}
 		return this;
-	}
-
+	} /* -------------------- end of PID_adjust *addPID -------------------------------*/
 
 	virtual void begin() override
 	{
 		LOGGER_VERBOSE("Enter....");
-		//	display_Menu();
-
-		_dict = new (Dictionary);		// sind die Klammern hier richtig?
-//		_model = new model_t;
+		_dict = new (Dictionary);
 		LOGGER_VERBOSE("....leave");
-	}
+	} /* -------------------- end of begin --------------------------------------------*/
 
 	virtual void update() override
 	{
@@ -368,28 +364,6 @@ public:
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of display_Menu --------------------------------*/
 
-	// void displayPIDcoefficients()
-	// {
-	// 	_putty_out->gray();
-	// 	_putty_out->print(ROW_PID, COL_PID, "Current PID coefficients in the EEPROM");
-	// 	_putty_out->yellow();
-	// 	// _putty_out->print(ROW_PID+2, COL_PID,    c_equal_sign);_putty_out->print(ROW_PID+2, COL_PID+9,  2, _model.pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::P]);
-	// 	// _putty_out->print(ROW_PID+2, COL_PID+16, c_pri_i);_putty_out->print(ROW_PID+2, COL_PID+20, 3, _model.pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::I]);
-	// 	// _putty_out->print(ROW_PID+2, COL_PID+27, c_pri_d);_putty_out->print(ROW_PID+2, COL_PID+31, 3, _model.pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::D]);
-	// 	// _putty_out->print(ROW_PID+2, COL_PID+40, c_ef);   _putty_out->print(ROW_PID+2, COL_PID+52, 0, _model.pidData[axis_t::Primary].executionFrequency);
-
-	// 	// _putty_out->print(ROW_PID+3, COL_PID,    c_sec_p);_putty_out->print(ROW_PID+3, COL_PID+9,  2, _model.pidData[axis_t::Secondary].pidCoefficient[pidCoeff_t::P]);
-	// 	// 										  _putty_out->print(ROW_PID+3, COL_PID+20, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pidCoeff_t::I]);
-	// 	// 										  _putty_out->print(ROW_PID+3, COL_PID+31, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pidCoeff_t::D]);
-	// 	// 										  _putty_out->print(ROW_PID+3, COL_PID+52, 0, _model.pidData[axis_t::Secondary].executionFrequency);
-
-	// 	// _putty_out->print(ROW_PID+4, COL_PID,    c_yaw_p);_putty_out->print(ROW_PID+4, COL_PID+9,  2, _model.pidData[axis_t::YawAxis].pidCoefficient[P]);
-	// 	// 										  _putty_out->print(ROW_PID+4, COL_PID+20, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pidCoeff_t::I]);
-	// 	// 										  _putty_out->print(ROW_PID+4, COL_PID+31, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pidCoeff_t::D]);
-	// 	// 										  _putty_out->print(ROW_PID+4, COL_PID+52, 0, _model.pidData[axis_t::YawAxis].executionFrequency);
-
-	// } /*--------------------- end of displayPIDcoefficients ---------------------------*/
-
 	void displayPIDcoefficients() ///  only Template for the positions
 	{
 		_putty_out->blue();
@@ -443,7 +417,7 @@ public:
 		 * Key Y = primary axis (2)
 		 * Key Z = primary axis (3)	 */
 		_itemAxis = itemAxis;
-		//	LOGGER_WARNING_FMT("itemAxis = %d", _itemAxis);
+		LOGGER_NOTICE_FMT("itemAxis = %d", _itemAxis);
 	} /*----------------------------- end of setItemAxis ------------------------------*/
 
 	void setItemOffset(uint8_t itemCoefficient)
@@ -454,7 +428,7 @@ public:
 		 * Key D = coefficient D (30)
 		 * Key E = ExecutingFrequency (40)	 */
 		_itemCoefficient = itemCoefficient;
-		//	LOGGER_WARNING_FMT("itemCoefficient = %d", _itemCoefficient);
+		LOGGER_NOTICE_FMT("itemCoefficient = %d", _itemCoefficient);
 	} /*----------------------------- end of setItemOffset -----------------------*/
 
 	void setDecimalPlaces(uint8_t dot)
@@ -475,7 +449,7 @@ public:
 			_newAddOn = 0.001;
 			break;
 		} // end of switch
-		  //	LOGGER_WARNING_FMT("New Factor = %f", _newAddOn);
+		LOGGER_NOTICE_FMT("New Factor = %f", _newAddOn);
 	}	  /*----------------------------- end of setDecimalPlaces -------------------------*/
 
 	/* Set the "PID Type",
@@ -540,12 +514,11 @@ public:
 			pri_kP_value += _addOn;
 			if (checkValue(pri_kP_value))
 			{
-				LOGGER_WARNING_FMT("X Axis kP = %f", pri_kP_value);
+			LOGGER_WARNING_FMT("X Axis kP = %f", pri_kP_value);
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, pri_kP_value);
 				displayPIDcoefficients();
-				_newPID[axisName_t::primary]._pid->setP(pri_kP_value);  // wird WARNING ausgeführt
-				//_newPID[axisName_t::primary]._pid->setP(_model->pidData[axisName_t::primary].pidCoefficient[pidCoeff_t::kP] = pri_kP_value);  /// hier wird WARNING nicht ausgeführt
-				LOGGER_WARNING("X Axis kP.... leave");
+				_newPID[axisName_t::primary]._pid->setP(pri_kP_value);  
+			LOGGER_WARNING("X Axis kP.... leave");
 			}
 			break;
 		case pidTyp_t::pri_I:
@@ -556,7 +529,6 @@ public:
 				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, pri_kI_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::primary]._pid->setI(pri_kI_value);
-				//	_newPID[axisName_t::primary]->setI(_model->pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::kI] = pri_kI_value);
 			}
 			break;
 		case pidTyp_t::pri_D:
@@ -567,7 +539,6 @@ public:
 				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, pri_kD_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::primary]._pid->setD(pri_kD_value);
-				//	_newPID[axisName_t::primary]->setD(_model->pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::kD] = pri_kD_value);
 			}
 			break;
 
@@ -579,7 +550,6 @@ public:
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, sec_kP_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::secondary]._pid->setP(sec_kP_value);
-				//	_newPID[axisName_t::secondary]->setP(_model->pidData[axis_t::Secondary].pidCoefficient[pidCoeff_t::kP] = sec_kP_value);
 			}
 			break;
 
@@ -591,7 +561,6 @@ public:
 				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, sec_kI_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::secondary]._pid->setI(sec_kI_value);
-				//	_newPID[axisName_t::secondary]->setI(_model->pidData[axis_t::Secondary].pidCoefficient[pidCoeff_t::kI] = sec_kI_value);
 			}
 			break;
 
@@ -603,7 +572,6 @@ public:
 				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, sec_kD_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::secondary]._pid->setD(sec_kD_value);
-				//	_newPID[axisName_t::secondary]->setD(_model->pidData[axis_t::Secondary].pidCoefficient[pidCoeff_t::kD] = sec_kD_value);
 			}
 			break;
 
@@ -615,7 +583,6 @@ public:
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, yaw_kP_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::yaw]._pid->setP(yaw_kP_value);
-				//	_newPID[axisName_t::yaw]->setP(_model->pidData[axis_t::YawAxis].pidCoefficient[pidCoeff_t::kP] = yaw_kP_value);
 			}
 			break;
 
@@ -627,7 +594,6 @@ public:
 				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, yaw_kI_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::yaw]._pid->setI(yaw_kI_value);
-				//	_newPID[axisName_t::yaw]->setI(_model->pidData[axis_t::YawAxis].pidCoefficient[pidCoeff_t::kI] = yaw_kI_value);
 			}
 			break;
 
@@ -639,7 +605,6 @@ public:
 				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, yaw_kD_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::yaw]._pid->setD(yaw_kD_value);
-				//	_newPID[axisName_t::yaw]->setD(_model->pidData[axis_t::YawAxis].pidCoefficient[pidCoeff_t::kD] = yaw_kD_value);
 			}
 			break;
 
@@ -651,7 +616,6 @@ public:
 				_putty_out->print(ROW_SELECT + 6, COL_SELECT + 32, _dotPlaces, pri_EF_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::primary]._pid->setExecutionFrequency(pri_EF_value);
-				//	_newPID[axisName_t::primary]->setExecutionFrequency((_model->pidData[axis_t::Primary].executionFrequency) = pri_EF_value);
 			}
 			break;
 
@@ -663,7 +627,6 @@ public:
 				_putty_out->print(ROW_SELECT + 6, COL_SELECT + 32, _dotPlaces, sec_EF_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::secondary]._pid->setExecutionFrequency(sec_EF_value);
-				//	_newPID[axisName_t::secondary]->setExecutionFrequency((_model->pidData[axis_t::Secondary].executionFrequency) = sec_EF_value);
 			}
 			break;
 		case pidTyp_t::yaw_ef:
@@ -674,12 +637,10 @@ public:
 				_putty_out->print(ROW_SELECT + 6, COL_SELECT + 32, _dotPlaces, yaw_EF_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::yaw]._pid->setExecutionFrequency(yaw_EF_value);
-				//	_newPID[axisName_t::yaw]->setExecutionFrequency((_model->pidData[axis_t::YawAxis].executionFrequency) = yaw_EF_value);
 			}
 			break;
 		} /* end of switch */
 	}	  /*----------------------------- end of select -------------------------------*/
-};		  /*------------------------- end of PID_calibration class --------------------*/
+};		  /*------------------------- end of PID_adjust class -------------------------*/
 
-//#endif
 #undef _DEBUG_
