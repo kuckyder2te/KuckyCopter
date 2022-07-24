@@ -121,12 +121,12 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		AxisBase::update();
 
-		LOGGER_NOTICE_FMT("AxisNo %d", _axis_address);
+		LOGGER_NOTICE_FMT("Update %s ", this->getName().c_str());
 
 		switch (_state)
 		{
 		case arming_start:
-			LOGGER_NOTICE_FMT("arming start %d ", _axis_address);
+			LOGGER_VERBOSE("arming start");
 			_motor[motor_t::first]->setMotorStates(Motor::arming);
 			_motor[motor_t::second]->setMotorStates(Motor::arming);
 			_motor[motor_t::first]->armingProcedure(false);
@@ -135,11 +135,11 @@ public:
 			break;
 
 		case arming_busy:
-			LOGGER_NOTICE_FMT("arming_busy %s ", this->getName().c_str());
+			LOGGER_VERBOSE("arming_busy");
 			break;
 
 		case arming_end:
-			LOGGER_NOTICE_FMT("arming end %s ", this->getName().c_str());
+			LOGGER_VERBOSE("arming end");
 			_motor[motor_t::first]->armingProcedure(true);
 			_motor[motor_t::second]->armingProcedure(true);
 			_motor[motor_t::first]->setMotorStates(Motor::off);
@@ -149,24 +149,24 @@ public:
 		case disablePID:
 			/* Deactivate the PID controller from the motor axes. Does it have to be that way?
 			 * Look at module AxisYaw */
-			LOGGER_NOTICE_FMT("deactivate PID %d ", _axis_address);
+			LOGGER_VERBOSE("deactivate PID");
 			AxisBase::_newPID->disablePID();
 			break;
 
 		case enablePID:
 			/* Activate the PID controller from the MotorAxis with the current coefficients. */
-			LOGGER_NOTICE_FMT("activate PID %d ", _axis_address);
+			LOGGER_VERBOSE("activate PID");
 			AxisBase::_newPID->enablePID();
 			break;
 
 		case standby:
-			LOGGER_NOTICE_FMT("standby %d ", _axis_address);
+			LOGGER_VERBOSE("standby");
 			_motor[motor_t::first]->setMotorStates(Motor::off);
 			_motor[motor_t::second]->setMotorStates(Motor::off);
 			break;
 
 		case ready:
-			LOGGER_NOTICE_FMT("AxisMotor ready %d ", _axis_address);
+			LOGGER_VERBOSE("ready");
 			_motor[motor_t::first]->setMotorStates(Motor::on);
 			_motor[motor_t::second]->setMotorStates(Motor::on);
 
@@ -176,7 +176,7 @@ public:
 
 			_motor[motor_t::first]->setPower(_axisData->power - _axisData->pidError);
 			_motor[motor_t::second]->setPower(_axisData->power + _axisData->pidError);
-			LOGGER_NOTICE_FMT("AxisMotor SP:%d, Power:%d, Error:%d, Axis:%d", _axisData->setpoint, _axisData->power, _axisData->pidError, _axis_address);
+			LOGGER_NOTICE_FMT("AxisMotor SP:%d, Power:%d, Error:%d", _axisData->setpoint, _axisData->power, _axisData->pidError);
 			break;
 		} /* end of switch */
 

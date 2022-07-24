@@ -160,7 +160,7 @@ public:
 			break;
 
 		case ready:
-			LOGGER_VERBOSE("Enter....");
+			LOGGER_NOTICE("Enter....");
 			_axisMotor[axis_t::Primary]->setState(AxisMotor::ready);
 			_axisMotor[axis_t::Secondary]->setState(AxisMotor::ready);
 			if ((*_yawData->rotationSpeed > YAW_SENSIBILITY) || (*_yawData->rotationSpeed < (-YAW_SENSIBILITY)))

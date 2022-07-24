@@ -21,14 +21,16 @@
 #include "..\lib\sensors.h"
 //#define _DEBUG_ DEBUG
 #include "..\lib\sonic.h"
+#define _DEBUG_ DEBUG
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
 //#define _DEBUG_ DEBUG
 #include "..\lib\axisBase.h"
-#define _DEBUG_ DEBUG
+//#define _DEBUG_ DEBUG
 #include "..\lib\axisMotor.h"
 //#define _DEBUG_ DEBUG
 #include "..\lib\axisYaw.h"
+//#define _DEBUG_ DEBUG
 #include "..\lib\flyController.h"
 #include "..\lib\performance.h"
 #include "..\lib\PID_adjust.h"
@@ -39,7 +41,7 @@
 
 #define PIN_BT_TX       8
 #define PIN_BT_RX       9
-#define COM_SPEED     9600
+#define COM_SPEED     115200
 #define BT_SPEED      115200
 
 #define PIN_MOTOR_FL    11
@@ -55,6 +57,7 @@ UART Serial2(PIN_BT_TX, PIN_BT_RX);
 PID_adjust *_pid_adjust;
 
 void setup() {
+    digitalWrite(PIN_ESC_ON, LOW);      // MainPower für ESC´s abgeschaltet
     Serial.begin(COM_SPEED);
     Serial2.begin(BT_SPEED);
     Logger::setOutputFunction(&localLogger);

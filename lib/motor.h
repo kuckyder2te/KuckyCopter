@@ -76,13 +76,15 @@ public:
 	void setup()
 	{
 		LOGGER_VERBOSE("Enter....");
-		LOGGER_NOTICE_FMT("Pin = %d", _pin);
+		
 		frequency = 400.0f; 
 
 		_motor = new RP2040_PWM(_pin, frequency, 80);	//2mS
 
 		if (_motor)
 		{
+			digitalWrite(PIN_ESC_ON, HIGH);		// Mail Power für die ESC´s eingeschaltet
+			LOGGER_NOTICE_FMT("_motor = true Pin = %d", _pin);
 			_motor->setPWM();
 		}
 
@@ -103,23 +105,24 @@ public:
 		switch (_motorstate)
 		{
 		case arming:
-			LOGGER_NOTICE_FMT("Motor arming %d ", _pin);
+//			LOGGER_NOTICE_FMT("Motor arming %d ", _pin);
 			break;
 
 		case off:
-			LOGGER_NOTICE_FMT("Motor off %d ", _pin);
+//			LOGGER_NOTICE_FMT("Motor off %d ", _pin);
 			_power = 0;
 			break;
 
 		case on:
-			LOGGER_NOTICE_FMT("Motor on %d ", _pin);
 		//	resultingPower = _power;
 
-            resultingPower = map(_power, 0, 100, 80000, 40000);
+            resultingPower = map(_power, 0, 100, 40000, 80000);
 
 			if (resultingPower < BASE_MOTOR_POWER) {
 				resultingPower = BASE_MOTOR_POWER;
 			}
+
+			LOGGER_NOTICE_FMT("RCThrottle %d ResultingPower %d PIN %d ", _power, resultingPower, _pin);
 
 			_motor->setPWM_Int(_pin, frequency, resultingPower);
 			break;
@@ -128,7 +131,7 @@ public:
 	} /*-------------------------- end of updateState ---------------------------------*/
 
 	/* Motor is attached with a PIN and set the power to 2000 ms.
-	 * After this set the power to 1000 ms and the arming is finished.*/
+	   After this set the power to 1000 ms and the arming is finished.*/
 
 	void armingProcedure(bool step)
 	{
@@ -170,6 +173,7 @@ public:
 		else
 		{
 			_power = power;
+			LOGGER_NOTICE_FMT("setPower %d ", _power);
 		}
 		return _power;
 		LOGGER_VERBOSE("....leave");

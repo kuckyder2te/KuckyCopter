@@ -111,10 +111,12 @@ public:
         if (role)
         {
             _radio->stopListening(); // put radio in TX mode
+            LOGGER_NOTICE("Radio in RX mode");
         }
         else
         {
             _radio->startListening(); // put radio in RX mode
+            LOGGER_NOTICE("Radio in RX mode");
         }
 
         // For debugging info
@@ -138,7 +140,7 @@ public:
 
             if (report)
             {
-                LOGGER_NOTICE_FMT("Transmission successful! - %i payload %f  ", end_timer - start_timer, payload);                           // payload was delivered
+                LOGGER_NOTICE_FMT("Transmission successful! - %i payload %f  ", end_timer - start_timer, interface->payload);                           // payload was delivered
               //   payload += 0.01;                                                      // increment float payload
             }
             else
@@ -150,12 +152,15 @@ public:
         {
             // This device is a RX node
             uint8_t pipe;
+            LOGGER_NOTICE("Radio available");
             if (_radio->available(&pipe))
+            
             { // is there a payload? get the pipe number that recieved it
                 digitalWrite(PIN_RADIO_LED, LOW);
                 uint8_t bytes = _radio->getPayloadSize(); // get the size of the payload
                 _radio->read(&interface->payload, sizeof(payload_t));            // fetch payload from FIFO
-                LOGGER_NOTICE_FMT("Throttle = %d Pitch = %d Roll = %d YAW = %d", payload.rcThrottle, payload.rcPitch, payload.rcYaw);
+                LOGGER_NOTICE_FMT("Throttle = %d Pitch = %d Roll = %d YAW = %d", interface->payload.rcThrottle, 
+                                                                                 interface->payload.rcPitch, interface->payload.rcRoll, interface->payload.rcYaw);
                 LOGGER_NOTICE_FMT("Received %d bytes of pipe %d Interface %f", bytes, pipe, interface);
                 digitalWrite(PIN_RADIO_LED, HIGH);
             }
