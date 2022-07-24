@@ -113,10 +113,15 @@ public:
 
 		case on:
 			LOGGER_NOTICE_FMT("Motor on %d ", _pin);
-			resultingPower = _power;
+		//	resultingPower = _power;
+
+            resultingPower = map(_power, 0, 100, 80000, 40000);
+
 			if (resultingPower < BASE_MOTOR_POWER) {
 				resultingPower = BASE_MOTOR_POWER;
 			}
+
+			_motor->setPWM_Int(_pin, frequency, resultingPower);
 			break;
 		}
 		LOGGER_VERBOSE("....leave");

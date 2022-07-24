@@ -73,5 +73,19 @@ PID_adjust Klasse eingefügt. Muss alle 100ms ausgeführt werden
     radio.h Zeilen 107-112 
     189-207 auskommentiert alles OK
     CleanUp
-                    
+
+    ## Fragen
+    // Model wiring begin
+	// remote control channels to MotorAxis
+	model.yawData.axisData[axis_t::Primary].rcX = &model.interface.payload.rcDirection[axis_t::Primary];
+	model.yawData.axisData[axis_t::Primary].rcY = &model.interface.payload.rcDirection[axis_t::Secondary];
+	model.yawData.axisData[axis_t::Secondary].rcX = &model.interface.payload.rcDirection[axis_t::Primary];
+	model.yawData.axisData[axis_t::Secondary].rcY = &model.interface.payload.rcDirection[axis_t::Secondary];
+	model.yawData.rotationSpeed = &model.interface.payload.rcDirection[axis_t::YawAxis];
+
+	model.yawData.axisData[axis_t::Primary].feedback = &model.gyroData.imuOutput[axis_t::Primary];
+	model.yawData.axisData[axis_t::Secondary].feedback = &model.gyroData.imuOutput[axis_t::Secondary];
+	model.yawData.feedback = &model.gyroData.imuOutput[axis_t::YawAxis];
+	model.yawData.horz_Position = &model.gyroData.horz_Position;      
+     muss das wieder gemacht werden?          
                                                        

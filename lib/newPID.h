@@ -63,7 +63,6 @@ public:
 		disablePID();
 	}
 
-
 	void disablePID()
 	{
 	LOGGER_NOTICE_FMT("Disabled PID controller %s ", _ParentName.c_str());

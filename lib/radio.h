@@ -57,7 +57,7 @@ class Radio : public Task::Base
     // uint8_t address[][6];
     bool radioNumber; // 0 uses address[0] to transmit, 1 uses address[1] to transmit
     bool role;        // true = TX role, false = RX role
-    float payload;
+ //   float payload;
 
 public:    
     interface_t *interface;
@@ -107,6 +107,7 @@ public:
         _radio->setPayloadSize(sizeof(payload_t)); // float datatype occupies 4 bytes
         _radio->openWritingPipe(address[radioNumber]); // always uses pipe 0
         _radio->openReadingPipe(1, address[!radioNumber]); // using pipe 1
+
         if (role)
         {
             _radio->stopListening(); // put radio in TX mode
@@ -154,6 +155,7 @@ public:
                 digitalWrite(PIN_RADIO_LED, LOW);
                 uint8_t bytes = _radio->getPayloadSize(); // get the size of the payload
                 _radio->read(&interface->payload, sizeof(payload_t));            // fetch payload from FIFO
+                LOGGER_NOTICE_FMT("Throttle = %d Pitch = %d Roll = %d YAW = %d", payload.rcThrottle, payload.rcPitch, payload.rcYaw);
                 LOGGER_NOTICE_FMT("Received %d bytes of pipe %d Interface %f", bytes, pipe, interface);
                 digitalWrite(PIN_RADIO_LED, HIGH);
             }

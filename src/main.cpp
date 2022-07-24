@@ -60,6 +60,7 @@ void setup() {
     Logger::setOutputFunction(&localLogger);
     delay(50);
     Logger::setLogLevel(Logger::DEBUG);           // Muss immer einen Wert in platformio.ini haben (SILENT)
+    
     LOGGER_NOTICE( "Program will initialized");
     model.performance.min_loop_time = 0xffff;
     model.yawData.axisData[0] = &model.axisData[0];  // axisData wird mit yawData.axisData verknüpft
