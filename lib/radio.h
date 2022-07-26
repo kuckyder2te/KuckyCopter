@@ -51,13 +51,14 @@ typedef struct
 #define PIN_RADIO_LED 1
 
 uint8_t address[][6] = {"1Node", "2Node"};
+//uint8_t address[][6];
 
 class Radio : public Task::Base
 {
-    // uint8_t address[][6];
+    
     bool radioNumber; // 0 uses address[0] to transmit, 1 uses address[1] to transmit
     bool role;        // true = TX role, false = RX role
- //   float payload;
+    float payload_new;
 
 public:    
     interface_t *interface;
@@ -86,10 +87,10 @@ public:
         LOGGER_VERBOSE("Enter....");
         pinMode(PIN_RADIO_LED, OUTPUT);
         digitalWrite(PIN_RADIO_LED, LOW);
-        // address[][6] = {"1Node", "2Node"};
+ //       uint8_t address[][6] = {"1Node", "2Node"};
         radioNumber = 1; // 0 uses address[0] to transmit, 1 uses address[1] to transmit
         role = false;    // true = TX role, false = RX role
-        //payload = 0.0;
+        payload_new = 0.0;
         _radio = new RF24(PIN_RADIO_CE, PIN_RADIO_CSN); // Adresse in Variable speichern -> constuktor
 
         // initialize the transceiver on the SPI bus
@@ -104,14 +105,14 @@ public:
         //role variable is hardcoded to RX behavior, inform the user of this
         //LOGGER_NOTICE("*** PRESS 'T' to begin transmitting to the other node");
         _radio->setPALevel(RF24_PA_LOW); // RF24_PA_MAX is default.
-        _radio->setPayloadSize(sizeof(payload_t)); // float datatype occupies 4 bytes
+        _radio->setPayloadSize(sizeof(payload_new)); // float datatype occupies 4 bytes
         _radio->openWritingPipe(address[radioNumber]); // always uses pipe 0
         _radio->openReadingPipe(1, address[!radioNumber]); // using pipe 1
 
         if (role)
         {
             _radio->stopListening(); // put radio in TX mode
-            LOGGER_NOTICE("Radio in RX mode");
+            LOGGER_NOTICE("Radio in TX mode");
         }
         else
         {
@@ -135,13 +136,13 @@ public:
         {
             // This device is a TX node
             unsigned long start_timer = micros();                 // start the timer
-            bool report = _radio->write(&interface->payload, sizeof(payload_t)); // transmit & save the report
+            bool report = _radio->write(&payload_new, sizeof(float)); // transmit & save the report
             unsigned long end_timer = micros();                   // end the timer
 
             if (report)
             {
                 LOGGER_NOTICE_FMT("Transmission successful! - %i payload %f  ", end_timer - start_timer, interface->payload);                           // payload was delivered
-              //   payload += 0.01;                                                      // increment float payload
+                payload_new += 0.01;                                                      // increment float payload
             }
             else
             {
@@ -152,16 +153,17 @@ public:
         {
             // This device is a RX node
             uint8_t pipe;
-            LOGGER_NOTICE("Radio available");
-            if (_radio->available(&pipe))
             
+            if (_radio->available(&pipe))
+            LOGGER_NOTICE("Role RX....");
             { // is there a payload? get the pipe number that recieved it
                 digitalWrite(PIN_RADIO_LED, LOW);
                 uint8_t bytes = _radio->getPayloadSize(); // get the size of the payload
-                _radio->read(&interface->payload, sizeof(payload_t));            // fetch payload from FIFO
-                LOGGER_NOTICE_FMT("Throttle = %d Pitch = %d Roll = %d YAW = %d", interface->payload.rcThrottle, 
-                                                                                 interface->payload.rcPitch, interface->payload.rcRoll, interface->payload.rcYaw);
-                LOGGER_NOTICE_FMT("Received %d bytes of pipe %d Interface %f", bytes, pipe, interface);
+                _radio->read(&payload_new, bytes);            // fetch payload from FIFO
+            //    LOGGER_NOTICE_FMT("Throttle = %d Pitch = %d Roll = %d YAW = %d", interface->payload.rcThrottle, 
+            //                                                                     interface->payload.rcPitch, interface->payload.rcRoll, interface->payload.rcYaw);
+                LOGGER_NOTICE_FMT("Received %d bytes of pipe %d Payload new %f", bytes, pipe, payload_new);
+                payload_new += 0.01;
                 digitalWrite(PIN_RADIO_LED, HIGH);
             }
         } // end of (if role)

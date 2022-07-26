@@ -89,8 +89,16 @@ CleanUp
 	model.yawData.horz_Position = &model.gyroData.horz_Position;      
 muss das wieder gemacht werden?  
 
+In der Klasse radio.h wird die Varialble payload_new nicht in Zeile 165
+LOGGER_NOTICE_FMT("Received %d bytes of pipe %d Payload new %f", bytes, pipe, payload_new);
+angezeigt bzw. hochgezählt.
+Ich vermute, es liegt an der 
+"uint8_t address[][6] = {"1Node", "2Node"};
+Ich vermute, ich habe es nicht richtig deklariert bzw. initialisiert
+Lösung; Im Sender den Varialbennamen auf payload_geändert????
+
 # Hinweise
-Will man die Achsen wia Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentziert werden "// #undef _DEBUG_"
+Will man die Achsen via Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentziert werden "// #undef _DEBUG_"
 
 
                                                        
