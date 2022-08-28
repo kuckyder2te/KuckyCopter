@@ -21,7 +21,7 @@
 #include "..\lib\sensors.h"
 //#define _DEBUG_ DEBUG
 #include "..\lib\sonic.h"
-#define _DEBUG_ DEBUG
+//#define _DEBUG_ DEBUG
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
 //#define _DEBUG_ DEBUG
@@ -78,7 +78,7 @@ void setup() {
     Serial2.flush();
     Wire.begin();
     
-    delay(500);
+    delay(5000);
 
   LOGGER_VERBOSE("Enter....");
     Tasks.add<AxisMotor>("axismotor_a")

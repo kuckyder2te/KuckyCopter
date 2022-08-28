@@ -27,7 +27,7 @@ char logBuf[100];
 
 void localLogger(Logger::Level level, const char* module, const char* message)
 {
-  #ifdef _MINITERM
+  #ifdef _MINITERM    // Ausgabe via USB
 
     #ifdef LOG_TIMESTAMP
       Serial.print(millis());

@@ -15,17 +15,8 @@ Yaw		0,01	0		0
 
 PID values mit 0 initialisiert    
 Verhindern, dass PID Werte nicht <0 werden. gefixt:
-newPID.h eingefügt und pidController.h entfernt
-FastPID als Objekt eingefügt. Code wird ausgeführt. Die Eingabe der PID Werte muss noch geändert werden       
-_instance in pidNew wird mehr als 3 mal erzeugt, und   nach jedem Reset um 1 oder auch mehr erhöht. gefixt
-Achsen- und Motor Klassen hinzugeführt. Nicht ausführbar, nur kompilierbar.  
-axisyaw hinzugefügt, motor_state_e in axisMotor hinzugeführt bzw. von state_e umbenannt.
-_motorAxis[axis_t::Primary]->setState(modules::AxisMotor::disablePID); geändert in
-_yawData->axisData[0]->state = motor_state_e::disablePID;
-Zeile 120 axisYaw.
 Flycontroller template hinzugefügt
-Achsen Klassen hizugefügt. Kein Kompiler Fehler. Muss noch aufgerämt werden.
-2022-06-25 Flycontroller.h teileweise implementiert (ohne model Abhänigkeiten)
+Achsen Klassen hinzugefügt. Kein Kompiler Fehler. Muss noch aufgerämt werden.
 2022-06-25 Flycontroller fertig. Stichworte
                 flyState_e _flyState;
                 AxisYaw *_axisYaw;
@@ -40,9 +31,7 @@ Define MotorPins in main.
                                             Sensors 123
                                             sonic Temperature
 PID_adjust und GUI erolgreich implementiert. 
-PID Menü wir kurz angezeigt und dann vom Logger überschrieben fix
-PID Anzeige auf BT Modul, Logger auf miniterm
-LOGGER via Platformio.ini -_MINITERM ein ausschalten
+
 Eingabe via BT funktioniert, kleine Probleme in der Logger-Ausgabe behoben 
 Nachkommastellen der Werte via BT einstellen fixed
 Ordner EEPROM gelöscht
@@ -51,28 +40,14 @@ GUI in putty_out umbenannt
 coeffizient_t; in 'DEFINE
 _newPID_pri teilweise eingefügt
 _newPID als array
-displayPIDcoefficientsTemp -> displayPIDcoefficients
-_newPID[PID_PRI]->setP ... eingefügt
-Tastatureingabe seltsam, mal reagiert das Terminal meistens aber nicht  / fix
-Lösung _serial = serial
-_MINITERM für Logger eingefügt
-Typenbezeichnungen harmonisiert z.B. itemOffset_t;
-PID Werte umbenannt
-enum in Class verschoben
-extEEPROM eingefügt 
+
+LOGGER via Platformio.ini 
+_MINITERM enable = Ausgabe via USB disable via BT
 PID Werte den Achsen zugewiesen
 FlyController überprüft bis ground OK.
-PID_adjust, enum in die Klasse verschoben
 Dictionary als Übersetzungstabelle implementiert
-axisBase enum in Klasse verschoben
-def.h gelöscht
-PID_new intFastPID in Constructor verschoben
-getExecutionTime wird nicht ausgeführt
-axisName_t statt #define
-PID_adjust setModel eingefügt
-radio.h Zeilen 107-112 
-189-207 auskommentiert alles OK
-CleanUp
+
+Radio class mit "GetStarted" gefüllt. Das Gegenstück ist aufe dem MEGA2560
 
 # Fragen
     // Model wiring begin
@@ -89,16 +64,17 @@ CleanUp
 	model.yawData.horz_Position = &model.gyroData.horz_Position;      
 muss das wieder gemacht werden?  
 
-In der Klasse radio.h wird die Varialble payload_new nicht in Zeile 165
-LOGGER_NOTICE_FMT("Received %d bytes of pipe %d Payload new %f", bytes, pipe, payload_new);
-angezeigt bzw. hochgezählt.
-Ich vermute, es liegt an der 
-"uint8_t address[][6] = {"1Node", "2Node"};
-Ich vermute, ich habe es nicht richtig deklariert bzw. initialisiert
-Lösung; Im Sender den Varialbennamen auf payload_geändert????
-
 # Hinweise
-Will man die Achsen via Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentziert werden "// #undef _DEBUG_"
+Will man die Achsen via Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentiert werden "// #undef _DEBUG_"
 
+# Transmission
+_radio.openWritingPipe(pipes[0]);  <-
+_radio.openReadingPipe(1, pipes[1]);  <-
+radio.stopListening(); // put radio in TX mode
+
+# Receiver
+_radio.openWritingPipe(pipes[1]);  <-
+_radio.openReadingPipe(1, pipes[0]); <-
+_radio->startListening(); // put radio in RX mode
 
                                                        
