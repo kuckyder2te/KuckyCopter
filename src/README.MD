@@ -47,7 +47,15 @@ PID Werte den Achsen zugewiesen
 FlyController überprüft bis ground OK.
 Dictionary als Übersetzungstabelle implementiert
 
-Radio class mit "GetStarted" gefüllt. Das Gegenstück ist aufe dem MEGA2560
+Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
+
+[Change 101]	Flashen geht wieder, abewr mur durch verschieben in das Pico Laufwerk
+				Board auf rpipico geändert. UART für Serial2 ist nicht mehr nötig
+				PID justierung kann in der PlatformIO ein/aus-geschaltet werden.
+				In radio.h payload von den RC implemetiert, aber noch keine Verbindung
+				Kosmetik
+[Change 102]	Radio funktioniert wegen Änderung der Pipe "Kennung"
+				EEPROM eingefügt			
 
 # Fragen
     // Model wiring begin

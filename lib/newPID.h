@@ -13,16 +13,12 @@
  */
 #pragma once
 
-#include "def.h"
 #include <FastPID.h>
-//#include <extEEPROM.h>
 #include "myLogger.h"
 
 #define PID_FREQUENCY      50			///< PID parameter
 #define PID_P_MIN			0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
 #define PID_EEPROM_ADRRESS 50
-
-//extEEPROM eep(kbits_256, 1, 64, 0x57); // oder new??
 
 typedef struct
 {

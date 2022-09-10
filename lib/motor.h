@@ -9,7 +9,6 @@
 
 #include <Arduino.h>
 #include <RP2040_PWM.h>
-#include "def.h"
 #include "myLogger.h"
 
 /*

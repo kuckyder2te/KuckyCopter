@@ -17,6 +17,8 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
 
+
+
 //#define _DEBUG_ DEBUG
 #include "..\lib\sensors.h"
 //#define _DEBUG_ DEBUG
@@ -52,14 +54,18 @@
 #define AXIS_FPS 100
 
 model_t model;      /// Speicherplatz wird angelegt und instanziert
-UART Serial2(PIN_BT_TX, PIN_BT_RX);
+//UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
+#ifdef _PID_ADJUST
 PID_adjust *_pid_adjust;
+#endif
 
 void setup() {
     digitalWrite(PIN_ESC_ON, LOW);      // MainPower für ESC´s abgeschaltet
     Serial.begin(COM_SPEED);
     Serial2.begin(BT_SPEED);
+ //   Serial.println("Serial");
+ //   Serial2.println("BT");
     Logger::setOutputFunction(&localLogger);
     delay(50);
     Logger::setLogLevel(Logger::DEBUG);           // Muss immer einen Wert in platformio.ini haben (SILENT)
@@ -69,13 +75,13 @@ void setup() {
     model.yawData.axisData[0] = &model.axisData[0];  // axisData wird mit yawData.axisData verknüpft
     model.yawData.axisData[1] = &model.axisData[1];
 
-    Serial2.println("********************************");
-    Serial2.println("*       KuCo Phantom 1         *");
-    Serial2.println("*                              *");
-    Serial2.print  ("*     ");Serial2.print(__DATE__);Serial2.print(" ");Serial2.print(__TIME__);Serial2.println("     *");
-    Serial2.print  ("*    EEPROM PID Address   ");/*Serial2.print(PID_EEPROM_ADRRESS);*/Serial2.println("     *");
-    Serial2.println("********************************");
-    Serial2.flush();
+    Serial.println("********************************");
+    Serial.println("*       KuCo Phantom 1         *");
+    Serial.println("*                              *");
+    Serial.print  ("*     ");Serial.print(__DATE__);Serial.print(" ");Serial.print(__TIME__);Serial.println("     *");
+    Serial.print  ("*    EEPROM PID Address   ");/*Serial.print(PID_EEPROM_ADRRESS);*/Serial.println("     *");
+    Serial.println("********************************");
+    Serial.flush();
     Wire.begin();
     
     delay(5000);
@@ -106,6 +112,7 @@ void setup() {
     Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);    
     Tasks.add<Radio>("radio")->startFps(10);
 
+    #ifdef _PID_ADJUST
 	  Tasks.add<PID_adjust>("pidadjust")
       ->setSerial(&Serial2)
       ->setModel(&model)
@@ -113,16 +120,17 @@ void setup() {
       ->addPID(reinterpret_cast<AxisBase*>(Tasks["axismotor_b"].get())->getPid(),"axismotor_b")
       ->addPID(reinterpret_cast<AxisBase*>(Tasks["axisyaw"].get())->getPid(),"axisyaw")
       ->startFps(100);
-   _pid_adjust = reinterpret_cast<PID_adjust *>(Tasks["pidadjust"].get());
-   _pid_adjust->display_Menu();
-
+    _pid_adjust = reinterpret_cast<PID_adjust *>(Tasks["pidadjust"].get());
+    _pid_adjust->display_Menu();
+    #endif
     LOGGER_NOTICE( "Program is initialized");
   LOGGER_VERBOSE("....leave"); 
 }/*------------------------ end of setup ----------------------------------------------*/
 
 void loop() {
   LOGGER_NOTICE("loop has begun");
-  
+  // Serial.println("loop");
+ // Serial2.println(" BT loop");
   //  unsigned long enter = micros();
   Tasks.update();
   Tasks["sensor"]->enter();

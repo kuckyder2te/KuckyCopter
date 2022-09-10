@@ -16,10 +16,13 @@
 
 #include <Arduino.h>
 #include <TaskManager.h>
+// #define SERIAL_DEBUG
+// #include <printf.h>
+// #include "nRF24L01.h"
 #include <RF24.h>
-#include "def.h"
 #include "myLogger.h"
-#include <printf.h>
+
+
 
 typedef struct __attribute__((__packed__))
 {
@@ -50,18 +53,18 @@ typedef struct
 #define PIN_RADIO_CSN 17
 #define PIN_RADIO_LED 1
 
-uint8_t pipe[][6] = {"1Node", "2Node"};
+//uint8_t pipe[][6] = {"1Node", "2Node"};T
 float payload = 0.0;
 
 class Radio : public Task::Base
 {
-    
     bool radioNumber; // 0 uses pipe[0] to transmit, 1 uses pipe[1] to received
-    bool role;        // true = TX role, false = RX role
-    float payload;
+    bool role;        // true(>0) = TX role, false(0) = RX role
+ //   float payload;
 
 public:    
     interface_t *interface;
+ //   payload_t payload;
     
 protected:
     RF24 *_radio; // CE, CSN        // Pointer auf die Adresse setzen
@@ -84,14 +87,17 @@ public:
 
     virtual void begin() override
     {
+        delay(5000);
         LOGGER_VERBOSE("Enter....");
         pinMode(PIN_RADIO_LED, OUTPUT);
         digitalWrite(PIN_RADIO_LED, LOW);
-        uint8_t address[][6] = {"1Node", "2Node"};
 
-        radioNumber = 1; // 0 uses pipe[0] to transmit, 1 uses pipe[1] to recieve
-        role = false;    // true = TX role, false = RX role
-        payload = 0.0;
+    //    uint8_t address[][6] = {"1Node", "2Node"};
+        const uint64_t address[2] = { 0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL };
+
+        radioNumber = 0; // 0 uses pipe[0] to transmit, 1 uses pipe[1] to recieve
+        role = true;    // true(>0) = TX role, false(0) = RX role
+        
         _radio = new RF24(PIN_RADIO_CE, PIN_RADIO_CSN); // Adresse in Variable speichern -> constuktor
 
         // initialize the transceiver on the SPI bus
@@ -103,21 +109,22 @@ public:
             } // hold in infinite loop
         }
             // print example's introductory prompt
-        Serial2.println(F("RF24/examples/GettingStarted"));
+        Serial.println(F("RF24/examples/GettingStarted"));
 
-        // To set the radioNumber via the Serial2 monitor on startup
-        Serial2.println(F("Which radio is this? Enter '0' or '1'. Defaults to '0'"));
-        while (!Serial2.available()) {
+        // To set the radioNumber via the Serial monitor on startup
+        Serial.println(F("Which radio is this? Enter '0' or '1'. Defaults to '0'"));
+        while (!Serial.available()) {
             // wait for user input
         }
-        char input = Serial2.parseInt();
+        char input = Serial.parseInt();
         radioNumber = input == 1;
-        Serial2.print(F("radioNumber = "));
-        Serial2.println((int)radioNumber);
+        Serial.print(F("radioNumber = "));
+        Serial.println((int)radioNumber);
 
         // role variable is hardcoded to RX behavior, inform the user of this
-        Serial2.println(F("*** PRESS 'T' to begin transmitting to the other node"));
-
+        Serial.println(F("*** PRESS 'T' to begin transmitting to the other node"));
+        //_radio->setChannel(76);
+        //_radio->setDataRate(RF24_250KBPS);
         // Set the PA Level low to try preventing power supply related problems
         // because these examples are likely run with nodes in close proximity to
         // each other.
@@ -125,7 +132,7 @@ public:
 
         // save on transmission time by setting the radio to only transmit the
         // number of bytes we need to transmit a float
-        _radio->setPayloadSize(sizeof(payload)); // float datatype occupies 4 bytes
+        _radio->setPayloadSize(sizeof(float)); // float datatype occupies 4 bytes
 
         // set the TX address of the RX node into the TX pipe
         _radio->openWritingPipe(address[radioNumber]);     // always uses pipe 0
@@ -141,9 +148,11 @@ public:
         }
 
         // For debugging info
-        // printf_begin();             // needed only once for printing details
-        // radio.printDetails();       // (smaller) function that prints raw register values
-        // radio.printPrettyDetails(); // (larger) function that prints human readable data
+        //  printf_begin();             // needed only once for printing details
+        //  _radio->printDetails();       // (smaller) function that prints raw register values
+        //  _radio->printPrettyDetails(); // (larger) function that prints human readable data
+
+
 
         LOGGER_VERBOSE("...leave");
     } /*----------------------------- end of begin ------------------------------------*/
@@ -159,14 +168,14 @@ public:
             unsigned long end_timer = micros();                      // end the timer
 
             if (report) {
-                Serial2.print(F("Transmission successful! "));          // payload was delivered
-                Serial2.print(F("Time to transmit = "));
-                Serial2.print(end_timer - start_timer);                 // print the timer result
-                Serial2.print(F(" us. Sent: "));
-                Serial2.println(payload);                               // print payload sent
+                Serial.print(F("Transmission successful! "));          // payload was delivered
+                Serial.print(F("Time to transmit = "));
+                Serial.print(end_timer - start_timer);                 // print the timer result
+                Serial.print(F(" us. Sent: "));
+                Serial.println(payload);                               // print payload sent
                 payload += 0.01;                                       // increment float payload
             } else {
-                Serial2.println(F("Transmission failed or timed out")); // payload was not delivered
+                Serial.println(F("Transmission failed or timed out")); // payload was not delivered
             }
         } else {
             // This device is a RX node
@@ -174,31 +183,34 @@ public:
             if (_radio->available(&pipe)) {             // is there a payload? get the pipe number that recieved it
                 uint8_t bytes = _radio->getPayloadSize(); // get the size of the payload
                 _radio->read(&payload, bytes);            // fetch payload from FIFO
-                Serial2.print(F("Received "));
-                Serial2.print(bytes);                    // print the size of the payload
-                Serial2.print(F(" bytes on pipe "));
-                Serial2.print(pipe);                     // print the pipe number
-                Serial2.print(F(": "));
-                Serial2.println(payload);                // print the payload's value
+
+        //        Serial.print("YAW = ");Serial.println(payload);
+                
+                Serial.print(F("Received "));
+                Serial.print(bytes);                    // print the size of the payload
+                Serial.print(F(" bytes on pipe "));
+                Serial.print(pipe);                     // print the pipe number
+                Serial.print(F(": "));
+                Serial.println(payload);                // print the payload's value
                 }
         } // role
 
-        if (Serial2.available()) {
+        if (Serial.available()) {
             // change the role via the serial monitor
 
-            char c = toupper(Serial2.read());
+            char c = toupper(Serial.read());
             if (c == 'T' && !role) {
             // Become the TX node
 
             role = true;
-            Serial2.println(F("*** CHANGING TO TRANSMIT ROLE -- PRESS 'R' TO SWITCH BACK"));
+            Serial.println(F("*** CHANGING TO TRANSMIT ROLE -- PRESS 'R' TO SWITCH BACK"));
             _radio->stopListening();
 
             } else if (c == 'R' && role) {
             // Become the RX node
 
             role = false;
-            Serial2.println(F("*** CHANGING TO RECEIVE ROLE -- PRESS 'T' TO SWITCH BACK"));
+            Serial.println(F("*** CHANGING TO RECEIVE ROLE -- PRESS 'T' TO SWITCH BACK"));
             _radio->startListening();
             }
         }

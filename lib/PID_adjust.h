@@ -11,6 +11,9 @@
 #include <TaskManager.h>
 #include <Arduino.h>
 #include <HardwareSerial.h>
+
+#include "..\..\EEPROM\EEPROM.h"   // Refernce to framework  1.. is Root 2.. ins framework
+
 #include "..\lib\myLogger.h"
 #include "..\lib\putty_out.h"
 #include "dictionary.h"
@@ -18,6 +21,7 @@
 
 #define PID_NUM 3
 
+#ifdef _PID_ADJUST
 class PID_adjust : public Task::Base
 {
 private:
@@ -644,3 +648,5 @@ public:
 };		  /*------------------------- end of PID_adjust class -------------------------*/
 
 #undef _DEBUG_
+
+#endif
