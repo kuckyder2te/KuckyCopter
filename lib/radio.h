@@ -9,6 +9,13 @@
     https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf
     https://www.youtube.com/watch?v=V4ziwen24Ps
 
+    // arduino::MbedSPI SPI(16,19,18);
+//  Singleton instance of the radio driver
+//  RH_NRF24 nrf24(PIN_RADIO_CE, PIN_RADIO_CSN);   // CE, CSN
+//  RH_NRF24 nrf24(8, 7); // use this to be electrically compatible with Mirf
+//  RH_NRF24 nrf24(8, 10);// For Leonardo, need explicit SS pin
+//  RH_NRF24 nrf24(8, 7); // For RFM73 on Anarduino Mini
+
     SPI SLK     18
         MOSI    19
         MISO    16
@@ -38,12 +45,7 @@ typedef struct
     payload_t payload;
 } interface_t;
 
-// arduino::MbedSPI SPI(16,19,18);
-//  Singleton instance of the radio driver
-//  RH_NRF24 nrf24(PIN_RADIO_CE, PIN_RADIO_CSN);   // CE, CSN
-//  RH_NRF24 nrf24(8, 7); // use this to be electrically compatible with Mirf
-//  RH_NRF24 nrf24(8, 10);// For Leonardo, need explicit SS pin
-//  RH_NRF24 nrf24(8, 7); // For RFM73 on Anarduino Mini
+
 
 #define PIN_RADIO_CE 20
 #define PIN_RADIO_CSN 17
