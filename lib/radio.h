@@ -27,6 +27,10 @@
 #include <RF24.h>
 #include "myLogger.h"
 
+#define PIN_RADIO_CE 20
+#define PIN_RADIO_CSN 17
+#define PIN_RADIO_LED 1
+
 typedef struct __attribute__((__packed__))
 {
     uint16_t rcThrottle; //!< Get the positions of the rc joysticks
@@ -44,12 +48,6 @@ typedef struct
     bool isconnect;
     payload_t payload;
 } interface_t;
-
-
-
-#define PIN_RADIO_CE 20
-#define PIN_RADIO_CSN 17
-#define PIN_RADIO_LED 1
 
 float payload = 0.0;
 
