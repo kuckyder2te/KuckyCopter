@@ -55,7 +55,10 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 				In radio.h payload von den RC implemetiert, aber noch keine Verbindung
 				Kosmetik
 [Change 102]	Radio funktioniert wegen Änderung der Pipe "Kennung"
-				EEPROM eingefügt			
+				EEPROM eingefügt	
+[Change 103]	payload Werte auf float gesetzt. Transmission OK, aber Werte nicht OK.
+				Sollten rcSw1 etc. besser als bool deklariert werden?	
+				Überflüssige Kommentare entfernt			
 
 # Fragen
     // Model wiring begin
@@ -70,10 +73,11 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 	model.yawData.axisData[axis_t::Secondary].feedback = &model.gyroData.imuOutput[axis_t::Secondary];
 	model.yawData.feedback = &model.gyroData.imuOutput[axis_t::YawAxis];
 	model.yawData.horz_Position = &model.gyroData.horz_Position;      
-muss das wieder gemacht werden?  
+	muss das wieder gemacht werden?  
 
 # Hinweise
 Will man die Achsen via Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentiert werden "// #undef _DEBUG_"
+Bei ARM Prozessoren hat double eine länge von 8byte und float von 4byte
 
 # Transmission
 _radio.openWritingPipe(pipes[0]);  <-
