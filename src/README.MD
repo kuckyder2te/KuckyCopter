@@ -56,10 +56,11 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 				Kosmetik
 [Change 102]	Radio funktioniert wegen Änderung der Pipe "Kennung"
 				EEPROM eingefügt	
-[Change 103]	payload Werte auf float gesetzt. Transmission OK, aber Werte nicht OK.
+[Change 103]	payload Werte auf float gesetzt. Transmission OK, aber Werte nicht OK.  Fix
 				Sollten rcSw1 etc. besser als bool deklariert werden?	
 				Überflüssige Kommentare entfernt	
-[Change 104]	Nur Kosmetik						
+[Change 104]	Nur Kosmetik	
+[Change 105]	Transmission unf Werte OK					
 
 # Fragen
     // Model wiring begin
@@ -97,6 +98,7 @@ _radio->startListening(); // put radio in RX mode
 	4.	LOGGER überprüfen
 	5.	Sensordaten überprüfen und ggf. Filter einfügen
 	6.	NRF24 printDetails überprüfen
+	7.  Achsen-Bezeichnung zentral ablegen ??
 
 
                                                        

@@ -58,6 +58,7 @@ class Radio : public Task::Base
 protected:
     RF24 *_radio; 
     interface_t *interface; 
+ //   payload_t payload;
 
 public:
     Radio(const String &name)
@@ -105,7 +106,7 @@ public:
         //_radio->setChannel(76);
         //_radio->setDataRate(RF24_250KBPS);
         _radio->setPALevel(RF24_PA_LOW);  // RF24_PA_MAX is default.
-        _radio->setPayloadSize(sizeof(interface_t)); // float datatype occupies 4 bytes
+        _radio->setPayloadSize(sizeof(interface_t)); 
         _radio->openWritingPipe(pipe[radioNumber]);     // always uses pipe 0
         _radio->openReadingPipe(1, pipe[!radioNumber]); // using pipe 1
   
@@ -133,7 +134,7 @@ public:
         if (role) {         // This device is the transmitter
            
             unsigned long start_timer = micros();                    // start the timer
-            bool report = _radio->write(&interface->payload, sizeof(interface_t));      // transmit & save the report
+            bool report = _radio->write(&interface, sizeof(interface_t));      // transmit & save the report  & ist die Adresse auf die interface->payload zeigt
             unsigned long end_timer = micros();                      // end the timer
 
             if (report) {
@@ -141,14 +142,13 @@ public:
                 Serial.print(F("Time to transmit = "));
                 Serial.print(end_timer - start_timer);                 
                 Serial.print(F(" us. Sent: "));
-                Serial.println(interface->payload.rcYaw);                               
-
+                Serial.println(interface->payload.rcThrottle);                               
             } else {
                 Serial.println(F("Transmission failed or timed out")); 
             }
         } else {    // This device is the receiver
             
-            uint8_t pipe;                                   //???
+            uint8_t pipe;                                   //??? Ist aber wohl richtig
             if (_radio->available(&pipe)) {             
                 uint8_t bytes = _radio->getPayloadSize(); 
                 _radio->read(&interface->payload, bytes);    
@@ -158,7 +158,7 @@ public:
                 Serial.print(F(" bytes on pipe "));
                 Serial.print(pipe);                   
                 Serial.print(F(": "));
-                Serial.println(interface->payload.rcYaw);  
+                Serial.println(interface->payload.rcThrottle);  
                 }
         } // end of role
 
