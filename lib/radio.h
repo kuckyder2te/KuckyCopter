@@ -53,18 +53,16 @@ class Radio : public Task::Base
 {
     bool radioNumber; // 0 uses pipe[0] to transmit, 1 uses pipe[1] to received
     bool role;        // true(>0) = TX role, false(0) = RX role
+    const uint64_t pipe[2] = { 0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL };
 
-public:    
-    interface_t *interface; 
-    
 protected:
     RF24 *_radio; 
+    interface_t *interface; 
 
 public:
     Radio(const String &name)
         : Task::Base(name)
-    {
-    }
+    {}
 
     virtual ~Radio() {}
 
@@ -78,15 +76,12 @@ public:
 
     virtual void begin() override
     {
-    
         LOGGER_VERBOSE("Enter....");
         pinMode(PIN_RADIO_LED, OUTPUT);
         digitalWrite(PIN_RADIO_LED, LOW);
 
-        const uint64_t pipe[2] = { 0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL };
-
         radioNumber = 0; // 0 uses pipe[0] to transmit, 1 uses pipe[1] to recieve
-        role = true;    // true(>0) = TX role, false(0) = RX role
+        role = true;     // true(>0) = TX role, false(0) = RX role
         
         _radio = new RF24(PIN_RADIO_CE, PIN_RADIO_CSN); // Adresse in Variable speichern -> constuktor
 
@@ -94,8 +89,7 @@ public:
         {
             LOGGER_FATAL("radio hardware is not responding!!");
             while (1)
-            {
-            } // hold in infinite loop
+            {} // hold in infinite loop
         }
 
         Serial.println(F("RF24/examples/GettingStarted"));
@@ -113,8 +107,8 @@ public:
         _radio->setPALevel(RF24_PA_LOW);  // RF24_PA_MAX is default.
         _radio->setPayloadSize(sizeof(interface_t)); // float datatype occupies 4 bytes
         _radio->openWritingPipe(pipe[radioNumber]);     // always uses pipe 0
-       _radio->openReadingPipe(1, pipe[!radioNumber]); // using pipe 1
- 
+        _radio->openReadingPipe(1, pipe[!radioNumber]); // using pipe 1
+  
         if (role) {
             _radio->stopListening();  // put radio in TX mode
         } else {
@@ -154,7 +148,7 @@ public:
             }
         } else {    // This device is the receiver
             
-            uint8_t pipe;
+            uint8_t pipe;                                   //???
             if (_radio->available(&pipe)) {             
                 uint8_t bytes = _radio->getPayloadSize(); 
                 _radio->read(&interface->payload, bytes);    

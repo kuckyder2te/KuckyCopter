@@ -25,6 +25,7 @@ typedef struct
     float _altitude;
     float _temperature_baro;
 } sensorData_t;
+
 class Sensor : public Task::Base
 {
     // Klasssenvarialblen

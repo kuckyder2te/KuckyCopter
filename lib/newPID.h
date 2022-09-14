@@ -15,6 +15,7 @@
 
 #include <FastPID.h>
 #include "myLogger.h"
+#include "..\..\EEPROM\EEPROM.h"   // Refernce to framework  1.. is Root 2.. ins framework
 
 #define PID_FREQUENCY      50			///< PID parameter
 #define PID_P_MIN			0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
@@ -32,21 +33,23 @@ class NewPID : public FastPID
 { 
 
 private:
-typedef struct{
-	float kP;
-	float kI;
-	float kD;
-	float exFreq;
-}pidParameter_t;
+	typedef struct{
+		float kP;
+		float kI;
+		float kD;
+		float exFreq;
+	}pidParameter_t;
 
 	pidParameter_t _pidParameter;
-	uint8_t _EEPROM_startAddress;
+//	uint8_t _EEPROM_startAddress;
 	bool _isEnabled;
 	String _ParentName;
+	int addr;
 
 protected:
 	float RC_SP;
 	float FB;
+//	EEPROM *_eeprom;
 
 public:
 	NewPID(String name){
@@ -57,6 +60,12 @@ public:
 		_pidParameter.kP = 0;
 		_pidParameter.exFreq = 0;
 		disablePID();
+	}
+
+	void init()
+	{
+		EEPROM.begin(512);
+		addr = 0;
 	}
 
 	void disablePID()
@@ -126,13 +135,13 @@ public:
 	} /*-------------------------------- end of getExecutionTime ----------------------*/
 	void updateEEPROM(void)
 	{
-	//	eep.write(PID_EEPROM_ADRRESS, _pidData);
-		//	EEPROM.put(_EEPROM_startAddress, _pidData);
+	//	EEPROM.read(addr, _pidParameter);
 		enablePID();
 	} /*-------------------------------- end of updateEEPROM --------------------------*/
 
 	void readEEPROM(void)
 	{
+	//	EEPROM.write(addr, _pidParameter);
 		enablePID();
 	} /*-------------------------------- end of readEEPROM ----------------------------*/
 

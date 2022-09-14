@@ -42,7 +42,7 @@ _newPID_pri teilweise eingefügt
 _newPID als array
 
 LOGGER via Platformio.ini 
-_MINITERM enable = Ausgabe via USB disable via BT
+_MINITERM enable via USB disable via BT
 PID Werte den Achsen zugewiesen
 FlyController überprüft bis ground OK.
 Dictionary als Übersetzungstabelle implementiert
@@ -58,7 +58,8 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 				EEPROM eingefügt	
 [Change 103]	payload Werte auf float gesetzt. Transmission OK, aber Werte nicht OK.
 				Sollten rcSw1 etc. besser als bool deklariert werden?	
-				Überflüssige Kommentare entfernt			
+				Überflüssige Kommentare entfernt	
+[Change 104]	Nur Kosmetik						
 
 # Fragen
     // Model wiring begin
@@ -88,5 +89,14 @@ radio.stopListening(); // put radio in TX mode
 _radio.openWritingPipe(pipes[1]);  <-
 _radio.openReadingPipe(1, pipes[0]); <-
 _radio->startListening(); // put radio in RX mode
+
+# Nächste Schritte
+	1.	Radio Daten verfizieren
+	2.	EEPROM aktivieren
+	3.	PWM Signal auf Motoren übertragen
+	4.	LOGGER überprüfen
+	5.	Sensordaten überprüfen und ggf. Filter einfügen
+	6.	NRF24 printDetails überprüfen
+
 
                                                        

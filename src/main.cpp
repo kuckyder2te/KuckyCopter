@@ -17,8 +17,6 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
 
-
-
 //#define _DEBUG_ DEBUG
 #include "..\lib\sensors.h"
 //#define _DEBUG_ DEBUG
@@ -37,8 +35,6 @@
 #include "..\lib\performance.h"
 #include "..\lib\PID_adjust.h"
 #include "..\lib\model.h"
-
-
 #include "..\lib\myLogger.h"
 
 #define PIN_BT_TX       8
