@@ -60,7 +60,8 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 				Sollten rcSw1 etc. besser als bool deklariert werden?	
 				Überflüssige Kommentare entfernt	
 [Change 104]	Nur Kosmetik	
-[Change 105]	Transmission unf Werte OK					
+[Change 105]	Transmission und Werte OK	
+[Change 106]	interface to rcInterface fix				
 
 # Fragen
     // Model wiring begin
@@ -77,28 +78,30 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 	model.yawData.horz_Position = &model.gyroData.horz_Position;      
 	muss das wieder gemacht werden?  
 
-# Hinweise
+## Hinweise
 Will man die Achsen via Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentiert werden "// #undef _DEBUG_"
 Bei ARM Prozessoren hat double eine länge von 8byte und float von 4byte
 
-# Transmission
+## Transmission
 _radio.openWritingPipe(pipes[0]);  <-
 _radio.openReadingPipe(1, pipes[1]);  <-
 radio.stopListening(); // put radio in TX mode
 
-# Receiver
+## Receiver
 _radio.openWritingPipe(pipes[1]);  <-
 _radio.openReadingPipe(1, pipes[0]); <-
 _radio->startListening(); // put radio in RX mode
 
-# Nächste Schritte
+## Nächste Projekt-Schritte
 	1.	Radio Daten verfizieren
 	2.	EEPROM aktivieren
 	3.	PWM Signal auf Motoren übertragen
 	4.	LOGGER überprüfen
 	5.	Sensordaten überprüfen und ggf. Filter einfügen
 	6.	NRF24 printDetails überprüfen
-	7.  Achsen-Bezeichnung zentral ablegen ??
 
 
-                                                       
+##
+ 	Achsen-Bezeichnung zentral ablegen ??
+	Interface in rcInterface umbenennen fix 
+	Payload rcSwix	-> bool                                                    

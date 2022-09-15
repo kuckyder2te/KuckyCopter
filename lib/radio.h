@@ -47,7 +47,7 @@ typedef struct
 {
     bool isconnect;
     payload_t payload;
-} interface_t;
+} rcInterface_t;
 
 class Radio : public Task::Base
 {
@@ -57,7 +57,7 @@ class Radio : public Task::Base
 
 protected:
     RF24 *_radio; 
-    interface_t *interface; 
+    rcInterface_t *rcInterface; 
  //   payload_t payload;
 
 public:
@@ -67,10 +67,10 @@ public:
 
     virtual ~Radio() {}
 
-    Radio *setModel(interface_t *_model)
+    Radio *setModel(rcInterface_t *_model)
     { 
         LOGGER_VERBOSE("Enter....");
-        interface = _model;
+        rcInterface = _model;
         LOGGER_VERBOSE("....leave");
         return this;
     }
@@ -106,7 +106,7 @@ public:
         //_radio->setChannel(76);
         //_radio->setDataRate(RF24_250KBPS);
         _radio->setPALevel(RF24_PA_LOW);  // RF24_PA_MAX is default.
-        _radio->setPayloadSize(sizeof(interface_t)); 
+        _radio->setPayloadSize(sizeof(rcInterface_t)); 
         _radio->openWritingPipe(pipe[radioNumber]);     // always uses pipe 0
         _radio->openReadingPipe(1, pipe[!radioNumber]); // using pipe 1
   
@@ -116,7 +116,7 @@ public:
             _radio->startListening(); // put radio in RX mode
         }
 
-        // uint8_t temp = sizeof(interface_t);
+        // uint8_t temp = sizeof(rcInterface_t);
         // Serial.print(F("sizeof ")); Serial.println(temp); 
 
         // For debugging info
@@ -134,7 +134,7 @@ public:
         if (role) {         // This device is the transmitter
            
             unsigned long start_timer = micros();                    // start the timer
-            bool report = _radio->write(&interface, sizeof(interface_t));      // transmit & save the report  & ist die Adresse auf die interface->payload zeigt
+            bool report = _radio->write(&rcInterface, sizeof(rcInterface_t));      // transmit & save the report  & ist die Adresse auf die rcInterface->payload zeigt
             unsigned long end_timer = micros();                      // end the timer
 
             if (report) {
@@ -142,7 +142,7 @@ public:
                 Serial.print(F("Time to transmit = "));
                 Serial.print(end_timer - start_timer);                 
                 Serial.print(F(" us. Sent: "));
-                Serial.println(interface->payload.rcThrottle);                               
+                Serial.println(rcInterface->payload.rcThrottle);                               
             } else {
                 Serial.println(F("Transmission failed or timed out")); 
             }
@@ -151,14 +151,14 @@ public:
             uint8_t pipe;                                   //??? Ist aber wohl richtig
             if (_radio->available(&pipe)) {             
                 uint8_t bytes = _radio->getPayloadSize(); 
-                _radio->read(&interface->payload, bytes);    
+                _radio->read(&rcInterface->payload, bytes);    
                 
                 Serial.print(F("Received "));
                 Serial.print(bytes);                 
                 Serial.print(F(" bytes on pipe "));
                 Serial.print(pipe);                   
                 Serial.print(F(": "));
-                Serial.println(interface->payload.rcThrottle);  
+                Serial.println(rcInterface->payload.rcThrottle);  
                 }
         } // end of role
 
