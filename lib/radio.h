@@ -81,8 +81,8 @@ public:
         pinMode(PIN_RADIO_LED, OUTPUT);
         digitalWrite(PIN_RADIO_LED, LOW);
 
-        radioNumber = 0; // 0 uses pipe[0] to transmit, 1 uses pipe[1] to recieve
-        role = true;     // true(>0) = TX role, false(0) = RX role
+        radioNumber = 1; // 0 uses pipe[0] to transmit, 1 uses pipe[1] to recieve
+        role = false;     // true(>0) = TX role, false(0) = RX role
         
         _radio = new RF24(PIN_RADIO_CE, PIN_RADIO_CSN); // Adresse in Variable speichern -> constuktor
 
@@ -94,15 +94,15 @@ public:
         }
 
         Serial.println(F("RF24/examples/GettingStarted"));
-        Serial.println(F("Which radio is this? Enter '0' or '1'. Defaults to '0'"));
-        while (!Serial.available()) {
-            // wait for user input
-        }
-        char input = Serial.parseInt();
-        radioNumber = input == 1;
-        Serial.print(F("radioNumber = "));
-        Serial.println((int)radioNumber);
-        Serial.println(F("*** PRESS 'T' to begin transmitting to the other node new"));
+    //     Serial.println(F("Which radio is this? Enter '0' or '1'. Defaults to '0'"));
+    //     while (!Serial.available()) {
+    //         // wait for user input
+    //     }
+    // //    char input = Serial.parseInt();
+    //    radioNumber = input == 1;
+        // Serial.print(F("radioNumber = "));
+        // Serial.println((int)radioNumber);
+        // Serial.println(F("*** PRESS 'T' to begin transmitting to the other node new"));
         //_radio->setChannel(76);
         //_radio->setDataRate(RF24_250KBPS);
         _radio->setPALevel(RF24_PA_LOW);  // RF24_PA_MAX is default.
@@ -123,7 +123,7 @@ public:
         // printf_begin();             // needed only once for printing details
         // _radio->printDetails();       // (smaller) function that prints raw register values
         // _radio->printPrettyDetails(); // (larger) function that prints human readable data
-    delay(5000);
+    delay(100);
     
         LOGGER_VERBOSE("...leave");
     } /*----------------------------- end of begin ------------------------------------*/
