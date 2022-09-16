@@ -48,7 +48,7 @@ private:
 	double _roll;
 	bool _invertRoll;
 	motorState_e _state;
-	uint8_t _axis_address;
+//	uint8_t _axis_address;
 
 public:
 	AxisMotor(const String &name) : AxisBase(name)
@@ -112,7 +112,7 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		LOGGER_NOTICE_FMT("%s", this->getName().c_str()); // Adresse von array of char
 		AxisBase::begin();
-		_axis_address++;
+	//	_axis_address++;
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of begin ---------------------------------*/
 
@@ -229,4 +229,4 @@ public:
 
 }; /*.................................. end of AxisMotor class ------------------------*/
 
-#undef _DEBUG_
+//#undef _DEBUG_

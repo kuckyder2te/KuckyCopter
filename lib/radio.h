@@ -37,9 +37,9 @@ typedef struct __attribute__((__packed__))
     float rcYaw;
     float rcPitch;
     float rcRoll;
-    uint8_t rcSwi1;     // bool ???
-    uint8_t rcSwi2;
-    uint8_t rcSwi3;
+    bool rcSwi1;     // bool ???
+    bool rcSwi2;
+    bool rcSwi3;
     float checksum;
 } payload_t;
 
@@ -146,8 +146,8 @@ public:
             } else {
                 Serial.println(F("Transmission failed or timed out")); 
             }
-        } else {    // This device is the receiver
-            
+        } else {    
+            // This device is the receiver
             uint8_t pipe;                                   //??? Ist aber wohl richtig
             if (_radio->available(&pipe)) {             
                 uint8_t bytes = _radio->getPayloadSize(); 
@@ -156,10 +156,18 @@ public:
                 Serial.print(F("Received "));
                 Serial.print(bytes);                 
                 Serial.print(F(" bytes on pipe "));
-                Serial.print(pipe);                   
-                Serial.print(F(": "));
-                Serial.println(rcInterface->payload.rcThrottle);  
-                }
+                Serial.println(pipe);                   
+             //   Serial.print(F(": "));
+                Serial.print("Throttle = ");Serial.println(rcInterface->payload.rcThrottle);  
+                Serial.print("YAW =      ");Serial.println(rcInterface->payload.rcYaw); 
+                Serial.print("Pitch =    ");Serial.println(rcInterface->payload.rcPitch);  
+                Serial.print("Roll =     ");Serial.println(rcInterface->payload.rcRoll); 
+                Serial.print("Switch 1 = ");Serial.println(rcInterface->payload.rcSwi1);  
+                Serial.print("Switch 2 = ");Serial.println(rcInterface->payload.rcSwi2); 
+                Serial.print("Switch 3 = ");Serial.println(rcInterface->payload.rcSwi3);  
+                Serial.print("Checksum = ");Serial.println(rcInterface->payload.checksum); 
+              
+                } // end of read
         } // end of role
 
         if (Serial.available()) {       // change the role via the serial monitor
@@ -182,4 +190,4 @@ public:
     } // ------------------- end of update --------------------------------------------*/
 }; /*----------------------------- end of radio.h class -------------------------------*/
 
-#undef _DEBUG_
+//#undef _DEBUG_

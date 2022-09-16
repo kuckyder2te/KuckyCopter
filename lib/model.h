@@ -40,4 +40,4 @@ typedef struct {
 	flyState_e flyState;
 } model_t;
 
-#undef _DEBUG_
+//#undef _DEBUG_

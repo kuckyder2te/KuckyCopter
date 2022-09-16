@@ -23,7 +23,7 @@
 class PID_adjust : public Task::Base
 {
 private:
-	typedef enum
+	typedef enum		// Pid_typ Primary P to YAW ef
 	{
 		pri_P = 11,
 		pri_I = 21,
@@ -69,7 +69,7 @@ private:
 	float _newAddOn = 0.1;	///< Multiplication factor for the PID coefficients, default setting.
 	double _addOn;
 
-	float pri_kP_value = 0;
+	float pri_kP_value = 0;		// Initialsation to 0 ??  Stephan
 	float pri_kI_value = 0;
 	float pri_kD_value = 0;
 	float pri_EF_value = 0;
@@ -233,6 +233,7 @@ public:
 				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy10);
 				break;
+
 			case '1':
 				setDecimalPlaces(1);
 				_putty_out->yellow();
@@ -240,6 +241,7 @@ public:
 				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy01);
 				break;
+
 			case '2':
 				setDecimalPlaces(2);
 				_putty_out->yellow();
@@ -247,6 +249,7 @@ public:
 				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy001);
 				break;
+
 			case '3':
 				setDecimalPlaces(3);
 				_putty_out->yellow();
@@ -264,6 +267,7 @@ public:
 				_putty_out->yellow();
 				displayPIDcoefficients();
 				break;
+
 			case 'r': ///< Reads all coefficients from the EEPROM
 				// myPID_pri.readEEPROM();
 				// myPID_sec.readEEPROM();
@@ -272,6 +276,7 @@ public:
 				_putty_out->print(45, 8, "PID data was read out");
 				_putty_out->yellow();
 				break;
+				
 			case 'a': ///< Set all PID parameters to 0
 				// myPID_pri.setP(PID_P_MIN);
 				// myPID_pri.setI(0);
@@ -645,6 +650,6 @@ public:
 	}	  /*----------------------------- end of select -------------------------------*/
 };		  /*------------------------- end of PID_adjust class -------------------------*/
 
-#undef _DEBUG_
+//#undef _DEBUG_
 
 #endif

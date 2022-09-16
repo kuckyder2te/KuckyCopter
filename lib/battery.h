@@ -59,4 +59,4 @@ public:
     }
 }; /*--------------------------------- end of class battery.h --------------------------*/
 
-#undef _DEBUG_
+//#undef _DEBUG_

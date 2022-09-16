@@ -61,7 +61,9 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 				Überflüssige Kommentare entfernt	
 [Change 104]	Nur Kosmetik	
 [Change 105]	Transmission und Werte OK	
-[Change 106]	interface to rcInterface fix				
+[Change 106]	interface to rcInterface fix	
+[Change 107]	RC Switch Typ in bool geändert fix	
+[Change 108]	EEPRPM vorbereitet. RC OK	
 
 # Fragen
     // Model wiring begin
@@ -93,15 +95,17 @@ _radio.openReadingPipe(1, pipes[0]); <-
 _radio->startListening(); // put radio in RX mode
 
 ## Nächste Projekt-Schritte
-	1.	Radio Daten verfizieren
+	1.	Radio Daten verfizieren fix
 	2.	EEPROM aktivieren
-	3.	PWM Signal auf Motoren übertragen
-	4.	LOGGER überprüfen
-	5.	Sensordaten überprüfen und ggf. Filter einfügen
-	6.	NRF24 printDetails überprüfen
+	3.	Radio nur auf Receiver schalten
+	4.	PWM Signal auf Motoren übertragen
+	5.	LOGGER überprüfen
+	6.	Sensordaten überprüfen und ggf. Filter einfügen
+	7.	NRF24 printDetails überprüfen
+	8.  PID Werte aus PID-adjust in Model einlesen
 
 
 ##
  	Achsen-Bezeichnung zentral ablegen ??
 	Interface in rcInterface umbenennen fix 
-	Payload rcSwix	-> bool                                                    
+	Payload rcSwix	-> bool   fix                                                 

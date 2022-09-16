@@ -197,4 +197,4 @@ public:
         } /* end of switch flyState */
     } /*------------------------------- end of update ---------------------------------*/
 }; /*---------------------------------- end of flyController --------------------------*/
-#undef _DEBUG_
+//#undef _DEBUG_

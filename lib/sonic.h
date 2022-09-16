@@ -77,4 +77,5 @@ public:
         LOGGER_VERBOSE("....leave");
     }
 };/*----------------------------------- end of sonic.h class --------------------------*/
-#undef _DEBUG_
+
+//#undef _DEBUG_

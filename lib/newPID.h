@@ -62,9 +62,28 @@ public:
 		disablePID();
 	}
 
+	void saveParameters(uint16_t addr, pidData_t* data){	
+		uint8_t* current = reinterpret_cast<uint8_t*>(data);
+
+		for(uint8_t i=0;i<sizeof(pidData_t);i++){
+			EEPROM.write(addr+i,*(current+i));						//Pointer arethmetic
+		}
+	}
+
+	void loadParameters(uint16_t addr){
+		pidData_t data;
+		uint8_t* current = reinterpret_cast<uint8_t*>(&data);
+		for(uint8_t i=0;i<sizeof(pidData_t);i++){
+			*(current+i) = EEPROM.read(addr+i);
+		}
+		
+		Serial.println(data.pidCoefficient[0]);
+	}
+
+
 	void init()
 	{
-		EEPROM.begin(512);
+		EEPROM.begin(12);
 		addr = 0;
 	}
 
@@ -165,4 +184,4 @@ public:
 		return _pidParameter.exFreq;
 	} /*-------------------------------- end of getExTime -----------------------------*/
 };/*--------------------------- end of MyPid class ------------------------------------*/
-#undef _DEBUG_
+//#undef _DEBUG_
