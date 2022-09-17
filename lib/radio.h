@@ -82,7 +82,7 @@ public:
         digitalWrite(PIN_RADIO_LED, LOW);
 
         radioNumber = 1; // 0 uses pipe[0] to transmit, 1 uses pipe[1] to recieve
-        role = false;     // true(>0) = TX role, false(0) = RX role
+//        role = false;     // true(>0) = TX role, false(0) = RX role
         
         _radio = new RF24(PIN_RADIO_CE, PIN_RADIO_CSN); // Adresse in Variable speichern -> constuktor
 
@@ -107,14 +107,14 @@ public:
         //_radio->setDataRate(RF24_250KBPS);
         _radio->setPALevel(RF24_PA_LOW);  // RF24_PA_MAX is default.
         _radio->setPayloadSize(sizeof(rcInterface_t)); 
-        _radio->openWritingPipe(pipe[radioNumber]);     // always uses pipe 0
+    //    _radio->openWritingPipe(pipe[radioNumber]);     // always uses pipe 0
         _radio->openReadingPipe(1, pipe[!radioNumber]); // using pipe 1
   
-        if (role) {
-            _radio->stopListening();  // put radio in TX mode
-        } else {
+     //   if (role) {
+    //       _radio->stopListening();  // put radio in TX mode
+     //   } else {
             _radio->startListening(); // put radio in RX mode
-        }
+    //    }
 
         // uint8_t temp = sizeof(rcInterface_t);
         // Serial.print(F("sizeof ")); Serial.println(temp); 
@@ -131,22 +131,22 @@ public:
     virtual void update() override
     {
     LOGGER_VERBOSE("Enter....");  
-        if (role) {         // This device is the transmitter
+        // if (role) {         // This device is the transmitter
            
-            unsigned long start_timer = micros();                    // start the timer
-            bool report = _radio->write(&rcInterface, sizeof(rcInterface_t));      // transmit & save the report  & ist die Adresse auf die rcInterface->payload zeigt
-            unsigned long end_timer = micros();                      // end the timer
+        //     unsigned long start_timer = micros();                    // start the timer
+        //     bool report = _radio->write(&rcInterface, sizeof(rcInterface_t));      // transmit & save the report  & ist die Adresse auf die rcInterface->payload zeigt
+        //     unsigned long end_timer = micros();                      // end the timer
 
-            if (report) {
-                Serial.print(F("Transmission successful! "));          
-                Serial.print(F("Time to transmit = "));
-                Serial.print(end_timer - start_timer);                 
-                Serial.print(F(" us. Sent: "));
-                Serial.println(rcInterface->payload.rcThrottle);                               
-            } else {
-                Serial.println(F("Transmission failed or timed out")); 
-            }
-        } else {    
+        //     if (report) {
+        //         Serial.print(F("Transmission successful! "));          
+        //         Serial.print(F("Time to transmit = "));
+        //         Serial.print(end_timer - start_timer);                 
+        //         Serial.print(F(" us. Sent: "));
+        //         Serial.println(rcInterface->payload.rcThrottle);                               
+        //     } else {
+        //         Serial.println(F("Transmission failed or timed out")); 
+        //     }
+        // } else {    
             // This device is the receiver
             uint8_t pipe;                                   //??? Ist aber wohl richtig
             if (_radio->available(&pipe)) {             
@@ -168,24 +168,24 @@ public:
                 Serial.print("Checksum = ");Serial.println(rcInterface->payload.checksum); 
               
                 } // end of read
-        } // end of role
+ //       } // end of role
 
-        if (Serial.available()) {       // change the role via the serial monitor
+        // if (Serial.available()) {       // change the role via the serial monitor
             
-            char c = toupper(Serial.read());
-            if (c == 'T' && !role) {
-                // Become the TX node
-                role = true;
-                Serial.println(F("*** CHANGING TO TRANSMIT ROLE -- PRESS 'R' TO SWITCH BACK"));
-                _radio->stopListening();
+        //     char c = toupper(Serial.read());
+        //     if (c == 'T' && !role) {
+        //         // Become the TX node
+        //         role = true;
+        //         Serial.println(F("*** CHANGING TO TRANSMIT ROLE -- PRESS 'R' TO SWITCH BACK"));
+        //         _radio->stopListening();
 
-            } else if (c == 'R' && role) {
-                // Become the RX node
-                role = false;
-                Serial.println(F("*** CHANGING TO RECEIVE ROLE -- PRESS 'T' TO SWITCH BACK"));
-                _radio->startListening();
-            }
-        }
+        //     } else if (c == 'R' && role) {
+        //         // Become the RX node
+        //         role = false;
+        //         Serial.println(F("*** CHANGING TO RECEIVE ROLE -- PRESS 'T' TO SWITCH BACK"));
+        //         _radio->startListening();
+        //     }
+        // }
         LOGGER_VERBOSE("....leave");
     } // ------------------- end of update --------------------------------------------*/
 }; /*----------------------------- end of radio.h class -------------------------------*/

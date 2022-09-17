@@ -65,6 +65,7 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 [Change 107]	RC Switch Typ in bool geändert fix	
 [Change 108]	EEPRPM vorbereitet. RC OK	
 [Change 109]	Radio started im Empfangsmodus automatisch, ohne Tastendruck.
+[Change 110]	Radio Sender freigestellt OK
 
 # Fragen
     // Model wiring begin
