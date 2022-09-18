@@ -60,7 +60,7 @@ public:
 		_pidParameter.kP = 0;
 		_pidParameter.exFreq = 0;
 		disablePID();
-	}
+	} /*-------------------------------- end of constructor ---------------------------*/
 
 	void saveParameters(uint16_t addr, pidData_t* data){	
 		uint8_t* current = reinterpret_cast<uint8_t*>(data);
@@ -68,24 +68,22 @@ public:
 		for(uint8_t i=0;i<sizeof(pidData_t);i++){
 			EEPROM.write(addr+i,*(current+i));						//Pointer arethmetic
 		}
-	}
+	} /*-------------------------------- end of saveParameters ------------------------*/
 
 	void loadParameters(uint16_t addr){
 		pidData_t data;
 		uint8_t* current = reinterpret_cast<uint8_t*>(&data);
 		for(uint8_t i=0;i<sizeof(pidData_t);i++){
 			*(current+i) = EEPROM.read(addr+i);
-		}
-		
+		}		
 		Serial.println(data.pidCoefficient[0]);
-	}
-
+	} /*-------------------------------- end of loadParameters ------------------------*/
 
 	void init()
 	{
 		EEPROM.begin(12);
 		addr = 0;
-	}
+	} /*-------------------------------- end of int -----------------------------------*/
 
 	void disablePID()
 	{

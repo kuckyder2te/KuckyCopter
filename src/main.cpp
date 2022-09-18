@@ -60,8 +60,8 @@ void setup() {
     digitalWrite(PIN_ESC_ON, LOW);      // MainPower für ESC´s abgeschaltet
     Serial.begin(COM_SPEED);
     Serial2.begin(BT_SPEED);
- //   Serial.println("Serial");
- //   Serial2.println("BT");
+    Serial.println("Serial COM OK");
+    Serial2.println("BT COM OK");
     Logger::setOutputFunction(&localLogger);
     delay(50);
     Logger::setLogLevel(Logger::DEBUG);           // Muss immer einen Wert in platformio.ini haben (SILENT)
@@ -106,7 +106,7 @@ void setup() {
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
     Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);    
-    Tasks.add<Radio>("radio")->setModel(&model.rcInterface)->startFps(10);
+    Tasks.add<Radio>("radio")->setModel(&model.rcInterface)->startFps(100);
 
     #ifdef _PID_ADJUST
 	  Tasks.add<PID_adjust>("pidadjust")
@@ -146,4 +146,4 @@ void loop() {
   LOGGER_VERBOSE("Loop completed successfully");
 }/*------------------------ end of loop -----------------------------------------------*/
 
-#undef _DEBUG_
+//#undef _DEBUG_

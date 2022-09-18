@@ -214,4 +214,5 @@ public:
 									&& (_axisMotor[axis_t::Secondary]->isReady());
 	} /*---------------------- end of isReady -----------------------------------------*/
 }; /* ------------------------ end of AxisYaw Class -----------------------------------*/
-#undef _DEBUG_
+
+//*/#undef _DEBUG_

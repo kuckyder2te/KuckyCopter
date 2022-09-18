@@ -43,6 +43,18 @@ typedef struct __attribute__((__packed__))
     float checksum;
 } payload_t;
 
+typedef struct __attribute__((__packed__))
+{
+    uint16_t rcThrottle; //!< Get the positions of the rc joysticks
+    float yaw;
+    float pitch;
+    float roll;
+    bool rcSwi1;     // bool ???
+    bool rcSwi2;
+    bool rcSwi3;
+    float checksum;
+} txPayload_t;
+
 typedef struct
 {
     bool isconnect;
@@ -55,6 +67,7 @@ class Radio : public Task::Base
     bool role;        // true(>0) = TX role, false(0) = RX role
     const uint64_t pipe[2] = { 0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL };
 
+    float test = 456.78;
 protected:
     RF24 *_radio; 
     rcInterface_t *rcInterface; 
@@ -107,13 +120,13 @@ public:
         //_radio->setDataRate(RF24_250KBPS);
         _radio->setPALevel(RF24_PA_LOW);  // RF24_PA_MAX is default.
         _radio->setPayloadSize(sizeof(rcInterface_t)); 
-    //    _radio->openWritingPipe(pipe[radioNumber]);     // always uses pipe 0
+        _radio->openWritingPipe(pipe[radioNumber]);     // always uses pipe 0
         _radio->openReadingPipe(1, pipe[!radioNumber]); // using pipe 1
   
      //   if (role) {
     //       _radio->stopListening();  // put radio in TX mode
      //   } else {
-            _radio->startListening(); // put radio in RX mode
+    //        _radio->startListening(); // put radio in RX mode
     //    }
 
         // uint8_t temp = sizeof(rcInterface_t);
@@ -148,27 +161,48 @@ public:
         //     }
         // } else {    
             // This device is the receiver
-            uint8_t pipe;                                   //??? Ist aber wohl richtig
-            if (_radio->available(&pipe)) {             
-                uint8_t bytes = _radio->getPayloadSize(); 
-                _radio->read(&rcInterface->payload, bytes);    
+            if(role){
+                uint8_t pipe;                                   //??? Ist aber wohl richtig
+                _radio->startListening();
+                if (_radio->available(&pipe)) {      
+                        
+                    uint8_t bytes = _radio->getPayloadSize(); 
+                    _radio->read(&rcInterface->payload, bytes);    
+                    
+                    Serial.print(F("Received "));
+                    Serial.print(bytes);                 
+                    Serial.print(F(" bytes on pipe "));
+                    Serial.println(pipe);                   
+                    Serial.print("Throttle = ");Serial.println(rcInterface->payload.rcThrottle);  // Nur zum debuggen
+                    Serial.print("YAW =      ");Serial.println(rcInterface->payload.rcYaw); 
+                    Serial.print("Pitch =    ");Serial.println(rcInterface->payload.rcPitch);  
+                    Serial.print("Roll =     ");Serial.println(rcInterface->payload.rcRoll); 
+                    Serial.print("Switch 1 = ");Serial.println(rcInterface->payload.rcSwi1);  
+                    Serial.print("Switch 2 = ");Serial.println(rcInterface->payload.rcSwi2); 
+                    Serial.print("Switch 3 = ");Serial.println(rcInterface->payload.rcSwi3);  
+                    Serial.print("Checksum = ");Serial.println(rcInterface->payload.checksum);  
+                    Serial.print("Is Connect = ");Serial.println(rcInterface->isconnect);  
+                    role = false;
+                } // end of read block
+            }
+            else{
+                _radio->stopListening();
+                unsigned long start_timer = micros();
+                bool report = _radio->write(&test, sizeof(float)); 
+                unsigned long end_timer = micros();                      // end the timer
+                Serial.println(end_timer - start_timer);  
                 
-                Serial.print(F("Received "));
-                Serial.print(bytes);                 
-                Serial.print(F(" bytes on pipe "));
-                Serial.println(pipe);                   
-             //   Serial.print(F(": "));
-                Serial.print("Throttle = ");Serial.println(rcInterface->payload.rcThrottle);  
-                Serial.print("YAW =      ");Serial.println(rcInterface->payload.rcYaw); 
-                Serial.print("Pitch =    ");Serial.println(rcInterface->payload.rcPitch);  
-                Serial.print("Roll =     ");Serial.println(rcInterface->payload.rcRoll); 
-                Serial.print("Switch 1 = ");Serial.println(rcInterface->payload.rcSwi1);  
-                Serial.print("Switch 2 = ");Serial.println(rcInterface->payload.rcSwi2); 
-                Serial.print("Switch 3 = ");Serial.println(rcInterface->payload.rcSwi3);  
-                Serial.print("Checksum = ");Serial.println(rcInterface->payload.checksum); 
-              
-                } // end of read
- //       } // end of role
+                if (report) {
+                    Serial.print(F("Transmission successful! "));          
+                    Serial.print(F("Time to transmit = "));
+                                   
+                    Serial.print(F(" us. Sent: "));
+                    Serial.println(test);                               
+                } else {
+                    Serial.println(F("Transmission failed or timed out")); 
+                }
+                role = true;
+            } // end of writ block
 
         // if (Serial.available()) {       // change the role via the serial monitor
             
