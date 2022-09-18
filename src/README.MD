@@ -67,6 +67,7 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 [Change 109]	Radio started im Empfangsmodus automatisch, ohne Tastendruck.
 [Change 110]	Radio Sender freigestellt OK
 [Change 110a]	Nur Kleinigkeiten, Radio OK
+[Change 111]	Logger wieder OK, Radio OK
 
 # Fragen
     // Model wiring begin
