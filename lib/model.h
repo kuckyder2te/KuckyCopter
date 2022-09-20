@@ -33,8 +33,9 @@ typedef struct {
 	sonicData_t  sonicData;
 	performance_t performance;
 	rcInterface_t rcInterface;
-	AxisMotor::axisData_t axisData[2];
-	yawData_t  yawData;
+	AxisBase::axisData_t axisData[2];
+	AxisBase::axisData_t  yawData;
+    yaw_t yaw;
 	batteryData_t batteryData;
 	pidData_t pidData[3];
 	flyState_e flyState;

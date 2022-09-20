@@ -125,48 +125,40 @@ public:
     
             // This device is the receiver
             if(role){
-                Serial.print(F("Role = "));Serial.println(role);
+                LOGGER_NOTICE_FMT("Role = %i", role);
                 uint8_t pipe;                                   //??? Ist aber wohl richtig
-
                 _radio->startListening();
                 if (_radio->available(&pipe)) {      
                         
                     uint8_t bytes = _radio->getPayloadSize(); 
                     _radio->read(&rcInterface->payload, bytes);    
                     
-                    Serial.print(F("Received "));
-                    Serial.print(bytes);                 
-                    Serial.print(F(" bytes on pipe "));
-                    Serial.println(pipe);                   
-                    Serial.print("Throttle = ");Serial.println(rcInterface->payload.rcThrottle);  // Nur zum debuggen
-                    Serial.print("YAW =      ");Serial.println(rcInterface->payload.rcYaw); 
-                    Serial.print("Pitch =    ");Serial.println(rcInterface->payload.rcPitch);  
-                    Serial.print("Roll =     ");Serial.println(rcInterface->payload.rcRoll); 
-                    Serial.print("Switch 1 = ");Serial.println(rcInterface->payload.rcSwi1);  
-                    Serial.print("Switch 2 = ");Serial.println(rcInterface->payload.rcSwi2); 
-                    Serial.print("Switch 3 = ");Serial.println(rcInterface->payload.rcSwi3);  
-                    Serial.print("Checksum = ");Serial.println(rcInterface->payload.checksum);  
-                    Serial.print("Is Connect = ");Serial.println(rcInterface->isconnect);  
+                    LOGGER_WARNING_FMT("Received %i bytes on pipe %i", bytes, pipe);               
+                    LOGGER_WARNING_FMT("Throttle   = %i",rcInterface->payload.rcThrottle);  // Nur zum debuggen
+                    LOGGER_WARNING_FMT("YAW        = %f",rcInterface->payload.rcYaw); 
+                    LOGGER_WARNING_FMT("Pitch      = %f",rcInterface->payload.rcPitch);  
+                    LOGGER_WARNING_FMT("Roll       = %f",rcInterface->payload.rcRoll); 
+                    LOGGER_WARNING_FMT("Switch 1   = %i",rcInterface->payload.rcSwi1);  
+                    LOGGER_WARNING_FMT("Switch 2   = %i",rcInterface->payload.rcSwi2); 
+                    LOGGER_WARNING_FMT("Switch 3   = %i",rcInterface->payload.rcSwi3);  
+                    LOGGER_WARNING_FMT("Checksum   = %f",rcInterface->payload.checksum);  
+                    LOGGER_WARNING_FMT("Is Connect = %i",rcInterface->isconnect);  
                     role = false;
                 } // end of read block
                 delay(100);
             }
             else{
-                Serial.print(F("Role = "));Serial.println(role);
+                LOGGER_WARNING_FMT("Role = %i",role);
                 _radio->stopListening();
                 unsigned long start_timer = micros();
                 bool report = _radio->write(&test, sizeof(float)); 
                 unsigned long end_timer = micros();                      // end the timer
-                Serial.println(end_timer - start_timer);  
+                LOGGER_WARNING_FMT("Transmission time for write %i micros",end_timer - start_timer);  
                 
                 if (report) {
-                    Serial.print(F("Transmission successful! "));          
-                    Serial.print(F("Time to transmit = "));
-                                   
-                    Serial.print(F(" us. Sent: "));
-                    Serial.println(test);                               
+                    LOGGER_WARNING_FMT("Transmission Time for write %i micros - Test = ",end_timer - start_timer, test);               
                 } else {
-                    Serial.println(F("Transmission failed or timed out")); 
+                    LOGGER_FATAL("Transmission failed or timed out"); 
                 }
                 role = true;
                 delay(100);
@@ -176,4 +168,4 @@ public:
     } // ------------------- end of update --------------------------------------------*/
 }; /*----------------------------- end of radio.h class -------------------------------*/
 
-//#undef _DEBUG_
+#undef _DEBUG_

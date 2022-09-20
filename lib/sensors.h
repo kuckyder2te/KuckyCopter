@@ -92,10 +92,10 @@ public:
             _aZ = _mpu9250->accelZ();
             _aSqrt = _mpu9250->accelSqrt();
         }
-        else
-        {
-            LOGGER_FATAL("Accelerometer update failed!");
-        }
+        // else
+        // {
+        //     LOGGER_FATAL("Accelerometer update failed!");
+        // }
 
         if (_mpu9250->gyroUpdate() == 0)
         {
@@ -104,10 +104,10 @@ public:
             _gY = _mpu9250->gyroY();
             _gZ = _mpu9250->gyroZ();
         }
-        else
-        {
-            LOGGER_FATAL("Gyrometer update failed!");
-        }
+        // else
+        // {
+        //     LOGGER_FATAL("Gyrometer update failed!");
+        // }
 
         if (_mpu9250->magUpdate() == 0)
         {
@@ -117,10 +117,10 @@ public:
             _mZ = _mpu9250->magZ();
             _mDirection = _mpu9250->magHorizDirection();
         }
-        else
-        {
-            LOGGER_FATAL("Magnetometer update failed!");
-        }
+        // else
+        // {
+        //     LOGGER_FATAL("Magnetometer update failed!");
+        // }
 
         //        if (_bmp280->takeForcedMeasurement()) {
         LOGGER_NOTICE("ForcedMeasurement successful");

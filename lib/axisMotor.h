@@ -31,19 +31,7 @@ public:
 		ready
 	} motorState_e;
 	
-	typedef struct
-	{
-		uint16_t power; /// power from YAW Axis
-		int16_t pidError;
-		int16_t setpoint;  ///< Memory for detuning the physical axis.
-		int16_t *feedback; ///< Current value from the IMU
-		double *rcX;	   ///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
-		double *rcY;	   ///< virtual axis. Corresponds to the PITCH axis.
-		pidData_t pidData;
-	} axisData_t;
-
 private:
-	axisData_t *_axisData;
 	Motor *_motor[2];
 	double _roll;
 	bool _invertRoll;
@@ -72,6 +60,7 @@ public:
 		AxisBase::_sp = &_axisData->setpoint; /// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisDatat->setpoint holt
 		AxisBase::_fb = _axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
+		loadPIDConfig();
 
 		LOGGER_NOTICE("....leave");
 		return this;

@@ -68,6 +68,12 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 [Change 110]	Radio Sender freigestellt OK
 [Change 110a]	Nur Kleinigkeiten, Radio OK
 [Change 111]	Logger wieder OK, Radio OK
+[Change 112]	LOGGER wieder OK, muss aber noch ausgetestet werden.
+[Change 113]	Termin Stephan, 2022.09.20 - Die Achsen axisBase, axisYaw und axisMotor zusammengefasst
+				EEPROM implementiert, aber nicht kompilierbar. newPID Zeile 77-79.
+
+### **WICHTIG**
+In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkommentiert werden
 
 # Fragen
     // Model wiring begin

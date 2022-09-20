@@ -2,7 +2,7 @@
 #include <Logger.h>
 #include <stdio.h>
 
-#ifdef DEBUG
+#ifdef _DEBUG_
 extern char logBuf[100];
     #define LOGGER_VERBOSE_FMT(fmt,...) sprintf(logBuf,fmt, __VA_ARGS__);LOGGER_VERBOSE(logBuf)
     #define LOGGER_NOTICE_FMT(fmt,...) sprintf(logBuf,fmt, __VA_ARGS__);LOGGER_NOTICE(logBuf)

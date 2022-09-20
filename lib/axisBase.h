@@ -12,8 +12,20 @@
 #include "newPID.h"
 #include "myLogger.h"
 
-
 class AxisBase : public Task::Base {
+
+public:
+
+typedef struct
+{
+    uint16_t power; /// power from YAW Axis
+    int16_t pidError;
+    int16_t setpoint;  ///< Memory for detuning the physical axis.
+    int16_t *feedback; ///< Current value from the IMU
+    double *rcX;	   ///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
+    double *rcY;	   ///< virtual axis. Corresponds to the PITCH axis.
+    pidData_t pidData;
+} axisData_t;
 
 private:
 static uint8_t 	_instanceCounter;      ///< static entfernt
@@ -27,6 +39,7 @@ protected:
     int16_t* 	_fb;
     int16_t* 	_error;
     uint32_t 	_lastMillis;
+    axisData_t *_axisData;
 
 public:
     AxisBase(const String& name) : Task::Base(name) {
@@ -52,9 +65,13 @@ public:
     } /*----------------------------------- end of getPid -----------------------------*/
 
     void savePIDConfig(){
-     //   _newPID->saveParameters(_axis_address,_axisData-> )
+        _newPID->saveParameters(_axis_address,&_axisData->pidData);
     }
-    
+
+    void loadPIDConfig(){
+        _newPID->loadParameters(_axis_address);
+    }
+
     virtual void begin() override
     {
         LOGGER_NOTICE("New PID initialized");   

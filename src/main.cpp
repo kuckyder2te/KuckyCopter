@@ -21,7 +21,7 @@
 #include "..\lib\sensors.h"
 //#define _DEBUG_ DEBUG
 #include "..\lib\sonic.h"
-//#define _DEBUG_ DEBUG
+#define _DEBUG_ DEBUG
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
 //#define _DEBUG_ DEBUG
@@ -62,14 +62,16 @@ void setup() {
     Serial2.begin(BT_SPEED);
     Serial.println("Serial COM OK");
     Serial2.println("BT COM OK");
+    #ifdef _DEBUG_
     Logger::setOutputFunction(&localLogger);
     delay(50);
-    Logger::setLogLevel(Logger::DEBUG);           // Muss immer einen Wert in platformio.ini haben (SILENT)
-    
+    Logger::setLogLevel(Logger::_DEBUG_);           // Muss immer einen Wert in platformio.ini haben (SILENT)
+    #endif
+
     LOGGER_NOTICE( "Program will initialized");
     model.performance.min_loop_time = 0xffff;
-    model.yawData.axisData[0] = &model.axisData[0];  // axisData wird mit yawData.axisData verknüpft
-    model.yawData.axisData[1] = &model.axisData[1];
+    model.yaw.axisData[0] = &model.axisData[0];  // axisData wird mit yawData.axisData verknüpft
+    model.yaw.axisData[1] = &model.axisData[1];
 
     Serial.println("********************************");
     Serial.println("*       KuCo Phantom 1         *");
@@ -95,7 +97,7 @@ void setup() {
       ->InvertRoll()
       ->startFps(AXIS_FPS);
     Tasks.add<AxisYaw>("axisyaw")
-      ->setModel(&model.yawData)
+      ->setModel(&model.yawData, &model.yaw)
       ->setAxisOrdered(reinterpret_cast<AxisMotor*>(Tasks["axismotor_a"].get()))
       ->setAxisOrdered(reinterpret_cast<AxisMotor*>(Tasks["axismotor_b"].get()))
       ->startFps(AXIS_FPS);

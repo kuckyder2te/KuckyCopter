@@ -70,13 +70,15 @@ public:
 		}
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
-	void loadParameters(uint16_t addr){
-		pidData_t data;
-		uint8_t* current = reinterpret_cast<uint8_t*>(&data);
-		for(uint8_t i=0;i<sizeof(pidData_t);i++){
-			*(current+i) = EEPROM.read(addr+i);
-		}		
-		Serial.println(data.pidCoefficient[0]);
+	void loadParameters(int addr){
+		//pidData_t data;
+		uint8_t value;
+		uint8_t* current = reinterpret_cast<uint8_t*>(&_pidParameter);
+		// for(uint8_t i=0;i<sizeof(pidData_t);i++){
+		// 	*(current+i) = EEPROM.read((int)(addr+i));
+		//  }		
+		Serial.println(_pidParameter.kP);
+
 	} /*-------------------------------- end of loadParameters ------------------------*/
 
 	void init()
