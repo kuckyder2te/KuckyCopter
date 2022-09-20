@@ -36,7 +36,6 @@ private:
 	double _roll;
 	bool _invertRoll;
 	motorState_e _state;
-//	uint8_t _axis_address;
 
 public:
 	AxisMotor(const String &name) : AxisBase(name)
@@ -218,4 +217,4 @@ public:
 
 }; /*.................................. end of AxisMotor class ------------------------*/
 
-//#undef _DEBUG_
+// #undef _DEBUG_

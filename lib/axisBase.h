@@ -32,8 +32,6 @@ static uint8_t 	_instanceCounter;      ///< static entfernt
 
 protected:
     NewPID      *_newPID;
-//    axisData_t  *_axisData;
- //   uint8_t _instance;
     uint8_t  	_axis_address;	///< Gives everyone axis a title
     int16_t* 	_sp;
     int16_t* 	_fb;
@@ -52,13 +50,6 @@ public:
     }
 
     virtual ~AxisBase() {}
-
-    //     AxisBase* setModel(axisData_t* _model){    // Rückgabe wert ist das eigene Objekt (this)
-    //     LOGGER_VERBOSE("Enter....");
-    //     _axisData = _model;
-    //     LOGGER_VERBOSE("....leave");
-    //     return this;
-    // } /*----------------------------------- end of setModel ---------------------------*/
 
     NewPID* getPid(){
         return _newPID;

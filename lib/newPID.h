@@ -23,10 +23,10 @@
 
 typedef struct
 {
-	float pidCoefficient[3];
-	float executionFrequency;
-	int output_bits;
-	bool output_signed;
+	float pidCoefficient[3];	// 12 bytes
+	float executionFrequency;	// 4
+	int output_bits;			// 4	
+	bool output_signed;			// 1   zusammen 21 Byte
 } pidData_t;
 
 class NewPID : public FastPID
@@ -41,7 +41,6 @@ private:
 	}pidParameter_t;
 
 	pidParameter_t _pidParameter;
-//	uint8_t _EEPROM_startAddress;
 	bool _isEnabled;
 	String _ParentName;
 	int addr;
@@ -49,7 +48,6 @@ private:
 protected:
 	float RC_SP;
 	float FB;
-//	EEPROM *_eeprom;
 
 public:
 	NewPID(String name){
@@ -62,30 +60,33 @@ public:
 		disablePID();
 	} /*-------------------------------- end of constructor ---------------------------*/
 
+	void init()
+	{
+		EEPROM.begin(512);	
+		addr = 0;
+	} /*-------------------------------- end of int -----------------------------------*/	
+
 	void saveParameters(uint16_t addr, pidData_t* data){	
 		uint8_t* current = reinterpret_cast<uint8_t*>(data);
 
-		for(uint8_t i=0;i<sizeof(pidData_t);i++){
+		for(uint8_t i=0; i<sizeof(pidData_t); i++){
+			//Serial.print("i = ");Serial.println(i);
 			EEPROM.write(addr+i,*(current+i));						//Pointer arethmetic
 		}
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
 	void loadParameters(int addr){
-		//pidData_t data;
+
 		uint8_t value;
+		Serial.print("sizeof(pidData_t = ");Serial.println(sizeof(pidData_t));
 		uint8_t* current = reinterpret_cast<uint8_t*>(&_pidParameter);
-		// for(uint8_t i=0;i<sizeof(pidData_t);i++){
-		// 	*(current+i) = EEPROM.read((int)(addr+i));
-		//  }		
-		Serial.println(_pidParameter.kP);
+			for(uint8_t i=0; i<sizeof(pidData_t); i++){
+			//	Serial.print("i = ");Serial.println(*(current+i));
+			//	*(current+i) = EEPROM.read((int)(addr+i));
+			}		
+	//	Serial.println(_pidParameter.kP);
 
 	} /*-------------------------------- end of loadParameters ------------------------*/
-
-	void init()
-	{
-		EEPROM.begin(12);
-		addr = 0;
-	} /*-------------------------------- end of int -----------------------------------*/
 
 	void disablePID()
 	{

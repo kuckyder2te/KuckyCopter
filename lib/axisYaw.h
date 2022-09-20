@@ -12,25 +12,13 @@
 
 #define YAW_SENSIBILITY 5
 #define YAW_FINE_TUNING 0.1
-// typedef struct
-// {
-// 	uint16_t throttle;		///< Corresponds to the "rcThrottle" from rcData
-// 	int16_t yawError;		///< The deviation calculated by the PID.
-// 	int16_t setpoint;		///< Provided in the model only for debugging purposes as it is used directly for the motor axes.
-// 	int16_t *feedback;		///< " ""
-// 	double *rotationSpeed;	///< Speed which the copter should turn
-// 	int16_t *horz_Position; ///< Current YAW Position from Gyro
-// 	AxisMotor::axisData_t *axisData[2];
-// } yawData_t;
 
 typedef struct
 {
 	double *rotationSpeed;	///< Speed which the copter should turn
  	int16_t *horz_Position; ///< Current YAW Position from Gyro
  	AxisMotor::axisData_t *axisData[2];
- } yaw_t;
-
-
+} yaw_t;
 
 class AxisYaw : public AxisBase
 {
