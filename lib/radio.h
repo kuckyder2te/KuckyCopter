@@ -41,23 +41,22 @@ typedef struct __attribute__((__packed__))
     bool rcSwi2;
     bool rcSwi3;
     float checksum;
-} payload_t;
+} RX_payload_t;
 
 typedef struct __attribute__((__packed__))
 {
-    uint16_t throttle; // Rotor Geschwindigkeit
     float yaw;          // Fluglage via MPU9250
     float pitch;
     float roll;
     bool altitude;      // Höhe via BMP280  
     bool sonar;         // US Sensor
     bool temperature;   // MPU9250
-} txPayload_t;
+} TX_payload_t;
 
 typedef struct
 {
     bool isconnect;
-    payload_t payload;
+    RX_payload_t RX_payload;
 } rcInterface_t;
 
 class Radio : public Task::Base
@@ -70,7 +69,7 @@ class Radio : public Task::Base
 protected:
     RF24 *_radio; 
     rcInterface_t *rcInterface; 
- //   payload_t payload;
+    TX_payload_t *TX_payload;
 
 public:
     Radio(const String &name)
@@ -131,17 +130,17 @@ public:
                 if (_radio->available(&pipe)) {      
                         
                     uint8_t bytes = _radio->getPayloadSize(); 
-                    _radio->read(&rcInterface->payload, bytes);    
+                    _radio->read(&rcInterface->RX_payload, bytes);    
                     
                     LOGGER_WARNING_FMT("Received %i bytes on pipe %i", bytes, pipe);               
-                    LOGGER_WARNING_FMT("Throttle   = %i",rcInterface->payload.rcThrottle);  // Nur zum debuggen
-                    LOGGER_WARNING_FMT("YAW        = %f",rcInterface->payload.rcYaw); 
-                    LOGGER_WARNING_FMT("Pitch      = %f",rcInterface->payload.rcPitch);  
-                    LOGGER_WARNING_FMT("Roll       = %f",rcInterface->payload.rcRoll); 
-                    LOGGER_WARNING_FMT("Switch 1   = %i",rcInterface->payload.rcSwi1);  
-                    LOGGER_WARNING_FMT("Switch 2   = %i",rcInterface->payload.rcSwi2); 
-                    LOGGER_WARNING_FMT("Switch 3   = %i",rcInterface->payload.rcSwi3);  
-                    LOGGER_WARNING_FMT("Checksum   = %f",rcInterface->payload.checksum);  
+                    LOGGER_WARNING_FMT("Throttle   = %i",rcInterface->RX_payload.rcThrottle);  // Nur zum debuggen
+                    LOGGER_WARNING_FMT("YAW        = %f",rcInterface->RX_payload.rcYaw); 
+                    LOGGER_WARNING_FMT("Pitch      = %f",rcInterface->RX_payload.rcPitch);  
+                    LOGGER_WARNING_FMT("Roll       = %f",rcInterface->RX_payload.rcRoll); 
+                    LOGGER_WARNING_FMT("Switch 1   = %i",rcInterface->RX_payload.rcSwi1);  
+                    LOGGER_WARNING_FMT("Switch 2   = %i",rcInterface->RX_payload.rcSwi2); 
+                    LOGGER_WARNING_FMT("Switch 3   = %i",rcInterface->RX_payload.rcSwi3);  
+                    LOGGER_WARNING_FMT("Checksum   = %f",rcInterface->RX_payload.checksum);  
                     LOGGER_WARNING_FMT("Is Connect = %i",rcInterface->isconnect);  
                     role = false;
                 } // end of read block

@@ -90,9 +90,9 @@ public:
             LOGGER_VERBOSE("standby");
             /* Make sure the throttle lever is set to 0 and RC is connected. */
             _model->rcInterface.isconnect = true;          // nur zum testen, ob Flycontroller
-            _model->rcInterface.payload.rcThrottle = 1;    // durchläuft
+            _model->rcInterface.RX_payload.rcThrottle = 1;    // durchläuft
             
-            if (_model->rcInterface.isconnect && (_model->rcInterface.payload.rcThrottle >= POWER_MIN))
+            if (_model->rcInterface.isconnect && (_model->rcInterface.RX_payload.rcThrottle >= POWER_MIN))
             {
                 _model->flyState = prestart;
                 LOGGER_VERBOSE("standby is fineshed");
@@ -123,9 +123,9 @@ public:
                 LOGGER_VERBOSE("take off");
                 /* Throttle greater than POWER_LIFT_UP and RC is connected, go to the next state. */
                 //_radio->rcInterface->isconnect = true;          // nur zum testen, ob Flycontroller           
-                 _model->yawData.power = _model->rcInterface.payload.rcThrottle;
-                //_radio->rcInterface->payload.rcThrottle = 1;    // durchläuft
-                if (_model->rcInterface.isconnect && (_model->rcInterface.payload.rcThrottle < POWER_LIFT_UP))
+                 _model->yawData.power = _model->rcInterface.RX_payload.rcThrottle;
+                //_radio->rcInterface->RX_payload.rcThrottle = 1;    // durchläuft
+                if (_model->rcInterface.isconnect && (_model->rcInterface.RX_payload.rcThrottle < POWER_LIFT_UP))
                 {
                     _model->flyState = set_pid;
                 }
@@ -140,9 +140,9 @@ public:
             /* If everything is checked, the PID controller is activated. */
             LOGGER_VERBOSE("set pid");
             _model->rcInterface.isconnect = true;          // nur zum testen, ob Flycontroller           
-            _model->yawData.power = _model->rcInterface.payload.rcThrottle;
-            _model->rcInterface.payload.rcThrottle = 65;    // durchläuft
-            if (_model->rcInterface.isconnect && (_model->rcInterface.payload.rcThrottle >= POWER_LIFT_UP))
+            _model->yawData.power = _model->rcInterface.RX_payload.rcThrottle;
+            _model->rcInterface.RX_payload.rcThrottle = 65;    // durchläuft
+            if (_model->rcInterface.isconnect && (_model->rcInterface.RX_payload.rcThrottle >= POWER_LIFT_UP))
             {
                 _axisYaw->setState(AxisYaw::enablePID);
                 _model->yaw.horz_Position = 0; ///< Reset YAW Position before lift off
@@ -159,11 +159,11 @@ public:
             /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, the status is set to ground. */
             LOGGER_VERBOSE("fly");
             //_model->sonicData.distance = 10;          // nur zum testen, ob Flycontroller                      
-            _model->yawData.power= _model->rcInterface.payload.rcThrottle;
+            _model->yawData.power= _model->rcInterface.RX_payload.rcThrottle;
            //_model->yawData.throttle = 50;             // durchläuft
 
-            if ((_model->rcInterface.payload.rcThrottle <= POWER_LIFT_UP) || (_model->sonicData.distance < PID_ACTIVE_AT))
-            //if ((_model->rcInterface.payload.rcThrottle <= POWER_LIFT_UP))
+            if ((_model->rcInterface.RX_payload.rcThrottle <= POWER_LIFT_UP) || (_model->sonicData.distance < PID_ACTIVE_AT))
+            //if ((_model->rcInterface.RX_payload.rcThrottle <= POWER_LIFT_UP))
             {
                 _model->flyState = ground;
                 LOGGER_NOTICE("fly is fineshed");

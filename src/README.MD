@@ -72,6 +72,9 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 [Change 113]	Termin Stephan, 2022.09.20 - Die Achsen axisBase, axisYaw und axisMotor zusammengefasst
 				EEPROM implementiert, aber nicht kompilierbar. newPID Zeile 77-79.
 
+New branch Radio ping pong
+[Change 114a]	radio.h Variablen RX... und TX... angepasst				. Kompilieren OK
+
 ### **WICHTIG**
 In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkommentiert werden
 
