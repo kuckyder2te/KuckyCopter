@@ -78,7 +78,7 @@ public:
 	void loadParameters(int addr){
 
 		uint8_t value;
-		Serial.print("sizeof(pidData_t = ");Serial.println(sizeof(pidData_t));
+//		Serial.print("sizeof(pidData_t = ");Serial.println(sizeof(pidData_t));
 		uint8_t* current = reinterpret_cast<uint8_t*>(&_pidParameter);
 			for(uint8_t i=0; i<sizeof(pidData_t); i++){
 			//	Serial.print("i = ");Serial.println(*(current+i));
@@ -100,14 +100,14 @@ public:
 		/* This function has 2 tasks.
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
-			LOGGER_WARNING("enablePID");
+			LOGGER_NOTICE("enablePID");
 			this->setCoefficients(_pidParameter.kP,_pidParameter.kI,_pidParameter.kD,_pidParameter.exFreq);
 		_isEnabled = true;
 	} /*-------------------------------- end of activatePID ---------------------------*/
 
 	void setP(float p)
 	{
-		LOGGER_WARNING_FMT("setP: %f", p);
+		LOGGER_NOTICE_FMT("setP: %f", p);
 		_pidParameter.kP = p;
 		if (_pidParameter.kP <= PID_P_MIN)
 			_pidParameter.kP = PID_P_MIN;

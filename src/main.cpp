@@ -17,11 +17,11 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
 
-//#define _DEBUG_ DEBUG
+//#define _DEBUG_ (DEBUG)
 #include "..\lib\sensors.h"
 //#define _DEBUG_ DEBUG
 #include "..\lib\sonic.h"
-#define _DEBUG_ DEBUG
+//#define _DEBUG_ DEBUG
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
 //#define _DEBUG_ DEBUG
@@ -67,7 +67,6 @@ void setup() {
     delay(50);
     Logger::setLogLevel(Logger::_DEBUG_);           // Muss immer einen Wert in platformio.ini haben (SILENT)
     #endif
-
     LOGGER_NOTICE( "Program will initialized");
     model.performance.min_loop_time = 0xffff;
     model.yaw.axisData[0] = &model.axisData[0];  // axisData wird mit yawData.axisData verknüpft

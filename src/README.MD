@@ -73,7 +73,8 @@ Radio class mit "GetStarted" gefüllt. Das Gegenstück ist auf dem MEGA2560
 				EEPROM implementiert, aber nicht kompilierbar. newPID Zeile 77-79.
 
 New branch Radio ping pong
-[Change 114a]	radio.h Variablen RX... und TX... angepasst				. Kompilieren OK
+[Change 114a]	radio.h Variablen RX... und TX... angepasst	. Kompilieren OK
+[Change 115]	Radio sendet vom Testprogramm und sendet und empfängt im Flycontroller fix
 
 ### **WICHTIG**
 In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkommentiert werden
