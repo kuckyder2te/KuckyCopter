@@ -32,7 +32,7 @@ typedef struct {
 	sensorData_t sensorData;	// Data from imu and baro
 	sonicData_t  sonicData;
 	performance_t performance;
-	rcInterface_t rcInterface;
+	RC_interface_t RC_interface;
 	AxisBase::axisData_t axisData[2];
 	AxisBase::axisData_t  yawData;
     yaw_t yaw;

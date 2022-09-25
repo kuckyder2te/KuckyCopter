@@ -107,7 +107,7 @@ void setup() {
     Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(1); // Übergabe des models in das objekt Sensor
     Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(1);
     Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);    
-    Tasks.add<Radio>("radio")->setModel(&model.rcInterface)->startFps(100);
+    Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(100);
 
     #ifdef _PID_ADJUST
 	  Tasks.add<PID_adjust>("pidadjust")

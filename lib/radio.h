@@ -58,7 +58,7 @@ typedef struct
 {
     bool isconnect;
     RX_payload_t RX_payload; 
-} rcInterface_t;
+} RC_interface_t;
 
 class Radio : public Task::Base
 {
@@ -68,10 +68,8 @@ class Radio : public Task::Base
 
 protected:
     RF24 *_radio; 
-    rcInterface_t *rcInterface; 
-    
+    RC_interface_t *RC_interface;   
     TX_payload_t TX_payload;
- //   RX_payload_t *RX_payload; 
 
 public:
     Radio(const String &name)
@@ -80,10 +78,10 @@ public:
 
     virtual ~Radio() {}
 
-    Radio *setModel(rcInterface_t *_model)
+    Radio *setModel(RC_interface_t *_model)
     { 
         LOGGER_VERBOSE("Enter....");
-        rcInterface = _model;
+        RC_interface = _model;
         LOGGER_VERBOSE("....leave");
         return this;
     }
@@ -99,18 +97,15 @@ public:
         {
             LOGGER_FATAL("radio hardware is not responding!!");
             while (1)
-            {} // hold in infinite loop
+            {} 
         }
 
-        role = true;
-        radioNumber = 1; // 1 uses pipe[1] to recieve
+        role = true;        // Parameter als Empfänger
+        radioNumber = 1; 
         
-         //_radio->setChannel(76);
-        //_radio->setDataRate(RF24_250KBPS);
         _radio->setPALevel(RF24_PA_LOW);  // RF24_PA_MAX is default.
         _radio->enableDynamicPayloads();  // ACK payloads are dynamically sized
         _radio->enableAckPayload();
-        //_radio->setPayloadSize(sizeof(rcInterface_t)); 
         _radio->openWritingPipe(pipe[radioNumber]);     // always uses pipe 0
         _radio->openReadingPipe(1, pipe[!radioNumber]); // using pipe 1
         _radio->stopListening(); 
@@ -139,7 +134,7 @@ public:
             LOGGER_WARNING_FMT("Report write = %i Number = %i Role = %i",report, radioNumber, role);
             unsigned long end_timer = micros();                    
             if (report) {
-               LOGGER_WARNING_FMT("Transmission successful! time to transmit = %u",(end_timer - start_timer)); 
+                LOGGER_WARNING_FMT("Transmission successful! time to transmit = %u",(end_timer - start_timer)); 
                
                 LOGGER_WARNING_FMT("Sent Yaw = %f", (float)TX_payload.yaw);
                 LOGGER_WARNING_FMT("Sent Pitch = %f" ,(float)TX_payload.pitch);
@@ -151,31 +146,28 @@ public:
 
                 uint8_t pipe;
                 if (_radio->available(&pipe)) {  // is there an ACK payload? grab the pipe number that received it
-                    //  PayloadStruct received;
-                    _radio->read(&rcInterface->RX_payload, sizeof(rcInterface_t));  // get incoming ACK payload   
+                    _radio->read(&RC_interface->RX_payload, sizeof(RC_interface_t));  // get incoming ACK payload   
                     // hier muss 1 - 1 - 1 kommen
                     LOGGER_WARNING_FMT("Report read = %i Number = %i Role = %i",report, radioNumber, role);
                     LOGGER_WARNING_FMT("Recieved %i bytes on %i ",_radio->getDynamicPayloadSize(), pipe);
-                    LOGGER_WARNING_FMT("Read Throttle = %i",(int)rcInterface->RX_payload.rcThrottle);    
-                    LOGGER_WARNING_FMT("Read YAW = %f",(float)rcInterface->RX_payload.rcYaw);
-                    LOGGER_WARNING_FMT("Read Pitch = %f",(float)rcInterface->RX_payload.rcPitch);
-                    LOGGER_WARNING_FMT("Read Roll = %f",(float)rcInterface->RX_payload.rcRoll);
-                    LOGGER_WARNING_FMT("Read SW1 = %i",(int)rcInterface->RX_payload.rcSwi1);
-                    LOGGER_WARNING_FMT("Read SW2 = %i",(int)rcInterface->RX_payload.rcSwi2);
-                    LOGGER_WARNING_FMT("Read SW3 = %i",(int)rcInterface->RX_payload.rcSwi3);
-                    LOGGER_WARNING_FMT("Read Check = %f",(float)rcInterface->RX_payload.checksum);
+                    LOGGER_WARNING_FMT("Read Throttle = %i",(int)RC_interface->RX_payload.rcThrottle);    
+                    LOGGER_WARNING_FMT("Read YAW = %f",(float)RC_interface->RX_payload.rcYaw);
+                    LOGGER_WARNING_FMT("Read Pitch = %f",(float)RC_interface->RX_payload.rcPitch);
+                    LOGGER_WARNING_FMT("Read Roll = %f",(float)RC_interface->RX_payload.rcRoll);
+                    LOGGER_WARNING_FMT("Read SW1 = %i",(int)RC_interface->RX_payload.rcSwi1);
+                    LOGGER_WARNING_FMT("Read SW2 = %i",(int)RC_interface->RX_payload.rcSwi2);
+                    LOGGER_WARNING_FMT("Read SW3 = %i",(int)RC_interface->RX_payload.rcSwi3);
+                    LOGGER_WARNING_FMT("Read Check = %f",(float)RC_interface->RX_payload.checksum);
                     
                     _radio->writeAckPayload(1, &TX_payload, sizeof(TX_payload_t));
-
                 } else {
                     LOGGER_FATAL(" Recieved: an empty ACK packet");  // empty ACK packet received
                 }
             } else {
                 LOGGER_FATAL("Transmission failed or timed out");  // payload was not delivered
             }
-            delay(1000);  // slow transmissions down by 1 second
+            delay(1000);  
         } 
- //       Serial2.println("role = false");
         LOGGER_VERBOSE("....leave");
     } // ------------------- end of update --------------------------------------------*/
 }; /*----------------------------- end of radio.h class -------------------------------*/
