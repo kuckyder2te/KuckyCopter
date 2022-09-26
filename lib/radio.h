@@ -129,35 +129,35 @@ public:
     
         if (role) {// This device is a TX node
             unsigned long start_timer = micros(); 
-            LOGGER_WARNING_FMT("sizeod RX_payload = %i" ,sizeof(TX_payload_t));                 
+            LOGGER_NOTICE_FMT("sizeod RX_payload = %i" ,sizeof(TX_payload_t));                 
             bool report = _radio->write(&TX_payload, sizeof(TX_payload_t)); 
-            LOGGER_WARNING_FMT("Report write = %i Number = %i Role = %i",report, radioNumber, role);
+            LOGGER_NOTICE_FMT("Report write = %i Number = %i Role = %i",report, radioNumber, role);
             unsigned long end_timer = micros();                    
             if (report) {
-                LOGGER_WARNING_FMT("Transmission successful! time to transmit = %u",(end_timer - start_timer)); 
+                LOGGER_NOTICE_FMT("Transmission successful! time to transmit = %u",(end_timer - start_timer)); 
                
-                LOGGER_WARNING_FMT("Sent Yaw = %f", (float)TX_payload.yaw);
-                LOGGER_WARNING_FMT("Sent Pitch = %f" ,(float)TX_payload.pitch);
-                LOGGER_WARNING_FMT("Sent Roll = %f" ,(float)TX_payload.roll);
-                LOGGER_WARNING_FMT("Sent Altitude = %f" ,(float)TX_payload.altitude);
-                LOGGER_WARNING_FMT("Sent Sonic = %i" ,(int)TX_payload.sonic);
-                LOGGER_WARNING_FMT("Sent Temperatur =%f" ,(float)TX_payload.temperature);
-                LOGGER_WARNING_FMT("Sent Pressure = %f" ,(float)TX_payload.pressure);
+                LOGGER_NOTICE_FMT("Sent Yaw = %f", (float)TX_payload.yaw);
+                LOGGER_NOTICE_FMT("Sent Pitch = %f" ,(float)TX_payload.pitch);
+                LOGGER_NOTICE_FMT("Sent Roll = %f" ,(float)TX_payload.roll);
+                LOGGER_NOTICE_FMT("Sent Altitude = %f" ,(float)TX_payload.altitude);
+                LOGGER_NOTICE_FMT("Sent Sonic = %i" ,(int)TX_payload.sonic);
+                LOGGER_NOTICE_FMT("Sent Temperatur =%f" ,(float)TX_payload.temperature);
+                LOGGER_NOTICE_FMT("Sent Pressure = %f" ,(float)TX_payload.pressure);
 
                 uint8_t pipe;
                 if (_radio->available(&pipe)) {  // is there an ACK payload? grab the pipe number that received it
                     _radio->read(&RC_interface->RX_payload, sizeof(RC_interface_t));  // get incoming ACK payload   
                     // hier muss 1 - 1 - 1 kommen
-                    LOGGER_WARNING_FMT("Report read = %i Number = %i Role = %i",report, radioNumber, role);
-                    LOGGER_WARNING_FMT("Recieved %i bytes on %i ",_radio->getDynamicPayloadSize(), pipe);
-                    LOGGER_WARNING_FMT("Read Throttle = %i",(int)RC_interface->RX_payload.rcThrottle);    
-                    LOGGER_WARNING_FMT("Read YAW = %f",(float)RC_interface->RX_payload.rcYaw);
-                    LOGGER_WARNING_FMT("Read Pitch = %f",(float)RC_interface->RX_payload.rcPitch);
-                    LOGGER_WARNING_FMT("Read Roll = %f",(float)RC_interface->RX_payload.rcRoll);
-                    LOGGER_WARNING_FMT("Read SW1 = %i",(int)RC_interface->RX_payload.rcSwi1);
-                    LOGGER_WARNING_FMT("Read SW2 = %i",(int)RC_interface->RX_payload.rcSwi2);
-                    LOGGER_WARNING_FMT("Read SW3 = %i",(int)RC_interface->RX_payload.rcSwi3);
-                    LOGGER_WARNING_FMT("Read Check = %f",(float)RC_interface->RX_payload.checksum);
+                    LOGGER_NOTICE_FMT("Report read = %i Number = %i Role = %i",report, radioNumber, role);
+                    LOGGER_NOTICE_FMT("Recieved %i bytes on %i ",_radio->getDynamicPayloadSize(), pipe);
+                    LOGGER_NOTICE_FMT("Read Throttle = %i",(int)RC_interface->RX_payload.rcThrottle);    
+                    LOGGER_NOTICE_FMT("Read YAW = %f",(float)RC_interface->RX_payload.rcYaw);
+                    LOGGER_NOTICE_FMT("Read Pitch = %f",(float)RC_interface->RX_payload.rcPitch);
+                    LOGGER_NOTICE_FMT("Read Roll = %f",(float)RC_interface->RX_payload.rcRoll);
+                    LOGGER_NOTICE_FMT("Read SW1 = %i",(int)RC_interface->RX_payload.rcSwi1);
+                    LOGGER_NOTICE_FMT("Read SW2 = %i",(int)RC_interface->RX_payload.rcSwi2);
+                    LOGGER_NOTICE_FMT("Read SW3 = %i",(int)RC_interface->RX_payload.rcSwi3);
+                    LOGGER_NOTICE_FMT("Read Check = %f",(float)RC_interface->RX_payload.checksum);
                     
                     _radio->writeAckPayload(1, &TX_payload, sizeof(TX_payload_t));
                 } else {
