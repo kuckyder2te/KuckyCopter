@@ -85,7 +85,6 @@ public:
 			//	*(current+i) = EEPROM.read((int)(addr+i));
 			}		
 	//	Serial.println(_pidParameter.kP);
-
 	} /*-------------------------------- end of loadParameters ------------------------*/
 
 	void disablePID()
@@ -109,11 +108,12 @@ public:
 	{
 		LOGGER_NOTICE_FMT("setP: %f", p);
 		_pidParameter.kP = p;
-		if (_pidParameter.kP <= PID_P_MIN)
+		if (_pidParameter.kP <= PID_P_MIN){
 			_pidParameter.kP = PID_P_MIN;
-		
-		if(_isEnabled)
+		}
+		if(_isEnabled){
 			enablePID();
+		}
 	} /*-------------------------------- end of setP ----------------------------------*/
 
 	void setI(float i)
@@ -151,8 +151,8 @@ public:
 		LOGGER_NOTICE_FMT("PID getExecutionTime %f", (1 / _pidParameter.exFreq) * 1000);
 		return ((1.0/(float)_pidParameter.exFreq)*1000);
 		///< Convert frequency to millis
-
 	} /*-------------------------------- end of getExecutionTime ----------------------*/
+
 	void updateEEPROM(void)
 	{
 	//	EEPROM.read(addr, _pidParameter);
@@ -185,4 +185,5 @@ public:
 		return _pidParameter.exFreq;
 	} /*-------------------------------- end of getExTime -----------------------------*/
 };/*--------------------------- end of MyPid class ------------------------------------*/
+
 //#undef _DEBUG_

@@ -77,6 +77,11 @@ New branch Radio ping pong
 [Change 115]	Radio sendet vom Testprogramm und sendet und empfängt im Flycontroller fix
 [Change 115a]	rcinterface_t umbenannt nach RC_interface_t
 
+New branch EEPROM testen
+[Change 116]	setItemOffset umbenannt nach setItemCoefficient
+				itemOffset_t umbenannt nach itemCoefficient_t
+				
+
 ### **WICHTIG**
 In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkommentiert werden
 

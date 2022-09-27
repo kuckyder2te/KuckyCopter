@@ -57,11 +57,11 @@ public:
 
     void savePIDConfig(){
         _newPID->saveParameters(_axis_address,&_axisData->pidData);
-    }
+    }/*----------------------------------- end of savePIDConfig -----------------------*/
 
     void loadPIDConfig(){
         _newPID->loadParameters(_axis_address);
-    }
+    }/*----------------------------------- end of loadPIDConfig -----------------------*/
 
     virtual void begin() override
     {

@@ -21,3 +21,6 @@
         
         In der Funktion void select(uint8_t type) wird dem PIDType der Wert übergeben.
             pri_kP_value
+
+#   virtual void update() override
+    startet die Eingabe verschiedener Parameter            
