@@ -80,6 +80,9 @@ New branch Radio ping pong
 New branch EEPROM testen
 [Change 116]	setItemOffset umbenannt nach setItemCoefficient
 				itemOffset_t umbenannt nach itemCoefficient_t
+[Change 117]	2022.09.28 Online mit Stephan. EEPROM jetzt in der main includiert fix
+				PID Werte kommen als inf bei loadParameters an	
+				2022.09.30 Online EEPROM weiter konfiguriert, aber noch nicht richtig.		
 				
 
 ### **WICHTIG**

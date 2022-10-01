@@ -69,16 +69,16 @@ private:
 	float _newAddOn = 0.1;	///< Multiplication factor for the PID coefficients, default setting.
 	double _addOn;
 
-	float pri_kP_value = 0;		// Initialsation to 0 ??  Stephan
+	float pri_kP_value = 0.14;		// Initialsation to 0 ??  Stephan
 
-	float pri_kI_value = 0;
-	float pri_kD_value = 0;
+	float pri_kI_value = 0.18;
+	float pri_kD_value = 0.102;
 	float pri_EF_value = 0;
-	float sec_kP_value = 0;
-	float sec_kI_value = 0;
-	float sec_kD_value = 0;
+	float sec_kP_value = 0.14;
+	float sec_kI_value = 0.18;
+	float sec_kD_value = 0.102;
 	float sec_EF_value = 0;
-	float yaw_kP_value = 0;
+	float yaw_kP_value = 0.01;
 	float yaw_kI_value = 0;
 	float yaw_kD_value = 0;
 	float yaw_EF_value = 0;
@@ -259,7 +259,6 @@ public:
 				break;
 
 			case 's': ///< Saved all coefficients into the EEPROM
-				//_newPID->_pid->saveParameters();
 				// myPID_pri.updateEEPROM();
 				// myPID_sec.updateEEPROM();
 				// myPID_yaw.updateEEPROM();
@@ -413,7 +412,7 @@ public:
 		{
 
 		case pidTyp_t::pri_P:
-			pri_kP_value += _addOn;
+			pri_kP_value;
 			if (checkValue(pri_kP_value))
 			{
 			LOGGER_WARNING_FMT("X Axis kP = %f", pri_kP_value);

@@ -29,21 +29,27 @@ typedef struct
 	bool output_signed;			// 1   zusammen 21 Byte
 } pidData_t;
 
-class NewPID : public FastPID
-{ 
-
-private:
-	typedef struct{
+typedef struct{
 		float kP;
 		float kI;
 		float kD;
 		float exFreq;
+		bool modified;				// muss gesetzt werden wenn die Parameter manuell geändert wurden
 	}pidParameter_t;
+
+static pidParameter_t initPid = {1,2,3,50,false};
+
+
+class NewPID : public FastPID
+{ 
+
+private:
+	
+
 
 	pidParameter_t _pidParameter;
 	bool _isEnabled;
 	String _ParentName;
-	int addr;
 
 protected:
 	float RC_SP;
@@ -60,36 +66,55 @@ public:
 		disablePID();
 	} /*-------------------------------- end of constructor ---------------------------*/
 
-	void init()
+	void init(uint8_t instance)
 	{
-		EEPROM.begin(512);	
-		addr = 0;
+		uint8_t start = instance * sizeof(pidParameter_t);
+		loadParameters(start);
+		saveParameters(start, &initPid);
+		if(!_pidParameter.modified){
+			saveParameters(start, &initPid);
+			// for(int i=start;i<(sizeof(pidData_t)+start);i++){
+			// 	EEPROM.write(i, instance);
+			// }
+		}
+		
 	} /*-------------------------------- end of int -----------------------------------*/	
 
-	void saveParameters(uint16_t addr, pidData_t* data){	
+	void saveParameters(uint16_t addr, pidParameter_t* data){	
 		uint8_t* current = reinterpret_cast<uint8_t*>(data);
 
-		for(uint8_t i=0; i<sizeof(pidData_t); i++){
-			//Serial.print("i = ");Serial.println(i);
+		for(uint8_t i=0; i<sizeof(pidParameter_t); i++){
+			LOGGER_WARNING_FMT("i = %i", i);
 			EEPROM.write(addr+i,*(current+i));						//Pointer arethmetic
 		}
+		    if (EEPROM.commit()) {
+      			LOGGER_NOTICE("EEPROM successfully committed");
+    		} else {
+	      		LOGGER_NOTICE("ERROR! EEPROM commit failed");
+    		}
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
 	void loadParameters(int addr){
 
-		uint8_t value;
-//		Serial.print("sizeof(pidData_t = ");Serial.println(sizeof(pidData_t));
+		LOGGER_WARNING_FMT("sizeof pidData_t = %i", sizeof(pidParameter_t));
+		for (int i = 0; i < 512; i++) {
+    		Serial2.print(EEPROM.read(i));		
+		}
 		uint8_t* current = reinterpret_cast<uint8_t*>(&_pidParameter);
-			for(uint8_t i=0; i<sizeof(pidData_t); i++){
-			//	Serial.print("i = ");Serial.println(*(current+i));
-			//	*(current+i) = EEPROM.read((int)(addr+i));
+			for(uint8_t i=0; i<sizeof(pidParameter_t); i++){
+				//LOGGER_WARNING_FMT("i = %i",*(current+i));
+				*(current+i) = EEPROM.read((addr+i));
+				LOGGER_WARNING_FMT("i = %i",*(current+i));
 			}		
-	//	Serial.println(_pidParameter.kP);
+		LOGGER_WARNING_FMT("_pidParameter.kP = %f", (float)_pidParameter.kP);
+		LOGGER_WARNING_FMT("_pidParameter.exFreq = %f", (float)_pidParameter.exFreq);
+		Serial2.println(_pidParameter.kP);
+		Serial2.println(_pidParameter.exFreq);
 	} /*-------------------------------- end of loadParameters ------------------------*/
 
 	void disablePID()
 	{
-	LOGGER_NOTICE_FMT("Disabled PID controller %s ", _ParentName.c_str());
+		LOGGER_NOTICE_FMT("Disabled PID controller %s ", _ParentName.c_str());
 			this->setCoefficients(_pidParameter.kP,0.0,0.0,_pidParameter.exFreq);
 			_isEnabled = false;
 	} /*-------------------------------- end of deactivatePID -------------------------*/

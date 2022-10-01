@@ -16,7 +16,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
-
+#include "..\..\EEPROM\EEPROM.h"
 //#define _DEBUG_ (DEBUG)
 #include "..\lib\sensors.h"
 //#define _DEBUG_ DEBUG
@@ -81,6 +81,12 @@ void setup() {
     Serial.flush();
     Wire.begin();
     
+    EEPROM.begin(512);	
+
+		for (int i = 0; i < 512; i++) {
+    		EEPROM.write(i, 0);		
+		}
+		LOGGER_NOTICE_FMT("EEPROM Commit : %d",EEPROM.commit());
     delay(5000);
 
   LOGGER_VERBOSE("Enter....");
@@ -127,7 +133,7 @@ void setup() {
 void loop() {
   LOGGER_NOTICE("loop has begun");
   // Serial.println("loop");
- // Serial2.println(" BT loop");
+  Serial2.println(" BT loop");
   //  unsigned long enter = micros();
   Tasks.update();
   Tasks["sensor"]->enter();

@@ -59,8 +59,7 @@ public:
 		AxisBase::_sp = &_axisData->setpoint; /// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisDatat->setpoint holt
 		AxisBase::_fb = _axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
-		loadPIDConfig();
-
+		begin();
 		LOGGER_NOTICE("....leave");
 		return this;
 	} /*---------------------- setModel ------------------------------------------------*/
@@ -100,6 +99,7 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		LOGGER_NOTICE_FMT("%s", this->getName().c_str()); // Adresse von array of char
 		AxisBase::begin();
+		//..und weiter Configgeschichten
 	//	_axis_address++;
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of begin ---------------------------------*/

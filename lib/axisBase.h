@@ -25,6 +25,7 @@ typedef struct
     double *rcX;	   ///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
     double *rcY;	   ///< virtual axis. Corresponds to the PITCH axis.
     pidData_t pidData;
+    
 } axisData_t;
 
 private:
@@ -38,15 +39,18 @@ protected:
     int16_t* 	_error;
     uint32_t 	_lastMillis;
     axisData_t *_axisData;
+    pidParameter_t pidParameter;
 
 public:
     AxisBase(const String& name) : Task::Base(name) {
 	    _newPID = new NewPID(this->getName()); // Adresse in Variable speichern
+        _newPID->init(_instanceCounter);            // dirty!!!
         _axis_address = sizeof(pidData_t) * _instanceCounter++;
         _lastMillis 	 = millis();
         _error			 = 0;
         _sp				 = 0;
         _fb				 = 0;
+        loadPIDConfig();
     }
 
     virtual ~AxisBase() {}
@@ -56,7 +60,7 @@ public:
     } /*----------------------------------- end of getPid -----------------------------*/
 
     void savePIDConfig(){
-        _newPID->saveParameters(_axis_address,&_axisData->pidData);
+        _newPID->saveParameters(_axis_address, & pidParameter);
     }/*----------------------------------- end of savePIDConfig -----------------------*/
 
     void loadPIDConfig(){

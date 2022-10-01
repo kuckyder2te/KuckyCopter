@@ -70,7 +70,8 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		_axisData = _model;
 		_yaw = yaw;
-		loadPIDConfig();
+	//	loadPIDConfig();
+		begin();
 		LOGGER_VERBOSE("....leave");
 		return this;
 	} /*------------------------------- end of setModel -------------------------------*/
@@ -109,11 +110,11 @@ public:
 		{
 		case arming_start:
 			/* The arming procedure will start. */
-			LOGGER_VERBOSE("Enter....");
+			LOGGER_VERBOSE("Enter arming_start....");
 			_axisMotor[axis_t::Primary]->setState(AxisMotor::motorState_e::arming_start);
 			_axisMotor[axis_t::Secondary]->setState(AxisMotor::motorState_e::arming_start);
 			_state = arming_power_on;
-			LOGGER_VERBOSE("....leave");
+			LOGGER_VERBOSE("....leave arming_start");
 			break;
 
 		case arming_power_on:
