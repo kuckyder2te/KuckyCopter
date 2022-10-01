@@ -37,16 +37,13 @@ typedef struct{
 		bool modified;				// muss gesetzt werden wenn die Parameter manuell geändert wurden
 	}pidParameter_t;
 
-static pidParameter_t initPid = {1,2,3,50,false};
-
+static pidParameter_t initPid = {1.11,2.22,3.33,50,false};
 
 class NewPID : public FastPID
 { 
 
 private:
 	
-
-
 	pidParameter_t _pidParameter;
 	bool _isEnabled;
 	String _ParentName;
@@ -69,6 +66,8 @@ public:
 	void init(uint8_t instance)
 	{
 		uint8_t start = instance * sizeof(pidParameter_t);
+		uint8_t size = sizeof(pidParameter_t);
+		LOGGER_WARNING_FMT("Startadresse %i Instance %i Size %i", start, instance, size);
 		loadParameters(start);
 		saveParameters(start, &initPid);
 		if(!_pidParameter.modified){
@@ -77,7 +76,6 @@ public:
 			// 	EEPROM.write(i, instance);
 			// }
 		}
-		
 	} /*-------------------------------- end of int -----------------------------------*/	
 
 	void saveParameters(uint16_t addr, pidParameter_t* data){	
@@ -88,9 +86,9 @@ public:
 			EEPROM.write(addr+i,*(current+i));						//Pointer arethmetic
 		}
 		    if (EEPROM.commit()) {
-      			LOGGER_NOTICE("EEPROM successfully committed");
+      			LOGGER_WARNING("EEPROM successfully committed");
     		} else {
-	      		LOGGER_NOTICE("ERROR! EEPROM commit failed");
+	      		LOGGER_WARNING("ERROR! EEPROM commit failed");
     		}
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
@@ -102,14 +100,13 @@ public:
 		}
 		uint8_t* current = reinterpret_cast<uint8_t*>(&_pidParameter);
 			for(uint8_t i=0; i<sizeof(pidParameter_t); i++){
-				//LOGGER_WARNING_FMT("i = %i",*(current+i));
 				*(current+i) = EEPROM.read((addr+i));
 				LOGGER_WARNING_FMT("i = %i",*(current+i));
 			}		
 		LOGGER_WARNING_FMT("_pidParameter.kP = %f", (float)_pidParameter.kP);
+		LOGGER_WARNING_FMT("_pidParameter.kI = %f", (float)_pidParameter.kI);
+		LOGGER_WARNING_FMT("_pidParameter.kD = %f", (float)_pidParameter.kD);
 		LOGGER_WARNING_FMT("_pidParameter.exFreq = %f", (float)_pidParameter.exFreq);
-		Serial2.println(_pidParameter.kP);
-		Serial2.println(_pidParameter.exFreq);
 	} /*-------------------------------- end of loadParameters ------------------------*/
 
 	void disablePID()
@@ -136,8 +133,10 @@ public:
 		if (_pidParameter.kP <= PID_P_MIN){
 			_pidParameter.kP = PID_P_MIN;
 		}
+		LOGGER_NOTICE_FMT("_pidParameter.kP: %f", _pidParameter.kP);
 		if(_isEnabled){
 			enablePID();
+
 		}
 	} /*-------------------------------- end of setP ----------------------------------*/
 
@@ -145,9 +144,10 @@ public:
 	{
 		LOGGER_NOTICE_FMT("setI: %f", i);
 		_pidParameter.kI = i;
-		if (_pidParameter.kI <= 0)
+		if (_pidParameter.kI <= 0){
 			_pidParameter.kI = 0;
-
+		}
+		LOGGER_NOTICE_FMT("_pidParameter.kI: %f", _pidParameter.kI);
 		if(_isEnabled)
 			enablePID();
 	} /*-------------------------------- end of setI ----------------------------------*/
@@ -156,9 +156,10 @@ public:
 	{
 		LOGGER_NOTICE_FMT("setD: %f", d);
 		_pidParameter.kD = d;
-		if (_pidParameter.kD <= 0)
+		if (_pidParameter.kD <= 0){
 			_pidParameter.kD = 0;
-
+		}
+		LOGGER_NOTICE_FMT("_pidParameter.kD: %f", _pidParameter.kD);		
 		if(_isEnabled)
 			enablePID();
 	} /*-------------------------------- end of setD ----------------------------------*/

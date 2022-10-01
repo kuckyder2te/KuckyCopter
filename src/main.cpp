@@ -57,6 +57,8 @@ PID_adjust *_pid_adjust;
 #endif
 
 void setup() {
+delay(10000);
+
     digitalWrite(PIN_ESC_ON, LOW);      // MainPower für ESC´s abgeschaltet
     Serial.begin(COM_SPEED);
     Serial2.begin(BT_SPEED);
@@ -87,7 +89,7 @@ void setup() {
     		EEPROM.write(i, 0);		
 		}
 		LOGGER_NOTICE_FMT("EEPROM Commit : %d",EEPROM.commit());
-    delay(5000);
+    delay(2000);
 
   LOGGER_VERBOSE("Enter....");
     Tasks.add<AxisMotor>("axismotor_a")
@@ -126,14 +128,13 @@ void setup() {
     _pid_adjust = reinterpret_cast<PID_adjust *>(Tasks["pidadjust"].get());
     _pid_adjust->display_Menu();
     #endif
+
     LOGGER_NOTICE( "Program is initialized");
-  LOGGER_VERBOSE("....leave"); 
+delay(10000);
 }/*------------------------ end of setup ----------------------------------------------*/
 
 void loop() {
   LOGGER_NOTICE("loop has begun");
-  // Serial.println("loop");
-  Serial2.println(" BT loop");
   //  unsigned long enter = micros();
   Tasks.update();
   Tasks["sensor"]->enter();
@@ -150,7 +151,7 @@ void loop() {
   //    model.performance.max_loop_time = model.performance.last_loop_time;
   //  if(model.performance.last_loop_time < model.performance.min_loop_time)
   //    model.performance.min_loop_time = model.performance.last_loop_time;
-  LOGGER_VERBOSE("Loop completed successfully");
+  LOGGER_NOTICE("Loop completed successfully");
 }/*------------------------ end of loop -----------------------------------------------*/
 
 //#undef _DEBUG_

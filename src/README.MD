@@ -82,7 +82,9 @@ New branch EEPROM testen
 				itemOffset_t umbenannt nach itemCoefficient_t
 [Change 117]	2022.09.28 Online mit Stephan. EEPROM jetzt in der main includiert fix
 				PID Werte kommen als inf bei loadParameters an	
-				2022.09.30 Online EEPROM weiter konfiguriert, aber noch nicht richtig.		
+				2022.09.30 Online EEPROM weiter konfiguriert, aber noch nicht richtig.	
+[Change 117a]	Nichst besonderes			
+
 				
 
 ### **WICHTIG**
@@ -104,8 +106,19 @@ In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkomment
 	muss das wieder gemacht werden?  
 
 ## Hinweise
-Will man die Achsen via Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentiert werden "// #undef _DEBUG_"
+Will man die Achsen via Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentiert werden "// #undef _DEBUG_" ????
 Bei ARM Prozessoren hat double eine länge von 8byte und float von 4byte
+
+## Debug flags
+### Logger
+Wenn z.B. -D_DEBUG_=FATAL gesetzt wird, werden alle vorherrigen unterdrückt.
+
+### COM Ausgabe
+	1. -D_MINITERM gesetzt = Ausgabe auf PICO COM Port (Serial)
+	2. -D_MINITERM disable = Ausgabe auf PICO COM BT (Serial2)
+	3. -D_PID_ADJUST enable = PID Menü auf Serial2 (BT)
+	4. -D_MINITERM + -D_PID_ADJUST disable, LOGGER Ausgabe auf BT
+
 
 ## Transmission
 _radio.openWritingPipe(pipes[0]);  <-
@@ -120,7 +133,7 @@ _radio->startListening(); // put radio in RX mode
 ## Nächste Projekt-Schritte
 	1.	Radio Daten verfizieren fix
 	2.	EEPROM aktivieren
-	3.	Radio nur auf Receiver schalten
+	3.	Radio nur auf Receiver schalten fix
 	4.	PWM Signal auf Motoren übertragen
 	5.	LOGGER überprüfen
 	6.	Sensordaten überprüfen und ggf. Filter einfügen
