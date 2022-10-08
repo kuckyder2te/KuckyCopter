@@ -35,7 +35,7 @@ public:
     sonicData_t *_sonicData;
 
 protected:
-    UltraSonicDistanceSensor *_distanceSensor;
+    UltraSonicDistanceSensor *_hrsr04;
 
 public:
     Sonic(const String &name) : Task::Base(name), b(false)
@@ -50,32 +50,30 @@ public:
         _sonicData = _model;
         LOGGER_VERBOSE("....leave");
         return this;
-    }
+    } /*--------------------- end of setModel -----------------------------------------*/
 
     virtual void begin() override
     {
         LOGGER_VERBOSE("Enter....");
-        //   sens_temperature.requestTemperatures();   // wird nicht ausgeführt, auch nicht im Testcode
-        _distanceSensor = new UltraSonicDistanceSensor(PIN_TRIGGER, PIN_ECHO);
-        //    coreTemperature = analogReadTemp();
+        _hrsr04 = new UltraSonicDistanceSensor(PIN_TRIGGER, PIN_ECHO);
         LOGGER_VERBOSE("....leave");
-    }
+    } /*--------------------- end og begin --------------------------------------------*/
 
     virtual void enter() override
     {
         LOGGER_VERBOSE("Enter....");
-        //   _sonicData->temperature = sens_temperature.getTempCByIndex(0);
-        _sonicData->distance = _distanceSensor->measureDistanceCm();
+        _sonicData->distance = _hrsr04->measureDistanceCm();
         LOGGER_VERBOSE("....leave");
-    }
+    } /*--------------------- end og enter --------------------------------------------*/
 
     virtual void update() override
     {
         LOGGER_VERBOSE("Enter....");
         //   LOGGER_NOTICE_FMT("Temperature: %.2f *C", _sonicData->temperature);
-        LOGGER_NOTICE_FMT("Distance: %.2f cm", _distanceSensor->measureDistanceCm());
+        LOGGER_WARNING_FMT("Distance: %.2f cm", _hrsr04->measureDistanceCm());
         LOGGER_VERBOSE("....leave");
-    }
+    } /*--------------------- end og update -------------------------------------------*/
+
 };/*----------------------------------- end of sonic.h class --------------------------*/
 
 //#undef _DEBUG_

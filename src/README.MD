@@ -85,6 +85,7 @@ New branch EEPROM testen
 				2022.09.30 Online EEPROM weiter konfiguriert, aber noch nicht richtig.	
 [Change 117a]	Nichst besonderes	
 [Change 118]	MS5611 und MPU9250 fix (EEPROM noch nicht komplett)		
+[Change 118a]	Sonic ist OK, sendet aber in dieser App keine konstanten Werte, im Test schon.
 
 				
 

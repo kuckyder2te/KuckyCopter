@@ -166,7 +166,7 @@ public:
             } else {
                 LOGGER_FATAL("Transmission failed or timed out");  // payload was not delivered
             }
-            delay(1000);  
+//            delay(1000);  
         } 
         LOGGER_VERBOSE("....leave");
     } // ------------------- end of update --------------------------------------------*/

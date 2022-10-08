@@ -109,7 +109,7 @@ public:
             _ms5611->setOversampling(OSR_ULTRA_HIGH);
 
         LOGGER_WARNING_FMT("Oversampling = %i", _ms5611->getOversampling());
-        delay(5000);
+        delay(500);
         LOGGER_VERBOSE("....leave");
     } /* ------------------ end of begin ----------------------------------------------*/
 
