@@ -83,7 +83,8 @@ New branch EEPROM testen
 [Change 117]	2022.09.28 Online mit Stephan. EEPROM jetzt in der main includiert fix
 				PID Werte kommen als inf bei loadParameters an	
 				2022.09.30 Online EEPROM weiter konfiguriert, aber noch nicht richtig.	
-[Change 117a]	Nichst besonderes			
+[Change 117a]	Nichst besonderes	
+[Change 118]	MS5611 und MPU9250 fix (EEPROM noch nicht komplett)		
 
 				
 

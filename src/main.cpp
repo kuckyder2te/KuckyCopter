@@ -13,9 +13,11 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HardwareSerial.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_I2CDevice.h>
-#include <Adafruit_SPIDevice.h>
+#include <SPI.h>
+#include <Wire.h>
+// #include <Adafruit_Sensor.h>
+// #include <Adafruit_I2CDevice.h>
+// #include <Adafruit_SPIDevice.h>
 #include "..\..\EEPROM\EEPROM.h"
 //#define _DEBUG_ (DEBUG)
 #include "..\lib\sensors.h"
@@ -57,7 +59,7 @@ PID_adjust *_pid_adjust;
 #endif
 
 void setup() {
-delay(10000);
+delay(500);
 
     digitalWrite(PIN_ESC_ON, LOW);      // MainPower für ESC´s abgeschaltet
     Serial.begin(COM_SPEED);
@@ -130,7 +132,7 @@ delay(10000);
     #endif
 
     LOGGER_NOTICE( "Program is initialized");
-delay(10000);
+delay(500);
 }/*------------------------ end of setup ----------------------------------------------*/
 
 void loop() {
