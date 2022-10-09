@@ -13,19 +13,18 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HCSR04.h>
-//#include <OneWire.h>
-//#include <DallasTemperature.h>
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <DHT_U.h>
 #include "myLogger.h"
 
 #define PIN_ECHO 21
 #define PIN_TRIGGER 22
-#define PIN_DALLAS 28
+#define PIN_DHT 28
+#define DHTTYPE    DHT22
 
 #define MAX_DISTANCE 200
 #define MAX_TIME_OUT 11655
-
-//OneWire oneWire(PIN_DALLAS);
-//DallasTemperature sens_temperature(&oneWire);
 
 typedef struct
 {
@@ -35,12 +34,14 @@ typedef struct
 class Sonic : public Task::Base
 {
     bool b; // Klassenvariable
+    uint32_t delayMS;
 
 public:
     sonicData_t *_sonicData;
 
 protected:
     UltraSonicDistanceSensor *_hcrs04;
+    DHT_Unified *_dht;
 
 public:
     Sonic(const String &name) : Task::Base(name), b(false)
@@ -62,6 +63,35 @@ public:
         LOGGER_VERBOSE("Enter....");
         _hcrs04 = new UltraSonicDistanceSensor(PIN_TRIGGER, PIN_ECHO, MAX_DISTANCE, MAX_TIME_OUT);
         LOGGER_WARNING_FMT("File %s : HCSR04 lib version: %s", __FILE__, HCSR_LIB_VERSION);
+        _dht = new DHT_Unified(PIN_DHT, DHTTYPE);
+
+        _dht->begin();
+            Serial2.println(F("DHTxx Unified Sensor Example"));
+            // Print temperature sensor details.
+            sensor_t sensor;
+            _dht->temperature().getSensor(&sensor);
+            Serial2.println(F("------------------------------------"));
+            Serial2.println(F("Temperature Sensor"));
+            Serial2.print  (F("Sensor Type: ")); Serial2.println(sensor.name);
+            Serial2.print  (F("Driver Ver:  ")); Serial2.println(sensor.version);
+            Serial2.print  (F("Unique ID:   ")); Serial2.println(sensor.sensor_id);
+            Serial2.print  (F("Max Value:   ")); Serial2.print(sensor.max_value); Serial2.println(F("°C"));
+            Serial2.print  (F("Min Value:   ")); Serial2.print(sensor.min_value); Serial2.println(F("°C"));
+            Serial2.print  (F("Resolution:  ")); Serial2.print(sensor.resolution); Serial2.println(F("°C"));
+            Serial2.println(F("------------------------------------"));
+            // Print humidity sensor details.
+            _dht->humidity().getSensor(&sensor);
+            Serial2.println(F("Humidity Sensor"));
+            Serial2.print  (F("Sensor Type: ")); Serial2.println(sensor.name);
+            Serial2.print  (F("Driver Ver:  ")); Serial2.println(sensor.version);
+            Serial2.print  (F("Unique ID:   ")); Serial2.println(sensor.sensor_id);
+            Serial2.print  (F("Max Value:   ")); Serial2.print(sensor.max_value); Serial2.println(F("%"));
+            Serial2.print  (F("Min Value:   ")); Serial2.print(sensor.min_value); Serial2.println(F("%"));
+            Serial2.print  (F("Resolution:  ")); Serial2.print(sensor.resolution); Serial2.println(F("%"));
+            Serial2.println(F("------------------------------------"));
+            
+            // Set delay between sensor readings based on sensor details.
+            delayMS = sensor.min_delay / 1000;
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end og begin --------------------------------------------*/
 
@@ -77,6 +107,33 @@ public:
         LOGGER_VERBOSE("Enter....");
         //   LOGGER_NOTICE_FMT("Temperature: %.2f *C", _sonicData->temperature);
         LOGGER_WARNING_FMT("Distance: %.2f cm", _hcrs04->measureDistanceCm());
+        
+         // Delay between measurements.
+        delay(delayMS);
+        // Get temperature event and print its value.
+        sensors_event_t event;
+        _dht->temperature().getEvent(&event);
+        if (isnan(event.temperature)) {
+            Serial2.println(F("Error reading temperature!"));
+        }
+        else {
+            Serial2.print(F("Temperature: "));
+            Serial2.print(event.temperature);
+            Serial2.println(F("°C"));
+        }
+        // Get humidity event and print its value.
+        _dht->humidity().getEvent(&event);
+        if (isnan(event.relative_humidity)) {
+            Serial2.println(F("Error reading humidity!"));
+        }
+        else {
+            Serial2.print(F("Humidity: "));
+            Serial2.print(event.relative_humidity);
+            Serial2.println(F("%"));
+        }
+        
+        
+        
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end og update -------------------------------------------*/
 

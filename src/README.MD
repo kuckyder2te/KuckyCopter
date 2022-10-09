@@ -89,6 +89,7 @@ New branch EEPROM testen
 [Change 118a]	Sonic ist OK, sendet aber in dieser App keine konstanten Werte, im Test schon.
 [Change 118b]	Sonic auf max. 200cm unt timeout auf 11655 microSec. gesetzt.	Fix
 				LIB Versions Nummern eingefügt
+[Change 119]	Dalles Sensor entfernt und DHT22 implementiert
 
 				
 
