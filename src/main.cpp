@@ -140,6 +140,7 @@ void loop() {
   //  unsigned long enter = micros();
   Tasks.update();
   Tasks["sensor"]->enter();
+  Tasks["sonic"]->enter();
     
   //  Serial.print("/*");Serial.print(model.sensorData.yaw);Serial.print(",");  /// eigenen monitor als Klasse erzeugen
   //                     Serial.print(model.sensorData.roll);Serial.print(",");
