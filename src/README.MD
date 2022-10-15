@@ -91,6 +91,8 @@ New branch EEPROM testen
 				LIB Versions Nummern eingefügt
 [Change 119]	Dalles Sensor entfernt und DHT22 implementiert
 [Change 119a]	DHT22 fix
+[Change 120]	Sonic inkl. Sealevel und Temperatur Kompensation
+[Change 121]				save- loadparameter und NewPID::init wird nur 3 * aufgerufen. Werte Siehe newPID_Test_01
 
 				
 

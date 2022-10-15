@@ -65,20 +65,27 @@ public:
 
 	void init(uint8_t instance)
 	{
+		static int count = 0;
+		Serial2.print("NewPID init ");Serial2.println(count);
+
 		uint8_t start = instance * sizeof(pidParameter_t);
 		uint8_t size = sizeof(pidParameter_t);
 		LOGGER_WARNING_FMT("Startadresse %i Instance %i Size %i", start, instance, size);
-		loadParameters(start);
+	//	loadParameters(start);
 		saveParameters(start, &initPid);
-		if(!_pidParameter.modified){
-			saveParameters(start, &initPid);
-			// for(int i=start;i<(sizeof(pidData_t)+start);i++){
-			// 	EEPROM.write(i, instance);
-			// }
-		}
+		//if(!_pidParameter.modified){
+		// 	saveParameters(start, &initPid);
+		// 	// for(int i=start;i<(sizeof(pidData_t)+start);i++){
+		// 	// 	EEPROM.write(i, instance);
+		// 	// }
+		// }
+		count++;
 	} /*-------------------------------- end of int -----------------------------------*/	
 
 	void saveParameters(uint16_t addr, pidParameter_t* data){	
+		static int count = 0;
+		Serial2.print("saveParameters ");Serial2.println(count);
+
 		uint8_t* current = reinterpret_cast<uint8_t*>(data);
 
 		for(uint8_t i=0; i<sizeof(pidParameter_t); i++){
@@ -90,14 +97,18 @@ public:
     		} else {
 	      		LOGGER_WARNING("ERROR! EEPROM commit failed");
     		}
+		count++;
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
 	void loadParameters(int addr){
+		static int count = 0;
+		Serial2.print("loadParameters ");Serial2.println(count);
 
 		LOGGER_WARNING_FMT("sizeof pidData_t = %i", sizeof(pidParameter_t));
-		for (int i = 0; i < 512; i++) {
-    		Serial2.print(EEPROM.read(i));		
+		for (int i = 0; i < 80; i++) {
+    		Serial2.println(EEPROM.read(i));		
 		}
+
 		uint8_t* current = reinterpret_cast<uint8_t*>(&_pidParameter);
 			for(uint8_t i=0; i<sizeof(pidParameter_t); i++){
 				*(current+i) = EEPROM.read((addr+i));
@@ -107,6 +118,7 @@ public:
 		LOGGER_WARNING_FMT("_pidParameter.kI = %f", (float)_pidParameter.kI);
 		LOGGER_WARNING_FMT("_pidParameter.kD = %f", (float)_pidParameter.kD);
 		LOGGER_WARNING_FMT("_pidParameter.exFreq = %f", (float)_pidParameter.exFreq);
+		count++;
 	} /*-------------------------------- end of loadParameters ------------------------*/
 
 	void disablePID()
