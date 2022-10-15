@@ -24,13 +24,14 @@
 #define DHTTYPE DHT22
 
 #define MAX_DISTANCE 200
-#define MAX_TIME_OUT 11655
+#define MAX_TIME_OUT 11655 //  ??
 
 typedef struct
 {
     float temperature;
     float humidity;
-    double distance;
+    float distance;         //Entfernung, Temperatur kompensiert
+    float distance_raw;     //Entfernung ohne Kompensation
 } sonicData_t;
 class Sonic : public Task::Base
 {
@@ -73,8 +74,8 @@ public:
         LOGGER_WARNING_FMT("Sensor Type: %c", sensor.name);
         LOGGER_WARNING_FMT("Driver Ver: %i", sensor.version);
         LOGGER_WARNING_FMT("Unique ID: %i", sensor.version);
-        LOGGER_WARNING_FMT("Min  %f max. value %f ", sensor.min_value, sensor.max_value);
-        LOGGER_WARNING_FMT("Resolution:  %f", sensor.resolution);
+        LOGGER_WARNING_FMT("Min %.2f max. %2.f", sensor.min_value, sensor.max_value);
+        LOGGER_WARNING_FMT("Resolution:  %2.f", sensor.resolution);
 
         // Print humidity sensor details.
         _dht->humidity().getSensor(&sensor);
@@ -82,31 +83,32 @@ public:
         LOGGER_WARNING_FMT("Sensor Type: %c", sensor.name);
         LOGGER_WARNING_FMT("Driver Ver: %i", sensor.version);
         LOGGER_WARNING_FMT("Unique ID: %i", sensor.version);
-        LOGGER_WARNING_FMT("Min  %f max. value %f ", sensor.min_value, sensor.max_value);
-        LOGGER_WARNING_FMT("Resolution:  %f", sensor.resolution);
+        LOGGER_WARNING_FMT("Min %.2f max. %2.f", sensor.min_value, sensor.max_value);
+        LOGGER_WARNING_FMT("Resolution: %.2f", sensor.resolution);
 
         // Set delay between sensor readings based on sensor details.
-        delayMS = sensor.min_delay / 1000;  // ~2000
-        Serial2.println(delayMS);
-//        delay(5000);
+     //   delayMS = sensor.min_delay / 1000; // ~2000
+    //    Serial2.println(delayMS);
+        //        delay(5000);
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end og begin --------------------------------------------*/
 
     virtual void enter() override
     {
         LOGGER_VERBOSE("Enter....");
-        _sonicData->distance = _hcrs04->measureDistanceCm();
+        _sonicData->distance_raw = _hcrs04->measureDistanceCm();
+        _sonicData->distance = _hcrs04->measureDistanceCm(_sonicData->temperature);
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end og enter --------------------------------------------*/
 
     virtual void update() override
     {
         LOGGER_VERBOSE("Enter....");
-       
-        LOGGER_WARNING_FMT("Distance: %.2f cm", _hcrs04->measureDistanceCm());
 
+        LOGGER_WARNING_FMT("Distance raw: %.2f cm", _sonicData->distance_raw);
+        LOGGER_WARNING_FMT("Distance: %.2f cm", _sonicData->distance); 
         // Delay between measurements.
-    //    delay(delayMS);
+        //    delay(delayMS);
         // Get temperature event and print its value.
         sensors_event_t event;
         _dht->temperature().getEvent(&event);
@@ -133,6 +135,6 @@ public:
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end og update -------------------------------------------*/
 
-}; /*----------------------------------- end of sonic.h class --------------------------*/
+}; /*----------------------------------- end of sonic.h class -------------------------*/
 
 //#undef _DEBUG_
