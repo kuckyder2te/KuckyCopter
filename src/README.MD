@@ -93,6 +93,9 @@ New branch EEPROM testen
 [Change 119a]	DHT22 fix
 [Change 120]	Sonic inkl. Sealevel und Temperatur Kompensation
 [Change 121]				save- loadparameter und NewPID::init wird nur 3 * aufgerufen. Werte Siehe newPID_Test_01
+new bracnch
+[Change 122]	model in PID_adjust includiert, OK
+				axisName_t in model.h verschoben und pidData_TEST_t als Test eingefügt OK
 
 				
 

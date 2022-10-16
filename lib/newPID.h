@@ -23,28 +23,38 @@
 
 typedef struct
 {
-	float pidCoefficient[3];	// 12 bytes
-	float executionFrequency;	// 4
-	int output_bits;			// 4	
-	bool output_signed;			// 1   zusammen 21 Byte
+	float pidCoefficient[3];  // 12 bytes
+	float executionFrequency; // 4
+	int output_bits;		  // 4
+	bool output_signed;		  // 1   zusammen 21 Byte
 } pidData_t;
 
-typedef struct{
-		float kP;
-		float kI;
-		float kD;
-		float exFreq;
-		bool modified;				// muss gesetzt werden wenn die Parameter manuell geändert wurden
-	}pidParameter_t;
+typedef struct
+{
+	float kP;
+	float kI;
+	float kD;
+	float exFreq;
+	bool modified; // muss gesetzt werden wenn die Parameter manuell geändert wurden
+} pidData_TEST_t;
 
-static pidParameter_t initPid = {1.11,2.22,3.33,50,false};
+typedef struct
+{
+	float kP;
+	float kI;
+	float kD;
+	float exFreq;
+	bool modified; // muss gesetzt werden wenn die Parameter manuell geändert wurden
+} pidParameter_t;
+
+static pidParameter_t initPid = {1.11, 2.22, 3.33, 50, false};
 
 class NewPID : public FastPID
 { 
 
-private:
-	
+private:	
 	pidParameter_t _pidParameter;
+	pidData_TEST_t _pidData_TEST;
 	bool _isEnabled;
 	String _ParentName;
 
@@ -80,6 +90,11 @@ public:
 		// 	// }
 		// }
 		count++;
+
+		float test = _pidData_TEST.kD;
+		Serial2.print("test ");Serial2.println(test);
+
+		delay(10000);
 	} /*-------------------------------- end of int -----------------------------------*/	
 
 	void saveParameters(uint16_t addr, pidParameter_t* data){	

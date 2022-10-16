@@ -15,14 +15,38 @@
 #include "..\lib\myLogger.h"
 #include "..\lib\putty_out.h"
 #include "dictionary.h"
-#include "model.h"
+#include "..\lib\model.h"
 
 #define PID_NUM 3
 
 #ifdef _PID_ADJUST
+
 class PID_adjust : public Task::Base
 {
 private:
+	uint8_t _pidCount;
+	uint8_t _itemAxis;
+	uint8_t _itemCoefficient;
+	uint8_t _pidType;
+	uint8_t _dotPlaces = 3; ///< Decimal places.
+	float _newAddOn = 0.1;	///< Multiplication factor for the PID coefficients, default setting.
+	double _addOn;
+
+	typedef enum
+	{
+		axis_pri = 1,
+		axis_sec = 2,
+		axis_yaw = 3
+	} itemAxis_Number_t; // Basis Nummer der Achse
+
+	typedef enum
+	{
+		offset_P = 10,
+		offset_I = 20,
+		offset_D = 30,
+		offset_EF = 40
+	} itemCoefficient_t; // zu addierende Zahl zur Basis
+
 	typedef enum		// Pid_typ Primary P to YAW ef
 	{
 		pri_P = 11,
@@ -37,37 +61,7 @@ private:
 		pri_ef = 41,
 		sec_ef = 42,
 		yaw_ef = 43
-	} pidTyp_t; // for function select
-
-	typedef enum
-	{
-		axis_pri = 1,
-		axis_sec = 2,
-		axis_yaw = 3
-	} itemAxis_t; // choose which axis to configure
-
-	typedef enum
-	{
-		offset_P = 10,
-		offset_I = 20,
-		offset_D = 30,
-		offset_EF = 40
-	} itemCoefficient_t; // Offset is added to itemaxis
-
-	typedef enum
-	{
-		primary = 0,
-		secondary,
-		yaw
-	} axisName_t;
-
-	uint8_t _pidCount;
-	uint8_t _itemAxis;
-	uint8_t _itemCoefficient;
-	uint8_t _pidType;
-	uint8_t _dotPlaces = 3; ///< Decimal places.
-	float _newAddOn = 0.1;	///< Multiplication factor for the PID coefficients, default setting.
-	double _addOn;
+	} pidTyp_t; // itemAxis_Number_t + itemCoefficient_t eergibt den "pidTyp" für die Funktion select()
 
 	float pri_kP_value = 0.14;		// Initialsation to 0 ??  Stephan
 	float pri_kI_value = 0.18;
@@ -97,7 +91,7 @@ private:
 		kD
 	} pidCoeff_t;
 
-	const model_t *_model; 
+	model_t *_model; 
 	HardwareSerial *_serial;
 	namedPid_t _newPID[PID_NUM + 1]; // Refactoring zu einer dynamischen Liste mit CPP Templates (Stephan)
 	PUTTY_out *_putty_out;
@@ -115,7 +109,7 @@ public:
 	{
 	}
 
-	PID_adjust *setModel(const model_t *model)	// const damit nur gelesen werden kann
+	PID_adjust *setModel( model_t *model)	// const damit nur gelesen werden kann
     { // Rückgabe wert ist das eigene Objekt (this)
         LOGGER_VERBOSE("Enter....");
         _model = model;
@@ -163,21 +157,21 @@ public:
 			switch (key)
 			{
 			case 'x': ///< Choose the axes
-				setItemAxis(itemAxis_t::axis_pri);
+				setItemAxis(itemAxis_Number_t::axis_pri);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);		///< Clears the string "Illegal button was pressed"
 				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
 				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_pri_select);		///< Print the selected axis
 				break;
 			case 'y':
-				setItemAxis(itemAxis_t::axis_sec);
+				setItemAxis(itemAxis_Number_t::axis_sec);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_sec_select);
 				break;
 			case 'z':
-				setItemAxis(itemAxis_t::axis_yaw);
+				setItemAxis(itemAxis_Number_t::axis_yaw);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace);
@@ -421,6 +415,7 @@ public:
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, pri_kP_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::primary]._pid->setP(pri_kP_value);  
+				_model->pidData_TEST[axisName_t::primary].kD = pri_kP_value;
 			LOGGER_WARNING("X Axis kP.... leave");
 			}
 			break;
