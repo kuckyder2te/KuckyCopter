@@ -16,6 +16,7 @@
 #include <FastPID.h>
 #include "myLogger.h"
 #include "..\..\EEPROM\EEPROM.h"   // Refernce to framework  1.. is Root 2.. ins framework
+//#include "..\lib\model.h"
 
 #define PID_FREQUENCY      50			///< PID parameter
 #define PID_P_MIN			0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
@@ -55,6 +56,7 @@ class NewPID : public FastPID
 private:	
 	pidParameter_t _pidParameter;
 	pidData_TEST_t _pidData_TEST;
+	pidData_t pidData;
 	bool _isEnabled;
 	String _ParentName;
 
@@ -91,8 +93,8 @@ public:
 		// }
 		count++;
 
-		float test = _pidData_TEST.kD;
-		Serial2.print("test ");Serial2.println(test);
+	//	float test = pidData[0].pid
+	//	Serial2.print("test ");Serial2.println(test);
 
 		delay(10000);
 	} /*-------------------------------- end of int -----------------------------------*/	

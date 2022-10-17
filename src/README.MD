@@ -96,6 +96,7 @@ New branch EEPROM testen
 new bracnch
 [Change 122]	model in PID_adjust includiert, OK
 				axisName_t in model.h verschoben und pidData_TEST_t als Test eingefügt OK
+[Change 123]	pidData_TEST_t ins model übernommen	OK	
 
 				
 
