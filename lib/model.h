@@ -28,12 +28,6 @@ typedef enum
     ground    ///< Kuckycopter stand on the ground
 } flyState_e;
 
-typedef enum
-{
-    primary = 0,
-    secondary,
-    yaw
-} axisName_t; // bezeichnet die tatsächlichen Namen der 3 Achsen
 
 typedef struct
 {

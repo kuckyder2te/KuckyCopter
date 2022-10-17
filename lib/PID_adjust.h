@@ -16,6 +16,7 @@
 #include "..\lib\putty_out.h"
 #include "dictionary.h"
 #include "..\lib\model.h"
+#include "def.h"
 
 #define PID_NUM 3
 
@@ -66,17 +67,17 @@ private:
 	float pri_kP_value = 0.14;		// Initialsation to 0 ??  Stephan
 	float pri_kI_value = 0.18;
 	float pri_kD_value = 0.102;
-	float pri_EF_value = 0;
+	float pri_EF_value = 50;
 
 	float sec_kP_value = 0.14;
 	float sec_kI_value = 0.18;
 	float sec_kD_value = 0.102;
-	float sec_EF_value = 0;
+	float sec_EF_value = 50;
 
 	float yaw_kP_value = 0.01;
 	float yaw_kI_value = 0;
 	float yaw_kD_value = 0;
-	float yaw_EF_value = 0;
+	float yaw_EF_value = 50;
 
 	typedef struct
 	{
@@ -614,21 +615,6 @@ public:
 		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 1, _model->_pidParameter[axisName_t::secondary].exFreq);
 		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT, _dict->c_ef_yaw);
 		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 1, _model->_pidParameter[axisName_t::yaw].exFreq);
-
-		// _putty_out->print(ROW_PID+2, COL_PID+16, c_pri_i);_putty_out->print(ROW_PID+2, COL_PID+20, 3, _model.pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::I]);
-		// _putty_out->print(ROW_PID+2, COL_PID+27, c_pri_d);_putty_out->print(ROW_PID+2, COL_PID+31, 3, _model.pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::D]);
-		// _putty_out->print(ROW_PID+2, COL_PID+40, c_ef);   _putty_out->print(ROW_PID+2, COL_PID+52, 0, _model.pidData[axis_t::Primary].executionFrequency);
-
-		// _putty_out->print(ROW_PID+3, COL_PID,    c_sec_p);_putty_out->print(ROW_PID+3, COL_PID+9,  2, _model.pidData[axis_t::Secondary].pidCoefficient[pidCoeff_t::P]);
-		// 										  _putty_out->print(ROW_PID+3, COL_PID+20, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pidCoeff_t::I]);
-		// 										  _putty_out->print(ROW_PID+3, COL_PID+31, 3, _model.pidData[axis_t::Secondary].pidCoefficient[pidCoeff_t::D]);
-		// 										  _putty_out->print(ROW_PID+3, COL_PID+52, 0, _model.pidData[axis_t::Secondary].executionFrequency);
-
-		// _putty_out->print(ROW_PID+4, COL_PID,    c_yaw_p);_putty_out->print(ROW_PID+4, COL_PID+9,  2, _model.pidData[axis_t::YawAxis].pidCoefficient[P]);
-		// 										  _putty_out->print(ROW_PID+4, COL_PID+20, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pidCoeff_t::I]);
-		// 										  _putty_out->print(ROW_PID+4, COL_PID+31, 3, _model.pidData[axis_t::YawAxis].pidCoefficient[pidCoeff_t::D]);
-		// 										  _putty_out->print(ROW_PID+4, COL_PID+52, 0, _model.pidData[axis_t::YawAxis].executionFrequency);
-
 	} /*--------------------- end of displayPIDcoefficients ---------------------------*/
 
 	bool checkValue(float a) // It should be ensured that no negative values are passed.

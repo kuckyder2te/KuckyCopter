@@ -98,7 +98,8 @@ new bracnch
 				axisName_t in model.h verschoben und pidData_TEST_t als Test eingefügt OK
 [Change 123]	pidData_TEST_t ins model übernommen	OK	
 [Change 123a]	Anzeige der PID Parameter wird nun aus dem Model gefüttert
-
+[Change 123b]	axisName_t nach def.h verschoben OK
+[Change 123c]   axis_t in axisYaw.h umbenannt in axisName_t
 				
 
 ### **WICHTIG**

@@ -30,14 +30,14 @@ typedef struct
 	bool output_signed;		  // 1   zusammen 21 Byte
 } pidData_t;
 
-typedef struct
-{
-	float kP;
-	float kI;
-	float kD;
-	float exFreq;
-	bool modified; // muss gesetzt werden wenn die Parameter manuell geändert wurden
-} pidData_TEST_t;
+// typedef struct
+// {
+// 	float kP;
+// 	float kI;
+// 	float kD;
+// 	float exFreq;
+// 	bool modified; // muss gesetzt werden wenn die Parameter manuell geändert wurden
+// } pidData_TEST_t;
 
 typedef struct
 {
