@@ -55,7 +55,7 @@ class NewPID : public FastPID
 
 private:	
 	pidParameter_t _pidParameter;
-	pidData_TEST_t _pidData_TEST;
+//	pidData_TEST_t _pidData_TEST;
 	pidData_t pidData;
 	bool _isEnabled;
 	String _ParentName;

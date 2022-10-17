@@ -415,7 +415,7 @@ public:
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, pri_kP_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::primary]._pid->setP(pri_kP_value);  
-				_model->pidData_TEST[axisName_t::primary].kP= pri_kP_value;
+				_model->_pidParameter[axisName_t::primary].kP= pri_kP_value;
 			LOGGER_WARNING("X Axis kP.... leave");
 			}
 			break;
@@ -427,7 +427,7 @@ public:
 				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, pri_kI_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::primary]._pid->setI(pri_kI_value);
-				_model->pidData_TEST[axisName_t::primary].kI = pri_kI_value;
+				_model->_pidParameter[axisName_t::primary].kI = pri_kI_value;
 
 			}
 			break;
@@ -439,7 +439,7 @@ public:
 				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, pri_kD_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::primary]._pid->setD(pri_kD_value);
-				_model->pidData_TEST[axisName_t::primary].kD = pri_kD_value;
+				_model->_pidParameter[axisName_t::primary].kD = pri_kD_value;
 			}
 			break;
 
@@ -451,7 +451,7 @@ public:
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, sec_kP_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::secondary]._pid->setP(sec_kP_value);
-				_model->pidData_TEST[axisName_t::secondary].kP = sec_kP_value;
+				_model->_pidParameter[axisName_t::secondary].kP = sec_kP_value;
 			}
 			break;
 
@@ -463,7 +463,7 @@ public:
 				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, sec_kI_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::secondary]._pid->setI(sec_kI_value);
-				_model->pidData_TEST[axisName_t::secondary].kI = sec_kI_value;
+				_model->_pidParameter[axisName_t::secondary].kI = sec_kI_value;
 			}
 			break;
 
@@ -475,7 +475,7 @@ public:
 				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, sec_kD_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::secondary]._pid->setD(sec_kD_value);
-				_model->pidData_TEST[axisName_t::secondary].kD = sec_kD_value;
+				_model->_pidParameter[axisName_t::secondary].kD = sec_kD_value;
 			}
 			break;
 
@@ -487,7 +487,7 @@ public:
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, yaw_kP_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::yaw]._pid->setP(yaw_kP_value);
-				_model->pidData_TEST[axisName_t::yaw].kP = yaw_kP_value;
+				_model->_pidParameter[axisName_t::yaw].kP = yaw_kP_value;
 			}
 			break;
 
@@ -499,7 +499,7 @@ public:
 				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, yaw_kI_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::yaw]._pid->setI(yaw_kI_value);
-				_model->pidData_TEST[axisName_t::yaw].kI = yaw_kI_value;
+				_model->_pidParameter[axisName_t::yaw].kI = yaw_kI_value;
 			}
 			break;
 
@@ -511,7 +511,7 @@ public:
 				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, yaw_kD_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::yaw]._pid->setD(yaw_kD_value);
-				_model->pidData_TEST[axisName_t::yaw].kD = yaw_kD_value;
+				_model->_pidParameter[axisName_t::yaw].kD = yaw_kD_value;
 			}
 			break;
 
@@ -523,7 +523,7 @@ public:
 				_putty_out->print(ROW_SELECT + 6, COL_SELECT + 32, _dotPlaces, pri_EF_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::primary]._pid->setExecutionFrequency(pri_EF_value);
-				_model->pidData_TEST[axisName_t::primary].exFreq = pri_EF_value;
+				_model->_pidParameter[axisName_t::primary].exFreq = pri_EF_value;
 			}
 			break;
 
@@ -535,7 +535,7 @@ public:
 				_putty_out->print(ROW_SELECT + 6, COL_SELECT + 32, _dotPlaces, sec_EF_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::secondary]._pid->setExecutionFrequency(sec_EF_value);
-				_model->pidData_TEST[axisName_t::secondary].exFreq = sec_EF_value;
+				_model->_pidParameter[axisName_t::secondary].exFreq = sec_EF_value;
 			}
 			break;
 			
@@ -547,7 +547,7 @@ public:
 				_putty_out->print(ROW_SELECT + 6, COL_SELECT + 32, _dotPlaces, yaw_EF_value);
 				displayPIDcoefficients();
 				_newPID[axisName_t::yaw]._pid->setExecutionFrequency(yaw_EF_value);
-				_model->pidData_TEST[axisName_t::yaw].exFreq = yaw_EF_value;
+				_model->_pidParameter[axisName_t::yaw].exFreq = yaw_EF_value;
 			}
 			break;
 		} /* end of switch */
@@ -591,29 +591,29 @@ public:
 		_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT, "   in the EEPROM");
 		_putty_out->gray();
 		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, _dict->c_primary_p);
-		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 3, pri_kP_value);
+		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::primary].kP);
 		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT, _dict->c_primary_i);
-		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT_VALUE, 3, pri_kI_value);
+		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::primary].kI);
 		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT, _dict->c_primary_d);
-		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT_VALUE, 3, pri_kD_value);
+		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::primary].kD);
 		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT, _dict->c_secondary_p);
-		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT_VALUE, 3, sec_kP_value);
+		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::secondary].kP);
 		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT, _dict->c_secondary_i);
-		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT_VALUE, 3, sec_kI_value);
+		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::secondary].kI);
 		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT, _dict->c_secondary_d);
-		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT_VALUE, 3, sec_kD_value);
+		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::secondary].kD);
 		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT, _dict->c_yaw_p);
-		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT_VALUE, 3, yaw_kP_value);
+		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::yaw].kP);
 		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT, _dict->c_yaw_i);
-		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT_VALUE, 3, yaw_kI_value);
+		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::yaw].kI);
 		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT, _dict->c_yaw_d);
-		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT_VALUE, 3, yaw_kD_value);
+		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::yaw].kP);
 		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT, _dict->c_ef_pri);
-		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 1, pri_EF_value);
+		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 1, _model->_pidParameter[axisName_t::primary].exFreq);
 		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT, _dict->c_ef_sec);
-		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 1, sec_EF_value);
+		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 1, _model->_pidParameter[axisName_t::secondary].exFreq);
 		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT, _dict->c_ef_yaw);
-		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 1, yaw_EF_value);
+		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 1, _model->_pidParameter[axisName_t::yaw].exFreq);
 
 		// _putty_out->print(ROW_PID+2, COL_PID+16, c_pri_i);_putty_out->print(ROW_PID+2, COL_PID+20, 3, _model.pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::I]);
 		// _putty_out->print(ROW_PID+2, COL_PID+27, c_pri_d);_putty_out->print(ROW_PID+2, COL_PID+31, 3, _model.pidData[axis_t::Primary].pidCoefficient[pidCoeff_t::D]);
