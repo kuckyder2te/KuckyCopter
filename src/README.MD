@@ -101,6 +101,7 @@ new bracnch
 [Change 123b]	axisName_t nach def.h verschoben OK
 [Change 123c]   axis_t in axisYaw.h umbenannt in axisName_t
 [Change 124d]	pidParameter in pidData "übertragen" ohne PID_adjust OK
+[Change 124e]	"" jetzt mit PID_adjust OK
 				
 
 ### **WICHTIG**

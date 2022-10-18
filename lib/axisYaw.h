@@ -43,12 +43,12 @@ private:
 	int16_t _virtualFeedback; ///< The calculated feedback due to the yaw rotation
 	int16_t _virtualSetpoint;
 
-	typedef enum
-	{
-		primary,
-		secondary,
-		YawAxis
-	} axisName_t;
+	// typedef enum
+	// {
+	// 	primary,
+	// 	secondary,
+	// 	YawAxis
+	// } axisName_t;
 
 public:
 	AxisYaw(const String &name) : AxisBase(name)

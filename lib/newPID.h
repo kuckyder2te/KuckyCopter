@@ -17,6 +17,7 @@
 #include "myLogger.h"
 #include "..\..\EEPROM\EEPROM.h"   // Refernce to framework  1.. is Root 2.. ins framework
 //#include "..\lib\model.h"
+#include "def.h"
 
 #define PID_FREQUENCY      50			///< PID parameter
 #define PID_P_MIN			0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
@@ -83,7 +84,6 @@ public:
 		static int count = 0;
 		Serial2.print("NewPID init ");Serial2.println(count);
 
-
 		uint8_t start = instance * sizeof(pidData_t);
 		uint8_t size = sizeof(pidData_t);
 		LOGGER_WARNING_FMT("Startadresse %i Instance %i Size %i", start, instance, size);
@@ -96,9 +96,6 @@ public:
 		// 	// }
 		// }
 		count++;
-
-	//	float test = pidData[0].pid
-	//	Serial2.print("test ");Serial2.println(test);
 
 		delay(10000);
 	} /*-------------------------------- end of int -----------------------------------*/	
@@ -125,7 +122,7 @@ public:
 		static int count = 0;
 		Serial2.print("loadParameters ");Serial2.println(count);
 
-		LOGGER_WARNING_FMT("sizeof pidData_t = %i", sizeof(pidParameter_t));
+		LOGGER_WARNING_FMT("sizeof pidData_t = %i", sizeof(pidData_t));
 		for (int i = 0; i < 80; i++) {
     		Serial2.println(EEPROM.read(i));		
 		}
@@ -134,13 +131,14 @@ public:
 			for(uint8_t i=0; i<sizeof(pidData_t); i++){
 				*(current+i) = EEPROM.read((addr+i));
 				LOGGER_WARNING_FMT("i = %i",*(current+i));
-			}		
-		LOGGER_WARNING_FMT("_pidData.kP = %f", (float)_pidParameter.kP);
-		LOGGER_WARNING_FMT("_pidData.kI = %f", (float)_pidParameter.kI);
-		LOGGER_WARNING_FMT("_pidData.kD = %f", (float)_pidParameter.kD);
-		LOGGER_WARNING_FMT("_pidData.exFreq = %f", (float)_pidParameter.exFreq);
-		LOGGER_WARNING_FMT("_pidData.Output bits = %f", (float)_pidParameter.kD);
-		LOGGER_WARNING_FMT("_pidData.output signed = %f", (float)_pidParameter.exFreq);
+			}
+
+		LOGGER_WARNING_FMT("_pidData.kP = %.2f", pidData.pidCoefficient[pidCoeff_t::kP]);
+		LOGGER_WARNING_FMT("_pidData.kI = %.2f", pidData.pidCoefficient[pidCoeff_t::kI]);
+		LOGGER_WARNING_FMT("_pidData.kD = %.2f", pidData.pidCoefficient[pidCoeff_t::kD]);
+		LOGGER_WARNING_FMT("_pidData.exFreq = %i", pidData.executionFrequency);
+		LOGGER_WARNING_FMT("_pidData.Output bits = %i", pidData.output_bits);
+		LOGGER_WARNING_FMT("_pidData.output signed = %i", pidData.output_signed);
 		count++;
 	} /*-------------------------------- end of loadParameters ------------------------*/
 
