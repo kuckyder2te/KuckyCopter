@@ -103,6 +103,7 @@ new bracnch
 [Change 124d]	pidParameter in pidData "übertragen" ohne PID_adjust OK
 [Change 124e]	"" jetzt mit PID_adjust OK
 [Change 124f]	Es werden für jede Achse PID Werte in saveParameter zugeteilt. Werte Siehe newPID_Test_02
+[Change 124g]	Daten werden saveParameter komplett ausgegeben, bei loadParameter fehlt der 1, Satz Daten.  Werte Siehe newPID_Test_03
 				
 
 ### **WICHTIG**

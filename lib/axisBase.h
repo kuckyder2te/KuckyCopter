@@ -68,7 +68,7 @@ public:
 
     void loadPIDConfig()
     {
-        _newPID->loadParameters(_axis_address);
+     //   _newPID->loadParameters(_axis_address);
     } /*----------------------------------- end of loadPIDConfig -----------------------*/
 
     virtual void begin() override

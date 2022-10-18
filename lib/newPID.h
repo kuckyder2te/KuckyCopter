@@ -104,9 +104,9 @@ public:
 		uint8_t start = instance * sizeof(pidData_t);
 		uint8_t size = sizeof(pidData_t);
 		LOGGER_WARNING_FMT("Startadresse %i Instance %i Size %i", start, instance, size);
-		loadParameters(start);
+		loadParameters(start, instance);
 		// saveParameters(start, &initPid[3][5]);
-		saveParameters(start, &pidData[count]);
+//		saveParameters(start, &pidData[count]);
 		//if(!_pidParameter.modified){
 		// 	saveParameters(start, &initPid);
 		// 	// for(int i=start;i<(sizeof(pidData_t)+start);i++){
@@ -139,27 +139,29 @@ public:
 		delay(2000);
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
-	void loadParameters(int addr){
+	void loadParameters(int addr, int instance){
 		static int count = 0;
 		Serial2.print("loadParameters ");Serial2.println(count);
 
-		LOGGER_WARNING_FMT("sizeof pidData_t = %i", sizeof(pidData_t));
-		for (int i = 0; i < sizeof(pidData_t); i++) {
-    		Serial2.println(EEPROM.read(i));		
-		}
+		LOGGER_WARNING_FMT("sizeof pidData_t = %i addr = %i Instance = %i", sizeof(pidData_t), addr, instance);
+		// for (int i = 0; i < sizeof(pidData_t); i++) {
+    	// 	Serial2.println(EEPROM.read(i));		
+		// }
 
-		uint8_t* current = reinterpret_cast<uint8_t*>(&pidData);
+		uint8_t* current = reinterpret_cast<uint8_t*>(&pidData[instance]);
+
 			for(uint8_t i=0; i<sizeof(pidData_t); i++){
 				*(current+i) = EEPROM.read((addr+i));
-				LOGGER_WARNING_FMT("i = %i",*(current+i));
+				LOGGER_WARNING_FMT("i = %i",(uint8_t)*(current+i));
+
 			}
 
-		// LOGGER_WARNING_FMT("_pidData.kP = %.2f", pidData.pidCoefficient[pidCoeff_t::kP]);
-		// LOGGER_WARNING_FMT("_pidData.kI = %.2f", pidData.pidCoefficient[pidCoeff_t::kI]);
-		// LOGGER_WARNING_FMT("_pidData.kD = %.2f", pidData.pidCoefficient[pidCoeff_t::kD]);
-		// LOGGER_WARNING_FMT("_pidData.exFreq = %i", pidData.executionFrequency);
-		// LOGGER_WARNING_FMT("_pidData.Output bits = %i", pidData.output_bits);
-		// LOGGER_WARNING_FMT("_pidData.output signed = %i", pidData.output_signed);
+		LOGGER_WARNING_FMT("_pidData.kP = %.2f", pidData[instance].pidCoefficient[pidCoeff_t::kP]);
+		LOGGER_WARNING_FMT("_pidData.kI = %.2f", pidData[instance].pidCoefficient[pidCoeff_t::kI]);
+		LOGGER_WARNING_FMT("_pidData.kD = %.2f", pidData[instance].pidCoefficient[pidCoeff_t::kD]);
+		LOGGER_WARNING_FMT("_pidData.exFreq = %.1f", pidData[instance].executionFrequency);
+		LOGGER_WARNING_FMT("_pidData.Output bits = %i", pidData[instance].output_bits);
+		LOGGER_WARNING_FMT("_pidData.output signed = %i", pidData[instance].output_signed);
 		count++;
 		delay(2000);
 	} /*-------------------------------- end of loadParameters ------------------------*/

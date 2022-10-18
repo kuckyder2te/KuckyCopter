@@ -93,11 +93,12 @@ void setup()
 
   EEPROM.begin(512);
 
-  for (int i = 0; i < 80; i++)
-  {
-    EEPROM.write(i, 0);
-  }
-  LOGGER_NOTICE_FMT("EEPROM Commit : %d", EEPROM.commit());
+  // for (int i = 0; i < 80; i++)
+  // {
+  //   EEPROM.write(i, 0);
+  // }
+  // LOGGER_NOTICE_FMT("EEPROM Commit : %d", EEPROM.commit());
+  
   delay(2000);
 
   LOGGER_VERBOSE("Enter....");
