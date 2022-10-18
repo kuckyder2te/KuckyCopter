@@ -102,6 +102,7 @@ new bracnch
 [Change 123c]   axis_t in axisYaw.h umbenannt in axisName_t
 [Change 124d]	pidParameter in pidData "übertragen" ohne PID_adjust OK
 [Change 124e]	"" jetzt mit PID_adjust OK
+[Change 124f]	Es werden für jede Achse PID Werte in saveParameter zugeteilt. Werte Siehe newPID_Test_02
 				
 
 ### **WICHTIG**

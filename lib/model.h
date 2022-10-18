@@ -39,7 +39,7 @@ typedef struct
     AxisBase::axisData_t yawData;
     yaw_t yaw;
     batteryData_t batteryData;
-    pidData_t pidData[3];
+//    pidData_t pidData[3];
     flyState_e flyState;
 //    pidData_TEST_t pidData_TEST[3];
 //    pidParameter_t _pidParameter[3];
