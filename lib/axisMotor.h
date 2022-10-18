@@ -20,6 +20,7 @@ public:
 		first,
 		second
 	} motor_t;
+	
 	typedef enum
 	{
 		arming_start = 0,

@@ -42,7 +42,7 @@ typedef struct
     pidData_t pidData[3];
     flyState_e flyState;
 //    pidData_TEST_t pidData_TEST[3];
-    pidParameter_t _pidParameter[3];
+//    pidParameter_t _pidParameter[3];
 } model_t;
 
 //#undef _DEBUG_

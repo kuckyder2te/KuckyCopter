@@ -28,6 +28,7 @@ typedef struct
 	float executionFrequency; // 4
 	int output_bits;		  // 4
 	bool output_signed;		  // 1   zusammen 21 Byte
+	bool modified; 			  // 1   muss gesetzt werden wenn die Parameter manuell geändert wurden
 } pidData_t;
 
 // typedef struct
@@ -39,22 +40,22 @@ typedef struct
 // 	bool modified; // muss gesetzt werden wenn die Parameter manuell geändert wurden
 // } pidData_TEST_t;
 
-typedef struct
-{
-	float kP;
-	float kI;
-	float kD;
-	float exFreq;
-	bool modified; // muss gesetzt werden wenn die Parameter manuell geändert wurden
-} pidParameter_t;
+// typedef struct
+// {
+// 	float kP;
+// 	float kI;
+// 	float kD;
+// 	float exFreq;
+// 	bool modified; // muss gesetzt werden wenn die Parameter manuell geändert wurden
+// } pidParameter_t;
 
-static pidParameter_t initPid = {1.11, 2.22, 3.33, 50, false};
-
+static pidData_t initPid[] ={1.11, 2.22, 3.33, 50, 8, false, false};
+									
 class NewPID : public FastPID
 { 
 
 private:	
-	pidParameter_t _pidParameter;
+//	pidParameter_t _pidParameter;
 //	pidData_TEST_t _pidData_TEST;
 	pidData_t pidData;
 	bool _isEnabled;
@@ -70,8 +71,10 @@ public:
 		_isEnabled = false;
 		this->setOutputRange(-100, 100);
 		this->setOutputConfig(16, true);
-		_pidParameter.kP = 0;
-		_pidParameter.exFreq = 0;
+	//	_pidParameter.kP = 0;
+	//	_pidParameter.exFreq = 0;
+	//	pidData.output_bits = 8;		  // default lt. FastPID
+	//	pidData.output_signed = false;	  // default lt. FastPID 
 		disablePID();
 	} /*-------------------------------- end of constructor ---------------------------*/
 
@@ -80,11 +83,12 @@ public:
 		static int count = 0;
 		Serial2.print("NewPID init ");Serial2.println(count);
 
-		uint8_t start = instance * sizeof(pidParameter_t);
-		uint8_t size = sizeof(pidParameter_t);
+
+		uint8_t start = instance * sizeof(pidData_t);
+		uint8_t size = sizeof(pidData_t);
 		LOGGER_WARNING_FMT("Startadresse %i Instance %i Size %i", start, instance, size);
-	//	loadParameters(start);
-		saveParameters(start, &initPid);
+		loadParameters(start);
+	//	saveParameters(start, &initPid[3][5]);
 		//if(!_pidParameter.modified){
 		// 	saveParameters(start, &initPid);
 		// 	// for(int i=start;i<(sizeof(pidData_t)+start);i++){
@@ -99,13 +103,13 @@ public:
 		delay(10000);
 	} /*-------------------------------- end of int -----------------------------------*/	
 
-	void saveParameters(uint16_t addr, pidParameter_t* data){	
+	void saveParameters(uint16_t addr, pidData_t* data){	
 		static int count = 0;
 		Serial2.print("saveParameters ");Serial2.println(count);
 
 		uint8_t* current = reinterpret_cast<uint8_t*>(data);
 
-		for(uint8_t i=0; i<sizeof(pidParameter_t); i++){
+		for(uint8_t i=0; i<sizeof(pidData_t); i++){
 			LOGGER_WARNING_FMT("i = %i", i);
 			EEPROM.write(addr+i,*(current+i));						//Pointer arethmetic
 		}
@@ -126,22 +130,24 @@ public:
     		Serial2.println(EEPROM.read(i));		
 		}
 
-		uint8_t* current = reinterpret_cast<uint8_t*>(&_pidParameter);
-			for(uint8_t i=0; i<sizeof(pidParameter_t); i++){
+		uint8_t* current = reinterpret_cast<uint8_t*>(&pidData);
+			for(uint8_t i=0; i<sizeof(pidData_t); i++){
 				*(current+i) = EEPROM.read((addr+i));
 				LOGGER_WARNING_FMT("i = %i",*(current+i));
 			}		
-		LOGGER_WARNING_FMT("_pidParameter.kP = %f", (float)_pidParameter.kP);
-		LOGGER_WARNING_FMT("_pidParameter.kI = %f", (float)_pidParameter.kI);
-		LOGGER_WARNING_FMT("_pidParameter.kD = %f", (float)_pidParameter.kD);
-		LOGGER_WARNING_FMT("_pidParameter.exFreq = %f", (float)_pidParameter.exFreq);
+		LOGGER_WARNING_FMT("_pidData.kP = %f", (float)_pidParameter.kP);
+		LOGGER_WARNING_FMT("_pidData.kI = %f", (float)_pidParameter.kI);
+		LOGGER_WARNING_FMT("_pidData.kD = %f", (float)_pidParameter.kD);
+		LOGGER_WARNING_FMT("_pidData.exFreq = %f", (float)_pidParameter.exFreq);
+		LOGGER_WARNING_FMT("_pidData.Output bits = %f", (float)_pidParameter.kD);
+		LOGGER_WARNING_FMT("_pidData.output signed = %f", (float)_pidParameter.exFreq);
 		count++;
 	} /*-------------------------------- end of loadParameters ------------------------*/
 
 	void disablePID()
 	{
 		LOGGER_NOTICE_FMT("Disabled PID controller %s ", _ParentName.c_str());
-			this->setCoefficients(_pidParameter.kP,0.0,0.0,_pidParameter.exFreq);
+	//		this->setCoefficients(_pidParameter.kP,0.0,0.0,_pidParameter.exFreq);
 			_isEnabled = false;
 	} /*-------------------------------- end of deactivatePID -------------------------*/
 
@@ -151,31 +157,30 @@ public:
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
 			LOGGER_NOTICE("enablePID");
-			this->setCoefficients(_pidParameter.kP,_pidParameter.kI,_pidParameter.kD,_pidParameter.exFreq);
+	//		this->setCoefficients(_pidParameter.kP,_pidParameter.kI,_pidParameter.kD,_pidParameter.exFreq);
 		_isEnabled = true;
 	} /*-------------------------------- end of activatePID ---------------------------*/
 
 	void setP(float p)
 	{
 		LOGGER_NOTICE_FMT("setP: %f", p);
-		_pidParameter.kP = p;
-		if (_pidParameter.kP <= PID_P_MIN){
-			_pidParameter.kP = PID_P_MIN;
-		}
+		// _pidParameter.kP = p;
+		// if (_pidParameter.kP <= PID_P_MIN){
+		// 	_pidParameter.kP = PID_P_MIN;
+		// }
 		LOGGER_NOTICE_FMT("_pidParameter.kP: %f", _pidParameter.kP);
 		if(_isEnabled){
 			enablePID();
-
 		}
 	} /*-------------------------------- end of setP ----------------------------------*/
 
 	void setI(float i)
 	{
 		LOGGER_NOTICE_FMT("setI: %f", i);
-		_pidParameter.kI = i;
-		if (_pidParameter.kI <= 0){
-			_pidParameter.kI = 0;
-		}
+		// _pidParameter.kI = i;
+		// if (_pidParameter.kI <= 0){
+		// 	_pidParameter.kI = 0;
+		// }
 		LOGGER_NOTICE_FMT("_pidParameter.kI: %f", _pidParameter.kI);
 		if(_isEnabled)
 			enablePID();
@@ -184,11 +189,11 @@ public:
 	void setD(float d)
 	{
 		LOGGER_NOTICE_FMT("setD: %f", d);
-		_pidParameter.kD = d;
-		if (_pidParameter.kD <= 0){
-			_pidParameter.kD = 0;
-		}
-		LOGGER_NOTICE_FMT("_pidParameter.kD: %f", _pidParameter.kD);		
+		// _pidParameter.kD = d;
+		// if (_pidParameter.kD <= 0){
+		// 	_pidParameter.kD = 0;
+		// }
+		// LOGGER_NOTICE_FMT("_pidParameter.kD: %f", _pidParameter.kD);		
 		if(_isEnabled)
 			enablePID();
 	} /*-------------------------------- end of setD ----------------------------------*/
@@ -196,7 +201,7 @@ public:
 	void setExecutionFrequency(uint8_t ef)
 	{
 		LOGGER_NOTICE_FMT("setExecutionFrequency: %d", ef);
-		_pidParameter.exFreq = ef;
+	//	_pidParameter.exFreq = ef;
 		if(_isEnabled)
 			enablePID();
 	} /*-------------------------------- end of setExecutionFrequency -----------------*/
@@ -204,7 +209,7 @@ public:
 	uint8_t getExecutionTime()
 	{
 		LOGGER_NOTICE_FMT("PID getExecutionTime %f", (1 / _pidParameter.exFreq) * 1000);
-		return ((1.0/(float)_pidParameter.exFreq)*1000);
+		return 0; // ((1.0/(float)_pidParameter.exFreq)*1000);
 		///< Convert frequency to millis
 	} /*-------------------------------- end of getExecutionTime ----------------------*/
 
@@ -222,22 +227,22 @@ public:
 
 	float getP() const
 	{
-		return _pidParameter.kP;
+		return 0;
 	} /*-------------------------------- end of getP ----------------------------------*/
 
 	float getI() const
 	{
-		return _pidParameter.kI;
+		return 0;
 	} /*-------------------------------- end of getI ----------------------------------*/
 
 	float getD() const
 	{
-		return _pidParameter.kD;
+		return 0;
 	} /*-------------------------------- end of getD ----------------------------------*/
 
 	float getExFreq() const
 	{
-		return _pidParameter.exFreq;
+		return 0;
 	} /*-------------------------------- end of getExTime -----------------------------*/
 };/*--------------------------- end of MyPid class ------------------------------------*/
 

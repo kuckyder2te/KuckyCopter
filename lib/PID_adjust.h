@@ -592,7 +592,7 @@ public:
 		_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT, "   in the EEPROM");
 		_putty_out->gray();
 		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, _dict->c_primary_p);
-		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::primary].kP);
+		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 3, _model->pidParameter[axisName_t::primary].kP);
 		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT, _dict->c_primary_i);
 		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT_VALUE, 3, _model->_pidParameter[axisName_t::primary].kI);
 		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT, _dict->c_primary_d);

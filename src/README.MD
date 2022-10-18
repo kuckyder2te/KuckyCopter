@@ -85,7 +85,7 @@ New branch EEPROM testen
 				2022.09.30 Online EEPROM weiter konfiguriert, aber noch nicht richtig.	
 [Change 117a]	Nichst besonderes	
 [Change 118]	MS5611 und MPU9250 fix (EEPROM noch nicht komplett)	
-				Adafrui libs wieder deaktiviert	
+				Adafruit libs wieder deaktiviert	
 [Change 118a]	Sonic ist OK, sendet aber in dieser App keine konstanten Werte, im Test schon.
 [Change 118b]	Sonic auf max. 200cm unt timeout auf 11655 microSec. gesetzt.	Fix
 				LIB Versions Nummern eingefügt
@@ -100,6 +100,7 @@ new bracnch
 [Change 123a]	Anzeige der PID Parameter wird nun aus dem Model gefüttert
 [Change 123b]	axisName_t nach def.h verschoben OK
 [Change 123c]   axis_t in axisYaw.h umbenannt in axisName_t
+[Change 124d]	pidParameter in pidData "übertragen" ohne PID_adjust OK
 				
 
 ### **WICHTIG**
