@@ -26,9 +26,9 @@
 typedef struct
 {
 	float pidCoefficient[3];  // 12 bytes
-	float executionFrequency; // 4
-	uint8_t output_bits;	  // 2
-	bool output_signed;		  // 1   zusammen 20 Byte
+	float executionFrequency; // 4		besser via #define ??
+	uint8_t output_bits;	  // 2			""
+	bool output_signed;		  // 1   		""
 	bool modified; 			  // 1   muss gesetzt werden wenn die Parameter manuell geändert wurden
 } pidData_t;
 
@@ -105,7 +105,7 @@ public:
 		uint8_t size = sizeof(pidData_t);
 		LOGGER_WARNING_FMT("Startadresse %i Instance %i Size %i", start, instance, size);
 		loadParameters(start, instance);
-		// saveParameters(start, &initPid[3][5]);
+		//saveParameters(start, &initPid[3][5]);
 //		saveParameters(start, &pidData[count]);
 		//if(!_pidParameter.modified){
 		// 	saveParameters(start, &initPid);
@@ -148,12 +148,11 @@ public:
     	// 	Serial2.println(EEPROM.read(i));		
 		// }
 
-		uint8_t* current = reinterpret_cast<uint8_t*>(&pidData[instance]);
+		uint8_t* current = reinterpret_cast<uint8_t*>(&pidData[instance-1]);   // -1 ???
 
 			for(uint8_t i=0; i<sizeof(pidData_t); i++){
 				*(current+i) = EEPROM.read((addr+i));
 				LOGGER_WARNING_FMT("i = %i",(uint8_t)*(current+i));
-
 			}
 
 		LOGGER_WARNING_FMT("_pidData.kP = %.2f", pidData[instance].pidCoefficient[pidCoeff_t::kP]);
