@@ -36,7 +36,7 @@
 #include "..\lib\flyController.h"
 #include "..\lib\performance.h"
 #include "..\lib\PID_adjust.h"
-#include "..\lib\model.h"
+//#include "..\lib\model.h"
 #include "..\lib\myLogger.h"
 
 #define PIN_BT_TX 8
@@ -73,9 +73,9 @@ void setup()
   Logger::setLogLevel(Logger::_DEBUG_); // Muss immer einen Wert in platformio.ini haben (SILENT)
 #endif
   LOGGER_NOTICE("Program will initialized");
-  model.performance.min_loop_time = 0xffff;
-  model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
-  model.yaw.axisData[1] = &model.axisData[1];
+  // model.performance.min_loop_time = 0xffff;
+  // model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
+  // model.yaw.axisData[1] = &model.axisData[1];
 
   Serial.println("********************************");
   Serial.println("*       KuCo Phantom 1         *");

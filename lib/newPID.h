@@ -72,21 +72,43 @@ public:
 		_isEnabled = false;
 		this->setOutputRange(-100, 100);
 		this->setOutputConfig(16, true);
-		pidData[0].pidCoefficient[pidCoeff_t::kP] = 1.11;
+
+		// pidData[0].pidCoefficient[pidCoeff_t::kP] = 1.11;
+		// pidData[0].pidCoefficient[pidCoeff_t::kI] = 2.22;
+		// pidData[0].pidCoefficient[pidCoeff_t::kD] = 3.33;
+		// pidData[0].executionFrequency = 50;
+		// pidData[0].output_bits = 8;		  // default lt. FastPID
+		// pidData[0].output_signed = false;	  // default lt. FastPID 
+
+		// pidData[1].pidCoefficient[pidCoeff_t::kP] = 0.11;
+		// pidData[1].pidCoefficient[pidCoeff_t::kI] = 0.22;
+		// pidData[1].pidCoefficient[pidCoeff_t::kD] = 0.33;
+		// pidData[1].executionFrequency = 60;
+		// pidData[1].output_bits = 8;		  // default lt. FastPID
+		// pidData[1].output_signed = false;	  // default lt. FastPID 
+
+		// pidData[2].pidCoefficient[pidCoeff_t::kP] = 5.55;
+		// pidData[2].pidCoefficient[pidCoeff_t::kI] = 8.88;
+		// pidData[2].pidCoefficient[pidCoeff_t::kD] = 6.66;
+		// pidData[2].executionFrequency = 10;
+		// pidData[2].output_bits = 8;		  // default lt. FastPID
+		// pidData[2].output_signed = false;	  // default lt. FastPID 
+
+		pidData[0].pidCoefficient[pidCoeff_t::kP] = 5.11;
 		pidData[0].pidCoefficient[pidCoeff_t::kI] = 2.22;
 		pidData[0].pidCoefficient[pidCoeff_t::kD] = 3.33;
 		pidData[0].executionFrequency = 50;
 		pidData[0].output_bits = 8;		  // default lt. FastPID
 		pidData[0].output_signed = false;	  // default lt. FastPID 
 
-		pidData[1].pidCoefficient[pidCoeff_t::kP] = 0.11;
+		pidData[1].pidCoefficient[pidCoeff_t::kP] = 5.11;
 		pidData[1].pidCoefficient[pidCoeff_t::kI] = 0.22;
 		pidData[1].pidCoefficient[pidCoeff_t::kD] = 0.33;
 		pidData[1].executionFrequency = 60;
 		pidData[1].output_bits = 8;		  // default lt. FastPID
 		pidData[1].output_signed = false;	  // default lt. FastPID 
 
-		pidData[2].pidCoefficient[pidCoeff_t::kP] = 5.55;
+		pidData[2].pidCoefficient[pidCoeff_t::kP] = 10.55;
 		pidData[2].pidCoefficient[pidCoeff_t::kI] = 8.88;
 		pidData[2].pidCoefficient[pidCoeff_t::kD] = 6.66;
 		pidData[2].executionFrequency = 10;
@@ -99,14 +121,14 @@ public:
 	void init(uint8_t instance)
 	{
 		static int count = 0;
-		Serial2.print("NewPID init ");Serial2.println(count);
-
+		
+		LOGGER_WARNING_FMT("NewPID init = instance = %i count = %i", instance, count);
 		uint8_t start = instance * sizeof(pidData_t);
 		uint8_t size = sizeof(pidData_t);
 		LOGGER_WARNING_FMT("Startadresse %i Instance %i Size %i", start, instance, size);
-		loadParameters(start, instance);
-		//saveParameters(start, &initPid[3][5]);
-//		saveParameters(start, &pidData[count]);
+//		loadParameters(start, instance);
+		
+		saveParameters(start, &pidData[count]);
 		//if(!_pidParameter.modified){
 		// 	saveParameters(start, &initPid);
 		// 	// for(int i=start;i<(sizeof(pidData_t)+start);i++){
@@ -120,14 +142,15 @@ public:
 
 	void saveParameters(uint16_t addr, pidData_t* data){	
 		static int count = 0;
-		Serial2.print("saveParameters ");Serial2.println(count);
 
+		LOGGER_WARNING_FMT("SavePara - sizeof pidData_t = %i addr = %i count = %i", sizeof(pidData_t), addr, count);
 		uint8_t* current = reinterpret_cast<uint8_t*>(data);
 
 		for(uint8_t i=0; i<sizeof(pidData_t); i++){
 		//	LOGGER_WARNING_FMT("i = %i", i);
 			EEPROM.write(addr+i,*(current+i));						//Pointer arethmetic
 			Serial2.println(*(current+i));
+		//	LOGGER_WARNING_FMT("Addr = %i current %i", addr+1, (*(current+i)));
 		}
 
 		if (EEPROM.commit()) {
@@ -141,9 +164,8 @@ public:
 
 	void loadParameters(int addr, int instance){
 		static int count = 0;
-		Serial2.print("loadParameters ");Serial2.println(count);
 
-		LOGGER_WARNING_FMT("sizeof pidData_t = %i addr = %i Instance = %i", sizeof(pidData_t), addr, instance);
+		LOGGER_WARNING_FMT("LoadPara - sizeof pidData_t = %i addr = %i Instance = %i count = %i", sizeof(pidData_t), addr, instance, count);
 		// for (int i = 0; i < sizeof(pidData_t); i++) {
     	// 	Serial2.println(EEPROM.read(i));		
 		// }
@@ -155,12 +177,12 @@ public:
 				LOGGER_WARNING_FMT("i = %i",(uint8_t)*(current+i));
 			}
 
-		LOGGER_WARNING_FMT("_pidData.kP = %.2f", pidData[instance].pidCoefficient[pidCoeff_t::kP]);
-		LOGGER_WARNING_FMT("_pidData.kI = %.2f", pidData[instance].pidCoefficient[pidCoeff_t::kI]);
-		LOGGER_WARNING_FMT("_pidData.kD = %.2f", pidData[instance].pidCoefficient[pidCoeff_t::kD]);
-		LOGGER_WARNING_FMT("_pidData.exFreq = %.1f", pidData[instance].executionFrequency);
-		LOGGER_WARNING_FMT("_pidData.Output bits = %i", pidData[instance].output_bits);
-		LOGGER_WARNING_FMT("_pidData.output signed = %i", pidData[instance].output_signed);
+		// LOGGER_WARNING_FMT("_pidData.kP = %.2f", pidData[instance].pidCoefficient[pidCoeff_t::kP]);
+		// LOGGER_WARNING_FMT("_pidData.kI = %.2f", pidData[instance].pidCoefficient[pidCoeff_t::kI]);
+		// LOGGER_WARNING_FMT("_pidData.kD = %.2f", pidData[instance].pidCoefficient[pidCoeff_t::kD]);
+		// LOGGER_WARNING_FMT("_pidData.exFreq = %.1f", pidData[instance].executionFrequency);
+		// LOGGER_WARNING_FMT("_pidData.Output bits = %i", pidData[instance].output_bits);
+		// LOGGER_WARNING_FMT("_pidData.output signed = %i", pidData[instance].output_signed);
 		count++;
 		delay(2000);
 	} /*-------------------------------- end of loadParameters ------------------------*/
@@ -169,6 +191,9 @@ public:
 	{
 		LOGGER_NOTICE_FMT("Disabled PID controller %s ", _ParentName.c_str());
 	//		this->setCoefficients(_pidParameter.kP,0.0,0.0,_pidParameter.exFreq);
+			for(uint8_t i = 0; i < 3; i++){
+				this->setCoefficients(pidData[i].pidCoefficient[pidCoeff_t::kP], 0.0, 0.0, PID_FREQUENCY);
+			}
 			_isEnabled = false;
 	} /*-------------------------------- end of deactivatePID -------------------------*/
 
@@ -179,6 +204,12 @@ public:
 		 * 2. The PID parameters are activated. */
 			LOGGER_NOTICE("enablePID");
 	//		this->setCoefficients(_pidParameter.kP,_pidParameter.kI,_pidParameter.kD,_pidParameter.exFreq);
+			for(uint8_t i = 0; i < 3; i++){
+				this->setCoefficients(pidData[i].pidCoefficient[pidCoeff_t::kP], 
+									  pidData[i].pidCoefficient[pidCoeff_t::kI],
+									  pidData[i].pidCoefficient[pidCoeff_t::kD],
+									  PID_FREQUENCY);
+			}
 		_isEnabled = true;
 	} /*-------------------------------- end of activatePID ---------------------------*/
 

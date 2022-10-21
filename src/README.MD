@@ -105,6 +105,7 @@ new bracnch
 [Change 124f]	Es werden für jede Achse PID Werte in saveParameter zugeteilt. Werte Siehe newPID_Test_02
 [Change 124g]	Daten werden saveParameter komplett ausgegeben, bei loadParameter fehlt der 1, Satz Daten.  Werte Siehe newPID_Test_03
 [Change 124f]	loadParameter gibt nur die Test-Daten aus. Kein Unterschied zu gespeicherten Daten. Testdaten zurückgesetzt.
+[Change 124g]	im model.h alle und teilweise in den Klassen inkluds disabled getest OK
 				
 
 ### **WICHTIG**
@@ -127,7 +128,8 @@ In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkomment
 
 ## Hinweise
 Will man die Achsen via Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentiert werden "// #undef _DEBUG_" ????
-Bei ARM Prozessoren hat double eine länge von 8byte und float von 4byte
+Bei ARM Prozessoren hat double eine Länge von 8byte und float von 4byte
+Deim debuggen/compilieren muss PID_adjust in Platformio.ini enable sein
 
 ## Debug flags
 ### Logger
@@ -162,6 +164,6 @@ _radio->startListening(); // put radio in RX mode
 
 
 ##
- 	Achsen-Bezeichnung zentral ablegen ??
+ 	Achsen-Bezeichnung zentral ablegen fix
 	Interface in rcInterface umbenennen fix 
 	Payload rcSwix	-> bool   fix                                                 

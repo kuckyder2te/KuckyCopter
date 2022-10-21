@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include "myLogger.h"
-#include "axisYaw.h"
+//#include "axisYaw.h"
 #include "radio.h"
 #include "sonic.h"
 #include "model.h"
@@ -27,6 +27,21 @@ private:
     AxisYaw *_axisYaw;
     model_t *_model;
 
+    typedef enum
+{
+    arming_begin = 0, ///< When the Kuckycopter is first turned on, the arming starts.
+    arming_busy,      /// ist das nötig?
+    disablePID,
+    standby,  ///< All motors on POWER_MIN
+    prestart, ///< All motors on standby and ready to fly. (POWER_MIN)
+    takeoff,  ///< The Quadrocopter takes off.
+    set_pid,  ///< Fly without PID-Output = 0
+    fly,      ///< Normal fly mode
+    ground    ///< Kuckycopter stand on the ground
+} flyState_e;
+    flyState_e flyState;
+
+
 public:
     FlyController(const String &name)
         : Task::Base(name)
@@ -39,7 +54,7 @@ public:
                                          //_axis_data  wird aus dem Model in die Achsen geschrieben
         LOGGER_VERBOSE("Enter....");
         _model = model;
-        _model->flyState = arming_begin;
+        flyState = arming_begin;
 
         LOGGER_VERBOSE("....leave");
         return this;
@@ -57,7 +72,7 @@ public:
     virtual void update() override
     {
         static uint16_t downTime = 0;
-        switch (_model->flyState)
+        switch (flyState)
         {
 
         case arming_begin:
@@ -65,7 +80,7 @@ public:
              * Main Power ON/OFF or option-switch. */
             LOGGER_VERBOSE("arming begin");
             _axisYaw->setState(AxisYaw::arming_start);     /// hier bleibt es hängen
-            _model->flyState = arming_busy;
+            flyState = arming_busy;
             LOGGER_VERBOSE("arming begin is fineshed");
             break;
 
@@ -73,7 +88,7 @@ public:
             LOGGER_VERBOSE("arming busy");
             if (_axisYaw->isArmed())
             {
-                _model->flyState = disablePID; 
+                flyState = disablePID; 
                 LOGGER_VERBOSE("arming busy is fineshed");
             }
             break;
@@ -82,7 +97,7 @@ public:
             /* Deactivate the PID controller from all axis. */
             LOGGER_VERBOSE("disablePID");
             _axisYaw->setState(AxisYaw::state_e::disablePID);
-            _model->flyState = standby;
+            flyState = standby;
             LOGGER_VERBOSE("disable PID is finished");
             break;
 
@@ -94,13 +109,13 @@ public:
             
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_MIN))
             {
-                _model->flyState = prestart;
+                flyState = prestart;
                 LOGGER_VERBOSE("standby is fineshed");
             }
             else
             {
                 _model->yawData.power = 0;
-                _model->flyState = standby;
+                flyState = standby;
             }          
             break;
 
@@ -110,12 +125,12 @@ public:
             _axisYaw->setState(AxisYaw::ready);
             if (_axisYaw->isReady())
             {
-                _model->flyState = takeoff;
+                flyState = takeoff;
                 LOGGER_VERBOSE("prestart is fineshed");
             }
             else
             {
-                _model->flyState = prestart; 
+                flyState = prestart; 
             }
             break;
 
@@ -127,11 +142,11 @@ public:
                 //_radio->RC_interface->RX_payload.rcThrottle = 1;    // durchläuft
                 if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle < POWER_LIFT_UP))
                 {
-                    _model->flyState = set_pid;
+                    flyState = set_pid;
                 }
                 else
                 {
-                    _model->flyState = takeoff;
+                    flyState = takeoff;
                 }
                 LOGGER_VERBOSE("take off is fineshed");
                 break;
@@ -146,12 +161,12 @@ public:
             {
                 _axisYaw->setState(AxisYaw::enablePID);
                 _model->yaw.horz_Position = 0; ///< Reset YAW Position before lift off
-                _model->flyState = fly;
+                flyState = fly;
                 LOGGER_VERBOSE("set pid is fineshed");
             }
             else
             {
-                _model->flyState = set_pid; /// new 23.05.21
+                flyState = set_pid; /// new 23.05.21
             }
             break;
 
@@ -165,7 +180,7 @@ public:
             if ((_model->RC_interface.RX_payload.rcThrottle <= POWER_LIFT_UP) || (_model->sonicData.distance < PID_ACTIVE_AT))
             //if ((_model->RC_interface.RX_payload.rcThrottle <= POWER_LIFT_UP))
             {
-                _model->flyState = ground;
+                flyState = ground;
                 LOGGER_NOTICE("fly is fineshed");
             }
             else
@@ -180,18 +195,18 @@ public:
             LOGGER_VERBOSE("ground");
             if (millis() - downTime >= DOWN_TIME)
             {
-                _model->flyState = fly;
+                flyState = fly;
                 LOGGER_VERBOSE("ground fineshed");
             }
             else
             {
-                _model->flyState = disablePID;
+                flyState = disablePID;
                 _model->yawData.power = 0;
             }
             break;
 
         default:
-            _model->flyState = disablePID;
+            flyState = disablePID;
             break;
 
         } /* end of switch flyState */
