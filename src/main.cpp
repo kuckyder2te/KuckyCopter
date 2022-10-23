@@ -60,7 +60,7 @@ PID_adjust *_pid_adjust;
 
 void setup()
 {
-  delay(500);
+  //delay(500);
 
   digitalWrite(PIN_ESC_ON, LOW); // MainPower für ESC´s abgeschaltet
   Serial.begin(COM_SPEED);
@@ -99,7 +99,7 @@ void setup()
   // }
   // LOGGER_NOTICE_FMT("EEPROM Commit : %d", EEPROM.commit());
   
-  delay(2000);
+  delay(100);
 
   LOGGER_VERBOSE("Enter....");
   Tasks.add<AxisMotor>("axismotor_a")
@@ -140,7 +140,7 @@ void setup()
 #endif
 
   LOGGER_NOTICE("Program is initialized");
-  delay(500);
+  delay(100);
 } /*------------------------ end of setup ----------------------------------------------*/
 
 void loop()

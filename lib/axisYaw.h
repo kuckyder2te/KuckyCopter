@@ -48,7 +48,7 @@ private:
 	// 	primary,
 	// 	secondary,
 	// 	YawAxis
-	// } axisName_t;
+	// } axisName_e;
 
 public:
 	AxisYaw(const String &name) : AxisBase(name)
@@ -58,8 +58,8 @@ public:
 		AxisBase::_fb = &_virtualFeedback;		// -Ist notwendig um AxisBase.Service den PID error f�r beliebige Achsen berechnen z lassen
 		AxisBase::_error = &_axisData->pidError; // -
 
-		_axisMotor[axisName_t::primary] = NULL;
-		_axisMotor[axisName_t::secondary] = NULL;
+		_axisMotor[axisName_e::primary] = NULL;
+		_axisMotor[axisName_e::secondary] = NULL;
 		_state = disablePID;
 		_lastCompass = 0;
 	};
@@ -80,15 +80,15 @@ public:
 	AxisYaw *setAxisOrdered(AxisMotor *_axis)	// *_axis ist die Adresse
 	{
 		LOGGER_VERBOSE("Enter....");
-		if (_axisMotor[axisName_t::primary] == NULL)
+		if (_axisMotor[axisName_e::primary] == NULL)
 		{
 			LOGGER_NOTICE_FMT("Set adress first Axis %p", _axis->getName().c_str());
-			_axisMotor[axisName_t::primary] = _axis;
+			_axisMotor[axisName_e::primary] = _axis;
 		}
-		else if (_axisMotor[axisName_t::secondary] == NULL)
+		else if (_axisMotor[axisName_e::secondary] == NULL)
 		{
 			LOGGER_NOTICE_FMT("Set adress second Axis %p", _axis->getName().c_str());
-			_axisMotor[axisName_t::secondary] = _axis;
+			_axisMotor[axisName_e::secondary] = _axis;
 		}
 		else
 		{
@@ -112,8 +112,8 @@ public:
 		case arming_start:
 			/* The arming procedure will start. */
 			LOGGER_VERBOSE("Enter arming_start....");
-			_axisMotor[axisName_t::primary]->setState(AxisMotor::motorState_e::arming_start);
-			_axisMotor[axisName_t::secondary]->setState(AxisMotor::motorState_e::arming_start);
+			_axisMotor[axisName_e::primary]->setState(AxisMotor::motorState_e::arming_start);
+			_axisMotor[axisName_e::secondary]->setState(AxisMotor::motorState_e::arming_start);
 			_state = arming_power_on;
 			LOGGER_VERBOSE("....leave arming_start");
 			break;
@@ -130,8 +130,8 @@ public:
 		case arming_finished:
 			/* Arming procedure is finished */
 			LOGGER_VERBOSE("Enter....");
-			_axisMotor[axisName_t::primary]->setState(AxisMotor::arming_end);
-			_axisMotor[axisName_t::secondary]->setState(AxisMotor::arming_end);
+			_axisMotor[axisName_e::primary]->setState(AxisMotor::arming_end);
+			_axisMotor[axisName_e::secondary]->setState(AxisMotor::arming_end);
 			LOGGER_VERBOSE("....leave");
 			break;
 
@@ -141,8 +141,8 @@ public:
 			_newPID->disablePID();
 			//			_yawData->axisData[0]->state = motor_state_e::disablePID;
 			//			_yawData->axisData[1]->state = motor_state_e::disablePID;
-			_axisMotor[axisName_t::primary]->setState(AxisMotor::disablePID);
-			_axisMotor[axisName_t::secondary]->setState(AxisMotor::disablePID);
+			_axisMotor[axisName_e::primary]->setState(AxisMotor::disablePID);
+			_axisMotor[axisName_e::secondary]->setState(AxisMotor::disablePID);
 			LOGGER_VERBOSE("....leave");
 			break;
 
@@ -153,22 +153,22 @@ public:
 			*_yaw->horz_Position = 0;
 			//		_yawData->axisData[0]->state = motor_state_e::enablePID;
 			//		_yawData->axisData[1]->state = motor_state_e::enablePID;
-			_axisMotor[axisName_t::primary]->setState(AxisMotor::enablePID);
-			_axisMotor[axisName_t::secondary]->setState(AxisMotor::enablePID);
+			_axisMotor[axisName_e::primary]->setState(AxisMotor::enablePID);
+			_axisMotor[axisName_e::secondary]->setState(AxisMotor::enablePID);
 			_lastCompass = *_axisData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
 			LOGGER_VERBOSE("....leave");
 			break;
 
 		case ready:
 			LOGGER_NOTICE("Enter....");
-			_axisMotor[axisName_t::primary]->setState(AxisMotor::ready);
-			_axisMotor[axisName_t::secondary]->setState(AxisMotor::ready);
+			_axisMotor[axisName_e::primary]->setState(AxisMotor::ready);
+			_axisMotor[axisName_e::secondary]->setState(AxisMotor::ready);
 			if ((*_yaw->rotationSpeed > YAW_SENSIBILITY) || (*_yaw->rotationSpeed < (-YAW_SENSIBILITY)))
 			{ ///< YAW Joystick is not moved....
 				_yaw->axisData[0]->power = _axisData->power - *_yaw->rotationSpeed * YAW_FINE_TUNING;
 				_yaw->axisData[1]->power = _axisData->power + *_yaw->rotationSpeed * YAW_FINE_TUNING;
-				_axisMotor[axisName_t::primary]->setPower(_axisData->power - *_yaw->rotationSpeed * YAW_FINE_TUNING);
-				_axisMotor[axisName_t::secondary]->setPower(_axisData->power + *_yaw->rotationSpeed * YAW_FINE_TUNING);
+				_axisMotor[axisName_e::primary]->setPower(_axisData->power - *_yaw->rotationSpeed * YAW_FINE_TUNING);
+				_axisMotor[axisName_e::secondary]->setPower(_axisData->power + *_yaw->rotationSpeed * YAW_FINE_TUNING);
 				*_yaw->horz_Position = 0;
 			}
 			else
@@ -176,8 +176,8 @@ public:
 				_virtualFeedback = *_yaw->horz_Position; /// *_fb = into the PID controller
 				_yaw->axisData[0]->power = _axisData->power - _axisData->pidError;
 				_yaw->axisData[1]->power = _axisData->power + _axisData->pidError;
-				_axisMotor[axisName_t::primary]->setPower(_axisData->power - _axisData->pidError); // yawError comes from the PID controller.
-				_axisMotor[axisName_t::secondary]->setPower(_axisData->power + _axisData->pidError);
+				_axisMotor[axisName_e::primary]->setPower(_axisData->power - _axisData->pidError); // yawError comes from the PID controller.
+				_axisMotor[axisName_e::secondary]->setPower(_axisData->power + _axisData->pidError);
 			}
 			LOGGER_VERBOSE("....leave");
 			break;
@@ -195,23 +195,23 @@ public:
 	boolean isArmed()
 	{
 		LOGGER_NOTICE_FMT("get YawAxis State %d ", _state);
-		return ((_state == arming_finished)) && (_axisMotor[axisName_t::primary]->isArmed()) 
-											 && (_axisMotor[axisName_t::secondary]->isArmed());
+		return ((_state == arming_finished)) && (_axisMotor[axisName_e::primary]->isArmed()) 
+											 && (_axisMotor[axisName_e::secondary]->isArmed());
 		
 	} /*---------------------- end of isArmed -----------------------------------------*/
 
 	boolean isDeactivatePID()
 	{
-		return ((_state == disablePID)) && (_axisMotor[axisName_t::primary]->isDeactivatePID()) 
-										&& (_axisMotor[axisName_t::secondary]->isDeactivatePID());
+		return ((_state == disablePID)) && (_axisMotor[axisName_e::primary]->isDeactivatePID()) 
+										&& (_axisMotor[axisName_e::secondary]->isDeactivatePID());
 		LOGGER_NOTICE_FMT("Yaw isDeactivatePID %d", _state);
 	} /*---------------------- end of isDeactivatePID ---------------------------------*/
 
 	boolean isReady()
 	{
 		LOGGER_NOTICE_FMT("getYawAxisState %d ", _state);
-		return ((_state == ready))  && (_axisMotor[axisName_t::primary]->isReady()) 
-									&& (_axisMotor[axisName_t::secondary]->isReady());
+		return ((_state == ready))  && (_axisMotor[axisName_e::primary]->isReady()) 
+									&& (_axisMotor[axisName_e::secondary]->isReady());
 	} /*---------------------- end of isReady -----------------------------------------*/
 }; /* ------------------------ end of AxisYaw Class -----------------------------------*/
 

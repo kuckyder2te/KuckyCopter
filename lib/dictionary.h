@@ -24,9 +24,9 @@
 #define COL_OUTPUT 70
 #define COL_OUTPUT_VALUE 88
 
-#define ROW_ACCURAY_ADD 12
+#define ROW_ACCURAY_ADD 20
 
-#define ROW_ILLEGAL 39 // Position for error message
+#define ROW_ILLEGAL 49 // Position for error message
 #define COL_ILLEGAL 20
 
 class Dictionary {

@@ -105,7 +105,8 @@ new bracnch
 [Change 124f]	Es werden für jede Achse PID Werte in saveParameter zugeteilt. Werte Siehe newPID_Test_02
 [Change 124g]	Daten werden saveParameter komplett ausgegeben, bei loadParameter fehlt der 1, Satz Daten.  Werte Siehe newPID_Test_03
 [Change 124f]	loadParameter gibt nur die Test-Daten aus. Kein Unterschied zu gespeicherten Daten. Testdaten zurückgesetzt.
-[Change 124g]	im model.h alle und teilweise in den Klassen inkluds disabled getest OK
+[Change 124h]	Menüsteuerung angepasst. PID Werte im Model?? Im model.h alle inkluds disabled
+[Change 124i]	Menüsteuerung X, Y, Z Achse OK. Exec. frequency stimmen diePositionen nicht.
 				
 
 ### **WICHTIG**
@@ -125,6 +126,7 @@ In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkomment
 	model.yawData.feedback = &model.gyroData.imuOutput[axis_t::YawAxis];
 	model.yawData.horz_Position = &model.gyroData.horz_Position;      
 	muss das wieder gemacht werden?  
+	Macht es Sinn, die PID Werte i, Model zu speichern?
 
 ## Hinweise
 Will man die Achsen via Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentiert werden "// #undef _DEBUG_" ????
@@ -136,11 +138,9 @@ Deim debuggen/compilieren muss PID_adjust in Platformio.ini enable sein
 Wenn z.B. -D_DEBUG_=FATAL gesetzt wird, werden alle vorherrigen unterdrückt.
 
 ### COM Ausgabe
-	1. -D_MINITERM gesetzt = Ausgabe auf PICO COM Port (Serial)
+	1. -D_MINITERM enable = Ausgabe auf PICO COM Port (Serial)
 	2. -D_MINITERM disable = Ausgabe auf PICO COM BT (Serial2)
-	3. -D_PID_ADJUST enable = PID Menü auf Serial2 (BT)
-	4. -D_MINITERM + -D_PID_ADJUST disable, LOGGER Ausgabe auf BT
-
+	3. -D_PID_ADJUST + -D_MINITERM enable = PID Menü auf Serial2 (BT) Logger auf Serial1
 
 ## Transmission
 _radio.openWritingPipe(pipes[0]);  <-

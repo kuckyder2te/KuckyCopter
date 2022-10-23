@@ -11,11 +11,11 @@ typedef enum
     primary = 0,
     secondary,
     yaw
-} axisName_t; // bezeichnet die tatsächlichen Namen der 3 Achsen
+} axisName_e; // bezeichnet die tatsächlichen Namen der 3 Achsen
 
 typedef enum
 {
     kP = 0,
     kI,
     kD
-} pidCoeff_t;
+} pidCoeffi_e;

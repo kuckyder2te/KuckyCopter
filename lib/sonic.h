@@ -105,8 +105,8 @@ public:
     {
         LOGGER_VERBOSE("Enter....");
 
-        LOGGER_WARNING_FMT("Distance raw: %.2f cm", _sonicData->distance_raw);
-        LOGGER_WARNING_FMT("Distance: %.2f cm", _sonicData->distance); 
+        LOGGER_NOTICE_FMT("Distance raw: %.2f cm", _sonicData->distance_raw);
+        LOGGER_NOTICE_FMT("Distance: %.2f cm", _sonicData->distance); 
         // Delay between measurements.
         //    delay(delayMS);
         // Get temperature event and print its value.
@@ -119,7 +119,7 @@ public:
         else
         {
             _sonicData->temperature = event.temperature;
-            LOGGER_WARNING_FMT("Temperature: %.2f%s", event.temperature, "*C");
+            LOGGER_NOTICE_FMT("Temperature: %.2f%s", event.temperature, "*C");
         }
         // Get humidity event and print its value.
         _dht->humidity().getEvent(&event);
@@ -130,7 +130,7 @@ public:
         else
         {
             _sonicData->humidity = event.relative_humidity;
-            LOGGER_WARNING_FMT("Humidity: %.2f%c", event.relative_humidity, '%');
+            LOGGER_NOTICE_FMT("Humidity: %.2f%c", event.relative_humidity, '%');
         }
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end og update -------------------------------------------*/

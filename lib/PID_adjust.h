@@ -30,7 +30,7 @@ private:
 	uint8_t _itemCoefficient;
 	uint8_t _pidType;
 	uint8_t _dotPlaces = 3; ///< Decimal places.
-	float _newAddOn = 0.1;	///< Multiplication factor for the PID coefficients, default setting.
+	float _newAddOn = 0.001;	///< Multiplication factor for the PID coefficients, default setting.
 	double _addOn;
 
 	typedef enum
@@ -90,7 +90,7 @@ private:
 	// 	kP = 0,
 	// 	kI,
 	// 	kD
-	// } pidCoeff_t;
+	// } pidCoeffi_e;
 
 	model_t *_model; 
 	HardwareSerial *_serial;
@@ -168,47 +168,47 @@ public:
 				setItemAxis(itemAxis_Number_t::axis_sec);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_sec_select);
+				_putty_out->clearPart(ROW_SELECT+5, COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT+5, COL_SELECT + 5, _dict->c_sec_select);
 				break;
 			case 'z':
 				setItemAxis(itemAxis_Number_t::axis_yaw);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_yaw_select);
+				_putty_out->clearPart(ROW_SELECT+10, COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT+10, COL_SELECT + 5, _dict->c_yaw_select);
 				break;
 
 			case 'p': ///< Choose the PID parameter
 				setItemCoefficient(itemCoefficient_t::offset_P);
-				_putty_out->yellow();
+				_putty_out->yellow();				
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 1, COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 10, _dict->c_p_select); ///< Print the selected coefficient
+				_putty_out->clearPart(ROW_SELECT + 1+((_itemAxis-1)*5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 1+((_itemAxis-1)*5), COL_SELECT + 10, _dict->c_p_select); ///< Print the selected coefficient
 				break;
 
 			case 'i':
 				setItemCoefficient(itemCoefficient_t::offset_I);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 2, COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 10, _dict->c_i_select);
+				_putty_out->clearPart(ROW_SELECT + 2+((_itemAxis-1)*5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 2+((_itemAxis-1)*5), COL_SELECT + 10, _dict->c_i_select);
 				break;
 
 			case 'd':
 				setItemCoefficient(itemCoefficient_t::offset_D);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 3, COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 10, _dict->c_d_select);
+				_putty_out->clearPart(ROW_SELECT + 3+((_itemAxis-1)*5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 3+((_itemAxis-1)*5), COL_SELECT + 10, _dict->c_d_select);
 				break;
 
 			case 'e':
 				setItemCoefficient(itemCoefficient_t::offset_EF);
 				_putty_out->yellow();
 				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 6, COL_SELECT + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 6, COL_SELECT + 5, _dict->c_ef_select);
+				_putty_out->clearPart(ROW_SELECT + 5+((_itemAxis-1)*5), COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 5+((_itemAxis-1)*5), COL_SELECT + 5, _dict->c_ef_select);
 				break;
 
 			case '+':
@@ -412,12 +412,11 @@ public:
 			pri_kP_value += _addOn;
 			if (checkValue(pri_kP_value))
 			{
-			LOGGER_WARNING_FMT("X Axis kP = %f", pri_kP_value);
-				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, pri_kP_value);
+			LOGGER_NOTICE_FMT("X Axis kP = %f", pri_kP_value);
+				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, pri_kP_value);				
+				_newPID[axisName_e::primary]._pid->setP(pri_kP_value, axisName_e::primary);  
+				_model->pidData[axisName_e::primary].pidCoefficient[pidCoeffi_e::kP] = pri_kP_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::primary]._pid->setP(pri_kP_value);  
-				_model->pidData[axisName_t::primary].pidCoefficient[pidCoeff_t::kP] = pri_kP_value;
-			LOGGER_WARNING("X Axis kP.... leave");
 			}
 			break;
 		case pidTyp_t::pri_I:
@@ -425,11 +424,10 @@ public:
 			if (checkValue(pri_kI_value))
 			{
 				LOGGER_NOTICE_FMT("X Axis kI = %f", pri_kI_value);
-				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, pri_kI_value);
+				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, pri_kI_value);				
+				_newPID[axisName_e::primary]._pid->setI(pri_kI_value, axisName_e::primary);
+				_model->pidData[axisName_e::primary].pidCoefficient[pidCoeffi_e::kI] = pri_kI_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::primary]._pid->setI(pri_kI_value);
-				_model->pidData[axisName_t::primary].pidCoefficient[pidCoeff_t::kI] = pri_kI_value;
-
 			}
 			break;
 		case pidTyp_t::pri_D:
@@ -437,10 +435,10 @@ public:
 			if (checkValue(pri_kD_value))
 			{
 				LOGGER_NOTICE_FMT("X Axis kD = %f", pri_kD_value);
-				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, pri_kD_value);
+				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, pri_kD_value);				
+				_newPID[axisName_e::primary]._pid->setD(pri_kD_value, axisName_e::primary);
+				_model->pidData[axisName_e::primary].pidCoefficient[pidCoeffi_e::kD] = pri_kD_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::primary]._pid->setD(pri_kD_value);
-				_model->pidData[axisName_t::primary].pidCoefficient[pidCoeff_t::kD] = pri_kD_value;
 			}
 			break;
 
@@ -449,10 +447,10 @@ public:
 			if (checkValue(sec_kP_value))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kP = %f", sec_kP_value);
-				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, sec_kP_value);
+				_putty_out->print(ROW_SELECT + 1+((_itemAxis-1)*5), COL_SELECT + 26, _dotPlaces, sec_kP_value);				
+				_newPID[axisName_e::secondary]._pid->setP(sec_kP_value, axisName_e::secondary);
+				_model->pidData[axisName_e::secondary].pidCoefficient[pidCoeffi_e::kP] = sec_kP_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::secondary]._pid->setP(sec_kP_value);
-				_model->pidData[axisName_t::secondary].pidCoefficient[pidCoeff_t::kP] = sec_kP_value;
 			}
 			break;
 
@@ -461,10 +459,10 @@ public:
 			if (checkValue(sec_kI_value))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kI = %f", sec_kI_value);
-				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, sec_kI_value);
+				_putty_out->print(ROW_SELECT + 2+((_itemAxis-1)*5), COL_SELECT + 26, _dotPlaces, sec_kI_value);				
+				_newPID[axisName_e::secondary]._pid->setI(sec_kI_value, axisName_e::secondary);
+				_model->pidData[axisName_e::secondary].pidCoefficient[pidCoeffi_e::kI] = sec_kI_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::secondary]._pid->setI(sec_kI_value);
-				_model->pidData[axisName_t::secondary].pidCoefficient[pidCoeff_t::kI] = sec_kI_value;
 			}
 			break;
 
@@ -473,10 +471,10 @@ public:
 			if (checkValue(sec_kD_value))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kD = %f", sec_kD_value);
-				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, sec_kD_value);
+				_putty_out->print(ROW_SELECT + 3+((_itemAxis-1)*5), COL_SELECT + 26, _dotPlaces, sec_kD_value);				
+				_newPID[axisName_e::secondary]._pid->setD(sec_kD_value, axisName_e::secondary);
+				_model->pidData[axisName_e::secondary].pidCoefficient[pidCoeffi_e::kD] = sec_kD_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::secondary]._pid->setD(sec_kD_value);
-				_model->pidData[axisName_t::secondary].pidCoefficient[pidCoeff_t::kD] = sec_kD_value;
 			}
 			break;
 
@@ -485,10 +483,10 @@ public:
 			if (checkValue(yaw_kP_value))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kP = %f", yaw_kP_value);
-				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, yaw_kP_value);
+				_putty_out->print(ROW_SELECT + 1+((_itemAxis-1)*5), COL_SELECT + 26, _dotPlaces, yaw_kP_value);				
+				_newPID[axisName_e::yaw]._pid->setP(yaw_kP_value, axisName_e::yaw);
+				_model->pidData[axisName_e::yaw].pidCoefficient[pidCoeffi_e::kP] = yaw_kP_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::yaw]._pid->setP(yaw_kP_value);
-				_model->pidData[axisName_t::yaw].pidCoefficient[pidCoeff_t::kP] = yaw_kP_value;
 			}
 			break;
 
@@ -497,10 +495,10 @@ public:
 			if (checkValue(yaw_kI_value))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kI = %f", yaw_kI_value);
-				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, yaw_kI_value);
+				_putty_out->print(ROW_SELECT + 2+((_itemAxis-1)*5), COL_SELECT + 26, _dotPlaces, yaw_kI_value);				
+				_newPID[axisName_e::yaw]._pid->setI(yaw_kI_value, axisName_e::yaw);
+				_model->pidData[axisName_e::yaw].pidCoefficient[pidCoeffi_e::kI] = yaw_kI_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::yaw]._pid->setI(yaw_kI_value);
-				_model->pidData[axisName_t::yaw].pidCoefficient[pidCoeff_t::kI] = yaw_kI_value;
 			}
 			break;
 
@@ -509,10 +507,10 @@ public:
 			if (checkValue(yaw_kD_value))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kD = %f", yaw_kD_value);
-				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, yaw_kD_value);
+				_putty_out->print(ROW_SELECT + 3+((_itemAxis-1)*5), COL_SELECT + 26, _dotPlaces, yaw_kD_value);				
+				_newPID[axisName_e::yaw]._pid->setD(yaw_kD_value, axisName_e::yaw);
+				_model->pidData[axisName_e::yaw].pidCoefficient[pidCoeffi_e::kD] = yaw_kD_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::yaw]._pid->setD(yaw_kD_value);
-				_model->pidData[axisName_t::yaw].pidCoefficient[pidCoeff_t::kD] = yaw_kD_value;
 			}
 			break;
 
@@ -521,10 +519,10 @@ public:
 			if (checkValue(pri_EF_value))
 			{
 				LOGGER_NOTICE_FMT("X Axis eF = %f", pri_EF_value);
-				_putty_out->print(ROW_SELECT + 6, COL_SELECT + 32, _dotPlaces, pri_EF_value);
+				_putty_out->print(ROW_SELECT + 6+((_itemAxis-1)*5), COL_SELECT + 32, _dotPlaces, pri_EF_value);				
+				_newPID[axisName_e::primary]._pid->setExecutionFrequency(pri_EF_value);
+				_model->pidData[axisName_e::primary].executionFrequency = pri_EF_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::primary]._pid->setExecutionFrequency(pri_EF_value);
-				_model->pidData[axisName_t::primary].executionFrequency = pri_EF_value;
 			}
 			break;
 
@@ -533,10 +531,10 @@ public:
 			if (checkValue(sec_EF_value))
 			{
 				LOGGER_NOTICE_FMT("Y Axis eF = %f", sec_EF_value);
-				_putty_out->print(ROW_SELECT + 6, COL_SELECT + 32, _dotPlaces, sec_EF_value);
+				_putty_out->print(ROW_SELECT + 6+((_itemAxis-1)*5), COL_SELECT + 32, _dotPlaces, sec_EF_value);				
+				_newPID[axisName_e::secondary]._pid->setExecutionFrequency(sec_EF_value);
+				_model->pidData[axisName_e::secondary].executionFrequency = sec_EF_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::secondary]._pid->setExecutionFrequency(sec_EF_value);
-				_model->pidData[axisName_t::secondary].executionFrequency = sec_EF_value;
 			}
 			break;
 			
@@ -545,10 +543,10 @@ public:
 			if (checkValue(yaw_EF_value))
 			{
 				LOGGER_NOTICE_FMT("Z Axis eF = %f", yaw_EF_value);
-				_putty_out->print(ROW_SELECT + 6, COL_SELECT + 32, _dotPlaces, yaw_EF_value);
+				_putty_out->print(ROW_SELECT + 6+((_itemAxis-1)*5), COL_SELECT + 32, _dotPlaces, yaw_EF_value);				
+				_newPID[axisName_e::yaw]._pid->setExecutionFrequency(yaw_EF_value);
+				_model->pidData[axisName_e::yaw].executionFrequency = yaw_EF_value;
 				displayPIDcoefficients();
-				_newPID[axisName_t::yaw]._pid->setExecutionFrequency(yaw_EF_value);
-				_model->pidData[axisName_t::yaw].executionFrequency = yaw_EF_value;
 			}
 			break;
 		} /* end of switch */
@@ -592,29 +590,29 @@ public:
 		_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT, "   in the EEPROM");
 		_putty_out->gray();
 		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, _dict->c_primary_p);
-		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_t::primary].pidCoefficient[pidCoeff_t::kP]);
+		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_e::primary].pidCoefficient[pidCoeffi_e::kP]);
 		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT, _dict->c_primary_i);
-		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_t::primary].pidCoefficient[pidCoeff_t::kI]);
+		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_e::primary].pidCoefficient[pidCoeffi_e::kI]);
 		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT, _dict->c_primary_d);
-		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_t::primary].pidCoefficient[pidCoeff_t::kD]);
+		_putty_out->print(ROW_OUTPUT + 5, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_e::primary].pidCoefficient[pidCoeffi_e::kD]);
 		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT, _dict->c_secondary_p);
-		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_t::secondary].pidCoefficient[pidCoeff_t::kP]);
+		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_e::secondary].pidCoefficient[pidCoeffi_e::kP]);
 		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT, _dict->c_secondary_i);
-		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_t::secondary].pidCoefficient[pidCoeff_t::kI]);
+		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_e::secondary].pidCoefficient[pidCoeffi_e::kI]);
 		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT, _dict->c_secondary_d);
-		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_t::secondary].pidCoefficient[pidCoeff_t::kD]);
+		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_e::secondary].pidCoefficient[pidCoeffi_e::kD]);
 		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT, _dict->c_yaw_p);
-		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_t::yaw].pidCoefficient[pidCoeff_t::kP]);
+		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_e::yaw].pidCoefficient[pidCoeffi_e::kP]);
 		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT, _dict->c_yaw_i);
-		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_t::yaw].pidCoefficient[pidCoeff_t::kI]);
+		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_e::yaw].pidCoefficient[pidCoeffi_e::kI]);
 		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT, _dict->c_yaw_d);
-		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_t::yaw].pidCoefficient[pidCoeff_t::kD]);
+		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT_VALUE, 3, _model->pidData[axisName_e::yaw].pidCoefficient[pidCoeffi_e::kD]);
 		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT, _dict->c_ef_pri);
-		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 1, _model->pidData[axisName_t::primary].executionFrequency);
+		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 1, _model->pidData[axisName_e::primary].executionFrequency);
 		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT, _dict->c_ef_sec);
-		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 1, _model->pidData[axisName_t::secondary].executionFrequency);
+		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 1, _model->pidData[axisName_e::secondary].executionFrequency);
 		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT, _dict->c_ef_yaw);
-		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 1, _model->pidData[axisName_t::yaw].executionFrequency);
+		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 1, _model->pidData[axisName_e::yaw].executionFrequency);
 	} /*--------------------- end of displayPIDcoefficients ---------------------------*/
 
 	bool checkValue(float a) // It should be ensured that no negative values are passed.

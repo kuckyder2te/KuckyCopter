@@ -66,9 +66,9 @@ public:
     {
         LOGGER_VERBOSE("Enter....");
         Wire.begin();
-        LOGGER_WARNING("MPU9250 initialized");
+        LOGGER_NOTICE("MPU9250 initialized");
             _mpu9250 = new MPU9250_asukiaaa(); // Adresse in Variable speichern
-        LOGGER_WARNING("End init MPU9250");
+        LOGGER_NOTICE("End init MPU9250");
 
         uint8_t sensorId;
         int result;
@@ -90,15 +90,15 @@ public:
         // _mpu9250->magYOffset = -55;
         // _mpu9250->magZOffset = -10;
 
-        LOGGER_WARNING("MS5611 initialized");
+        LOGGER_NOTICE("MS5611 initialized");
             _ms5611 = new MS5611();
-        LOGGER_WARNING("End init MS5611");
+        LOGGER_NOTICE("End init MS5611");
 
         LOGGER_WARNING_FMT("File %s : MS561 lib vesion: %s", __FILE__, MS5611_LIB_VERSION);
 
         if (_ms5611->begin() == true)
             {
-                LOGGER_WARNING("MS5611 found.");
+                LOGGER_NOTICE("MS5611 found.");
             }
             else
             {
@@ -120,7 +120,7 @@ public:
 
         if (_mpu9250->accelUpdate() == 0)
         {
-            LOGGER_WARNING("Update accelerometer successful");
+            LOGGER_NOTICE("Update accelerometer successful");
             _aX = _mpu9250->accelX();
             _aY = _mpu9250->accelY();
             _aZ = _mpu9250->accelZ();
@@ -133,7 +133,7 @@ public:
 
         if (_mpu9250->gyroUpdate() == 0)
         {
-            LOGGER_WARNING("Update gyrometer successful");
+            LOGGER_NOTICE("Update gyrometer successful");
             _gX = _mpu9250->gyroX();
             _gY = _mpu9250->gyroY();
             _gZ = _mpu9250->gyroZ();
@@ -145,7 +145,7 @@ public:
 
         if (_mpu9250->magUpdate() == 0)
         {
-            LOGGER_WARNING("Update magnetometer successful");
+            LOGGER_NOTICE("Update magnetometer successful");
             _mX = _mpu9250->magX();
             _mY = _mpu9250->magY();
             _mZ = _mpu9250->magZ();
@@ -173,24 +173,24 @@ public:
     {
     LOGGER_VERBOSE("Enter....");
 
-        LOGGER_WARNING_FMT("accelX:  %.2f", _aX);
-        LOGGER_WARNING_FMT("accelY %.2f", _aY);
-        LOGGER_WARNING_FMT("accelZ %.2f", _aZ);
-        LOGGER_WARNING_FMT("accelSqrt %.2f", _aSqrt);
+        LOGGER_NOTICE_FMT("accelX:  %.2f", _aX);
+        LOGGER_NOTICE_FMT("accelY %.2f", _aY);
+        LOGGER_NOTICE_FMT("accelZ %.2f", _aZ);
+        LOGGER_NOTICE_FMT("accelSqrt %.2f", _aSqrt);
 
-        LOGGER_WARNING_FMT("gyroX:  %.2f", _gX);
-        LOGGER_WARNING_FMT("gyroY %.2f", _gY);
-        LOGGER_WARNING_FMT("gyroZ %.2f", _gZ);
+        LOGGER_NOTICE_FMT("gyroX:  %.2f", _gX);
+        LOGGER_NOTICE_FMT("gyroY %.2f", _gY);
+        LOGGER_NOTICE_FMT("gyroZ %.2f", _gZ);
 
-        LOGGER_WARNING_FMT("magX:  %.2f", _mX);
-        LOGGER_WARNING_FMT("magY %.2f", _mY);
-        LOGGER_WARNING_FMT("magZ %.2f", _mZ);
-        LOGGER_WARNING_FMT("horizontalDirection %.2f", _mDirection);
+        LOGGER_NOTICE_FMT("magX:  %.2f", _mX);
+        LOGGER_NOTICE_FMT("magY %.2f", _mY);
+        LOGGER_NOTICE_FMT("magZ %.2f", _mZ);
+        LOGGER_NOTICE_FMT("horizontalDirection %.2f", _mDirection);
 
-        LOGGER_WARNING_FMT("Sea level =  %.2fPa", _sensorData->_seaLevel);
-        LOGGER_WARNING_FMT("Pressure =  %.2fPa", _sensorData->_pressure);
-        LOGGER_WARNING_FMT("Temperature =  %.2f*C", _sensorData->_temperature_baro);   
-        LOGGER_WARNING_FMT("Approx altitude =  %.4fm", _sensorData->_altitude);
+        LOGGER_NOTICE_FMT("Sea level =  %.2fPa", _sensorData->_seaLevel);
+        LOGGER_NOTICE_FMT("Pressure =  %.2fPa", _sensorData->_pressure);
+        LOGGER_NOTICE_FMT("Temperature =  %.2f*C", _sensorData->_temperature_baro);   
+        LOGGER_NOTICE_FMT("Approx altitude =  %.4fm", _sensorData->_altitude);
 
     LOGGER_VERBOSE("....leave");
     } /*------------------------------- end of update ---------------------------------*/
