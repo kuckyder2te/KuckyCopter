@@ -91,13 +91,7 @@ void setup()
   Serial.flush();
   Wire.begin();
 
-  EEPROM.begin(512);
-
-  // for (int i = 0; i < 80; i++)
-  // {
-  //   EEPROM.write(i, 0);
-  // }
-  // LOGGER_NOTICE_FMT("EEPROM Commit : %d", EEPROM.commit());
+  EEPROM.begin(80);
   
   delay(100);
 

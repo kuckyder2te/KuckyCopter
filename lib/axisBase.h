@@ -24,8 +24,6 @@ public:
         int16_t *feedback; ///< Current value from the IMU
         double *rcX;       ///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
         double *rcY;       ///< virtual axis. Corresponds to the PITCH axis.
-    //    pidData_t pidData;
-
     } axisData_t;
 
 private:
@@ -39,7 +37,6 @@ protected:
     int16_t *_error;
     uint32_t _lastMillis;
     axisData_t *_axisData;
-//    pidParameter_t pidParameter;
 
 public:
     AxisBase(const String &name) : Task::Base(name)
@@ -63,18 +60,18 @@ public:
 
     void savePIDConfig()
     {
-     //   _newPID->saveParameters(_axis_address, &pidParameter);
+        _newPID->saveParameters(_axis_address);
     } /*----------------------------------- end of savePIDConfig -----------------------*/
 
     void loadPIDConfig()
     {
-     //   _newPID->loadParameters(_axis_address);
+        _newPID->loadParameters(_axis_address);
     } /*----------------------------------- end of loadPIDConfig -----------------------*/
 
     virtual void begin() override
     {
         LOGGER_NOTICE("New PID initialized");
-        _newPID->setExecutionFrequency(PID_FREQUENCY);
+        _newPID->setEF(PID_FREQUENCY);
         LOGGER_NOTICE("End init New PID");
     } /*----------------------------------- end of begin ------------------------------*/
 

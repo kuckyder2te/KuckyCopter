@@ -43,13 +43,6 @@ private:
 	int16_t _virtualFeedback; ///< The calculated feedback due to the yaw rotation
 	int16_t _virtualSetpoint;
 
-	// typedef enum
-	// {
-	// 	primary,
-	// 	secondary,
-	// 	YawAxis
-	// } axisName_e;
-
 public:
 	AxisYaw(const String &name) : AxisBase(name)
 	{											/// Hier war der Fehler, ich muss das Basisobjekt weiterleiten
@@ -62,6 +55,9 @@ public:
 		_axisMotor[axisName_e::secondary] = NULL;
 		_state = disablePID;
 		_lastCompass = 0;
+		AxisBase::_newPID->setP(55.6);
+		savePIDConfig();
+		loadPIDConfig();
 	};
 
 	virtual ~AxisYaw(){};

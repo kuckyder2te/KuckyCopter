@@ -107,6 +107,7 @@ new bracnch
 [Change 124f]	loadParameter gibt nur die Test-Daten aus. Kein Unterschied zu gespeicherten Daten. Testdaten zurückgesetzt.
 [Change 124h]	Menüsteuerung angepasst. PID Werte im Model?? Im model.h alle inkluds disabled
 [Change 124i]	Menüsteuerung X, Y, Z Achse OK. Exec. frequency stimmen diePositionen nicht.
+[Change 125]	OOP Fehler korrigiert und auskommentierte Teile gelöscht
 				
 
 ### **WICHTIG**

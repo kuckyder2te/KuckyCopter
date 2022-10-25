@@ -17,5 +17,6 @@ typedef enum
 {
     kP = 0,
     kI,
-    kD
+    kD,
+    eF
 } pidCoeffi_e;
