@@ -2,7 +2,7 @@
 #include <Logger.h>
 #include <stdio.h>
 
-#ifdef _DEBUG_
+#if defined LOCAL_DEBUG || defined GLOBAL_DEBUG
 extern char logBuf[100];
     #define LOGGER_VERBOSE_FMT(fmt,...) sprintf(logBuf,fmt, __VA_ARGS__);LOGGER_VERBOSE(logBuf)
     #define LOGGER_NOTICE_FMT(fmt,...) sprintf(logBuf,fmt, __VA_ARGS__);LOGGER_NOTICE(logBuf)
@@ -28,7 +28,8 @@ extern char logBuf[100];
     #define LOGGER_WARNING(...) asm volatile ("nop\n\t")
     #define LOGGER_ERROR(...) asm volatile ("nop\n\t")
     #define LOGGER_FATAL(...) asm volatile ("nop\n\t")
+    // #define LOGGER_FATAL(msg) Logger::fatal(__PRETTY_FUNCTION__, msg)   // should be visible even LOCAL_DEBUG is undefined
     #define LOGGER_SILENT(...) asm volatile ("nop\n\t")
 #endif
 void localLogger(Logger::Level level, const char* module, const char* message);
-
+#undef LOCAL_DEBUG

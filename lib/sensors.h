@@ -17,6 +17,8 @@
 #include <MPU9250_asukiaaa.h>
 #include <MS5611.h>
 // #include <Adafruit_BMP280.h>
+
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 typedef struct

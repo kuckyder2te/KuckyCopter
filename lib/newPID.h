@@ -15,9 +15,12 @@
 
 #include <FastPID.h>
 
+#define LOCAL_DEBUG
 #include "myLogger.h"
+
 #include "EEPROM.h"
 #include "def.h"
+
 
 #define PID_FREQUENCY      50			///< PID parameter
 #define PID_OUTPUT_BITS	   16

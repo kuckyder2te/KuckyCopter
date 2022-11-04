@@ -109,6 +109,7 @@ new bracnch
 [Change 124i]	Menüsteuerung X, Y, Z Achse OK. Exec. frequency stimmen diePositionen nicht.
 [Change 125]	OOP Fehler korrigiert und auskommentierte Teile gelöscht
 [Change 126]	EEPROM OK
+[Change 127]	Local Logger eingerichtet
 				
 
 ### **WICHTIG**
@@ -138,6 +139,9 @@ Deim debuggen/compilieren muss PID_adjust in Platformio.ini enable sein
 ## Debug flags
 ### Logger
 Wenn z.B. -D_DEBUG_=FATAL gesetzt wird, werden alle vorherrigen unterdrückt.
+In der zu bebuggenden Datei wird vor myLogger.h ein #define LOCAL_DEBUG gesetzt
+In myLogger.h wird "#if defined LOCAL_DEBUG || defined GLOBAL_DEBUG" eingefügt und in Platformio.ini mit "-DGLOBAL_DEBUG" ausgewählt ob alle Dateien, oder nur spezielle debugt werden.
+Man kann 
 
 ### COM Ausgabe
 	1. -D_MINITERM enable = Ausgabe auf PICO COM Port (Serial)
