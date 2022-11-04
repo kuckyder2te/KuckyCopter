@@ -108,6 +108,7 @@ new bracnch
 [Change 124h]	Menüsteuerung angepasst. PID Werte im Model?? Im model.h alle inkluds disabled
 [Change 124i]	Menüsteuerung X, Y, Z Achse OK. Exec. frequency stimmen diePositionen nicht.
 [Change 125]	OOP Fehler korrigiert und auskommentierte Teile gelöscht
+[Change 126]	EEPROM OK
 				
 
 ### **WICHTIG**

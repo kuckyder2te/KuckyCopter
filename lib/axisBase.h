@@ -31,7 +31,7 @@ private:
 
 protected:
     NewPID *_newPID;
-    uint8_t _axis_address; ///< Gives everyone axis a title
+    uint8_t eepromAddress; ///< Gives everyone axis a title
     int16_t *_sp;
     int16_t *_fb;
     int16_t *_error;
@@ -41,9 +41,9 @@ protected:
 public:
     AxisBase(const String &name) : Task::Base(name)
     {
-        _newPID = new NewPID(this->getName()); // Adresse in Variable speichern
-        _newPID->init(_instanceCounter);       // dirty!!!
-        _axis_address = sizeof(pidData_t) * _instanceCounter++;
+        eepromAddress = sizeof(pidData_t) * _instanceCounter++;
+        _newPID = new NewPID(this->getName(),eepromAddress); // Adresse in Variable speichern
+        
         _lastMillis = millis();
         _error = 0;
         _sp = 0;
@@ -56,17 +56,17 @@ public:
     NewPID *getPid()
     {
         return _newPID;
-    } /*----------------------------------- end of getPid -----------------------------*/
+    } /*----------------------------------- end of getPid ----------------------------*/
 
     void savePIDConfig()
     {
-        _newPID->saveParameters(_axis_address);
-    } /*----------------------------------- end of savePIDConfig -----------------------*/
+        _newPID->saveParameters();
+    } /*----------------------------------- end of savePIDConfig ----------------------*/
 
     void loadPIDConfig()
     {
-        _newPID->loadParameters(_axis_address);
-    } /*----------------------------------- end of loadPIDConfig -----------------------*/
+        _newPID->loadParameters();
+    } /*----------------------------------- end of loadPIDConfig ----------------------*/
 
     virtual void begin() override
     {
@@ -86,7 +86,7 @@ public:
             _lastMillis = millis();
         }
     } /*----------------------------------- end of update -----------------------------*/
-};    /*----------------------------------- end of axisBase class -------------------------*/
+};    /*----------------------------------- end of axisBase class ---------------------*/
 
 uint8_t AxisBase::_instanceCounter = 0; // https://stackoverflow.com/questions/5391973/undefined-reference-to-static-const-int
 // #undef _DEBUG_

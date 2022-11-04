@@ -16,7 +16,7 @@
 #include <FastPID.h>
 
 #include "myLogger.h"
-#include "..\..\EEPROM\EEPROM.h"   // Refernce to framework  1.. is Root 2.. ins framework
+#include "EEPROM.h"
 #include "def.h"
 
 #define PID_FREQUENCY      50			///< PID parameter
@@ -42,55 +42,35 @@ private:
 	pidData_t _pidData;
 	bool _isEnabled;
 	String _ParentName;
+	uint16_t _eepromAddress;
 
 protected:
 	float RC_SP;
 	float FB;
 
 public:
-	NewPID(String name){
+	NewPID(String name, uint16_t eepromAddress){
 		_ParentName = name;
+		_eepromAddress = eepromAddress;
 		_isEnabled = false;
 		this->setOutputRange(-100, 100);
 		this->setOutputConfig(16, true);
-
+		loadParameters();
 		disablePID();
-	} /*-------------------------------- end of constructor ---------------------------*/
+	} /*-------------------------------- end of constructor ---------------------------*/	
 
-	void init(uint8_t instance)
-	{		
-		LOGGER_WARNING_FMT("NewPID init = instance = %i", instance);
-		uint8_t start = instance * sizeof(pidData_t);
-		uint8_t size = sizeof(pidData_t);
-		LOGGER_WARNING_FMT("Startadresse %i Size %i", start, size);		
-		
-		//saveParameters(start, &_pidData[instance]);
-		//saveParameters(start, &initPid);
-		loadParameters(start);
-
-		//if(!_pidData.modified){
-		// 	saveParameters(start, &initPid);
-		// 	// for(int i=start;i<(sizeof(pidData_t)+start);i++){
-		// 	// 	EEPROM.write(i, instance);
-		// 	// }
-		// }
-
-	//	delay(2000);
-	} /*-------------------------------- end of int -----------------------------------*/	
-
-	void saveParameters(uint16_t addr){	
-		saveParameters(addr, &_pidData);
+	void saveParameters(){	
+		saveParameters(&_pidData);
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
-	void saveParameters(uint16_t addr, pidData_t* data){	
+	void saveParameters(pidData_t* data){	
 
-		LOGGER_WARNING_FMT("SavePara - sizeof pidData_t = %i addr = %i", sizeof(pidData_t), addr);
+		LOGGER_WARNING_FMT("SavePara - sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
 		uint8_t* current = reinterpret_cast<uint8_t*>(data);
 
-		for(uint8_t i=0; i<sizeof(pidData_t); i++){
-		//	LOGGER_WARNING_FMT("i = %i", i);
-			EEPROM.write(addr+i,*(current+i));						//Pointer arethmetic
-		//	LOGGER_WARNING_FMT("Addr = %i current %i", addr+1, (*(current+i)));
+		for(uint8_t i=0; i<sizeof(pidData_t); i++){		
+			EEPROM.write(_eepromAddress+i,*(current+i));						//Pointer arethmetic
+		//	LOGGER_WARNING_FMT("Addr = %i current %i", _eepromAddress+1, (*(current+i)));
 		}
 
 		if (EEPROM.commit()) {
@@ -101,17 +81,14 @@ public:
 	//	delay(2000);
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
-	void loadParameters(int addr){
+	void loadParameters(){
 
-		LOGGER_WARNING_FMT("LoadPara - sizeof pidData_t = %i addr = %i", sizeof(pidData_t), addr);
-		// for (int i = 0; i < sizeof(pidData_t); i++) {
-    	// 	Serial2.println(EEPROM.read(i));		
-		// }
+		LOGGER_WARNING_FMT("LoadPara - sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
 
 		uint8_t* current = reinterpret_cast<uint8_t*>(&_pidData);   // current zeigt auf die gleiche Speicherstelle wie _pidData
 																   // der datentyp _pidData wird in eine uint8 typ geändert
 			for(uint8_t i=0; i<sizeof(pidData_t); i++){
-				*(current+i) = EEPROM.read((addr+i));
+				*(current+i) = EEPROM.read((_eepromAddress+i));
 				LOGGER_WARNING_FMT("i = %i",(uint8_t)*(current+i));
 			}
 
@@ -145,7 +122,23 @@ public:
 								  _pidData.pidCoefficient[pidCoeffi_e::eF]);
 
 			_isEnabled = true;
-	 } /*-------------------------------- end of activatePID ---------------------------*/
+	} /*-------------------------------- end of activatePID ---------------------------*/
+
+	void putPID_Data_into_EEPROM(){
+	
+		LOGGER_VERBOSE("Enter....");
+
+		LOGGER_VERBOSE("....leave");
+
+	} /*-------------------------------- end of putPID_Data_into_EEPROM ---------------*/
+
+	void getPID_Data_into_EEPROM(){
+	
+		LOGGER_VERBOSE("Enter....");
+
+		LOGGER_VERBOSE("....leave");
+
+	} /*-------------------------------- end of getPID_Data_into_EEPROM ---------------*/
 
 	void setP(float p)
 	{		
@@ -156,7 +149,7 @@ public:
 
 		_pidData.pidCoefficient[pidCoeffi_e::kP] = p;
 
-		LOGGER_WARNING_FMT(" _pidCoeff.kP: %f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
+		LOGGER_WARNING_FMT(" _pidCoeff.kP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
 
 		if(_isEnabled){
 			enablePID();
@@ -170,7 +163,7 @@ public:
 
 		_pidData.pidCoefficient[pidCoeffi_e::kI] = i;
 
-		LOGGER_WARNING_FMT("_pidCoeff.kP: %f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
+		LOGGER_WARNING_FMT("_pidCoeff.kI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
 
 		if(_isEnabled)
 			enablePID();
@@ -180,7 +173,7 @@ public:
 	{
 		_pidData.pidCoefficient[pidCoeffi_e::kI] = d;
 
-		LOGGER_WARNING_FMT("_pidCoeff.kP: %f", _pidData.pidCoefficient[pidCoeffi_e::kD]);	
+		LOGGER_WARNING_FMT("_pidCoeff.kD: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kD]);	
 
 		if(_isEnabled)
 			enablePID();
@@ -188,18 +181,18 @@ public:
 
 	void setEF(float ef)
 	{
-		_pidData.pidCoefficient[pidCoeffi_e::kI] = ef;
+		_pidData.pidCoefficient[pidCoeffi_e::eF] = ef;
 
-		LOGGER_WARNING_FMT("_pidCoeff.kP: %f", _pidData.pidCoefficient[pidCoeffi_e::eF]);	
+		LOGGER_WARNING_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);	
 		
 		if(_isEnabled)
 			enablePID();
 	} /*-------------------------------- end of setEF ----------------------------------*/
 
-	uint8_t getExecutionTime()
+	float getExecutionTime()
 	{
-		//LOGGER_NOTICE_FMT("PID getExecutionTime %f", (1 / _pidParameter.exFreq) * 1000);
-		return 0; // ((1.0/(float)_pidParameter.exFreq)*1000);
+		LOGGER_NOTICE_FMT("PID getExecutionTime %.3f", (1 / _pidData.pidCoefficient[pidCoeffi_e::eF]) * 1000);
+		return  ((1.0/(float)_pidData.pidCoefficient[pidCoeffi_e::eF])*1000);
 		///< Convert frequency to millis
 	} /*-------------------------------- end of getExecutionTime ----------------------*/
 
@@ -217,23 +210,27 @@ public:
 
 	float getP() const
 	{
-		return 0;
+		LOGGER_WARNING_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
+		return _pidData.pidCoefficient[pidCoeffi_e::kP];
 	} /*-------------------------------- end of getP ----------------------------------*/
 
 	float getI() const
 	{
-		return 0;
+		LOGGER_WARNING_FMT("_pidCoeff.KI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
+		return _pidData.pidCoefficient[pidCoeffi_e::kI];
 	} /*-------------------------------- end of getI ----------------------------------*/
 
 	float getD() const
-	{
-		return 0;
+		{LOGGER_WARNING_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
+		return _pidData.pidCoefficient[pidCoeffi_e::kD];
 	} /*-------------------------------- end of getD ----------------------------------*/
 
-	float getExFreq() const
+	float getEF() const
 	{
-		return 0;
-	} /*-------------------------------- end of getExTime -----------------------------*/
+		LOGGER_WARNING_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
+		return _pidData.pidCoefficient[pidCoeffi_e::eF];
+	} /*-------------------------------- end of getEF ---------------------------------*/
+
 };/*--------------------------- end of MyPid class ------------------------------------*/
 
 //#undef _DEBUG_

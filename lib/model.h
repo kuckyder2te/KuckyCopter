@@ -25,7 +25,7 @@ typedef struct
     AxisBase::axisData_t yawData;
     yaw_t yaw;
     batteryData_t batteryData;
-    pidData_t pidData[3];
+//    pidData_t pidData[3];
 } model_t;
 
 //#undef _DEBUG_

@@ -18,7 +18,7 @@
 // #include <Adafruit_Sensor.h>
 // #include <Adafruit_I2CDevice.h>
 // #include <Adafruit_SPIDevice.h>
-#include "..\..\EEPROM\EEPROM.h"
+#include "EEPROM.h"
 //#define _DEBUG_ (DEBUG)
 #include "..\lib\sensors.h"
 //#define _DEBUG_ DEBUG
