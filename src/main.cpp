@@ -20,18 +20,12 @@
 // #include <Adafruit_SPIDevice.h>
 #include "EEPROM.h"
 #include "..\lib\sensors.h"
-//#define _DEBUG_ DEBUG
 #include "..\lib\sonic.h"
-//#define _DEBUG_ DEBUG
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
-//#define _DEBUG_ DEBUG
 #include "..\lib\axisBase.h"
-//#define _DEBUG_ DEBUG
 #include "..\lib\axisMotor.h"
-//#define _DEBUG_ DEBUG
 #include "..\lib\axisYaw.h"
-//#define _DEBUG_ DEBUG
 #include "..\lib\flyController.h"
 #include "..\lib\performance.h"
 #include "..\lib\PID_adjust.h"
@@ -65,7 +59,11 @@ void setup()
   Serial.begin(COM_SPEED);
   Serial2.begin(BT_SPEED);
   Serial.println("Serial COM OK");
-  Serial2.println("BT COM OK");
+  Serial2.println("BT COM OK ");
+  Serial2.print(__DATE__);
+  Serial2.print(" ");
+  Serial2.println(__TIME__);
+
 #ifdef _DEBUG_
   Logger::setOutputFunction(&localLogger);
   delay(50);
@@ -80,9 +78,9 @@ void setup()
   Serial.println("*       KuCo Phantom 1         *");
   Serial.println("*                              *");
   Serial.print("*     ");
-  Serial2.print(__DATE__);
-  Serial2.print(" ");
-  Serial2.print(__TIME__);
+  Serial.print(__DATE__);
+  Serial.print(" ");
+  Serial.print(__TIME__);
   Serial.println("     *");
   Serial.print("*    EEPROM PID Address   "); /*Serial.print(PID_EEPROM_ADRRESS);*/
   Serial.println("     *");

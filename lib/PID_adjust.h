@@ -12,7 +12,9 @@
 #include <Arduino.h>
 #include <HardwareSerial.h>
 
+//#define LOCAL_DEBUG
 #include "..\lib\myLogger.h"
+
 #include "..\lib\putty_out.h"
 #include "dictionary.h"
 #include "..\lib\model.h"

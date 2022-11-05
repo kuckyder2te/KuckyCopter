@@ -8,7 +8,10 @@
 
 #include "AxisBase.h"
 #include "AxisMotor.h"
+
+//#define LOCAL_DEBUG
 #include "myLogger.h"
+
 #include "def.h"
 
 #define YAW_SENSIBILITY 5

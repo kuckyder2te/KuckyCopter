@@ -15,33 +15,32 @@
 
 #include <FastPID.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "EEPROM.h"
 #include "def.h"
 
-
-#define PID_FREQUENCY      50			///< PID parameter
-#define PID_OUTPUT_BITS	   16
-#define PID_OUTPUT_SIGNED  flase	
-#define PID_P_MIN			0.00390626	///< The parameter P domain is [0.00390625 to 255] inclusive.
+#define PID_FREQUENCY 50 ///< PID parameter
+#define PID_OUTPUT_BITS 16
+#define PID_OUTPUT_SIGNED flase
+#define PID_P_MIN 0.00390626 ///< The parameter P domain is [0.00390625 to 255] inclusive.
 #define PID_EEPROM_ADRRESS 50
 
 typedef struct
 {
-	float pidCoefficient[4];  // 12 bytes
-	uint8_t output_bits;	  // 2			""
-	bool output_signed;		  // 1   		""
-	bool modified; 			  // 1   muss gesetzt werden wenn die Parameter manuell geändert wurden
+	float pidCoefficient[4]; // 12 bytes
+	uint8_t output_bits;	 // 2			""
+	bool output_signed;		 // 1   		""
+	bool modified;			 // 1   muss gesetzt werden wenn die Parameter manuell geändert wurden
 } pidData_t;
 
-static pidData_t initPid ={{1.11f, 2.22f, 3.33f, 50.0f}, 8, false, false};
-									
-class NewPID : public FastPID
-{ 
+static pidData_t initPid = {{1.11f, 2.22f, 3.33f, 50.0f}, 8, false, false};
 
-private:	
+class NewPID : public FastPID
+{
+
+private:
 	pidData_t _pidData;
 	bool _isEnabled;
 	String _ParentName;
@@ -52,7 +51,8 @@ protected:
 	float FB;
 
 public:
-	NewPID(String name, uint16_t eepromAddress){
+	NewPID(String name, uint16_t eepromAddress)
+	{
 		_ParentName = name;
 		_eepromAddress = eepromAddress;
 		_isEnabled = false;
@@ -60,180 +60,246 @@ public:
 		this->setOutputConfig(16, true);
 		loadParameters();
 		disablePID();
-	} /*-------------------------------- end of constructor ---------------------------*/	
+	} /*-------------------------------- end of constructor ---------------------------*/
 
-	void saveParameters(){	
+	void saveParameters()
+	{
+	LOGGER_VERBOSE("Enter....");
+	
 		saveParameters(&_pidData);
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
-	void saveParameters(pidData_t* data){	
+	void saveParameters(pidData_t *data)
+	{
+	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_WARNING_FMT("SavePara - sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
-		uint8_t* current = reinterpret_cast<uint8_t*>(data);
+		LOGGER_NOTICE_FMT("SavePara - sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
+		uint8_t *current = reinterpret_cast<uint8_t *>(data);
 
-		for(uint8_t i=0; i<sizeof(pidData_t); i++){		
-			EEPROM.write(_eepromAddress+i,*(current+i));						//Pointer arethmetic
-		//	LOGGER_WARNING_FMT("Addr = %i current %i", _eepromAddress+1, (*(current+i)));
+		for (uint8_t i = 0; i < sizeof(pidData_t); i++)
+		{
+			EEPROM.write(_eepromAddress + i, *(current + i)); // Pointer arethmetic
+			LOGGER_NOTICE_FMT("Addr = %i current %i", _eepromAddress+1, (*(current+i)));
 		}
 
-		if (EEPROM.commit()) {
-			LOGGER_WARNING("EEPROM successfully committed");
-		} else {
-			LOGGER_WARNING("ERROR! EEPROM commit failed");
+		if (EEPROM.commit())
+		{
+			LOGGER_NOTICE("EEPROM successfully committed");
 		}
-	//	delay(2000);
+		else
+		{
+			LOGGER_FATAL("ERROR! EEPROM commit failed");
+		}
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
-	void loadParameters(){
+	void loadParameters()
+	{
+	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_WARNING_FMT("LoadPara - sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
+		LOGGER_NOTICE_FMT("LoadPara - sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
 
-		uint8_t* current = reinterpret_cast<uint8_t*>(&_pidData);   // current zeigt auf die gleiche Speicherstelle wie _pidData
+		uint8_t *current = reinterpret_cast<uint8_t *>(&_pidData); // current zeigt auf die gleiche Speicherstelle wie _pidData
 																   // der datentyp _pidData wird in eine uint8 typ geändert
-			for(uint8_t i=0; i<sizeof(pidData_t); i++){
-				*(current+i) = EEPROM.read((_eepromAddress+i));
-				LOGGER_WARNING_FMT("i = %i",(uint8_t)*(current+i));
-			}
+		for (uint8_t i = 0; i < sizeof(pidData_t); i++)
+		{
+			*(current + i) = EEPROM.read((_eepromAddress + i));
+			LOGGER_NOTICE_FMT("i = %i", (uint8_t) * (current + i));
+		}
 
-		LOGGER_WARNING_FMT("_pidData.kP = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
-		LOGGER_WARNING_FMT("_pidData.kI = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
-		LOGGER_WARNING_FMT("_pidData.kD = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
-		LOGGER_WARNING_FMT("_pidData.exFreq = %.1f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
-		LOGGER_WARNING_FMT("_pidData.Output bits = %i", _pidData.output_bits);
-		LOGGER_WARNING_FMT("_pidData.output signed = %i", _pidData.output_signed);
+		LOGGER_NOTICE_FMT("_pidData.kP = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
+		LOGGER_NOTICE_FMT("_pidData.kI = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
+		LOGGER_NOTICE_FMT("_pidData.kD = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
+		LOGGER_NOTICE_FMT("_pidData.exFreq = %.1f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
+		LOGGER_NOTICE_FMT("_pidData.Output bits = %i", _pidData.output_bits);
+		LOGGER_NOTICE_FMT("_pidData.output signed = %i", _pidData.output_signed);
 
-	//	delay(2000);
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of loadParameters ------------------------*/
 
 	void disablePID()
 	{
+	LOGGER_VERBOSE("Enter....");
+
 		LOGGER_NOTICE_FMT("Disabled PID controller %s ", _ParentName.c_str());
-			this->setCoefficients(PID_P_MIN,0.0,0.0,PID_FREQUENCY);
+		this->setCoefficients(PID_P_MIN, 0.0, 0.0, PID_FREQUENCY);
 
 		_isEnabled = false;
+
+	LOGGER_VERBOSE("....leave");	
 	} /*-------------------------------- end of deactivatePID -------------------------*/
 
 	void enablePID()
 	{
+	LOGGER_VERBOSE("Enter....");
+
 		/* This function has 2 tasks.
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
-			LOGGER_NOTICE("enablePID");
-			this->setCoefficients(_pidData.pidCoefficient[pidCoeffi_e::kP],
-								  _pidData.pidCoefficient[pidCoeffi_e::kI],
-								  _pidData.pidCoefficient[pidCoeffi_e::kD],
-								  _pidData.pidCoefficient[pidCoeffi_e::eF]);
+		LOGGER_NOTICE("enablePID");
+		this->setCoefficients(_pidData.pidCoefficient[pidCoeffi_e::kP],
+							  _pidData.pidCoefficient[pidCoeffi_e::kI],
+							  _pidData.pidCoefficient[pidCoeffi_e::kD],
+							  PID_FREQUENCY);
 
-			_isEnabled = true;
+		_isEnabled = true;
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of activatePID ---------------------------*/
 
-	void putPID_Data_into_EEPROM(){
-	
-		LOGGER_VERBOSE("Enter....");
+	void putPID_Data_into_EEPROM()
+	{
+	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_VERBOSE("....leave");
-
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of putPID_Data_into_EEPROM ---------------*/
 
-	void getPID_Data_into_EEPROM(){
-	
-		LOGGER_VERBOSE("Enter....");
+	void getPID_Data_into_EEPROM()
+	{
+	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_VERBOSE("....leave");
-
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getPID_Data_into_EEPROM ---------------*/
 
 	void setP(float p)
-	{		
-		LOGGER_WARNING_FMT("setP: %f ", p);
-		if (p <= PID_P_MIN){
-		 	p = PID_P_MIN;
+	{
+	LOGGER_VERBOSE("Enter....");
+
+		LOGGER_NOTICE_FMT("setP: %f ", p);
+		if (p <= PID_P_MIN)
+		{
+			p = PID_P_MIN;
 		}
 
 		_pidData.pidCoefficient[pidCoeffi_e::kP] = p;
 
-		LOGGER_WARNING_FMT(" _pidCoeff.kP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
+		LOGGER_NOTICE_FMT(" _pidCoeff.kP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
 
-		if(_isEnabled){
+		if (_isEnabled)
+		{
 			enablePID();
 		}
-		delay(100);
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of setP ----------------------------------*/
 
 	void setI(float i)
 	{
+	LOGGER_VERBOSE("Enter....");
+
 		LOGGER_NOTICE_FMT("setI: %f", i);
 
 		_pidData.pidCoefficient[pidCoeffi_e::kI] = i;
 
-		LOGGER_WARNING_FMT("_pidCoeff.kI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
+		LOGGER_NOTICE_FMT("_pidCoeff.kI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
 
-		if(_isEnabled)
+		if (_isEnabled)
 			enablePID();
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of setI ----------------------------------*/
 
 	void setD(float d)
 	{
+	LOGGER_VERBOSE("Enter....");
+
 		_pidData.pidCoefficient[pidCoeffi_e::kI] = d;
 
-		LOGGER_WARNING_FMT("_pidCoeff.kD: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kD]);	
+		LOGGER_NOTICE_FMT("_pidCoeff.kD: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
 
-		if(_isEnabled)
+		if (_isEnabled)
 			enablePID();
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of setD ----------------------------------*/
 
 	void setEF(float ef)
 	{
+	LOGGER_VERBOSE("Enter....");
 		_pidData.pidCoefficient[pidCoeffi_e::eF] = ef;
 
-		LOGGER_WARNING_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);	
-		
-		if(_isEnabled)
+		LOGGER_NOTICE_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
+
+		if (_isEnabled)
 			enablePID();
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of setEF ----------------------------------*/
 
 	float getExecutionTime()
 	{
+	LOGGER_VERBOSE("Enter....");
+
 		LOGGER_NOTICE_FMT("PID getExecutionTime %.3f", (1 / _pidData.pidCoefficient[pidCoeffi_e::eF]) * 1000);
-		return  ((1.0/(float)_pidData.pidCoefficient[pidCoeffi_e::eF])*1000);
+		return ((1.0 / (float)_pidData.pidCoefficient[pidCoeffi_e::eF]) * 1000);
 		///< Convert frequency to millis
+
+		
+		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getExecutionTime ----------------------*/
 
 	void updateEEPROM(void)
 	{
-	//	EEPROM.read(addr, _pidParameter);
+	LOGGER_VERBOSE("Enter....");
+
+		//	EEPROM.read(addr, _pidParameter);
 		enablePID();
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of updateEEPROM --------------------------*/
 
 	void readEEPROM(void)
 	{
-	//	EEPROM.write(addr, _pidParameter);
+	LOGGER_VERBOSE("Enter....");
+
+		//	EEPROM.write(addr, _pidParameter);
 		enablePID();
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of readEEPROM ----------------------------*/
 
 	float getP() const
 	{
-		LOGGER_WARNING_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
+	LOGGER_VERBOSE("Enter....");
+
+		LOGGER_NOTICE_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
 		return _pidData.pidCoefficient[pidCoeffi_e::kP];
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getP ----------------------------------*/
 
 	float getI() const
 	{
-		LOGGER_WARNING_FMT("_pidCoeff.KI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
+	LOGGER_VERBOSE("Enter....");
+
+		LOGGER_NOTICE_FMT("_pidCoeff.KI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
 		return _pidData.pidCoefficient[pidCoeffi_e::kI];
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getI ----------------------------------*/
 
 	float getD() const
-		{LOGGER_WARNING_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
+	{
+	LOGGER_VERBOSE("Enter....");
+
+		LOGGER_NOTICE_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
 		return _pidData.pidCoefficient[pidCoeffi_e::kD];
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getD ----------------------------------*/
 
 	float getEF() const
 	{
-		LOGGER_WARNING_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
+	LOGGER_VERBOSE("Enter....");
+
+		LOGGER_NOTICE_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
 		return _pidData.pidCoefficient[pidCoeffi_e::eF];
+
+	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getEF ---------------------------------*/
 
-};/*--------------------------- end of MyPid class ------------------------------------*/
+}; /*--------------------------- end of newPID class ------------------------------------*/
 
-//#undef _DEBUG_

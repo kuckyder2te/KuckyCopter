@@ -9,8 +9,10 @@
 
 #include <TaskManager.h>
 
-#include "newPID.h"
+//#define LOCAL_DEBUG
 #include "myLogger.h"
+
+#include "newPID.h"
 
 class AxisBase : public Task::Base
 {
@@ -60,23 +62,36 @@ public:
 
     void savePIDConfig()
     {
+    LOGGER_VERBOSE("Enter....");    
+
         _newPID->saveParameters();
+
+    LOGGER_VERBOSE("....leave");     
     } /*----------------------------------- end of savePIDConfig ----------------------*/
 
     void loadPIDConfig()
     {
+    LOGGER_VERBOSE("Enter....");
+
         _newPID->loadParameters();
+
+    LOGGER_VERBOSE("....leave");    
     } /*----------------------------------- end of loadPIDConfig ----------------------*/
 
     virtual void begin() override
     {
+     LOGGER_VERBOSE("Enter....");    
+
         LOGGER_NOTICE("New PID initialized");
         _newPID->setEF(PID_FREQUENCY);
-        LOGGER_NOTICE("End init New PID");
+
+    LOGGER_VERBOSE("....leave"); 
     } /*----------------------------------- end of begin ------------------------------*/
 
     virtual void update() override
     {
+    LOGGER_VERBOSE("Enter....");
+
         /* _sp Position of the joysticks.
            _fb Position of the drohne.  */
 
@@ -85,8 +100,9 @@ public:
             *_error = _newPID->step(*_sp, *_fb); ///< Calculate PID error
             _lastMillis = millis();
         }
+
+    LOGGER_VERBOSE("....leave");    
     } /*----------------------------------- end of update -----------------------------*/
 };    /*----------------------------------- end of axisBase class ---------------------*/
 
 uint8_t AxisBase::_instanceCounter = 0; // https://stackoverflow.com/questions/5391973/undefined-reference-to-static-const-int
-// #undef _DEBUG_

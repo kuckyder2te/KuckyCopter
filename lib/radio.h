@@ -25,6 +25,8 @@
 #include <TaskManager.h>
 #include <printf.h>   //funktioniert hier nicht
 #include <RF24.h>
+
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #define PIN_RADIO_CE 20
