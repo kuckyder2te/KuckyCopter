@@ -110,6 +110,7 @@ new bracnch
 [Change 125]	OOP Fehler korrigiert und auskommentierte Teile gelöscht
 [Change 126]	EEPROM OK
 [Change 127]	Local Logger eingerichtet
+[Change 128]	Menü funtioniert wieder
 				
 
 ### **WICHTIG**
@@ -132,7 +133,6 @@ In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkomment
 	Macht es Sinn, die PID Werte i, Model zu speichern?
 
 ## Hinweise
-Will man die Achsen via Logger debuggen, muss in axisBase.h und motor.h am Dateiende das #undef auskommentiert werden "// #undef _DEBUG_" ????
 Bei ARM Prozessoren hat double eine Länge von 8byte und float von 4byte
 Deim debuggen/compilieren muss PID_adjust in Platformio.ini enable sein
 
@@ -167,7 +167,6 @@ _radio->startListening(); // put radio in RX mode
 	6.	Sensordaten überprüfen und ggf. Filter einfügen
 	7.	NRF24 printDetails überprüfen
 	8.  PID Werte aus PID-adjust in Model einlesen
-
 
 ##
  	Achsen-Bezeichnung zentral ablegen fix
