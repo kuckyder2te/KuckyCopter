@@ -46,7 +46,7 @@ private:
 	uint8_t _itemCoefficient;
 	uint8_t _pidType;
 	uint8_t _dotPlaces = 3;	 ///< Decimal places.
-	float _newAddOn = 0.001; ///< Multiplication factor for the PID coefficients, default setting.
+	float _newAddOn = 0.01; ///< Multiplication factor for the PID coefficients, default setting.
 	double _addOn;
 	uint8_t _maxPID;
 
@@ -403,7 +403,7 @@ public:
 	{ /// const deleted
 
 		_pidType = _itemAxis + _itemCoefficient;
-		//	LOGGER_WARNING_FMT("PID Type = %d", _pidType);
+		//	LOGGER_NOTICE_FMT("PID Type = %d", _pidType);
 
 		if (_pidType < 40)
 		{ ///< P, I and D
@@ -443,9 +443,7 @@ public:
 
 		switch (type)
 		{
-
-		case pidTyp_t::pri_P:
-			
+		case pidTyp_t::pri_P:			
 			pri_kP_value = _namedPID[axisName_e::primary]._pid->getP();
 			LOGGER_NOTICE_FMT("test = %f", pri_kP_value);
 			pri_kP_value += _addOn;
@@ -454,109 +452,100 @@ public:
 				LOGGER_NOTICE_FMT("X Axis kP = %f", pri_kP_value);
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, pri_kP_value);
 				_namedPID[axisName_e::primary]._pid->setP(pri_kP_value);
-				//_model->pidData[axisName_e::primary].pidCoefficient[pidCoeffi_e::kP] = pri_kP_value;
 				displayPIDcoefficients();
 			}
 			break;
 		case pidTyp_t::pri_I:
-			//pri_kI_value = _namedPID[axisName_e::primary]._pid->getI();
+			pri_kI_value = _namedPID[axisName_e::primary]._pid->getI();
 			pri_kI_value += _addOn;
 			if (checkValue(pri_kI_value))
 			{
 				LOGGER_NOTICE_FMT("X Axis kI = %f", pri_kI_value);
 				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, pri_kI_value);
 				_namedPID[axisName_e::primary]._pid->setI(pri_kI_value);
-				//_model->pidData[axisName_e::primary].pidCoefficient[pidCoeffi_e::kI] = pri_kI_value;
 				displayPIDcoefficients();
 			}
 			break;
 		case pidTyp_t::pri_D:
-			//pri_kD_value = _namedPID[axisName_e::primary]._pid->getD();
+			pri_kD_value = _namedPID[axisName_e::primary]._pid->getD();
 			pri_kD_value += _addOn;
 			if (checkValue(pri_kD_value))
 			{
 				LOGGER_NOTICE_FMT("X Axis kD = %f", pri_kD_value);
 				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, pri_kD_value);
 				_namedPID[axisName_e::primary]._pid->setD(pri_kD_value);
-				//_model->pidData[axisName_e::primary].pidCoefficient[pidCoeffi_e::kD] = pri_kD_value;
 				displayPIDcoefficients();
 			}
 			break;
 
 		case pidTyp_t::sec_P:
-			//sec_kP_value = _namedPID[axisName_e::secondary]._pid->getP();
+			sec_kP_value = _namedPID[axisName_e::secondary]._pid->getP();
 			sec_kP_value += _addOn;
 			if (checkValue(sec_kP_value))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kP = %f", sec_kP_value);
 				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kP_value);
 				_namedPID[axisName_e::secondary]._pid->setP(sec_kP_value);
-				//_model->pidData[axisName_e::secondary].pidCoefficient[pidCoeffi_e::kP] = sec_kP_value;
 				displayPIDcoefficients();
 			}
 			break;
 
 		case pidTyp_t::sec_I:
-			//sec_kI_value = _namedPID[axisName_e::secondary]._pid->getI();
+			sec_kI_value = _namedPID[axisName_e::secondary]._pid->getI();
 			sec_kI_value += _addOn;
 			if (checkValue(sec_kI_value))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kI = %f", sec_kI_value);
 				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kI_value);
 				_namedPID[axisName_e::secondary]._pid->setI(sec_kI_value);
-				//_model->pidData[axisName_e::secondary].pidCoefficient[pidCoeffi_e::kI] = sec_kI_value;
 				displayPIDcoefficients();
 			}
 			break;
 
 		case pidTyp_t::sec_D:
-			//sec_kD_value = _namedPID[axisName_e::secondary]._pid->getD();
+			sec_kD_value = _namedPID[axisName_e::secondary]._pid->getD();
 			sec_kD_value += _addOn;
 			if (checkValue(sec_kD_value))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kD = %f", sec_kD_value);
 				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kD_value);
 				_namedPID[axisName_e::secondary]._pid->setD(sec_kD_value);
-				//_model->pidData[axisName_e::secondary].pidCoefficient[pidCoeffi_e::kD] = sec_kD_value;
 				displayPIDcoefficients();
 			}
 			break;
 
 		case pidTyp_t::yaw_P:
-			//yaw_kP_value = _namedPID[axisName_e::yaw]._pid->getI();
+			yaw_kP_value = _namedPID[axisName_e::yaw]._pid->getI();
 			yaw_kP_value += _addOn;
 			if (checkValue(yaw_kP_value))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kP = %f", yaw_kP_value);
 				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kP_value);
 				_namedPID[axisName_e::yaw]._pid->setP(yaw_kP_value);
-				//_model->pidData[axisName_e::yaw].pidCoefficient[pidCoeffi_e::kP] = yaw_kP_value;
 				displayPIDcoefficients();
 			}
 			break;
 
 		case pidTyp_t::yaw_I:
-			//yaw_kI_value = _namedPID[axisName_e::yaw]._pid->getI();
+			yaw_kI_value = _namedPID[axisName_e::yaw]._pid->getI();
 			yaw_kI_value += _addOn;
 			if (checkValue(yaw_kI_value))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kI = %f", yaw_kI_value);
 				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kI_value);
 				_namedPID[axisName_e::yaw]._pid->setI(yaw_kI_value);
-				//_model->pidData[axisName_e::yaw].pidCoefficient[pidCoeffi_e::kI] = yaw_kI_value;
 				displayPIDcoefficients();
 			}
 			break;
 
 		case pidTyp_t::yaw_D:
-			//yaw_kD_value = _namedPID[axisName_e::yaw]._pid->getD();
+			yaw_kD_value = _namedPID[axisName_e::yaw]._pid->getD();
 			yaw_kD_value += _addOn;
 			if (checkValue(yaw_kD_value))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kD = %f", yaw_kD_value);
 				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kD_value);
 				_namedPID[axisName_e::yaw]._pid->setD(yaw_kD_value);
-				//_model->pidData[axisName_e::yaw].pidCoefficient[pidCoeffi_e::kD] = yaw_kD_value;
 				displayPIDcoefficients();
 			}
 			break;
@@ -568,7 +557,6 @@ public:
 				LOGGER_WARNING_FMT("X Axis eF = %f", pri_EF_value);
 				_putty_out->print(ROW_SELECT + 15, COL_SELECT + 33, _dotPlaces, pri_EF_value);
 				_namedPID[axisName_e::primary]._pid->setEF(pri_EF_value);
-				//_model->pidData[axisName_e::primary].pidCoefficient[pidCoeffi_e::eF] = pri_EF_value;
 				displayPIDcoefficients();
 			}
 			break;
@@ -580,7 +568,6 @@ public:
 				LOGGER_WARNING_FMT("Y Axis eF = %f", sec_EF_value);
 				_putty_out->print(ROW_SELECT + 16, COL_SELECT + 33, _dotPlaces, sec_EF_value);
 				_namedPID[axisName_e::secondary]._pid->setEF(sec_EF_value);
-				//_model->pidData[axisName_e::secondary].pidCoefficient[pidCoeffi_e::eF] = sec_EF_value;
 				displayPIDcoefficients();
 			}
 			break;
@@ -592,7 +579,6 @@ public:
 				LOGGER_WARNING_FMT("Z Axis eF = %f", yaw_EF_value);
 				_putty_out->print(ROW_SELECT + 17, COL_SELECT + 33, _dotPlaces, yaw_EF_value);
 				_namedPID[axisName_e::yaw]._pid->setEF(yaw_EF_value);
-				//_model->pidData[axisName_e::yaw].pidCoefficient[pidCoeffi_e::eF] = yaw_EF_value;
 				displayPIDcoefficients();
 			}
 			break;
@@ -626,7 +612,8 @@ public:
 		_putty_out->gray();
 		_putty_out->print(ROW_MENU + 19, COL_MENU, "-----------------------------------------------------");
 		_putty_out->yellow();
-		_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, "Accuracy = 1,0");
+		_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, "Accuracy = ");
+		_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT+11, 3, _newAddOn);
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of display_Menu --------------------------------*/
 
