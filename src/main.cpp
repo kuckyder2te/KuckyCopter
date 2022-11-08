@@ -89,8 +89,12 @@ void setup()
   Wire.begin();
 
   EEPROM.begin(80);
+
+  // for(uint8_t i = 0; i < 81; i++){
+  //   EEPROM.write(i, 0);
+  // }
   
-  delay(100);
+  delay(10);
 
   LOGGER_VERBOSE("Enter....");
   Tasks.add<AxisMotor>("axismotor_a")

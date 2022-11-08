@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include <HardwareSerial.h>
 
-#define LOCAL_DEBUG
+#define LOCAL_DEBUG	// enable = debug this class  /  disable no debug
 #include "..\lib\myLogger.h"
 
 #include "..\lib\putty_out.h"
@@ -446,7 +446,8 @@ public:
 
 		case pidTyp_t::pri_P:
 			
-			//pri_kP_value = _namedPID[axisName_e::primary]._pid->getP();
+			pri_kP_value = _namedPID[axisName_e::primary]._pid->getP();
+			LOGGER_NOTICE_FMT("test = %f", pri_kP_value);
 			pri_kP_value += _addOn;
 			if (checkValue(pri_kP_value))
 			{
@@ -636,8 +637,7 @@ public:
 
 		_putty_out->gray();
 		_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT, _dict->c_primary_p);
-		_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT_VALUE, 3, pri_kP_value);
-		//_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::primary]._pid->getP());
+		_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::primary]._pid->getP());
 		_putty_out->print(ROW_OUTPUT + 2, COL_OUTPUT, _dict->c_primary_i);
 		_putty_out->print(ROW_OUTPUT + 2, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::primary]._pid->getI());
 		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, _dict->c_primary_d);
@@ -691,7 +691,5 @@ public:
 	} /*----------------------------- end of setDecimalPlaces -------------------------*/
 
 }; /*------------------------- end of PID_adjust class --------------------------------*/
-
-//#undef _DEBUG_
 
 #endif

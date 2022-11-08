@@ -111,6 +111,7 @@ new bracnch
 [Change 126]	EEPROM OK
 [Change 127]	Local Logger eingerichtet
 [Change 128]	Menü funtioniert wieder
+[Change 129]	EEPROM bis auf Z P OK
 				
 
 ### **WICHTIG**

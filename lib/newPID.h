@@ -15,7 +15,7 @@
 
 #include <FastPID.h>
 
-//#define LOCAL_DEBUG
+//#define LOCAL_DEBUG		// enable = debug this class  /  disable no debug
 #include "myLogger.h"
 
 #include "EEPROM.h"
@@ -58,8 +58,9 @@ public:
 		_isEnabled = false;
 		this->setOutputRange(-100, 100);
 		this->setOutputConfig(16, true);
+	//	Serial.println("NewPID");
 		loadParameters();
-		disablePID();
+	//	disablePID();
 	} /*-------------------------------- end of constructor ---------------------------*/
 
 	void saveParameters()
@@ -197,7 +198,9 @@ public:
 		LOGGER_NOTICE_FMT("_pidCoeff.kI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
 
 		if (_isEnabled)
+		{
 			enablePID();
+		}
 
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of setI ----------------------------------*/
@@ -211,7 +214,9 @@ public:
 		LOGGER_NOTICE_FMT("_pidCoeff.kD: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
 
 		if (_isEnabled)
+		{
 			enablePID();
+		}
 
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of setD ----------------------------------*/
@@ -224,7 +229,9 @@ public:
 		LOGGER_NOTICE_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
 
 		if (_isEnabled)
+		{
 			enablePID();
+		}
 
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of setEF ----------------------------------*/
@@ -263,6 +270,7 @@ public:
 
 	float getP() const
 	{
+	Serial.println("getP");
 	LOGGER_VERBOSE("Enter....");
 
 		LOGGER_NOTICE_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
