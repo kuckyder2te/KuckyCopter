@@ -220,17 +220,17 @@ public:
 				{
 
 				case axisName_e::primary:
-					setItemExecFreq(41);
+				// setItemExecFreq(41);
 					_putty_out->clearPart(ROW_SELECT + 15, COL_SELECT + 5, _dict->c_whitespace);
 					_putty_out->print(ROW_SELECT + 15, COL_SELECT + 5, _dict->c_ef_primary);
 					break;
 				case axisName_e::secondary:
-					setItemExecFreq(42);
+				//	setItemExecFreq(42);
 					_putty_out->clearPart(ROW_SELECT + 16, COL_SELECT + 5, _dict->c_whitespace);
 					_putty_out->print(ROW_SELECT + 16, COL_SELECT + 5, _dict->c_ef_secondary);
 					break;
 				case axisName_e::yaw:
-					setItemExecFreq(43);
+				//	setItemExecFreq(43);
 					_putty_out->clearPart(ROW_SELECT + 17, COL_SELECT + 5, _dict->c_whitespace);
 					_putty_out->print(ROW_SELECT + 17, COL_SELECT + 5, _dict->c_ef_yaw_);
 					break;
@@ -379,10 +379,10 @@ public:
 		LOGGER_NOTICE_FMT("itemAxis = %d", _itemAxis);
 	} /*----------------------------- end of setItemAxis ------------------------------*/
 
-	void setItemExecFreq(uint8_t itemExFr)
-	{
-		_itemCoefficient = itemExFr;
-	} /*----------------------------- end of setItemExecFreq --------------------------*/
+	// void setItemExecFreq(uint8_t itemExFr)
+	// {
+	// 	_itemCoefficient = itemExFr;
+	// } /*----------------------------- end of setItemExecFreq --------------------------*/
 
 	void setItemCoefficient(uint8_t itemCoefficient)
 	{
@@ -467,7 +467,7 @@ public:
 			}
 			break;
 		case pidTyp_t::pri_D:
-			pri_kD_value = _namedPID[axisName_e::primary]._pid->getD();
+		//	pri_kD_value = _namedPID[axisName_e::primary]._pid->getD();
 			pri_kD_value += _addOn;
 			if (checkValue(pri_kD_value))
 			{
@@ -503,7 +503,7 @@ public:
 			break;
 
 		case pidTyp_t::sec_D:
-			sec_kD_value = _namedPID[axisName_e::secondary]._pid->getD();
+		//	sec_kD_value = _namedPID[axisName_e::secondary]._pid->getD();
 			sec_kD_value += _addOn;
 			if (checkValue(sec_kD_value))
 			{
@@ -515,7 +515,7 @@ public:
 			break;
 
 		case pidTyp_t::yaw_P:
-			yaw_kP_value = _namedPID[axisName_e::yaw]._pid->getI();
+		//	yaw_kP_value = _namedPID[axisName_e::yaw]._pid->getI();
 			yaw_kP_value += _addOn;
 			if (checkValue(yaw_kP_value))
 			{
@@ -539,7 +539,7 @@ public:
 			break;
 
 		case pidTyp_t::yaw_D:
-			yaw_kD_value = _namedPID[axisName_e::yaw]._pid->getD();
+		//	yaw_kD_value = _namedPID[axisName_e::yaw]._pid->getD();
 			yaw_kD_value += _addOn;
 			if (checkValue(yaw_kD_value))
 			{
