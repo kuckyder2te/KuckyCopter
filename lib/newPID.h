@@ -209,7 +209,7 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 
-		_pidData.pidCoefficient[pidCoeffi_e::kI] = d;
+		_pidData.pidCoefficient[pidCoeffi_e::kD] = d;
 
 		LOGGER_NOTICE_FMT("_pidCoeff.kD: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
 
@@ -293,7 +293,7 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_NOTICE_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
+		LOGGER_NOTICE_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
 		return _pidData.pidCoefficient[pidCoeffi_e::kD];
 
 	LOGGER_VERBOSE("....leave");

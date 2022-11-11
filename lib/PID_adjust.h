@@ -23,20 +23,21 @@
 #ifdef _PID_ADJUST
 
 #define PID_NUM 3
+
 #define ROW_MENU 3 ///< First position for the main menue
 #define COL_MENU 10
-#define ROW_SELECT 25 ///< First position for select PID type
+#define ROW_SELECT ROW_MENU+23 ///< First position for select PID type
 #define COL_SELECT 5
 #define ROW_COEFF 28 ///< First position for new coefficients
 #define COL_COEFF 20
 #define ROW_PID 33 ///< First position for current coefficients
 #define COL_PID 20
-#define ROW_OUTPUT 25
+#define ROW_OUTPUT ROW_MENU+21
 #define COL_OUTPUT 50
 #define COL_OUTPUT_VALUE 69
-#define ROW_ACCURAY_ADD 20
-#define ROW_ILLEGAL 49 // Position for error message
-#define COL_ILLEGAL 20
+#define ROW_ACCURAY ROW_MENU+17
+#define ROW_STATE ROW_MENU+46 // Position for state message
+#define COL_STATE COL_MENU+16
 
 class PID_adjust : public Task::Base
 {
@@ -153,7 +154,7 @@ public:
 	{
 		LOGGER_VERBOSE("Enter....");
 		_dict = new (Dictionary);
-		// displayPIDcoefficients();
+		//displayPIDcoefficients();
 		LOGGER_VERBOSE("....leave");
 	} /* -------------------- end of begin --------------------------------------------*/
 
@@ -170,21 +171,21 @@ public:
 			case 'x': ///< Choose the axes
 				setItemAxis(itemAxis_Number_t::axis_pri);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);		///< Clears the string "Illegal button was pressed"
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);		///< Clears the string "Illegal button was pressed"
 				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
 				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_pri_select);		///< Print the selected axis
 				break;
 			case 'y':
 				setItemAxis(itemAxis_Number_t::axis_sec);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 5, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + 5, COL_SELECT + 5, _dict->c_sec_select);
 				break;
 			case 'z':
 				setItemAxis(itemAxis_Number_t::axis_yaw);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 10, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + 10, COL_SELECT + 5, _dict->c_yaw_select);
 				break;
@@ -192,7 +193,7 @@ public:
 			case 'p': ///< Choose the PID parameter
 				setItemCoefficient(itemCoefficient_t::offset_P);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_p_select); ///< Print the selected coefficient
 				break;
@@ -200,7 +201,7 @@ public:
 			case 'i':
 				setItemCoefficient(itemCoefficient_t::offset_I);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_i_select);
 				break;
@@ -208,7 +209,7 @@ public:
 			case 'd':
 				setItemCoefficient(itemCoefficient_t::offset_D);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_d_select);
 				break;
@@ -238,52 +239,56 @@ public:
 					count = -1;
 					break;
 				}
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				count++;
 				break;
 
 			case '+':
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				coefficient_Up(); ///< Coefficient increment
 				break;
 
 			case '-':
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				coefficient_Down(); ///< Coefficient decrement
 				break;
 
 			case '0': ///< Choose the decimal places  0 to 0,001
 				setDecimalPlaces(0);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy10);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
+				_putty_out->cyan();
+				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
 				break;
 
 			case '1':
 				setDecimalPlaces(1);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy01);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
+				_putty_out->cyan();
+				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
 				break;
 
 			case '2':
 				setDecimalPlaces(2);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy001);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
+				_putty_out->cyan();
+				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
 				break;
 
 			case '3':
 				setDecimalPlaces(3);
 				_putty_out->yellow();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_ILLEGAL + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, _dict->c_accuracy0001);
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_STATE + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
+				_putty_out->cyan();
+				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
 				break;
 
 			case 's': ///< Saved all coefficients into the EEPROM
@@ -360,7 +365,7 @@ public:
 			default:
 			{
 				_putty_out->red();
-				_putty_out->print(ROW_ILLEGAL, COL_ILLEGAL, "Illegal button was pressed");
+				_putty_out->print(ROW_STATE, COL_STATE, "Illegal button was pressed");
 				_putty_out->yellow();
 			}
 			} /* end of switch(key) */
@@ -450,6 +455,7 @@ public:
 			if (checkValue(pri_kP_value))
 			{
 				LOGGER_NOTICE_FMT("X Axis kP = %f", pri_kP_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, pri_kP_value);
 				_namedPID[axisName_e::primary]._pid->setP(pri_kP_value);
 				displayPIDcoefficients();
@@ -461,17 +467,19 @@ public:
 			if (checkValue(pri_kI_value))
 			{
 				LOGGER_NOTICE_FMT("X Axis kI = %f", pri_kI_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, pri_kI_value);
 				_namedPID[axisName_e::primary]._pid->setI(pri_kI_value);
 				displayPIDcoefficients();
 			}
 			break;
 		case pidTyp_t::pri_D:
-		//	pri_kD_value = _namedPID[axisName_e::primary]._pid->getD();
+			pri_kD_value = _namedPID[axisName_e::primary]._pid->getD();
 			pri_kD_value += _addOn;
 			if (checkValue(pri_kD_value))
 			{
 				LOGGER_NOTICE_FMT("X Axis kD = %f", pri_kD_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, pri_kD_value);
 				_namedPID[axisName_e::primary]._pid->setD(pri_kD_value);
 				displayPIDcoefficients();
@@ -484,6 +492,7 @@ public:
 			if (checkValue(sec_kP_value))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kP = %f", sec_kP_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kP_value);
 				_namedPID[axisName_e::secondary]._pid->setP(sec_kP_value);
 				displayPIDcoefficients();
@@ -496,6 +505,7 @@ public:
 			if (checkValue(sec_kI_value))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kI = %f", sec_kI_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kI_value);
 				_namedPID[axisName_e::secondary]._pid->setI(sec_kI_value);
 				displayPIDcoefficients();
@@ -508,6 +518,7 @@ public:
 			if (checkValue(sec_kD_value))
 			{
 				LOGGER_NOTICE_FMT("Y Axis kD = %f", sec_kD_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kD_value);
 				_namedPID[axisName_e::secondary]._pid->setD(sec_kD_value);
 				displayPIDcoefficients();
@@ -520,6 +531,7 @@ public:
 			if (checkValue(yaw_kP_value))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kP = %f", yaw_kP_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kP_value);
 				_namedPID[axisName_e::yaw]._pid->setP(yaw_kP_value);
 				displayPIDcoefficients();
@@ -532,6 +544,7 @@ public:
 			if (checkValue(yaw_kI_value))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kI = %f", yaw_kI_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kI_value);
 				_namedPID[axisName_e::yaw]._pid->setI(yaw_kI_value);
 				displayPIDcoefficients();
@@ -544,6 +557,7 @@ public:
 			if (checkValue(yaw_kD_value))
 			{
 				LOGGER_NOTICE_FMT("Z Axis kD = %f", yaw_kD_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kD_value);
 				_namedPID[axisName_e::yaw]._pid->setD(yaw_kD_value);
 				displayPIDcoefficients();
@@ -555,6 +569,7 @@ public:
 			if (checkValue(pri_EF_value))
 			{
 				LOGGER_WARNING_FMT("X Axis eF = %f", pri_EF_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 15, COL_SELECT + 33, _dotPlaces, pri_EF_value);
 				_namedPID[axisName_e::primary]._pid->setEF(pri_EF_value);
 				displayPIDcoefficients();
@@ -566,6 +581,7 @@ public:
 			if (checkValue(sec_EF_value))
 			{
 				LOGGER_WARNING_FMT("Y Axis eF = %f", sec_EF_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 16, COL_SELECT + 33, _dotPlaces, sec_EF_value);
 				_namedPID[axisName_e::secondary]._pid->setEF(sec_EF_value);
 				displayPIDcoefficients();
@@ -577,6 +593,7 @@ public:
 			if (checkValue(yaw_EF_value))
 			{
 				LOGGER_WARNING_FMT("Z Axis eF = %f", yaw_EF_value);
+				_putty_out->cyan();
 				_putty_out->print(ROW_SELECT + 17, COL_SELECT + 33, _dotPlaces, yaw_EF_value);
 				_namedPID[axisName_e::yaw]._pid->setEF(yaw_EF_value);
 				displayPIDcoefficients();
@@ -612,8 +629,12 @@ public:
 		_putty_out->gray();
 		_putty_out->print(ROW_MENU + 19, COL_MENU, "-----------------------------------------------------");
 		_putty_out->yellow();
-		_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT, "Accuracy = ");
-		_putty_out->print(ROW_SELECT + ROW_ACCURAY_ADD, COL_SELECT+11, 3, _newAddOn);
+		_putty_out->print(ROW_OUTPUT, COL_MENU, "Accuracy = ");
+		_putty_out->cyan();
+		_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
+		_putty_out->gray();
+		_putty_out->print(ROW_STATE, COL_MENU, "State message : ");
+
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of display_Menu --------------------------------*/
 

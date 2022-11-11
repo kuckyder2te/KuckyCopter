@@ -114,6 +114,7 @@ new bracnch
 [Change 129]	EEPROM bis auf Z P OK
 [Change 130]	EEPROM doch seltsam
 [Change 131]	PID Menü auch mit (+) und (-) OK
+[Change 132]	PID Adjust teilweise geklärt
 				
 
 ### **WICHTIG**

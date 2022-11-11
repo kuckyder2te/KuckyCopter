@@ -23,7 +23,7 @@ public:
 	const char *c_i_select = "Coefficient I = ";
 	const char *c_d_select = "Coefficient D = ";
 
-	const char *c_accuracy10 =   "Accuracy = 1.0  ";
+	const char *c_accuracy =   "Accuracy = 1.0  ";
 	const char *c_accuracy01 =   "Accuracy = 0.1  ";
 	const char *c_accuracy001 =  "Accuracy = 0.01 ";
 	const char *c_accuracy0001 = "Accuracy = 0.001";
