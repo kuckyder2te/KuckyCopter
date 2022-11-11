@@ -116,7 +116,7 @@ public:
 
 		case on:
 		//	resultingPower = _power;
-
+			_power = 10;
             resultingPower = map(_power, 0, 100, 40000, 80000);
 
 			if (resultingPower < BASE_MOTOR_POWER) {

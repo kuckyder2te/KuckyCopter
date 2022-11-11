@@ -154,7 +154,7 @@ public:
 	{
 		LOGGER_VERBOSE("Enter....");
 		_dict = new (Dictionary);
-		//displayPIDcoefficients();
+	//	displayPIDcoefficients();
 		LOGGER_VERBOSE("....leave");
 	} /* -------------------- end of begin --------------------------------------------*/
 
@@ -164,7 +164,6 @@ public:
 
 		if (_serial->available() > 0) // Hier werden die gedrückten keys abgefragt
 		{
-			LOGGER_VERBOSE("Enter....");
 			char key = _serial->read();
 			switch (key)
 			{
@@ -298,7 +297,7 @@ public:
 				}
 				
 				_putty_out->red();
-				_putty_out->print(45, 8, "PID data was backed up");
+				_putty_out->print(ROW_STATE, COL_STATE, "PID data was backed up");
 				_putty_out->yellow();
 				displayPIDcoefficients();
 				break;
@@ -306,11 +305,13 @@ public:
 			case 'r': ///< Reads all coefficients from the EEPROM
 				_namedPID->_pid->putPID_Data_into_EEPROM();
 				_putty_out->red();
-				_putty_out->print(45, 8, "PID data was read out");
+				_putty_out->print(ROW_STATE, COL_STATE, "Data has been read");
 				_putty_out->yellow();
 				break;
 
 			case 'a': ///< Set all PID parameters to 0
+				Serial.println("a");
+				_namedPID->_pid->clearEEPROM();
 				// myPID_pri.setP(PID_P_MIN);
 				// myPID_pri.setI(0);
 				// myPID_pri.setD(0);
@@ -355,11 +356,15 @@ public:
 				break;
 
 			case 'h':
-				LOGGER_NOTICE(" Altitude is not implemented");
+				LOGGER_NOTICE("Altitude is not implemented");
+				_putty_out->red();
+				_putty_out->print(ROW_STATE, COL_STATE, " Altitude is not implemented");
 				break;
 
 			case 'n':
-				LOGGER_NOTICE(" Near ground is not implemented");
+				LOGGER_NOTICE("Near ground is not implemented");
+				_putty_out->red();
+				_putty_out->print(ROW_STATE, COL_STATE, "Near ground is not implemented");
 				break;
 
 			default:
@@ -369,7 +374,6 @@ public:
 				_putty_out->yellow();
 			}
 			} /* end of switch(key) */
-			LOGGER_VERBOSE("....leave");
 		} /* end of _serial.available */
 		LOGGER_VERBOSE("....leave");
 	} /* -------------------- end of update -------------------------------------------*/
@@ -449,7 +453,7 @@ public:
 		switch (type)
 		{
 		case pidTyp_t::pri_P:			
-			pri_kP_value = _namedPID[axisName_e::primary]._pid->getP();
+		//	pri_kP_value = _namedPID[axisName_e::primary]._pid->getP();
 			LOGGER_NOTICE_FMT("test = %f", pri_kP_value);
 			pri_kP_value += _addOn;
 			if (checkValue(pri_kP_value))
@@ -462,7 +466,7 @@ public:
 			}
 			break;
 		case pidTyp_t::pri_I:
-			pri_kI_value = _namedPID[axisName_e::primary]._pid->getI();
+		//	pri_kI_value = _namedPID[axisName_e::primary]._pid->getI();
 			pri_kI_value += _addOn;
 			if (checkValue(pri_kI_value))
 			{
@@ -474,7 +478,7 @@ public:
 			}
 			break;
 		case pidTyp_t::pri_D:
-			pri_kD_value = _namedPID[axisName_e::primary]._pid->getD();
+		//	pri_kD_value = _namedPID[axisName_e::primary]._pid->getD();
 			pri_kD_value += _addOn;
 			if (checkValue(pri_kD_value))
 			{
@@ -487,7 +491,7 @@ public:
 			break;
 
 		case pidTyp_t::sec_P:
-			sec_kP_value = _namedPID[axisName_e::secondary]._pid->getP();
+		//	sec_kP_value = _namedPID[axisName_e::secondary]._pid->getP();
 			sec_kP_value += _addOn;
 			if (checkValue(sec_kP_value))
 			{
@@ -539,7 +543,7 @@ public:
 			break;
 
 		case pidTyp_t::yaw_I:
-			yaw_kI_value = _namedPID[axisName_e::yaw]._pid->getI();
+		//	yaw_kI_value = _namedPID[axisName_e::yaw]._pid->getI();
 			yaw_kI_value += _addOn;
 			if (checkValue(yaw_kI_value))
 			{

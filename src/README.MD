@@ -115,6 +115,7 @@ new bracnch
 [Change 130]	EEPROM doch seltsam
 [Change 131]	PID Menü auch mit (+) und (-) OK
 [Change 132]	PID Adjust teilweise geklärt
+[Change 133]	EEprom OK, aber YAW axis P hat Anfangs immer 55.600
 				
 
 ### **WICHTIG**

@@ -15,7 +15,7 @@
 
 #include <FastPID.h>
 
-//#define LOCAL_DEBUG		// enable = debug this class  /  disable no debug
+#define LOCAL_DEBUG		// enable = debug this class  /  disable no debug
 #include "myLogger.h"
 
 #include "EEPROM.h"
@@ -76,7 +76,7 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_NOTICE_FMT("SavePara - sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
+		LOGGER_NOTICE_FMT("sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
 		uint8_t *current = reinterpret_cast<uint8_t *>(data);
 
 		for (uint8_t i = 0; i < sizeof(pidData_t); i++)
@@ -97,18 +97,31 @@ public:
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of saveParameters ------------------------*/
 
+	void clearEEPROM()
+	{
+	LOGGER_VERBOSE("Enter...."); 
+
+		for(uint8_t i = 0; i < 81; i++){
+    	EEPROM.write(i, 0);
+		Serial.println(i);
+		LOGGER_NOTICE_FMT("Addr = %i", i);
+		}
+	LOGGER_VERBOSE("....leave");	
+
+	} /*-------------------------------- end of clearEEPROM ---------------------------*/
+
 	void loadParameters()
 	{
 	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_NOTICE_FMT("LoadPara - sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
+		LOGGER_NOTICE_FMT("sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
 
 		uint8_t *current = reinterpret_cast<uint8_t *>(&_pidData); // current zeigt auf die gleiche Speicherstelle wie _pidData
 																   // der datentyp _pidData wird in eine uint8 typ geändert
 		for (uint8_t i = 0; i < sizeof(pidData_t); i++)
 		{
 			*(current + i) = EEPROM.read((_eepromAddress + i));
-			LOGGER_NOTICE_FMT("i = %i", (uint8_t) * (current + i));
+		//	LOGGER_NOTICE_FMT("i = %i", (uint8_t) * (current + i));
 		}
 
 		LOGGER_NOTICE_FMT("_pidData.kP = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
@@ -240,7 +253,7 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_NOTICE_FMT("PID getExecutionTime %.3f", (1 / _pidData.pidCoefficient[pidCoeffi_e::eF]) * 1000);
+	//	LOGGER_NOTICE_FMT("PID getExecutionTime %.3f", (1 / _pidData.pidCoefficient[pidCoeffi_e::eF]) * 1000);
 		return ((1.0 / (float)_pidData.pidCoefficient[pidCoeffi_e::eF]) * 1000);
 		///< Convert frequency to millis
 
@@ -270,10 +283,10 @@ public:
 
 	float getP() const
 	{
-	Serial.println("getP");
+//	Serial.println("getP");
 	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_NOTICE_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
+		LOGGER_NOTICE_FMT("_pidCoeff KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
 		return _pidData.pidCoefficient[pidCoeffi_e::kP];
 
 	LOGGER_VERBOSE("....leave");
@@ -283,7 +296,7 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_NOTICE_FMT("_pidCoeff.KI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
+		LOGGER_NOTICE_FMT("_pidCoeff KI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
 		return _pidData.pidCoefficient[pidCoeffi_e::kI];
 
 	LOGGER_VERBOSE("....leave");
@@ -293,7 +306,7 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_NOTICE_FMT("_pidCoeff.KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
+		LOGGER_NOTICE_FMT("_pidCoeff KD: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
 		return _pidData.pidCoefficient[pidCoeffi_e::kD];
 
 	LOGGER_VERBOSE("....leave");
