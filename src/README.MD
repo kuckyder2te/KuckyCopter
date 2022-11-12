@@ -115,7 +115,8 @@ new bracnch
 [Change 130]	EEPROM doch seltsam
 [Change 131]	PID Menü auch mit (+) und (-) OK
 [Change 132]	PID Adjust teilweise geklärt
-[Change 133]	EEprom OK, aber YAW axis P hat Anfangs immer 55.600
+[Change 133]	EEprom OK ?, aber YAW axis P hat Anfangs immer 55.600
+[Change 134]	EEPROM Liest und schreibt
 				
 
 ### **WICHTIG**
@@ -145,7 +146,8 @@ Deim debuggen/compilieren muss PID_adjust in Platformio.ini enable sein
 ### Logger
 Wenn z.B. -D_DEBUG_=FATAL gesetzt wird, werden alle vorherrigen unterdrückt.
 In der zu bebuggenden Datei wird vor myLogger.h ein #define LOCAL_DEBUG gesetzt
-In myLogger.h wird "#if defined LOCAL_DEBUG || defined GLOBAL_DEBUG" eingefügt und in Platformio.ini mit "-DGLOBAL_DEBUG" ausgewählt ob alle Dateien, oder nur spezielle debugt werden.
+In myLogger.h wird "#if defined LOCAL_DEBUG || defined GLOBAL_DEBUG" eingefügt und in Platformio.ini mit 
+"-DGLOBAL_DEBUG" ausgewählt ob alle Dateien, oder nur spezielle debugt werden.
 Man kann 
 
 ### COM Ausgabe
@@ -165,15 +167,17 @@ _radio->startListening(); // put radio in RX mode
 
 ## Nächste Projekt-Schritte
 	1.	Radio Daten verfizieren fix
-	2.	EEPROM aktivieren
+	2.	EEPROM aktivieren fix
 	3.	Radio nur auf Receiver schalten fix
 	4.	PWM Signal auf Motoren übertragen
-	5.	LOGGER überprüfen
+	5.	LOGGER überprüfen fix
 	6.	Sensordaten überprüfen und ggf. Filter einfügen
 	7.	NRF24 printDetails überprüfen
-	8.  PID Werte aus PID-adjust in Model einlesen
+	8.  PID Werte aus PID-adjust in Model einlesen. Nicht mehr nötig fix
 
 ##
  	Achsen-Bezeichnung zentral ablegen fix
 	Interface in rcInterface umbenennen fix 
-	Payload rcSwix	-> bool   fix                                                 
+	Payload rcSwix	-> bool   fix   
+
+	PID Menü. Wenn man vor der Achsenwahl "P" drückt, erscheint dieAusgabe zu hoch                                              

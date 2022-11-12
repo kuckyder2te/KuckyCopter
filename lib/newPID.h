@@ -22,6 +22,9 @@
 #include "def.h"
 
 #define PID_FREQUENCY 50 ///< PID parameter
+// #define PID_SEC_FREQUENCY 51
+// #define PID_YAW_FREQUENCY 52
+
 #define PID_OUTPUT_BITS 16
 #define PID_OUTPUT_SIGNED flase
 #define PID_P_MIN 0.00390626 ///< The parameter P domain is [0.00390625 to 255] inclusive.
@@ -58,14 +61,12 @@ public:
 		_isEnabled = false;
 		this->setOutputRange(-100, 100);
 		this->setOutputConfig(16, true);
-	//	Serial.println("NewPID");
 		loadParameters();
-	//	disablePID();
 	} /*-------------------------------- end of constructor ---------------------------*/
 
 	void saveParameters()
 	{
-	LOGGER_VERBOSE("Enter....");
+	LOGGER_NOTICE("Enter....");
 	
 		saveParameters(&_pidData);
 
@@ -96,19 +97,6 @@ public:
 
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of saveParameters ------------------------*/
-
-	void clearEEPROM()
-	{
-	LOGGER_VERBOSE("Enter...."); 
-
-		for(uint8_t i = 0; i < 81; i++){
-    	EEPROM.write(i, 0);
-		Serial.println(i);
-		LOGGER_NOTICE_FMT("Addr = %i", i);
-		}
-	LOGGER_VERBOSE("....leave");	
-
-	} /*-------------------------------- end of clearEEPROM ---------------------------*/
 
 	void loadParameters()
 	{
@@ -166,15 +154,15 @@ public:
 
 	void putPID_Data_into_EEPROM()
 	{
-	LOGGER_VERBOSE("Enter....");
-
+	LOGGER_NOTICE("Enter....");
+		
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of putPID_Data_into_EEPROM ---------------*/
 
-	void getPID_Data_into_EEPROM()
+	void getPID_Data_from_EEPROM()
 	{
-	LOGGER_VERBOSE("Enter....");
-
+	LOGGER_NOTICE("Enter....");
+	
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getPID_Data_into_EEPROM ---------------*/
 
