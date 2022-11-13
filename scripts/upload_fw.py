@@ -6,7 +6,7 @@ if system() == 'Linux':
   current_path = str(os.path.abspath(os.getcwd())) + '/scripts'
   pico_dir = "/media/" + os.popen('whoami').read().replace('\n', '') + "/RPI-RP2"
   if os.path.exists(pico_dir):
-    os.system("cp " + current_path +  "/../.pio/build/rpipico/firmware.uf2 " + pico_dir)
+    os.system("cp " + current_path +  "/../.pio/build/rpipico/firmware.elf.uf2 " + pico_dir)
   else:
     sys.exit()
 
@@ -22,7 +22,7 @@ elif system() == 'Windows':
     else:
       sys.exit()
     
-  os.system("copy " + current_path +  "\\..\\.pio\\build\\rpipico\\firmware.uf2 " + pico_dir)
+  os.system("copy " + current_path +  "\\..\\.pio\\build\\rpipico\\firmware.elf.uf2 " + pico_dir)
     
 else:
   sys.exit()

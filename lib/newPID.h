@@ -32,10 +32,10 @@
 
 typedef struct
 {
-	float pidCoefficient[4]; // 12 bytes
+	float pidCoefficient[3]; // 12 bytes
 //	uint8_t output_bits;	 // 2			""
 ///	bool output_signed;		 // 1   		""
-	bool modified;			 // 1   muss gesetzt werden wenn die Parameter manuell geändert wurden
+//	bool modified;			 // 1   muss gesetzt werden wenn die Parameter manuell geändert wurden
 } pidData_t;
 
 //static pidData_t initPid = {{1.11f, 2.22f, 3.33f, 50.0f}, 8, false, false};
@@ -58,7 +58,7 @@ public:
 	{
 		_ParentName = name;
 		_eepromAddress = eepromAddress;
-		_isEnabled = true;
+		_isEnabled = false;
 		this->setOutputRange(-100, 100);
 		this->setOutputConfig(PID_OUTPUT_BITS, PID_OUTPUT_SIGNED);
 		loadParameters();
@@ -103,21 +103,21 @@ public:
 	LOGGER_VERBOSE("Enter....");
 
 		LOGGER_NOTICE_FMT("sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
-
+		// delay(10000);
+		// LOGGER_NOTICE("Stop");
 		uint8_t *current = reinterpret_cast<uint8_t *>(&_pidData); // current zeigt auf die gleiche Speicherstelle wie _pidData
 																   // der datentyp _pidData wird in eine uint8 typ geändert
+		
+
 		for (uint8_t i = 0; i < sizeof(pidData_t); i++)
 		{
 			*(current + i) = EEPROM.read((_eepromAddress + i));
-		//	LOGGER_NOTICE_FMT("i = %i", (uint8_t) * (current + i));
+	//		LOGGER_NOTICE_FMT("i = %i", (uint8_t) * (current + i));
 		}
 
-		LOGGER_NOTICE_FMT("_pidData.kP = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
-		LOGGER_NOTICE_FMT("_pidData.kI = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
-		LOGGER_NOTICE_FMT("_pidData.kD = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
-		LOGGER_NOTICE_FMT("_pidData.exFreq = %.1f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
-		// LOGGER_NOTICE_FMT("_pidData.Output bits = %i", _pidData.output_bits);
-		// LOGGER_NOTICE_FMT("_pidData.output signed = %i", _pidData.output_signed);
+		LOGGER_NOTICE_FMT("_pidData kP = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
+		LOGGER_NOTICE_FMT("_pidData kI = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
+		LOGGER_NOTICE_FMT("_pidData kD = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
 
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of loadParameters ------------------------*/
@@ -126,10 +126,10 @@ public:
 	{
 	LOGGER_VERBOSE("Enter....");
 
-		LOGGER_NOTICE_FMT("Disabled PID controller %s ", _ParentName.c_str());
-		this->setCoefficients(PID_P_MIN, 0.0, 0.0, PID_FREQUENCY);
+		// LOGGER_NOTICE_FMT("Disabled PID controller %s ", _ParentName.c_str());
+		// this->setCoefficients(PID_P_MIN, 0.0, 0.0, PID_FREQUENCY);
 
-		_isEnabled = false;
+		// _isEnabled = false;
 
 	LOGGER_VERBOSE("....leave");	
 	} /*-------------------------------- end of deactivatePID -------------------------*/
@@ -309,5 +309,5 @@ public:
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getEF ---------------------------------*/
 
-}; /*--------------------------- end of newPID class ------------------------------------*/
+}; /*--------------------------- end of newPID class ----------------------------------*/
 

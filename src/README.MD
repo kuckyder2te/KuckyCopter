@@ -118,6 +118,7 @@ new bracnch
 [Change 133]	EEprom OK ?, aber YAW axis P hat Anfangs immer 55.600
 [Change 134]	EEPROM Liest und schreibt aber nicht immer reproduzierbar
 [Change 135]	Kosmetic
+[Change 136]	Nur so
 				
 
 ### **WICHTIG**
