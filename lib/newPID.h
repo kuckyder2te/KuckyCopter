@@ -26,15 +26,15 @@
 // #define PID_YAW_FREQUENCY 52
 
 #define PID_OUTPUT_BITS 16
-#define PID_OUTPUT_SIGNED flase
+#define PID_OUTPUT_SIGNED false
 #define PID_P_MIN 0.00390626 ///< The parameter P domain is [0.00390625 to 255] inclusive.
 #define PID_EEPROM_ADRRESS 50
 
 typedef struct
 {
 	float pidCoefficient[4]; // 12 bytes
-	uint8_t output_bits;	 // 2			""
-	bool output_signed;		 // 1   		""
+//	uint8_t output_bits;	 // 2			""
+///	bool output_signed;		 // 1   		""
 	bool modified;			 // 1   muss gesetzt werden wenn die Parameter manuell geändert wurden
 } pidData_t;
 
@@ -58,9 +58,9 @@ public:
 	{
 		_ParentName = name;
 		_eepromAddress = eepromAddress;
-		_isEnabled = false;
+		_isEnabled = true;
 		this->setOutputRange(-100, 100);
-		this->setOutputConfig(16, true);
+		this->setOutputConfig(PID_OUTPUT_BITS, PID_OUTPUT_SIGNED);
 		loadParameters();
 	} /*-------------------------------- end of constructor ---------------------------*/
 
@@ -116,8 +116,8 @@ public:
 		LOGGER_NOTICE_FMT("_pidData.kI = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
 		LOGGER_NOTICE_FMT("_pidData.kD = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
 		LOGGER_NOTICE_FMT("_pidData.exFreq = %.1f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
-		LOGGER_NOTICE_FMT("_pidData.Output bits = %i", _pidData.output_bits);
-		LOGGER_NOTICE_FMT("_pidData.output signed = %i", _pidData.output_signed);
+		// LOGGER_NOTICE_FMT("_pidData.Output bits = %i", _pidData.output_bits);
+		// LOGGER_NOTICE_FMT("_pidData.output signed = %i", _pidData.output_signed);
 
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of loadParameters ------------------------*/
@@ -152,19 +152,19 @@ public:
 	LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of activatePID ---------------------------*/
 
-	void putPID_Data_into_EEPROM()
-	{
-	LOGGER_NOTICE("Enter....");
+	// void putPID_Data_into_EEPROM()
+	// {
+	// LOGGER_NOTICE("Enter....");
 		
-	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of putPID_Data_into_EEPROM ---------------*/
+	// LOGGER_VERBOSE("....leave");
+	// } /*-------------------------------- end of putPID_Data_into_EEPROM ---------------*/
 
-	void getPID_Data_from_EEPROM()
-	{
-	LOGGER_NOTICE("Enter....");
+	// void getPID_Data_from_EEPROM()
+	// {
+	// LOGGER_NOTICE("Enter....");
 	
-	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of getPID_Data_into_EEPROM ---------------*/
+	// LOGGER_VERBOSE("....leave");
+	// } /*-------------------------------- end of getPID_Data_into_EEPROM ---------------*/
 
 	void setP(float p)
 	{
@@ -249,29 +249,28 @@ public:
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getExecutionTime ----------------------*/
 
-	void updateEEPROM(void)
-	{
-	LOGGER_VERBOSE("Enter....");
+	// void updateEEPROM(void)
+	// {
+	// LOGGER_VERBOSE("Enter....");
 
-		//	EEPROM.read(addr, _pidParameter);
-		enablePID();
+	// 	//	EEPROM.read(addr, _pidParameter);
+	// 	enablePID();
 
-	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of updateEEPROM --------------------------*/
+	// LOGGER_VERBOSE("....leave");
+	// } /*-------------------------------- end of updateEEPROM --------------------------*/
+	//
+	// void readEEPROM(void)
+	// {
+	// LOGGER_VERBOSE("Enter....");
 
-	void readEEPROM(void)
-	{
-	LOGGER_VERBOSE("Enter....");
+	// 	//	EEPROM.write(addr, _pidParameter);
+	// 	enablePID();
 
-		//	EEPROM.write(addr, _pidParameter);
-		enablePID();
-
-	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of readEEPROM ----------------------------*/
+	// LOGGER_VERBOSE("....leave");
+	// } /*-------------------------------- end of readEEPROM ----------------------------*/
 
 	float getP() const
 	{
-//	Serial.println("getP");
 	LOGGER_VERBOSE("Enter....");
 
 		LOGGER_NOTICE_FMT("_pidCoeff KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
