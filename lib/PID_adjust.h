@@ -26,13 +26,13 @@
 
 #define ROW_MENU 3 ///< First position for the main menue
 #define COL_MENU 10
-#define ROW_SELECT ROW_MENU+23 ///< First position for select PID type
+#define ROW_SELECT ROW_MENU+24 ///< First position for select PID type
 #define COL_SELECT 5
 #define ROW_COEFF 28 ///< First position for new coefficients
 #define COL_COEFF 20
 #define ROW_PID 33 ///< First position for current coefficients
 #define COL_PID 20
-#define ROW_OUTPUT ROW_MENU+21
+#define ROW_OUTPUT ROW_MENU+22
 #define COL_OUTPUT 50
 #define COL_OUTPUT_VALUE 69
 #define ROW_ACCURAY ROW_MENU+17
@@ -637,32 +637,32 @@ public:
 		_putty_out->print(ROW_OUTPUT, COL_OUTPUT, "Coefficients from EEPROM");
 
 		_putty_out->gray();
-		_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT, _dict->c_primary_p);
-		_putty_out->print(ROW_OUTPUT + 1, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::primary]._pid->getP());
+		_putty_out->print(ROW_OUTPUT + 2, COL_OUTPUT, _dict->c_primary_p);
+		_putty_out->print(ROW_OUTPUT + 2, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::primary]._pid->getP());
 
-		_putty_out->print(ROW_OUTPUT + 2, COL_OUTPUT, _dict->c_primary_i);
-		_putty_out->print(ROW_OUTPUT + 2, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::primary]._pid->getI());
+		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, _dict->c_primary_i);
+		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::primary]._pid->getI());
 
-		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, _dict->c_primary_d);
-		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::primary]._pid->getD());
+		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT, _dict->c_primary_d);
+		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::primary]._pid->getD());
 
-		_putty_out->print(ROW_OUTPUT + 6, COL_OUTPUT, _dict->c_secondary_p);
-		_putty_out->print(ROW_OUTPUT + 6, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::secondary]._pid->getP());
+		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT, _dict->c_secondary_p);
+		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::secondary]._pid->getP());
 
-		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT, _dict->c_secondary_i);
-		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::secondary]._pid->getI());
+		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT, _dict->c_secondary_i);
+		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::secondary]._pid->getI());
 
-		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT, _dict->c_secondary_d);
-		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::secondary]._pid->getD());
+		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT, _dict->c_secondary_d);
+		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::secondary]._pid->getD());
 
-		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT, _dict->c_yaw_p);
-		_putty_out->print(ROW_OUTPUT + 11, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::yaw]._pid->getP()); //  hier stimmt was nicht mit der Ausgabe
+		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT, _dict->c_yaw_p);
+		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::yaw]._pid->getP()); //  hier stimmt was nicht mit der Ausgabe
 
-		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT, _dict->c_yaw_i);
-		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::yaw]._pid->getI());
+		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT, _dict->c_yaw_i);
+		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::yaw]._pid->getI());
 
-		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT, _dict->c_yaw_d);
-		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::yaw]._pid->getD());
+		_putty_out->print(ROW_OUTPUT + 14, COL_OUTPUT, _dict->c_yaw_d);
+		_putty_out->print(ROW_OUTPUT + 14, COL_OUTPUT_VALUE, 3, _namedPID[axisName_e::yaw]._pid->getD());
 
 		// _putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT, _dict->c_ef_pri);
 		// _putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 1, _namedPID[axisName_e::primary]._pid->getEF());

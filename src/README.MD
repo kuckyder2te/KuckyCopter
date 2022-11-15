@@ -119,6 +119,7 @@ new bracnch
 [Change 134]	EEPROM Liest und schreibt aber nicht immer reproduzierbar
 [Change 135]	Kosmetic
 [Change 136]	Nur so
+[Change 137]	Ausgabe Positionen angepasst
 				
 
 ### **WICHTIG**

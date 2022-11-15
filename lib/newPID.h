@@ -62,6 +62,7 @@ public:
 		this->setOutputRange(-100, 100);
 		this->setOutputConfig(PID_OUTPUT_BITS, PID_OUTPUT_SIGNED);
 		loadParameters();
+		EEPROM.begin(12);
 	} /*-------------------------------- end of constructor ---------------------------*/
 
 	void saveParameters()
