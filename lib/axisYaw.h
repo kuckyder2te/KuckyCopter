@@ -58,9 +58,6 @@ public:
 		_axisMotor[axisName_e::secondary] = NULL;
 		_state = disablePID;
 		_lastCompass = 0;
-		AxisBase::_newPID->setP(55.6);
-		savePIDConfig();
-		loadPIDConfig();
 	};
 
 	virtual ~AxisYaw(){};

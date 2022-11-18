@@ -28,13 +28,13 @@
 #define PID_OUTPUT_BITS 16
 #define PID_OUTPUT_SIGNED false
 #define PID_P_MIN 0.00390626 ///< The parameter P domain is [0.00390625 to 255] inclusive.
-#define PID_EEPROM_ADRRESS 50
+//#define PID_EEPROM_ADRRESS 50
 
 typedef struct
 {
 	float pidCoefficient[3]; // 12 bytes
 //	uint8_t output_bits;	 // 2			""
-///	bool output_signed;		 // 1   		""
+//	bool output_signed;		 // 1   		""
 //	bool modified;			 // 1   muss gesetzt werden wenn die Parameter manuell geändert wurden
 } pidData_t;
 
@@ -62,7 +62,7 @@ public:
 		this->setOutputRange(-100, 100);
 		this->setOutputConfig(PID_OUTPUT_BITS, PID_OUTPUT_SIGNED);
 		loadParameters();
-		EEPROM.begin(12);
+		//EEPROM.begin(512);
 	} /*-------------------------------- end of constructor ---------------------------*/
 
 	void saveParameters()
@@ -84,8 +84,12 @@ public:
 		for (uint8_t i = 0; i < sizeof(pidData_t); i++)
 		{
 			EEPROM.write(_eepromAddress + i, *(current + i)); // Pointer arethmetic
-			LOGGER_NOTICE_FMT("Addr = %i current %i", _eepromAddress+1, (*(current+i)));
+			LOGGER_NOTICE_FMT("addr = %i current %i", _eepromAddress, (*(current+i)));
 		}
+
+		LOGGER_NOTICE_FMT("_pidData kP = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
+		LOGGER_NOTICE_FMT("_pidData kI = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
+		LOGGER_NOTICE_FMT("_pidData kD = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
 
 		if (EEPROM.commit())
 		{
@@ -104,16 +108,14 @@ public:
 	LOGGER_VERBOSE("Enter....");
 
 		LOGGER_NOTICE_FMT("sizeof pidData_t = %i addr = %i", sizeof(pidData_t), _eepromAddress);
-		// delay(10000);
-		// LOGGER_NOTICE("Stop");
+
 		uint8_t *current = reinterpret_cast<uint8_t *>(&_pidData); // current zeigt auf die gleiche Speicherstelle wie _pidData
 																   // der datentyp _pidData wird in eine uint8 typ geändert
 		
-
 		for (uint8_t i = 0; i < sizeof(pidData_t); i++)
 		{
 			*(current + i) = EEPROM.read((_eepromAddress + i));
-	//		LOGGER_NOTICE_FMT("i = %i", (uint8_t) * (current + i));
+			LOGGER_NOTICE_FMT("i = %i ADDR = %i", (uint8_t) * (current + i), _eepromAddress);
 		}
 
 		LOGGER_NOTICE_FMT("_pidData kP = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kP]);

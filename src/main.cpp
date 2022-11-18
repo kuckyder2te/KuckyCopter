@@ -88,11 +88,7 @@ void setup()
   Serial.flush();
   Wire.begin();
 
-  //EEPROM.begin(80);
-
-  // for(uint8_t i = 0; i < 81; i++){
-  //   EEPROM.write(i, 0);
-  // }
+  EEPROM.begin(512);
   
   delay(10);
 

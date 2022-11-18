@@ -121,8 +121,10 @@ public:
 	void clearPart(uint8_t r, uint8_t c, const char t[]) {
 	char space[50];
 	char cc[] = " ";
+	uint8_t len;
+	//uint8_t lastLen;
 
-		uint8_t len = strlen(t);
+		len = strlen(t);
 
 		_serial.print("\e[");
 		_serial.print(r);
@@ -133,6 +135,9 @@ public:
 		for(uint8_t i=0; i<=len; i++){
 			strcat(space, cc);
 		}
+
+	//	lastLen = len;
+
 		_serial.print(space);
 	} /*-------------------------- end of clearPart -----------------------------------*/
 
