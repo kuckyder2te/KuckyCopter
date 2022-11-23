@@ -144,7 +144,7 @@ public:
 		uint8_t i = 0;
 		while (_namedPID[i]._pid != nullptr)
 		{
-			LOGGER_WARNING_FMT("PID: %s initialized! %d", _namedPID[i]._name.c_str(), _pidCount);
+			LOGGER_NOTICE_FMT("PID: %s initialized! %d", _namedPID[i]._name.c_str(), _pidCount);
 			i++;
 		}
 		return this;

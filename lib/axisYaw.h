@@ -9,7 +9,7 @@
 #include "AxisBase.h"
 #include "AxisMotor.h"
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "def.h"
@@ -107,7 +107,7 @@ public:
 		{
 		case arming_start:
 			/* The arming procedure will start. */
-			LOGGER_VERBOSE("Enter arming_start....");
+			LOGGER_NOTICE("Enter arming_start....");
 			_axisMotor[axisName_e::primary]->setState(AxisMotor::motorState_e::arming_start);
 			_axisMotor[axisName_e::secondary]->setState(AxisMotor::motorState_e::arming_start);
 			_state = arming_power_on;
@@ -116,7 +116,7 @@ public:
 
 		case arming_power_on:
 			/* All ESCs will connected with the main power. */
-			LOGGER_VERBOSE("Enter....");
+			LOGGER_NOTICE("Enter....");
 			digitalWrite(PIN_ESC_ON, HIGH);
 			delay(20);
 			_state = arming_finished;
@@ -125,7 +125,7 @@ public:
 
 		case arming_finished:
 			/* Arming procedure is finished */
-			LOGGER_VERBOSE("Enter....");
+			LOGGER_NOTICE("Enter....");
 			_axisMotor[axisName_e::primary]->setState(AxisMotor::arming_end);
 			_axisMotor[axisName_e::secondary]->setState(AxisMotor::arming_end);
 			LOGGER_VERBOSE("....leave");
@@ -133,7 +133,7 @@ public:
 
 		case disablePID:
 			/* Disables the YawAxis PID controller and initiates deactivation for the motor axes. */
-			LOGGER_VERBOSE("Enter....");
+			LOGGER_NOTICE("Enter....");
 			_newPID->disablePID();
 			//			_yawData->axisData[0]->state = motor_state_e::disablePID;
 			//			_yawData->axisData[1]->state = motor_state_e::disablePID;
@@ -144,7 +144,7 @@ public:
 
 		case enablePID:
 			/* Enables the YawAxis PID controller and initiates activation for the motor axes. */
-			LOGGER_VERBOSE("Enter....");
+			LOGGER_NOTICE("Enter....");
 			_newPID->enablePID();
 			*_yaw->horz_Position = 0;
 			//		_yawData->axisData[0]->state = motor_state_e::enablePID;
@@ -210,5 +210,3 @@ public:
 									&& (_axisMotor[axisName_e::secondary]->isReady());
 	} /*---------------------- end of isReady -----------------------------------------*/
 }; /* ------------------------ end of AxisYaw Class -----------------------------------*/
-
-// #undef _DEBUG_

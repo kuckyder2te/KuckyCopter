@@ -53,8 +53,6 @@ PID_adjust *_pid_adjust;
 
 void setup()
 {
-  //delay(500);
-
   digitalWrite(PIN_ESC_ON, LOW); // MainPower für ESC´s abgeschaltet
   Serial.begin(COM_SPEED);
   Serial2.begin(BT_SPEED);
@@ -69,6 +67,8 @@ void setup()
   delay(50);
   Logger::setLogLevel(Logger::_DEBUG_); // Muss immer einen Wert in platformio.ini haben (SILENT)
 #endif
+
+  delay(5000);
   LOGGER_NOTICE("Program will initialized");
   // model.performance.min_loop_time = 0xffff;
   // model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
@@ -90,7 +90,7 @@ void setup()
 
   EEPROM.begin(512);
   
-  delay(10);
+  delay(100);
 
   LOGGER_VERBOSE("Enter....");
   Tasks.add<AxisMotor>("axismotor_a")
@@ -136,7 +136,7 @@ void setup()
 
 void loop()
 {
-  LOGGER_NOTICE("loop has begun");
+  LOGGER_VERBOSE("loop has begun");
   //  unsigned long enter = micros();
   Tasks.update();
   Tasks["sensor"]->enter();
@@ -154,7 +154,5 @@ void loop()
   //    model.performance.max_loop_time = model.performance.last_loop_time;
   //  if(model.performance.last_loop_time < model.performance.min_loop_time)
   //    model.performance.min_loop_time = model.performance.last_loop_time;
-  LOGGER_NOTICE("Loop completed successfully");
+  LOGGER_VERBOSE("Loop completed successfully");
 } /*------------------------ end of loop -----------------------------------------------*/
-
-//#undef _DEBUG_

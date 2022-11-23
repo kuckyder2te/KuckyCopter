@@ -6,14 +6,14 @@
 */
 #pragma once
 
-//#include "sensors.h"
-//#include "sonic.h"
-//#include "radio.h"
-//#include "performance.h"
-//#include "axisYaw.h"
-//#include "axisMotor.h"
-//#include "battery.h"
-//#include "newPID.h"  ???
+#include "sensors.h"
+#include "sonic.h"
+#include "radio.h"
+#include "performance.h"
+#include "axisYaw.h"
+#include "axisMotor.h"
+#include "battery.h"
+#include "newPID.h" 
 
 typedef struct
 {

@@ -122,6 +122,7 @@ new bracnch
 [Change 137]	Ausgabe Positionen angepasst
 [Change 138]	EEPROM IN/OUT ok, aber nicht nach Neustart
 [Change 140]	EEPROM OK
+[Change 141]	Nur so
 				
 
 ### **WICHTIG**
@@ -179,11 +180,15 @@ _radio->startListening(); // put radio in RX mode
 	6.	Sensordaten überprüfen und ggf. Filter einfügen
 	7.	NRF24 printDetails überprüfen
 	8.  PID Werte aus PID-adjust in Model einlesen. Nicht mehr nötig fix
-	9.  Pico startet nach einschalten nicht automatisch
+	9.  Pico startet nach einschalten nicht automatisch fix
 
 ##
  	Achsen-Bezeichnung zentral ablegen fix
 	Interface in rcInterface umbenennen fix 
 	Payload rcSwix	-> bool   fix   
+	PID Menü. Wenn man vor der Achsenwahl "P" drückt, erscheint die Ausgabe zu hoch  fix 
 
-	PID Menü. Wenn man vor der Achsenwahl "P" drückt, erscheint die Ausgabe zu hoch                                              
+## Fehler Ursache/Lösungen
+	EEPROM war zu klein eingestellt, 12byte statt 36byte
+	EEPROM muss in der main.cpp initialisiert werden  
+	Dadurch wurde wahrscheinlich der Bootloader überschrieben, was auch die USB Probleme verursachte                                         

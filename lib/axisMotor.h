@@ -11,7 +11,7 @@
 #include "axisBase.h"
 #include "motor.h"
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 class AxisMotor : public AxisBase
@@ -70,7 +70,7 @@ public:
 
 	AxisMotor *initMotorOrdered(uint8_t _pin)
 	{
-		LOGGER_VERBOSE("Enter....");
+		LOGGER_NOTICE_FMT("Enter %s",this->getName().c_str());
 		LOGGER_NOTICE_FMT("Pin = %d", _pin);
 		if (_motor[motor_t::first] == NULL)
 		{
@@ -88,7 +88,7 @@ public:
 		{
 			LOGGER_FATAL("Too much Motors initialized!!");
 		}
-		LOGGER_VERBOSE("....leave");
+		LOGGER_NOTICE_FMT("....leave %s",this->getName().c_str());
 		return this;
 	} /*---------------------- setMotorPinOrdered -------------------------------------*/
 
@@ -100,7 +100,7 @@ public:
 
 	virtual void begin() override
 	{
-		LOGGER_VERBOSE("Enter....");
+		LOGGER_NOTICE_FMT("Enter %s",this->getName().c_str());
 		LOGGER_NOTICE_FMT("%s", this->getName().c_str()); // Adresse von array of char
 		AxisBase::begin();
 		//..und weiter Configgeschichten
@@ -113,29 +113,38 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		AxisBase::update();
 
-		LOGGER_NOTICE_FMT("Update %s ", this->getName().c_str());
+		LOGGER_VERBOSE_FMT("Update %s ", this->getName().c_str());
+
+		_motor[motor_t::first]->update();
+		_motor[motor_t::second]->update();	
 
 		switch (_state)
 		{
 		case arming_start:
-			LOGGER_VERBOSE("arming start");
-			_motor[motor_t::first]->setMotorStates(Motor::arming);
-			_motor[motor_t::second]->setMotorStates(Motor::arming);
+			LOGGER_NOTICE_FMT("arming start %s ", this->getName().c_str());
+			_motor[motor_t::first]->setMotorState(Motor::arming);
+			_motor[motor_t::second]->setMotorState(Motor::arming);
 			_motor[motor_t::first]->armingProcedure(false);
 			_motor[motor_t::second]->armingProcedure(false);
 			_state = arming_busy;
 			break;
 
 		case arming_busy:
-			LOGGER_VERBOSE("arming_busy");
+			LOGGER_NOTICE_FMT("arming_busy %s ", this->getName().c_str());
+			if((_motor[motor_t::first]->getMotorState() == Motor::finished) && 
+				(_motor[motor_t::second]->getMotorState() == Motor::finished))
+				{
+					_state = arming_end;
+				}
 			break;
 
 		case arming_end:
-			LOGGER_VERBOSE("arming end");
+			LOGGER_NOTICE_FMT("arming end %s ", this->getName().c_str());
 			_motor[motor_t::first]->armingProcedure(true);
 			_motor[motor_t::second]->armingProcedure(true);
-			_motor[motor_t::first]->setMotorStates(Motor::off);
-			_motor[motor_t::second]->setMotorStates(Motor::off);
+			_motor[motor_t::first]->setMotorState(Motor::off);
+			_motor[motor_t::second]->setMotorState(Motor::off);
+			LOGGER_NOTICE("Going to state ready");
 			break;
 
 		case disablePID:
@@ -153,14 +162,14 @@ public:
 
 		case standby:
 			LOGGER_VERBOSE("standby");
-			_motor[motor_t::first]->setMotorStates(Motor::off);
-			_motor[motor_t::second]->setMotorStates(Motor::off);
+			_motor[motor_t::first]->setMotorState(Motor::off);
+			_motor[motor_t::second]->setMotorState(Motor::off);
 			break;
 
 		case ready:
 			LOGGER_VERBOSE("ready");
-			_motor[motor_t::first]->setMotorStates(Motor::on);
-			_motor[motor_t::second]->setMotorStates(Motor::on);
+			_motor[motor_t::first]->setMotorState(Motor::on);
+			_motor[motor_t::second]->setMotorState(Motor::on);
 
 			_roll = (_invertRoll ? (-(*_axisData->rcX)) : (*_axisData->rcX));
 
@@ -172,8 +181,7 @@ public:
 			break;
 		} /* end of switch */
 
-		_motor[motor_t::first]->updateState();
-		_motor[motor_t::second]->updateState();
+		
 	} /*..................... end of update -------------------------------------------*/
 
 	void setPower(int16_t _power)
@@ -187,7 +195,7 @@ public:
 	void setState(motorState_e state)
 	{
 		_state = state;
-		LOGGER_NOTICE_FMT("set AxisMotor State = %d", _state);
+		LOGGER_VERBOSE_FMT("set AxisMotor State = %d", _state);
 	} /*--------------------- end of setState -----------------------------------------*/
 
 	boolean isArmed() const

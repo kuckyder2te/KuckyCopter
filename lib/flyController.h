@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "radio.h"
@@ -81,7 +81,7 @@ public:
             /* This is only setting, for the first start from the airplane.
              * Main Power ON/OFF or option-switch. */
             LOGGER_NOTICE("arming begin");
-            _axisYaw->setState(AxisYaw::arming_start);     /// hier bleibt es hängen
+            _axisYaw->setState(AxisYaw::state_e::arming_start);     /// hier bleibt es hängen
             flyState = arming_busy;
             LOGGER_NOTICE("arming begin is fineshed");
             break;
@@ -99,12 +99,12 @@ public:
             /* Deactivate the PID controller from all axis. */
             LOGGER_NOTICE("disablePID");
             _axisYaw->setState(AxisYaw::state_e::disablePID);
-            flyState = standby;
+            //flyState = standby;
             LOGGER_NOTICE("disable PID is finished");
             break;
 
         case standby:
-            LOGGER_NOTICE("standby");
+            LOGGER_VERBOSE("standby");
             /* Make sure the throttle lever is set to 0 and RC is connected. */
             // _model->RC_interface.isconnect = true;          // nur zum testen, ob Flycontroller
             // _model->RC_interface.RX_payload.rcThrottle = 1;    // durchläuft
@@ -214,4 +214,3 @@ public:
         } /* end of switch flyState */
     } /*------------------------------- end of update ---------------------------------*/
 }; /*---------------------------------- end of flyController --------------------------*/
-//#undef _DEBUG_

@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <RP2040_PWM.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 /*
@@ -40,17 +40,20 @@
 #define POWER_MAX 100		//
 #define BASE_MOTOR_POWER 10 //< 10% minimal throttle in fly mode for preventing stop of the motors
 #define PIN_ESC_ON 15
+#define DUTYCYCLE_MIN 40000
+#define DUTYCYCLE_MAX 80000
 
 class Motor
 {
-private:	
+private:
 	float frequency;
 	float dutyCycle;
-//	static uint8_t _instance=0;
+	//	static uint8_t _instance=0;
 public:
 	typedef enum
 	{
 		arming = 0,
+		finished,
 		off,
 		on
 	} motorstate_e;
@@ -60,74 +63,85 @@ protected:
 	RP2040_PWM *_motor; // warum pointer?
 	uint16_t _power;
 	int16_t _maxPower;
-	motorstate_e _motorstate;
-	
+	motorstate_e _motorState;
+
 	uint8_t _motor_address; ///< Gives everyone axis a title
 
 public:
 	Motor(uint8_t pin) : _pin(pin)
 	{
 		_power = 0;
-		_maxPower = 100;		// %
-		_motorstate = off;
-	//	_motor_address  = _instance++;
+		_maxPower = 100; // %
+		_motorState = off;
+		//	_motor_address  = _instance++;
 		LOGGER_NOTICE_FMT("Pin = %d", _pin);
-	};/*--------------------------------------------------------------*/
+	}; /*--------------------------------------------------------------*/
 
 	void setup()
 	{
 		LOGGER_VERBOSE("Enter....");
-		
-		frequency = 400.0f; 
 
-		_motor = new RP2040_PWM(_pin, frequency, 80);	//2mS
+		frequency = 400.0f;   // Ist das hier richtig?? oder besser als #define
+
+		_motor = new RP2040_PWM(_pin, frequency, DUTYCYCLE_MAX/1000); // 2mS
 
 		if (_motor)
 		{
-			digitalWrite(PIN_ESC_ON, HIGH);		// Mail Power für die ESC´s eingeschaltet
-			LOGGER_NOTICE_FMT("_motor = true Pin = %d", _pin);
+		//	digitalWrite(PIN_ESC_ON, HIGH); // Mail Power für die ESC´s eingeschaltet
+			LOGGER_NOTICE_FMT("_motor Pin = %d", _pin);
 			_motor->setPWM();
 		}
 
-		if(!_motor->setPWM_Int(_pin, frequency, 80)){
-			LOGGER_FATAL_FMT("PWM-Pin %d not known",_pin);
+		if (!_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MAX/1000))
+		{
+			LOGGER_FATAL_FMT("PWM-Pin %d not known", _pin);
 		};
 
 		delay(20);
-		
+
 		LOGGER_VERBOSE("....leave");
 	} /*------------------------------- end of setup ----------------------------------*/
 
-	void updateState()
+	void update()
 	{
 		LOGGER_VERBOSE("Enter....");
 		uint16_t resultingPower;
 
-		switch (_motorstate)
+		switch (_motorState)
 		{
 		case arming:
-//			LOGGER_NOTICE_FMT("Motor arming %d ", _pin);
+			LOGGER_NOTICE_FMT("arming begin %d", _pin);
+			digitalWrite(PIN_ESC_ON, HIGH);
+			//resultingPower = map(100, POWER_MIN, POWER_MAX, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
+			Serial2.println("Test");
+			// wait 2000
+			//resultingPower = map(0, POWER_MIN, POWER_MAX, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
+		//	_motorState = finished;
+			break;
+
+		case finished:
+			LOGGER_NOTICE("Arming is fineshed");
 			break;
 
 		case off:
-//			LOGGER_NOTICE_FMT("Motor off %d ", _pin);
+			LOGGER_NOTICE_FMT("Motor off %d", _pin);
 			_power = 0;
 			break;
 
 		case on:
-		//	resultingPower = _power;
-			_power = 10;
-            resultingPower = map(_power, 0, 100, 40000, 80000);
-
-			if (resultingPower < BASE_MOTOR_POWER) {
+			_power = 10; // Test Value
+			resultingPower = map(_power, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
+			if (resultingPower < BASE_MOTOR_POWER)
+			{
 				resultingPower = BASE_MOTOR_POWER;
 			}
 
-			LOGGER_NOTICE_FMT("RCThrottle %d ResultingPower %d PIN %d ", _power, resultingPower, _pin);
-
-			_motor->setPWM_Int(_pin, frequency, resultingPower);
+			LOGGER_NOTICE_FMT("RC Throttle %d ResultingPower %d PIN %d ", _power, resultingPower, _pin);
 			break;
 		}
+
+		_motor->setPWM_Int(_pin, frequency, resultingPower);
+
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of updateState ---------------------------------*/
 
@@ -137,16 +151,16 @@ public:
 	void armingProcedure(bool step)
 	{
 		LOGGER_VERBOSE("Enter....");
-		if (_motorstate == arming)
+		if (_motorState == arming)
 		{
 			if (!step)
 			{
 				LOGGER_NOTICE("Arming begin max.");
-				_motor->setPWM_Int(_pin, frequency, 80*1000);
+				_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MAX);
 			}
 			else
 			{
-				_motor->setPWM_Int(_pin, frequency, 40*1000);
+				_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MIN);
 				LOGGER_NOTICE("Arming fineshed min.");
 			}
 		}
@@ -200,16 +214,20 @@ public:
 	bool isMotorOff()
 	{
 		LOGGER_VERBOSE("Enter....");
-		return (_motorstate == off);
+		return (_motorState == off);
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------- end of isMotorOn -----------------------------------*/
+	} /*-------------------------- end of isMotorOff ----------------------------------*/
 
-	void setMotorStates(motorstate_e state)
+	motorstate_e getMotorState()
 	{
 		LOGGER_VERBOSE("Enter....");
-		_motorstate = state;
+		return _motorState;
+	} /*-------------------------- end of getMotorState ------------------------------*/
+
+	void setMotorState(motorstate_e state)
+	{
+		LOGGER_VERBOSE("Enter....");
+		_motorState = state;
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of setMotorStates ------------------------------*/
 };	  /*--------------------------- end of Motor class --------------------------------*/
-
-// #undef _DEBUG_

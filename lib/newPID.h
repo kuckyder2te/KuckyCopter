@@ -15,7 +15,7 @@
 
 #include <FastPID.h>
 
-#define LOCAL_DEBUG		// enable = debug this class  /  disable no debug
+//#define LOCAL_DEBUG		// enable = debug this class  /  disable no debug
 #include "myLogger.h"
 
 #include "EEPROM.h"
