@@ -180,9 +180,14 @@ public:
 			LOGGER_NOTICE_FMT("AxisMotor SP:%d, Power:%d, Error:%d", _axisData->setpoint, _axisData->power, _axisData->pidError);
 			break;
 		} /* end of switch */
-
-		
+	
 	} /*..................... end of update -------------------------------------------*/
+
+	void setState(motorState_e state)
+	{
+		_state = state;
+		LOGGER_VERBOSE_FMT("set AxisMotor State = %d", _state);
+	} /*--------------------- end of setState -----------------------------------------*/
 
 	void setPower(int16_t _power)
 	{
@@ -191,12 +196,6 @@ public:
 		else
 			_axisData->power = _power;
 	} /*--------------------- end of setPower -----------------------------------------*/
-
-	void setState(motorState_e state)
-	{
-		_state = state;
-		LOGGER_VERBOSE_FMT("set AxisMotor State = %d", _state);
-	} /*--------------------- end of setState -----------------------------------------*/
 
 	boolean isArmed() const
 	{
@@ -227,6 +226,4 @@ public:
 
 	// } /*---------------------- end of getMotor -------------------------------------*/
 
-}; /*.................................. end of AxisMotor class ------------------------*/
-
-// #undef _DEBUG_
+}; /*.................................. end of axisMotor class ------------------------*/

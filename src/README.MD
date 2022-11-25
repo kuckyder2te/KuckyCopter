@@ -181,6 +181,7 @@ _radio->startListening(); // put radio in RX mode
 	7.	NRF24 printDetails überprüfen
 	8.  PID Werte aus PID-adjust in Model einlesen. Nicht mehr nötig fix
 	9.  Pico startet nach einschalten nicht automatisch fix
+	10. Ausgangs der RC von 100 auf 1000 setzen
 
 ##
  	Achsen-Bezeichnung zentral ablegen fix

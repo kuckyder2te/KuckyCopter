@@ -29,20 +29,19 @@ private:
     AxisYaw *_axisYaw;
     model_t *_model;
 
-    typedef enum
-{
-    arming_begin = 0, ///< When the Kuckycopter is first turned on, the arming starts.
-    arming_busy,      /// ist das nötig?
-    disablePID,
-    standby,  ///< All motors on POWER_MIN
-    prestart, ///< All motors on standby and ready to fly. (POWER_MIN)
-    takeoff,  ///< The Quadrocopter takes off.
-    set_pid,  ///< Fly without PID-Output = 0
-    fly,      ///< Normal fly mode
-    ground    ///< Kuckycopter stand on the ground
-} flyState_e;
-    flyState_e flyState;
-
+typedef enum
+    {
+        arming_begin = 0,   ///< When the Kuckycopter is first turned on, the arming starts.
+        arming_busy,        ///< ist das nötig?
+        disablePID,
+        standby,            ///< All motors on POWER_MIN
+        prestart,           ///< All motors on standby and ready to fly. (POWER_MIN)
+        takeoff,            ///< The Quadrocopter takes off.
+        set_pid,            ///< Fly without PID-Output = 0
+        fly,                ///< Normal fly mode
+        ground              ///< Kuckycopter stand on the ground
+    } flyState_e;
+        flyState_e flyState;
 
 public:
     FlyController(const String &name)
@@ -81,7 +80,7 @@ public:
             /* This is only setting, for the first start from the airplane.
              * Main Power ON/OFF or option-switch. */
             LOGGER_NOTICE("arming begin");
-            _axisYaw->setState(AxisYaw::state_e::arming_start);     /// hier bleibt es hängen
+            _axisYaw->setState(AxisYaw::state_e::arming_start);
             flyState = arming_busy;
             LOGGER_NOTICE("arming begin is fineshed");
             break;
@@ -90,7 +89,7 @@ public:
             LOGGER_NOTICE("arming busy");
             if (_axisYaw->isArmed())
             {
-                flyState = disablePID; 
+            //    flyState = disablePID; 
                 LOGGER_NOTICE("arming busy is fineshed");
             }
             break;

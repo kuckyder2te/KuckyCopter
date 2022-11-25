@@ -48,7 +48,7 @@ class Motor
 private:
 	float frequency;
 	float dutyCycle;
-	//	static uint8_t _instance=0;
+	
 public:
 	typedef enum
 	{
@@ -60,12 +60,12 @@ public:
 
 protected:
 	uint8_t _pin;
-	RP2040_PWM *_motor; // warum pointer?
+	RP2040_PWM *_motor;
 	uint16_t _power;
 	int16_t _maxPower;
 	motorstate_e _motorState;
 
-	uint8_t _motor_address; ///< Gives everyone axis a title
+//	uint8_t _motor_address; ///< Gives everyone axis a title
 
 public:
 	Motor(uint8_t pin) : _pin(pin)
@@ -73,8 +73,7 @@ public:
 		_power = 0;
 		_maxPower = 100; // %
 		_motorState = off;
-		//	_motor_address  = _instance++;
-		LOGGER_NOTICE_FMT("Pin = %d", _pin);
+		LOGGER_NOTICE_FMT("PIN = %d", _pin);
 	}; /*--------------------------------------------------------------*/
 
 	void setup()
@@ -111,16 +110,17 @@ public:
 		{
 		case arming:
 			LOGGER_NOTICE_FMT("arming begin %d", _pin);
-			digitalWrite(PIN_ESC_ON, HIGH);
-			//resultingPower = map(100, POWER_MIN, POWER_MAX, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
-			Serial2.println("Test");
-			// wait 2000
-			//resultingPower = map(0, POWER_MIN, POWER_MAX, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
-		//	_motorState = finished;
+			_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MAX); // ESC auf max stellen
+			delay(1000);		//kurze Wartezeit
+			digitalWrite(PIN_ESC_ON, HIGH);	// ESC´s einschalten der PIN wird 4 mal auf HIGH gesetzt
+			delay(1000);		//kurze Wartezeit für DEBUG
+			_motorState = finished;
 			break;
 
 		case finished:
 			LOGGER_NOTICE("Arming is fineshed");
+			_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MIN); // ESC auf min stellen
+																// und dann auf die Melodie warten
 			break;
 
 		case off:

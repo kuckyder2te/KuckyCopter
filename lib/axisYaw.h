@@ -190,7 +190,7 @@ public:
 
 	boolean isArmed()
 	{
-		LOGGER_NOTICE_FMT("get YawAxis State %d ", _state);
+		LOGGER_NOTICE_FMT("State %d ", _state);
 		return ((_state == arming_finished)) && (_axisMotor[axisName_e::primary]->isArmed()) 
 											 && (_axisMotor[axisName_e::secondary]->isArmed());
 		
