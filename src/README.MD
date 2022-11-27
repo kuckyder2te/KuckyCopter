@@ -123,6 +123,7 @@ new bracnch
 [Change 138]	EEPROM IN/OUT ok, aber nicht nach Neustart
 [Change 140]	EEPROM OK
 [Change 141]	Nur so
+[Change 142]	2022-11-27 Logger verbessert und Code bereinigt. Ein Motor drehte sich
 				
 
 ### **WICHTIG**
@@ -192,4 +193,7 @@ _radio->startListening(); // put radio in RX mode
 ## Fehler Ursache/Lösungen
 	EEPROM war zu klein eingestellt, 12byte statt 36byte
 	EEPROM muss in der main.cpp initialisiert werden  
-	Dadurch wurde wahrscheinlich der Bootloader überschrieben, was auch die USB Probleme verursachte                                         
+	Dadurch wurde wahrscheinlich der Bootloader überschrieben, was auch die USB Probleme verursachte    
+
+## Fragen
+	main.cpp	Warum wird model.h gefunden, obwohl die Klasse nicht inkludiert wird?	                                     

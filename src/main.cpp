@@ -53,6 +53,7 @@ PID_adjust *_pid_adjust;
 
 void setup()
 {
+  pinMode(PIN_ESC_ON, OUTPUT);
   digitalWrite(PIN_ESC_ON, LOW); // MainPower für ESC´s abgeschaltet
   Serial.begin(COM_SPEED);
   Serial2.begin(BT_SPEED);
@@ -71,8 +72,8 @@ void setup()
   delay(5000);
   LOGGER_NOTICE("Program will initialized");
   // model.performance.min_loop_time = 0xffff;
-  // model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
-  // model.yaw.axisData[1] = &model.axisData[1];
+  model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
+  model.yaw.axisData[1] = &model.axisData[1];
 
   Serial.println("********************************");
   Serial.println("*       KuCo Phantom 1         *");

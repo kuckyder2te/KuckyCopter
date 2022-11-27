@@ -39,7 +39,8 @@ private:
 	Motor *_motor[2];
 	double _roll;
 	bool _invertRoll;
-	motorState_e _state;
+	motorState_e _state, _lastState;
+	uint16_t _lastPower;
 
 public:
 	AxisMotor(const String &name) : AxisBase(name)
@@ -104,7 +105,6 @@ public:
 		LOGGER_NOTICE_FMT("%s", this->getName().c_str()); // Adresse von array of char
 		AxisBase::begin();
 		//..und weiter Configgeschichten
-	//	_axis_address++;
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of begin ---------------------------------*/
 
@@ -124,27 +124,22 @@ public:
 			LOGGER_NOTICE_FMT("arming start %s ", this->getName().c_str());
 			_motor[motor_t::first]->setMotorState(Motor::arming);
 			_motor[motor_t::second]->setMotorState(Motor::arming);
-			_motor[motor_t::first]->armingProcedure(false);
-			_motor[motor_t::second]->armingProcedure(false);
 			_state = arming_busy;
 			break;
 
 		case arming_busy:
-			LOGGER_NOTICE_FMT("arming_busy %s ", this->getName().c_str());
-			if((_motor[motor_t::first]->getMotorState() == Motor::finished) && 
-				(_motor[motor_t::second]->getMotorState() == Motor::finished))
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"arming_busy %s ", this->getName().c_str());
+			if((_motor[motor_t::first]->isArmed()) && 
+				(_motor[motor_t::second]->isArmed()))
 				{
 					_state = arming_end;
 				}
 			break;
 
 		case arming_end:
-			LOGGER_NOTICE_FMT("arming end %s ", this->getName().c_str());
-			_motor[motor_t::first]->armingProcedure(true);
-			_motor[motor_t::second]->armingProcedure(true);
+			LOGGER_VERBOSE_FMT("arming end %s ", this->getName().c_str());
 			_motor[motor_t::first]->setMotorState(Motor::off);
 			_motor[motor_t::second]->setMotorState(Motor::off);
-			LOGGER_NOTICE("Going to state ready");
 			break;
 
 		case disablePID:
@@ -177,7 +172,7 @@ public:
 
 			_motor[motor_t::first]->setPower(_axisData->power - _axisData->pidError);
 			_motor[motor_t::second]->setPower(_axisData->power + _axisData->pidError);
-			LOGGER_NOTICE_FMT("AxisMotor SP:%d, Power:%d, Error:%d", _axisData->setpoint, _axisData->power, _axisData->pidError);
+			LOGGER_VERBOSE_FMT("AxisMotor SP:%d, Power:%d, Error:%d", _axisData->setpoint, _axisData->power, _axisData->pidError);
 			break;
 		} /* end of switch */
 	
@@ -186,11 +181,12 @@ public:
 	void setState(motorState_e state)
 	{
 		_state = state;
-		LOGGER_VERBOSE_FMT("set AxisMotor State = %d", _state);
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"set AxisMotor State = %d", _state);
 	} /*--------------------- end of setState -----------------------------------------*/
 
 	void setPower(int16_t _power)
 	{
+		LOGGER_NOTICE_FMT_CHK(_power,_lastPower,"set AxisMotor %s to Power = %d",this->getName().c_str(), _power);
 		if (_power < 0)
 			_axisData->power = 0;
 		else
@@ -200,7 +196,7 @@ public:
 	boolean isArmed() const
 	{
 		LOGGER_VERBOSE("Enter....isArmed");
-		return ((_motor[motor_t::first]->isMotorOff()) && (_motor[motor_t::second]->isMotorOff()));
+		return ((_motor[motor_t::first]->isArmed()) && (_motor[motor_t::second]->isArmed()));
 	} /*---------------------- end of isArmed -----------------------------------------*/
 
 	boolean isDeactivatePID()
@@ -220,10 +216,4 @@ public:
 		LOGGER_VERBOSE("Enter....isReady");
 		return (_state == ready);
 	} /*---------------------- end of isReady -----------------------------------------*/
-
-	// Motor** getMotor() {
-	//  	return _motor;
-
-	// } /*---------------------- end of getMotor -------------------------------------*/
-
 }; /*.................................. end of axisMotor class ------------------------*/

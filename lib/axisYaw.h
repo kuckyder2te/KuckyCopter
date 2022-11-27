@@ -31,7 +31,6 @@ public:
 	typedef enum
 	{
 		arming_start,
-		arming_power_on,
 		arming_finished,
 		disablePID,
 		enablePID,
@@ -41,10 +40,11 @@ public:
 private:
 	AxisMotor *_axisMotor[2];
 	yaw_t *_yaw;
-	state_e _state;
+	state_e _state, _lastState;
 	int16_t _lastCompass;
 	int16_t _virtualFeedback; ///< The calculated feedback due to the yaw rotation
 	int16_t _virtualSetpoint;
+
 
 public:
 	AxisYaw(const String &name) : AxisBase(name)
@@ -67,7 +67,6 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		_axisData = _model;
 		_yaw = yaw;
-	//	loadPIDConfig();
 		begin();
 		LOGGER_VERBOSE("....leave");
 		return this;
@@ -107,33 +106,30 @@ public:
 		{
 		case arming_start:
 			/* The arming procedure will start. */
-			LOGGER_NOTICE("Enter arming_start....");
-			_axisMotor[axisName_e::primary]->setState(AxisMotor::motorState_e::arming_start);
-			_axisMotor[axisName_e::secondary]->setState(AxisMotor::motorState_e::arming_start);
-			_state = arming_power_on;
-			LOGGER_VERBOSE("....leave arming_start");
-			break;
-
-		case arming_power_on:
-			/* All ESCs will connected with the main power. */
-			LOGGER_NOTICE("Enter....");
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter arming_start State %d",_state);
 			digitalWrite(PIN_ESC_ON, HIGH);
 			delay(20);
+			_axisMotor[axisName_e::primary]->setState(AxisMotor::motorState_e::arming_start);
+			_axisMotor[axisName_e::secondary]->setState(AxisMotor::motorState_e::arming_start);
 			_state = arming_finished;
-			LOGGER_VERBOSE("....leave");
+			LOGGER_VERBOSE("....leave arming_start");
 			break;
 
 		case arming_finished:
 			/* Arming procedure is finished */
-			LOGGER_NOTICE("Enter....");
-			_axisMotor[axisName_e::primary]->setState(AxisMotor::arming_end);
-			_axisMotor[axisName_e::secondary]->setState(AxisMotor::arming_end);
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter arming_finished State %d",_state);
+			if(_axisMotor[axisName_e::primary]->isArmed() && _axisMotor[axisName_e::secondary]->isArmed()){
+				LOGGER_NOTICE("All Motors armed");
+				_state = ready;
+			}
+			// _axisMotor[axisName_e::primary]->setState(AxisMotor::arming_end);
+			// _axisMotor[axisName_e::secondary]->setState(AxisMotor::arming_end);
 			LOGGER_VERBOSE("....leave");
 			break;
 
 		case disablePID:
 			/* Disables the YawAxis PID controller and initiates deactivation for the motor axes. */
-			LOGGER_NOTICE("Enter....");
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter disablePID State %d",_state);
 			_newPID->disablePID();
 			//			_yawData->axisData[0]->state = motor_state_e::disablePID;
 			//			_yawData->axisData[1]->state = motor_state_e::disablePID;
@@ -144,7 +140,7 @@ public:
 
 		case enablePID:
 			/* Enables the YawAxis PID controller and initiates activation for the motor axes. */
-			LOGGER_NOTICE("Enter....");
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter enablePID State %d",_state);
 			_newPID->enablePID();
 			*_yaw->horz_Position = 0;
 			//		_yawData->axisData[0]->state = motor_state_e::enablePID;
@@ -156,9 +152,13 @@ public:
 			break;
 
 		case ready:
-			LOGGER_NOTICE("Enter....");
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter ready State %d",_state);
+			
 			_axisMotor[axisName_e::primary]->setState(AxisMotor::ready);
 			_axisMotor[axisName_e::secondary]->setState(AxisMotor::ready);
+
+			_axisData->power = 50;		// Test
+
 			if ((*_yaw->rotationSpeed > YAW_SENSIBILITY) || (*_yaw->rotationSpeed < (-YAW_SENSIBILITY)))
 			{ ///< YAW Joystick is not moved....
 				_yaw->axisData[0]->power = _axisData->power - *_yaw->rotationSpeed * YAW_FINE_TUNING;
@@ -168,7 +168,7 @@ public:
 				*_yaw->horz_Position = 0;
 			}
 			else
-			{												 ///< YAW  PID controller is active  .... Yaw joystick is in middle position
+			{	///< YAW  PID controller is active  .... Yaw joystick is in middle position
 				_virtualFeedback = *_yaw->horz_Position; /// *_fb = into the PID controller
 				_yaw->axisData[0]->power = _axisData->power - _axisData->pidError;
 				_yaw->axisData[1]->power = _axisData->power + _axisData->pidError;
@@ -190,10 +190,9 @@ public:
 
 	boolean isArmed()
 	{
-		LOGGER_NOTICE_FMT("State %d ", _state);
+		LOGGER_VERBOSE_FMT("State %d ", _state);
 		return ((_state == arming_finished)) && (_axisMotor[axisName_e::primary]->isArmed()) 
-											 && (_axisMotor[axisName_e::secondary]->isArmed());
-		
+											 && (_axisMotor[axisName_e::secondary]->isArmed());		
 	} /*---------------------- end of isArmed -----------------------------------------*/
 
 	boolean isDeactivatePID()

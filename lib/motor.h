@@ -48,6 +48,7 @@ class Motor
 private:
 	float frequency;
 	float dutyCycle;
+	bool _isArmed;
 	
 public:
 	typedef enum
@@ -64,6 +65,7 @@ protected:
 	uint16_t _power;
 	int16_t _maxPower;
 	motorstate_e _motorState;
+	uint16_t lastPower;
 
 //	uint8_t _motor_address; ///< Gives everyone axis a title
 
@@ -73,6 +75,7 @@ public:
 		_power = 0;
 		_maxPower = 100; // %
 		_motorState = off;
+		_isArmed = false;
 		LOGGER_NOTICE_FMT("PIN = %d", _pin);
 	}; /*--------------------------------------------------------------*/
 
@@ -121,6 +124,7 @@ public:
 			LOGGER_NOTICE("Arming is fineshed");
 			_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MIN); // ESC auf min stellen
 																// und dann auf die Melodie warten
+			_isArmed = true;
 			break;
 
 		case off:
@@ -136,7 +140,7 @@ public:
 				resultingPower = BASE_MOTOR_POWER;
 			}
 
-			LOGGER_NOTICE_FMT("RC Throttle %d ResultingPower %d PIN %d ", _power, resultingPower, _pin);
+			LOGGER_NOTICE_FMT_CHK(resultingPower, lastPower, "RC Throttle %d ResultingPower %d PIN %d ", _power, resultingPower, _pin);
 			break;
 		}
 
@@ -148,24 +152,24 @@ public:
 	/* Motor is attached with a PIN and set the power to 2000 ms.
 	   After this set the power to 1000 ms and the arming is finished.*/
 
-	void armingProcedure(bool step)
-	{
-		LOGGER_VERBOSE("Enter....");
-		if (_motorState == arming)
-		{
-			if (!step)
-			{
-				LOGGER_NOTICE("Arming begin max.");
-				_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MAX);
-			}
-			else
-			{
-				_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MIN);
-				LOGGER_NOTICE("Arming fineshed min.");
-			}
-		}
-		LOGGER_VERBOSE("....leave");
-	} /*-------------------------- end of armingProcedure -----------------------------*/
+	// void armingProcedure(bool step)
+	// {
+	// 	LOGGER_VERBOSE("Enter....");
+	// 	if (_motorState == arming)
+	// 	{
+	// 		if (!step)
+	// 		{
+	// 			LOGGER_NOTICE("Arming begin max.");
+	// 			_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MAX);
+	// 		}
+	// 		else
+	// 		{
+	// 			_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MIN);
+	// 			LOGGER_NOTICE("Arming fineshed min.");
+	// 		}
+	// 	}
+	// 	LOGGER_VERBOSE("....leave");
+	// } /*-------------------------- end of armingProcedure -----------------------------*/
 
 	uint16_t getPower() const
 	{
@@ -211,6 +215,10 @@ public:
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of setMaxPower ---------------------------------*/
 
+	bool isArmed(){
+		return _isArmed;
+	}
+	
 	bool isMotorOff()
 	{
 		LOGGER_VERBOSE("Enter....");

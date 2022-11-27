@@ -21,6 +21,7 @@
 #define POWER_LIFT_UP 60 ///< The KuckyCopter will start, if throttle > 60
 #define DOWN_TIME 2000   ///< Time to turn off the engines (in Microseconds).
 #define PID_ACTIVE_AT 9     ///< PID aktiviert ab einer Höhe von 9cm
+
 class FlyController : public Task::Base
 {
 public:
@@ -86,10 +87,10 @@ public:
             break;
 
         case arming_busy:
-            LOGGER_NOTICE("arming busy");
+            LOGGER_VERBOSE("arming busy");
             if (_axisYaw->isArmed())
             {
-            //    flyState = disablePID; 
+                flyState = disablePID; 
                 LOGGER_NOTICE("arming busy is fineshed");
             }
             break;
@@ -98,7 +99,7 @@ public:
             /* Deactivate the PID controller from all axis. */
             LOGGER_NOTICE("disablePID");
             _axisYaw->setState(AxisYaw::state_e::disablePID);
-            //flyState = standby;
+            flyState = standby;
             LOGGER_NOTICE("disable PID is finished");
             break;
 
