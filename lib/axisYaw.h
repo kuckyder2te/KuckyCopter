@@ -157,7 +157,7 @@ public:
 			_axisMotor[axisName_e::primary]->setState(AxisMotor::ready);
 			_axisMotor[axisName_e::secondary]->setState(AxisMotor::ready);
 
-			_axisData->power = 50;		// Test
+			_axisData->power = 10;		// Test
 
 			if ((*_yaw->rotationSpeed > YAW_SENSIBILITY) || (*_yaw->rotationSpeed < (-YAW_SENSIBILITY)))
 			{ ///< YAW Joystick is not moved....
@@ -191,8 +191,7 @@ public:
 	boolean isArmed()
 	{
 		LOGGER_VERBOSE_FMT("State %d ", _state);
-		return ((_state == arming_finished)) && (_axisMotor[axisName_e::primary]->isArmed()) 
-											 && (_axisMotor[axisName_e::secondary]->isArmed());		
+		return (_axisMotor[axisName_e::primary]->isArmed() && _axisMotor[axisName_e::secondary]->isArmed());		
 	} /*---------------------- end of isArmed -----------------------------------------*/
 
 	boolean isDeactivatePID()

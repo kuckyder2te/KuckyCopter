@@ -5,6 +5,7 @@
         "string_view": "cpp",
         "type_traits": "cpp",
         "map": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "new": "cpp"
     }
 }

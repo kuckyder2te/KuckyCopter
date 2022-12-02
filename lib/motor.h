@@ -49,11 +49,13 @@ private:
 	float frequency;
 	float dutyCycle;
 	bool _isArmed;
+	unsigned long _lastMillis;
 	
 public:
 	typedef enum
 	{
 		arming = 0,
+		busy,
 		finished,
 		off,
 		on
@@ -62,10 +64,9 @@ public:
 protected:
 	uint8_t _pin;
 	RP2040_PWM *_motor;
-	uint16_t _power;
-	int16_t _maxPower;
-	motorstate_e _motorState;
-	uint16_t lastPower;
+	uint32_t resultingPower, _resultingPower,_lastResultingPower;
+	int16_t _power,_lastPower,_maxPower;
+	motorstate_e _motorState,_lastMotorState;
 
 //	uint8_t _motor_address; ///< Gives everyone axis a title
 
@@ -84,7 +85,7 @@ public:
 		LOGGER_VERBOSE("Enter....");
 
 		frequency = 400.0f;   // Ist das hier richtig?? oder besser als #define
-
+		_motor = nullptr;
 		_motor = new RP2040_PWM(_pin, frequency, DUTYCYCLE_MAX/1000); // 2mS
 
 		if (_motor)
@@ -92,10 +93,7 @@ public:
 		//	digitalWrite(PIN_ESC_ON, HIGH); // Mail Power für die ESC´s eingeschaltet
 			LOGGER_NOTICE_FMT("_motor Pin = %d", _pin);
 			_motor->setPWM();
-		}
-
-		if (!_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MAX/1000))
-		{
+		}else{
 			LOGGER_FATAL_FMT("PWM-Pin %d not known", _pin);
 		};
 
@@ -107,69 +105,61 @@ public:
 	void update()
 	{
 		LOGGER_VERBOSE("Enter....");
-		uint16_t resultingPower;
-
+		if(_motorState!=_lastMotorState){
+			LOGGER_NOTICE_FMT("*******New State to Update - Pin %d ********",_pin);
+		}
 		switch (_motorState)
 		{
 		case arming:
-			LOGGER_NOTICE_FMT("arming begin %d", _pin);
-			_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MAX); // ESC auf max stellen
-			delay(1000);		//kurze Wartezeit
+			LOGGER_NOTICE("arming begin");
+			resultingPower = DUTYCYCLE_MAX;
+			_lastMillis = millis();
 			digitalWrite(PIN_ESC_ON, HIGH);	// ESC´s einschalten der PIN wird 4 mal auf HIGH gesetzt
-			delay(1000);		//kurze Wartezeit für DEBUG
-			_motorState = finished;
+			_motorState = busy;
 			break;
 
+		case busy:
+		LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Arming is busy");
+			if(millis() - _lastMillis > 2000){
+				_motorState = finished;
+				resultingPower = DUTYCYCLE_MIN;
+				_lastMillis = millis();
+			}
+			break;
 		case finished:
-			LOGGER_NOTICE("Arming is fineshed");
-			_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MIN); // ESC auf min stellen
-																// und dann auf die Melodie warten
-			_isArmed = true;
+			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Arming is finished");
+			if(millis() - _lastMillis > 1000){
+				_isArmed = true;
+				_lastMillis = millis();
+				_motorState = off;
+			}
+			resultingPower = DUTYCYCLE_MIN;
 			break;
 
 		case off:
-			LOGGER_NOTICE_FMT("Motor off %d", _pin);
+			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Motor off");
 			_power = 0;
+			resultingPower = DUTYCYCLE_MIN;
 			break;
 
 		case on:
-			_power = 10; // Test Value
+			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Motor on");
 			resultingPower = map(_power, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
-			if (resultingPower < BASE_MOTOR_POWER)
+			if (resultingPower < map(BASE_MOTOR_POWER, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX))
 			{
-				resultingPower = BASE_MOTOR_POWER;
+				resultingPower = map(BASE_MOTOR_POWER, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
 			}
-
-			LOGGER_NOTICE_FMT_CHK(resultingPower, lastPower, "RC Throttle %d ResultingPower %d PIN %d ", _power, resultingPower, _pin);
+			LOGGER_NOTICE_FMT_CHK(resultingPower, _resultingPower, "RC Throttle %d ResultingPower %d", _power, resultingPower);
 			break;
 		}
-
-		_motor->setPWM_Int(_pin, frequency, resultingPower);
+		if(_lastResultingPower!=resultingPower){
+			LOGGER_NOTICE_FMT("resultingPower = %d - Pin: %d",resultingPower,_pin);
+			_motor->setPWM_Int(_pin, frequency, resultingPower);
+			_lastResultingPower= resultingPower;
+		}
 
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of updateState ---------------------------------*/
-
-	/* Motor is attached with a PIN and set the power to 2000 ms.
-	   After this set the power to 1000 ms and the arming is finished.*/
-
-	// void armingProcedure(bool step)
-	// {
-	// 	LOGGER_VERBOSE("Enter....");
-	// 	if (_motorState == arming)
-	// 	{
-	// 		if (!step)
-	// 		{
-	// 			LOGGER_NOTICE("Arming begin max.");
-	// 			_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MAX);
-	// 		}
-	// 		else
-	// 		{
-	// 			_motor->setPWM_Int(_pin, frequency, DUTYCYCLE_MIN);
-	// 			LOGGER_NOTICE("Arming fineshed min.");
-	// 		}
-	// 	}
-	// 	LOGGER_VERBOSE("....leave");
-	// } /*-------------------------- end of armingProcedure -----------------------------*/
 
 	uint16_t getPower() const
 	{
@@ -184,18 +174,20 @@ public:
 		if (power < 0)
 		{
 			_power = 0;
+			LOGGER_WARNING_FMT("Power = %d < 0 - Pin: %d",power,_pin);
 		}
 		else if (power > _maxPower)
 		{
 			_power = _maxPower;
+			LOGGER_WARNING_FMT("Power = %d over maxPower - Pin: %d",power,_pin);
 		}
 		else
 		{
-			_power = power;
-			LOGGER_NOTICE_FMT("setPower %d ", _power);
+			_power = power;			
 		}
-		return _power;
+		LOGGER_NOTICE_FMT_CHK(_power,_lastPower,"setPower %d - Pin: %d", _power,_pin);
 		LOGGER_VERBOSE("....leave");
+		return _power;
 	} /*-------------------------- end of setPower ------------------------------------*/
 
 	uint8_t getMaxPower() const

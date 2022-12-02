@@ -83,7 +83,6 @@ public:
             LOGGER_NOTICE("arming begin");
             _axisYaw->setState(AxisYaw::state_e::arming_start);
             flyState = arming_busy;
-            LOGGER_NOTICE("arming begin is fineshed");
             break;
 
         case arming_busy:
