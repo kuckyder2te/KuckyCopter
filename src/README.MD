@@ -124,6 +124,7 @@ new bracnch
 [Change 140]	EEPROM OK
 [Change 141]	Nur so
 [Change 142]	2022-11-27 Logger verbessert und Code bereinigt. Ein Motor drehte sich
+[Fix 001]		Radio Klasse funktioniert mit throttel und sonic ACK
 				
 
 ### **WICHTIG**
