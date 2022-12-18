@@ -114,7 +114,7 @@ void setup()
       ->init(&model) // bekommt das komplette Model, Master of Desater!!
       ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
       ->startFps(100);
-  Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(100); // Übergabe des models in das objekt Sensor
+  Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(25); // Übergabe des models in das objekt Sensor
   Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(100);
   Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);
   Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(100);

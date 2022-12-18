@@ -11,7 +11,7 @@
 #include "axisBase.h"
 #include "motor.h"
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 class AxisMotor : public AxisBase
