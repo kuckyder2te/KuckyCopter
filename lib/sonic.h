@@ -32,7 +32,7 @@ typedef struct
 {
     float temperature;
     float humidity;
-    float distance;         //Entfernung, Temperatur kompensiert
+    float distance, _distance_raw;         //Entfernung, Temperatur kompensiert
     float distance_raw;     //Entfernung ohne Kompensation
 } sonicData_t;
 class Sonic : public Task::Base
@@ -42,6 +42,7 @@ class Sonic : public Task::Base
 
 public:
     sonicData_t *_sonicData;
+    sonicData_t *__sonicData;
 
 protected:
     UltraSonicDistanceSensor *_hcrs04;
@@ -89,7 +90,7 @@ public:
         LOGGER_NOTICE_FMT("Resolution: %.2f", sensor.resolution);
 
         // Set delay between sensor readings based on sensor details.
-     //   delayMS = sensor.min_delay / 1000; // ~2000
+        delayMS = sensor.min_delay / 1000; // ~2000
     //    Serial2.println(delayMS);
         //        delay(5000);
         LOGGER_VERBOSE("....leave");
@@ -100,17 +101,22 @@ public:
         LOGGER_VERBOSE("Enter....");
         _sonicData->distance_raw = _hcrs04->measureDistanceCm();
         _sonicData->distance = _hcrs04->measureDistanceCm(_sonicData->temperature);
+
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end og enter --------------------------------------------*/
 
     virtual void update() override
     {
         LOGGER_VERBOSE("Enter....");
+     
 
-        LOGGER_NOTICE_FMT("Distance raw: %.2f cm", _sonicData->distance_raw);
-        LOGGER_NOTICE_FMT("Distance: %.2f cm", _sonicData->distance); 
+        //LOGGER_NOTICE_FMT("Distance raw: %.2f cm", _sonicData->distance_raw);
+        LOGGER_NOTICE_FMT_CHK(_sonicData->distance_raw,__sonicData->_distance_raw,"Distance: %.2f cm", _sonicData->distance); 
+
+       //Serial2.printf("/*%.2f*/\r\n",_sonicData->distance_raw);
+
         // Delay between measurements.
-        //    delay(delayMS);
+        //delay(delayMS);
         // Get temperature event and print its value.
         sensors_event_t event;
         _dht->temperature().getEvent(&event);
@@ -121,7 +127,7 @@ public:
         else
         {
             _sonicData->temperature = event.temperature;
-            LOGGER_NOTICE_FMT("Temperature: %.2f%s", event.temperature, "*C");
+        //    LOGGER_NOTICE_FMT("Temperature: %.2f%s", event.temperature, "*C");
         }
         // Get humidity event and print its value.
         _dht->humidity().getEvent(&event);
@@ -132,7 +138,7 @@ public:
         else
         {
             _sonicData->humidity = event.relative_humidity;
-            LOGGER_NOTICE_FMT("Humidity: %.2f%c", event.relative_humidity, '%');
+         //   LOGGER_NOTICE_FMT("Humidity: %.2f%c", event.relative_humidity, '%');
         }
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end og update -------------------------------------------*/

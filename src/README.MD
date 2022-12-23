@@ -125,6 +125,8 @@ new bracnch
 [Change 141]	Nur so
 [Change 142]	2022-11-27 Logger verbessert und Code bereinigt. Ein Motor drehte sich
 [Fix 001]		Radio Klasse funktioniert mit throttel und sonic ACK
+[Change 150]	Sensorklasse begonnen
+[Change 151]	Senotkllöasse geändert
 				
 
 ### **WICHTIG**
