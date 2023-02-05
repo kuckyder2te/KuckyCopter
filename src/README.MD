@@ -127,11 +127,13 @@ new bracnch
 [Fix 001]		Radio Klasse funktioniert mit throttel und sonic ACK
 [Change 150]	Sensorklasse begonnen
 [Change 151]	Senorklasse geändert
-[Change 152]    Sensor CJMCU_10DOF NCS mit PS verbunden. Timingproblem noch nicht gelöst
+[Change 152]    Sensor CJMCU_10DOF NCS mit PS verbunden. Timingproblem noch nicht gelöst FIX
+[Change 160]	IMU, BARO, SONIC und DHT Sensoren implementiert und funktionieren.
+				Für Sonic noch keine Temperatur-Kompentation
 				
 
 ### **WICHTIG**
-In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkommentiert werden
+In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkommentiert werden. Erledigt.
 
 # Fragen
     // Model wiring begin

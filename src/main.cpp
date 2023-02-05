@@ -31,6 +31,7 @@
 #include "..\lib\PID_adjust.h"
 //#include "..\lib\model.h"
 #include "..\lib\myLogger.h"
+#include "..\lib\monitor.h"
 
 #define PIN_BT_TX 8
 #define PIN_BT_RX 9
@@ -115,9 +116,12 @@ void setup()
       ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
       ->startFps(100);
   Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(100); // Übergabe des models in das objekt Sensor
-  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(10);
-  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);
-  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
+  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2);
+
+  
+//  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);
+//  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
+  //Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(10);
 
 #ifdef _PID_ADJUST
   Tasks.add<PID_adjust>("pidadjust")
@@ -141,7 +145,6 @@ void loop()
   //  unsigned long enter = micros();
   Tasks.update();
   //Tasks["sensor"]->enter();
-  Tasks["sonic"]->enter();
 
   //  Serial.print("/*");Serial.print(model.sensorData.yaw);Serial.print(",");  /// eigenen monitor als Klasse erzeugen
   //                     Serial.print(model.sensorData.roll);Serial.print(",");

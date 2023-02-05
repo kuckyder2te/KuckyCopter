@@ -12,44 +12,44 @@
 
 #include <Arduino.h>
 #include <TaskManager.h>
-#include <HCSR04.h>
+#include <HC_SR04.h>
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #define PIN_ECHO 21
 #define PIN_TRIGGER 22
-#define PIN_DHT 28
+#define PIN_DHT 6
 #define DHTTYPE DHT22
 
 #define MAX_DISTANCE 200
-#define MAX_TIME_OUT 11655 //  ??
+
+HC_SR04<PIN_ECHO> sensorSonic(PIN_TRIGGER); // sensor with echo and trigger pin
+DHT dht(PIN_DHT, DHTTYPE);
 
 typedef struct
 {
     float temperature;
     float humidity;
-    float distance, _distance_raw;         //Entfernung, Temperatur kompensiert
-    float distance_raw;     //Entfernung ohne Kompensation
+    float distance, _distance; // Entfernung, Temperatur kompensiert
+    float distance_raw;        // Entfernung ohne Kompensation
 } sonicData_t;
+
 class Sonic : public Task::Base
 {
-    bool b; // Klassenvariable
-    uint32_t delayMS;
+    float speedOfSoundInCmPerMicroSec;
 
 public:
     sonicData_t *_sonicData;
-    sonicData_t *__sonicData;
+    sonicData_t __sonicData;
 
 protected:
-    UltraSonicDistanceSensor *_hcrs04;
-    DHT_Unified *_dht;
 
 public:
-    Sonic(const String &name) : Task::Base(name), b(false)
+    Sonic(const String &name) : Task::Base(name) //, b(false)
     {
     }
 
@@ -66,81 +66,48 @@ public:
     virtual void begin() override
     {
         LOGGER_VERBOSE("Enter....");
-        _hcrs04 = new UltraSonicDistanceSensor(PIN_TRIGGER, PIN_ECHO, MAX_DISTANCE, MAX_TIME_OUT);
-        LOGGER_NOTICE_FMT("File %s : HCSR04 lib version: %s", __FILE__, HCSR_LIB_VERSION);
-        _dht = new DHT_Unified(PIN_DHT, DHTTYPE);
 
-        _dht->begin();
-        sensor_t sensor;
-        _dht->temperature().getSensor(&sensor);
-        LOGGER_NOTICE("Temperature Sensor");
-        LOGGER_NOTICE_FMT("Sensor Type: %c", sensor.name);
-        LOGGER_NOTICE_FMT("Driver Ver: %i", sensor.version);
-        LOGGER_NOTICE_FMT("Unique ID: %i", sensor.version);
-        LOGGER_NOTICE_FMT("Min %.2f max. %2.f", sensor.min_value, sensor.max_value);
-        LOGGER_NOTICE_FMT("Resolution:  %2.f", sensor.resolution);
+        dht.begin();
 
-        // Print humidity sensor details.
-        _dht->humidity().getSensor(&sensor);
-        LOGGER_NOTICE("Humidity Sensor");
-        LOGGER_NOTICE_FMT("Sensor Type: %c", sensor.name);
-        LOGGER_NOTICE_FMT("Driver Ver: %i", sensor.version);
-        LOGGER_NOTICE_FMT("Unique ID: %i", sensor.version);
-        LOGGER_NOTICE_FMT("Min %.2f max. %2.f", sensor.min_value, sensor.max_value);
-        LOGGER_NOTICE_FMT("Resolution: %.2f", sensor.resolution);
+        sensorSonic.beginAsync();
+        sensorSonic.startAsync(100000); // start first measurement
 
-        // Set delay between sensor readings based on sensor details.
-        delayMS = sensor.min_delay / 1000; // ~2000
-    //    Serial2.println(delayMS);
-        //        delay(5000);
         LOGGER_VERBOSE("....leave");
-    } /*--------------------- end og begin --------------------------------------------*/
+    } /*--------------------- end of begin --------------------------------------------*/
 
     virtual void enter() override
     {
         LOGGER_VERBOSE("Enter....");
-        _sonicData->distance_raw = _hcrs04->measureDistanceCm();
-        _sonicData->distance = _hcrs04->measureDistanceCm(_sonicData->temperature);
-
         LOGGER_VERBOSE("....leave");
-    } /*--------------------- end og enter --------------------------------------------*/
+    } /*--------------------- end of enter --------------------------------------------*/
 
     virtual void update() override
     {
         LOGGER_VERBOSE("Enter....");
-     
 
-        //LOGGER_NOTICE_FMT("Distance raw: %.2f cm", _sonicData->distance_raw);
-        LOGGER_NOTICE_FMT_CHK(_sonicData->distance_raw,__sonicData->_distance_raw,"Distance: %.2f cm", _sonicData->distance); 
+        if (sensorSonic.isFinished())
+        {
+            _sonicData->distance = sensorSonic.getDist_cm();
+            sensorSonic.startAsync(100000);
+           // Serial2.print("Distance ");Serial2.println(_sonicData->distance);
+            LOGGER_NOTICE_FMT_CHK(_sonicData->distance, __sonicData.distance, "Altitude: %.2f", _sonicData->distance);
+        }
 
-       //Serial2.printf("/*%.2f*/\r\n",_sonicData->distance_raw);
+            _sonicData->humidity = dht.readHumidity();
+            _sonicData->temperature = dht.readTemperature();
+ 
+            // Check if any reads failed and exit early (to try again).
+            if (isnan(_sonicData->humidity) || isnan(_sonicData->temperature)) {
+                LOGGER_FATAL("Failed to read from DHT sensor!");
+                return;
+            }
 
-        // Delay between measurements.
-        //delay(delayMS);
-        // Get temperature event and print its value.
-        sensors_event_t event;
-        _dht->temperature().getEvent(&event);
-        if (isnan(event.temperature))
-        {
-            LOGGER_FATAL("Error reading temperature!");
-        }
-        else
-        {
-            _sonicData->temperature = event.temperature;
-        //    LOGGER_NOTICE_FMT("Temperature: %.2f%s", event.temperature, "*C");
-        }
-        // Get humidity event and print its value.
-        _dht->humidity().getEvent(&event);
-        if (isnan(event.relative_humidity))
-        {
-            LOGGER_FATAL("Error reading humidity!");
-        }
-        else
-        {
-            _sonicData->humidity = event.relative_humidity;
-         //   LOGGER_NOTICE_FMT("Humidity: %.2f%c", event.relative_humidity, '%');
-        }
+            LOGGER_NOTICE_FMT_CHK(_sonicData->humidity, __sonicData.humidity, "Humidity: %.2f Temperature: %.2f", _sonicData->humidity, _sonicData->temperature);
+
+        speedOfSoundInCmPerMicroSec = 0.03313 + (0.0000606 * _sonicData->temperature); // Cair ≈ (331.3 + 0.606 ⋅ ϑ) m/s
+        //Serial2.print("Speed ");Serial2.println(speedOfSoundInCmPerMicroSec);
+
         LOGGER_VERBOSE("....leave");
-    } /*--------------------- end og update -------------------------------------------*/
+    } /*--------------------- end of update -------------------------------------------*/
 
 }; /*----------------------------------- end of sonic.h class -------------------------*/
