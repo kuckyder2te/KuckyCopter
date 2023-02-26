@@ -17,7 +17,7 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #define PIN_ECHO 21

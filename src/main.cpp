@@ -120,7 +120,7 @@ void setup()
 
   
 //  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);
-//  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
+  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
   //Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(10);
 
 #ifdef _PID_ADJUST

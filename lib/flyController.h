@@ -211,5 +211,7 @@ public:
             break;
 
         } /* end of switch flyState */
+
+        // Update TX_Payload from RC Interface
     } /*------------------------------- end of update ---------------------------------*/
 }; /*---------------------------------- end of flyController --------------------------*/

@@ -130,7 +130,7 @@ public:
         //     _sensorData->yaw = _mpu9250.getYaw();
         //     _sensorData->pitch = _mpu9250.getPitch();
         //     _sensorData->roll = _mpu9250.getRoll();
-        //     //LOGGER_NOTICE_FMT("Yaw: %0.2f Pitch: %0.2f Roll: %0.2f",_mpu9250.getYaw(),_mpu9250.getPitch(),_mpu9250.getRoll());
+        //     LOGGER_NOTICE_FMT("Yaw: %0.2f Pitch: %0.2f Roll: %0.2f",_mpu9250.getYaw(),_mpu9250.getPitch(),_mpu9250.getRoll());
         // }
 
         LOGGER_VERBOSE("....leave");
@@ -165,7 +165,6 @@ public:
         LOGGER_NOTICE_FMT_CHK(_sensorData->_pressure,__sensorData._pressure,"Pressure =  %.2fPa", _sensorData->_pressure);
         LOGGER_NOTICE_FMT_CHK(_sensorData->_temperature_baro, __sensorData._temperature_baro,"Temperature =  %.2f*C", _sensorData->_temperature_baro);
         LOGGER_NOTICE_FMT_CHK(_sensorData->_altitude, __sensorData._altitude,"Approx altitude =  %.4fm", _sensorData->_altitude);
-
 
         /* Ausgabe von Rohdaten*/
         // Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n",_aX, _aY, _aZ, _aSqrt, _gX, _gY, _gZ, _mDirection, _mX, _mY, _mZ);
