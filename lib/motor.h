@@ -90,7 +90,7 @@ public:
 
 		if (_motor)
 		{
-		//	digitalWrite(PIN_ESC_ON, HIGH); // Mail Power für die ESC´s eingeschaltet
+		//	digitalWrite(PIN_ESC_ON, HIGH); // Main Power für die ESC´s eingeschaltet
 			LOGGER_NOTICE_FMT("_motor Pin = %d", _pin);
 			_motor->setPWM();
 		}else{
@@ -119,7 +119,7 @@ public:
 			break;
 
 		case busy:
-		LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Arming is busy");
+			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Arming is busy");
 			if(millis() - _lastMillis > 2000){
 				_motorState = finished;
 				resultingPower = DUTYCYCLE_MIN;
@@ -174,12 +174,12 @@ public:
 		if (power < 0)
 		{
 			_power = 0;
-			LOGGER_WARNING_FMT("Power = %d < 0 - Pin: %d",power,_pin);
+			LOGGER_NOTICE_FMT("Power = %d < 0 - Pin: %d",power,_pin);
 		}
 		else if (power > _maxPower)
 		{
 			_power = _maxPower;
-			LOGGER_WARNING_FMT("Power = %d over maxPower - Pin: %d",power,_pin);
+			LOGGER_NOTICE_FMT("Power = %d over maxPower - Pin: %d",power,_pin);
 		}
 		else
 		{
@@ -209,7 +209,7 @@ public:
 
 	bool isArmed(){
 		return _isArmed;
-	}
+	} /*-------------------------- end of isArmed -------------------------------------*/
 	
 	bool isMotorOff()
 	{

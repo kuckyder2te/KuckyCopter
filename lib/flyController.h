@@ -44,6 +44,16 @@ typedef enum
     } flyState_e;
         flyState_e flyState;
 
+void updateModel(){
+    _model->RC_interface.TX_payload.pitch = _model->sensorData.pitch;
+    _model->RC_interface.TX_payload.altitude = _model->sensorData.altitude;
+    _model->RC_interface.TX_payload.pressure = _model->sensorData.pressure;
+    _model->RC_interface.TX_payload.roll = _model->sensorData.roll;
+    _model->RC_interface.TX_payload.sonic = _model->sonicData.distance;
+    _model->RC_interface.TX_payload.temperature = _model->sensorData.temperature_baro;
+    _model->RC_interface.TX_payload.yaw = _model->sensorData.yaw;
+}
+
 public:
     FlyController(const String &name)
         : Task::Base(name)
@@ -211,7 +221,6 @@ public:
             break;
 
         } /* end of switch flyState */
-
-        // Update TX_Payload from RC Interface
+        updateModel();
     } /*------------------------------- end of update ---------------------------------*/
 }; /*---------------------------------- end of flyController --------------------------*/

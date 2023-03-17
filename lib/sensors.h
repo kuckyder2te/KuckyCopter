@@ -29,9 +29,9 @@ typedef struct
     float roll;
     float yaw;
     double compass;
-    float _pressure;
-    float _altitude;
-    float _temperature_baro;
+    float pressure;
+    float altitude;
+    float temperature_baro;
     float _seaLevel;
 } sensorData_t;
 
@@ -110,8 +110,7 @@ public:
         else
         {
             LOGGER_FATAL("MS5611 not found. halt.");
-            //while (1)
-                ;
+            while (1) ;
         }
 
         _ms5611->setOversampling(OSR_STANDARD);
@@ -121,58 +120,48 @@ public:
         LOGGER_VERBOSE("....leave");
     } /* ------------------ end of begin ----------------------------------------------*/
 
-    virtual void enter() override
+    virtual void update() override
     {
         LOGGER_VERBOSE("Enter....");
-
-        // if (_mpu9250.update()){
-        //     //LOGGER_NOTICE("Update mpu9250");
-        //     _sensorData->yaw = _mpu9250.getYaw();
-        //     _sensorData->pitch = _mpu9250.getPitch();
-        //     _sensorData->roll = _mpu9250.getRoll();
-        //     LOGGER_NOTICE_FMT("Yaw: %0.2f Pitch: %0.2f Roll: %0.2f",_mpu9250.getYaw(),_mpu9250.getPitch(),_mpu9250.getRoll());
-        // }
-
         LOGGER_VERBOSE("....leave");
     } /* ------------------ end of enter ---------------------------------------------*/
 
-    virtual void update() override
+    virtual void enter() override
     {
         LOGGER_VERBOSE("Enter....");
         LOGGER_NOTICE_FMT("Wire %d",Wire.availableForWrite());
         if (_mpu9250.update()){
-            // if(((int8_t)_mpu9250.getRoll()!=0)&&((int8_t)_mpu9250.getPitch()!=0)){
-            //     LOGGER_NOTICE_FMT("%f",_mpu9250.getRoll());
 
             _sensorData->yaw = _mpu9250.getYaw();
             _sensorData->pitch = _mpu9250.getPitch();
             _sensorData->roll = _mpu9250.getRoll();
-                 LOGGER_NOTICE_FMT("Yaw: %0.2f Pitch: %0.2f Roll: %0.2f",_mpu9250.getYaw(),_mpu9250.getPitch(),_mpu9250.getRoll());
-                                        
-            // }else{
-            //     //LOGGER_NOTICE_FMT("%f",_mpu9250.getRoll());
-            //     //LOGGER_NOTICE_FMT("%f",_mpu9250.getPitch());
-            // }
+
+            #ifndef SERIAL_STUDIO
+                LOGGER_NOTICE_FMT("Yaw: %0.2f Pitch: %0.2f Roll: %0.2f",_mpu9250.getYaw(),_mpu9250.getPitch(),_mpu9250.getRoll());
+                LOGGER_NOTICE_FMT_CHK(_sensorData->yaw, __sensorData.yaw, "Yaw = %0.2f", _sensorData->yaw);
+                LOGGER_NOTICE_FMT_CHK(_sensorData->pitch, __sensorData.pitch, "Pitch = %0.2f", _sensorData->pitch);
+                LOGGER_NOTICE_FMT_CHK(_sensorData->roll, __sensorData.yaw, "Roll = %0.2f", _sensorData->yaw);
+                LOGGER_NOTICE_FMT_CHK(_sensorData->compass, __sensorData.compass, "compass = %0.2f", _sensorData->compass);                   
+            #endif    
+ 
         }else{
             _ms5611->read(); // uses default OSR_ULTRA_LOW  (fastest)
             _sensorData->_seaLevel = getSeaLevel(_ms5611->getPressure(), HOME_ALTITUDE); // Warum immer hier
-            _sensorData->_temperature_baro = _ms5611->getTemperature();
-            _sensorData->_pressure = _ms5611->getPressure();
-            _sensorData->_altitude = getAltitude(_sensorData->_pressure, _sensorData->_seaLevel);
-        }
+            _sensorData->temperature_baro = _ms5611->getTemperature();
+            _sensorData->pressure = _ms5611->getPressure();
+            _sensorData->altitude = getAltitude(_sensorData->pressure, _sensorData->_seaLevel);
 
-        LOGGER_NOTICE_FMT_CHK(_sensorData->_seaLevel,__sensorData._seaLevel,"Sea level =  %.2fPa", _sensorData->_seaLevel);
-        LOGGER_NOTICE_FMT_CHK(_sensorData->_pressure,__sensorData._pressure,"Pressure =  %.2fPa", _sensorData->_pressure);
-        LOGGER_NOTICE_FMT_CHK(_sensorData->_temperature_baro, __sensorData._temperature_baro,"Temperature =  %.2f*C", _sensorData->_temperature_baro);
-        LOGGER_NOTICE_FMT_CHK(_sensorData->_altitude, __sensorData._altitude,"Approx altitude =  %.4fm", _sensorData->_altitude);
+            #ifndef SERIAL_STUDIO
+                LOGGER_NOTICE_FMT_CHK(_sensorData->altitude, __sensorData.y_altitude, "Altitude = %0.2f", _sensorData->altitude);
+                LOGGER_NOTICE_FMT_CHK(_sensorData->pressure, __sensorData.pressure, "Pressure = %0.2f", _sensorData->pressure);
+                LOGGER_NOTICE_FMT_CHK(_sensorData->_seaLevel, __sensorData._seaLevel, "SeaLevel = %0.2f", _sensorData->_seaLevel);
+                LOGGER_NOTICE_FMT_CHK(_sensorData->temperature_baro, __sensorData.temperature_baro, "Temperature_baro = %0.2f", _sensorData->temperature_baro);
+            #endif
+        }
 
         /* Ausgabe von Rohdaten*/
         // Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n",_aX, _aY, _aZ, _aSqrt, _gX, _gY, _gZ, _mDirection, _mX, _mY, _mZ);
         // Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n",_aX, _aY, _aZ, _gX, _gY, _gZ, _mX, _mY, _mZ);
-
-        /* Ausabe von Arbeitsdaten*/
-        // Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n",_sensorData->_pressure,_sensorData->_altitude,_sensorData->yaw,_sensorData->pitch,_sensorData->roll);
-//        Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n", _sensorData->roll, _sensorData->pitch, _sensorData->yaw,_sensorData->_pressure,_sensorData->_temperature_baro);
 
         LOGGER_VERBOSE("....leave");
     } /*------------------------------- end of update ---------------------------------*/

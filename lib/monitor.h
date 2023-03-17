@@ -15,7 +15,6 @@
 //#define LOCAL_DEBUG
 #include "myLogger.h"
 
-
 class Monitor : public Task::Base {
 private:
     model_t *_model;
@@ -40,10 +39,6 @@ public:
     // virtual void begin() override {
     // }
 
-    // optional (you can remove this method)
-    // virtual void enter() override {
-    // }
-
     virtual void update() override {
     /*
     IMU-> Yaw,Pitch,Roll
@@ -53,24 +48,14 @@ public:
     Motor
     */
 
-        Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n",
+        Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i*/\r\n",
             _model->sensorData.yaw,
-            _model->sensorData.pitch+180,
-            _model->sensorData.roll+180,
-            _model->sensorData._pressure,
-            _model->sensorData._temperature_baro,
-            _model->sonicData.distance);
+            _model->sensorData.pitch,
+            _model->sensorData.roll,
+            _model->sensorData.pressure,
+            _model->sensorData.temperature_baro,
+            _model->sonicData.distance,
+            _model->RC_interface.isconnect
+            );
     }
-
-    // optional (you can remove this method)
-    // virtual void exit() override {
-    // }
-
-    // optional (you can remove this method)
-    // virtual void idle() override {
-    // }
-
-    // optional (you can remove this method)
-    // virtual void reset() override {
-    // }
 };

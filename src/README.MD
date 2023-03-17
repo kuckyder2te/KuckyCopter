@@ -130,7 +130,8 @@ new bracnch
 [Change 152]    Sensor CJMCU_10DOF NCS mit PS verbunden. Timingproblem noch nicht gelöst FIX
 [Change 160]	IMU, BARO, SONIC und DHT Sensoren implementiert und funktionieren.
 				Für Sonic noch keine Temperatur-Kompentation
-[Change 200]	RC erfolgreich eingebunden, aber ohne echte Werte				
+[Change 200]	RC erfolgreich eingebunden, aber ohne echte Werte	
+[Change 201]	RC Daten kommen jetzt. Serial Studio implemetiert		
 				
 
 ### **WICHTIG**

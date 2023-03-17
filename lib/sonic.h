@@ -36,11 +36,10 @@ typedef struct
     float humidity;
     float distance, _distance; // Entfernung, Temperatur kompensiert
     float distance_raw;        // Entfernung ohne Kompensation
+    float speedOfSoundInCmPerMicroSec;
 } sonicData_t;
 
-class Sonic : public Task::Base
-{
-    float speedOfSoundInCmPerMicroSec;
+class Sonic : public Task::Base{
 
 public:
     sonicData_t *_sonicData;
@@ -89,10 +88,10 @@ public:
         {
             _sonicData->distance = sensorSonic.getDist_cm();
             sensorSonic.startAsync(100000);
-           // Serial2.print("Distance ");Serial2.println(_sonicData->distance);
-            LOGGER_NOTICE_FMT_CHK(_sonicData->distance, __sonicData.distance, "Altitude: %.2f", _sonicData->distance);
+            #ifdef SERIAL_STUDIO
+                LOGGER_NOTICE_FMT_CHK(_sonicData->distance, __sonicData.distance, "Altitude: %.2f", _sonicData->distance);
+            #endif
         }
-
             _sonicData->humidity = dht.readHumidity();
             _sonicData->temperature = dht.readTemperature();
  
@@ -101,11 +100,12 @@ public:
                 LOGGER_FATAL("Failed to read from DHT sensor!");
                 return;
             }
+            _sonicData->speedOfSoundInCmPerMicroSec = 0.03313 + (0.0000606 * _sonicData->temperature); // Cair ≈ (331.3 + 0.606 ⋅ ϑ) m/s
 
-            LOGGER_NOTICE_FMT_CHK(_sonicData->humidity, __sonicData.humidity, "Humidity: %.2f Temperature: %.2f", _sonicData->humidity, _sonicData->temperature);
-
-        speedOfSoundInCmPerMicroSec = 0.03313 + (0.0000606 * _sonicData->temperature); // Cair ≈ (331.3 + 0.606 ⋅ ϑ) m/s
-        //Serial2.print("Speed ");Serial2.println(speedOfSoundInCmPerMicroSec);
+            #ifndef SERIAL_STUDIO
+                LOGGER_NOTICE_FMT_CHK(_sonicData->speedOfSoundInCmPerMicroSec, __sonicData.speedOfSoundInCmPerMicroSec,"SoundSpeed: %.2f", _sonicData->speedOfSoundInCmPerMicroSec);
+                LOGGER_NOTICE_FMT_CHK(_sonicData->humidity, __sonicData.humidity, "Humidity: %.2f Temperature: %.2f", _sonicData->humidity, _sonicData->temperature);
+            #endif
 
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end of update -------------------------------------------*/

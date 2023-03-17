@@ -19,6 +19,9 @@
 // #include <Adafruit_I2CDevice.h>
 // #include <Adafruit_SPIDevice.h>
 #include "EEPROM.h"
+
+#define SERIAL_STUDIO
+
 #include "..\lib\sensors.h"
 #include "..\lib\sonic.h"
 #include "..\lib\radio.h"
@@ -116,12 +119,13 @@ void setup()
       ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
       ->startFps(100);
   Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(100); // Übergabe des models in das objekt Sensor
-  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2);
+  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2); 
+//  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1)
 
-  
-//  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);
   Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
-  //Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(10);
+  #ifdef SERIAL_STUDIO 
+    Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(10);
+  #endif
 
 #ifdef _PID_ADJUST
   Tasks.add<PID_adjust>("pidadjust")
@@ -144,7 +148,7 @@ void loop()
   LOGGER_VERBOSE("loop has begun");
   //  unsigned long enter = micros();
   Tasks.update();
-  //Tasks["sensor"]->enter();
+  Tasks["sensor"]->enter();
 
   //  Serial.print("/*");Serial.print(model.sensorData.yaw);Serial.print(",");  /// eigenen monitor als Klasse erzeugen
   //                     Serial.print(model.sensorData.roll);Serial.print(",");

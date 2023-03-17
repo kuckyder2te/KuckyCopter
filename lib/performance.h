@@ -7,5 +7,3 @@ typedef struct{
     uint16_t max_loop_time;
     uint16_t last_loop_time;
 }performance_t;
-
-//#undef _DEBUG_
