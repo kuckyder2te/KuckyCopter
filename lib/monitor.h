@@ -42,7 +42,7 @@ public:
     virtual void update() override {
     /*
     IMU-> Yaw,Pitch,Roll
-    Sonic-> Distance
+    Sonic-> closeRange
     Radio-> 
     Baro->
     Motor
@@ -54,7 +54,7 @@ public:
             _model->sensorData.roll,
             _model->sensorData.pressure,
             _model->sensorData.temperature_baro,
-            _model->sonicData.distance,
+            _model->sonicData.closeRange,
             _model->RC_interface.isconnect
             );
     }

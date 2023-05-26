@@ -46,19 +46,24 @@
 #define PIN_MOTOR_BL 13
 #define PIN_MOTOR_BR 14
 
+#define PIN_LED_STATE 0 // mainloop is running
+
 #define AXIS_FPS 100
 
 model_t model; /// Speicherplatz wird angelegt und instanziert
 // UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
 #ifdef _PID_ADJUST
-PID_adjust *_pid_adjust;
+  PID_adjust *_pid_adjust;
 #endif
 
 void setup()
 {
   pinMode(PIN_ESC_ON, OUTPUT);
   digitalWrite(PIN_ESC_ON, LOW); // MainPower für ESC´s abgeschaltet
+  pinMode(PIN_LED_STATE, OUTPUT);
+  digitalWrite(PIN_LED_STATE, LOW);
+
   Serial.begin(COM_SPEED);
   Serial2.begin(BT_SPEED);
   Serial.println("Serial COM OK");

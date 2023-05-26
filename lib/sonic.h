@@ -34,8 +34,8 @@ typedef struct
 {
     float temperature;
     float humidity;
-    float distance, _distance; // Entfernung, Temperatur kompensiert
-    float distance_raw;        // Entfernung ohne Kompensation
+    float closeRange, _closeRange; // Entfernung, Temperatur kompensiert
+    float closeRange_raw;        // Entfernung ohne Kompensation
     float speedOfSoundInCmPerMicroSec;
 } sonicData_t;
 
@@ -86,10 +86,10 @@ public:
 
         if (sensorSonic.isFinished())
         {
-            _sonicData->distance = sensorSonic.getDist_cm();
+            _sonicData->closeRange = sensorSonic.getDist_cm();
             sensorSonic.startAsync(100000);
             #ifdef SERIAL_STUDIO
-                LOGGER_NOTICE_FMT_CHK(_sonicData->distance, __sonicData.distance, "Altitude: %.2f", _sonicData->distance);
+                LOGGER_NOTICE_FMT_CHK(_sonicData->closeRange, __sonicData.closeRange, "Altitude: %.2f", _sonicData->closeRange);
             #endif
         }
             _sonicData->humidity = dht.readHumidity();

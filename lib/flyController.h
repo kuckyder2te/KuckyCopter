@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "radio.h"
@@ -45,13 +45,13 @@ typedef enum
         flyState_e flyState;
 
 void updateModel(){
+    _model->RC_interface.TX_payload.yaw = _model->sensorData.yaw;
     _model->RC_interface.TX_payload.pitch = _model->sensorData.pitch;
+    _model->RC_interface.TX_payload.roll = _model->sensorData.roll;
     _model->RC_interface.TX_payload.altitude = _model->sensorData.altitude;
     _model->RC_interface.TX_payload.pressure = _model->sensorData.pressure;
-    _model->RC_interface.TX_payload.roll = _model->sensorData.roll;
-    _model->RC_interface.TX_payload.sonic = _model->sonicData.distance;
     _model->RC_interface.TX_payload.temperature = _model->sensorData.temperature_baro;
-    _model->RC_interface.TX_payload.yaw = _model->sensorData.yaw;
+    _model->RC_interface.TX_payload.sonic = _model->sonicData.closeRange; 
 }
 
 public:
@@ -106,7 +106,7 @@ public:
 
         case disablePID:
             /* Deactivate the PID controller from all axis. */
-            LOGGER_NOTICE("disablePID");
+            LOGGER_VERBOSE("disablePID");
             _axisYaw->setState(AxisYaw::state_e::disablePID);
             flyState = standby;
             LOGGER_NOTICE("disable PID is finished");
@@ -127,11 +127,12 @@ public:
             {
             //    _model->yawData.power = 0;
                 flyState = standby;
+                LOGGER_NOTICE("standby is held");
             }          
             break;
 
         case prestart:
-            LOGGER_NOTICE("prestart");
+            LOGGER_VERBOSE("prestart");
             /* Checked if all axes are OK. */
             _axisYaw->setState(AxisYaw::ready);
             if (_axisYaw->isReady())
@@ -142,11 +143,12 @@ public:
             else
             {
                 flyState = prestart; 
+                LOGGER_NOTICE("prestart is held");
             }
             break;
 
             case takeoff:
-                LOGGER_NOTICE("take off");
+                LOGGER_VERBOSE("take off");
                 /* Throttle greater than POWER_LIFT_UP and RC is connected, go to the next state. */
                 //_radio->RC_interface->isconnect = true;          // nur zum testen, ob Flycontroller           
                  _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
@@ -154,17 +156,18 @@ public:
                 if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle < POWER_LIFT_UP))
                 {
                     flyState = set_pid;
+                    LOGGER_NOTICE("take off is fineshed");
                 }
                 else
                 {
                     flyState = takeoff;
-                }
-                LOGGER_NOTICE("take off is fineshed");
+                    LOGGER_NOTICE("take off is held");
+                }              
                 break;
 
         case set_pid:
             /* If everything is checked, the PID controller is activated. */
-            LOGGER_NOTICE("set pid");
+            LOGGER_VERBOSE("set pid");
             _model->RC_interface.isconnect = true;          // nur zum testen, ob Flycontroller           
             _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
             _model->RC_interface.RX_payload.rcThrottle = 65;    // durchläuft
@@ -178,17 +181,18 @@ public:
             else
             {
                 flyState = set_pid; /// new 23.05.21
+                LOGGER_NOTICE("set pid is held");
             }
             break;
 
         case fly:
             /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, the status is set to ground. */
-            LOGGER_NOTICE("fly");
-            //_model->sonicData.distance = 10;          // nur zum testen, ob Flycontroller                      
+            LOGGER_VERBOSE("fly");
+            //_model->sonicData.closeRange = 10;          // nur zum testen, ob Flycontroller                      
             _model->yawData.power= _model->RC_interface.RX_payload.rcThrottle;
            //_model->yawData.throttle = 50;             // durchläuft
 
-            if ((_model->RC_interface.RX_payload.rcThrottle <= POWER_LIFT_UP) || (_model->sonicData.distance < PID_ACTIVE_AT))
+            if ((_model->RC_interface.RX_payload.rcThrottle <= POWER_LIFT_UP) || (_model->sonicData.closeRange < PID_ACTIVE_AT))
             //if ((_model->RC_interface.RX_payload.rcThrottle <= POWER_LIFT_UP))
             {
                 flyState = ground;
@@ -198,21 +202,23 @@ public:
             {
                 _axisYaw->setState(AxisYaw::ready);
                 downTime = millis(); ///< save the time for state ground
+                LOGGER_NOTICE("fly is held");
             }
             break;
 
         case ground:
             /* If the quadrocopter is on the ground for more than DOWN_TIME, disable the engines. */
-            LOGGER_NOTICE("ground");
+            LOGGER_VERBOSE("ground");
             if (millis() - downTime >= DOWN_TIME)
             {
                 flyState = fly;
-                LOGGER_NOTICE("ground fineshed");
+                LOGGER_NOTICE("Flystate is activ");
             }
             else
             {
                 flyState = disablePID;
                 _model->yawData.power = 0;
+                LOGGER_NOTICE("Drone is on the ground.");
             }
             break;
 
