@@ -20,7 +20,7 @@
 #include <MPU9250.h>
 #include <MS5611.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 typedef struct
@@ -88,14 +88,14 @@ public:
         setting.accel_fchoice = 0x01;
         setting.accel_dlpf_cfg = ACCEL_DLPF_CFG::DLPF_45HZ;
         _mpu9250.setMagneticDeclination(51);
-        if (!_mpu9250.setup(0x68))
-        { // change to your own address
-            while (1)
-            {
-                LOGGER_FATAL("MPU connection failed. Please check your connection with `connection_check` example.");
-                delay(5000);
-            }
-        }
+        // if (!_mpu9250.setup(0x68))
+        // { // change to your own address
+        //     while (1)
+        //     {
+        //         LOGGER_FATAL("MPU connection failed. Please check your connection with `connection_check` example.");
+        //         delay(5000);
+        //     }
+        // }
 
         LOGGER_NOTICE("MS5611 initialized");
         _ms5611 = new MS5611();
@@ -129,8 +129,9 @@ public:
     virtual void enter() override
     {
         LOGGER_VERBOSE("Enter....");
-        LOGGER_NOTICE_FMT("Wire %d",Wire.availableForWrite());
+        LOGGER_VERBOSE_FMT("Wire %d",Wire.availableForWrite());
         if (_mpu9250.update()){
+            LOGGER_VERBOSE("_mpu9250.update");
 
             _sensorData->yaw = _mpu9250.getYaw();
             _sensorData->pitch = _mpu9250.getPitch();
@@ -143,8 +144,10 @@ public:
                 LOGGER_NOTICE_FMT_CHK(_sensorData->roll, __sensorData.yaw, "Roll = %0.2f", _sensorData->yaw);
                 LOGGER_NOTICE_FMT_CHK(_sensorData->compass, __sensorData.compass, "compass = %0.2f", _sensorData->compass);                   
             #endif    
+            LOGGER_VERBOSE("_mpu9250 leave");
  
         }else{
+            LOGGER_VERBOSE("_ms5611->read");
             _ms5611->read(); // uses default OSR_ULTRA_LOW  (fastest)
             _sensorData->_seaLevel = getSeaLevel(_ms5611->getPressure(), HOME_ALTITUDE); // Warum immer hier
             _sensorData->temperature_baro = _ms5611->getTemperature();
@@ -157,6 +160,7 @@ public:
                 LOGGER_NOTICE_FMT_CHK(_sensorData->_seaLevel, __sensorData._seaLevel, "SeaLevel = %0.2f", _sensorData->_seaLevel);
                 LOGGER_NOTICE_FMT_CHK(_sensorData->temperature_baro, __sensorData.temperature_baro, "Temperature_baro = %0.2f", _sensorData->temperature_baro);
             #endif
+            LOGGER_VERBOSE("_ms5611 leave");
         }
 
         /* Ausgabe von Rohdaten*/

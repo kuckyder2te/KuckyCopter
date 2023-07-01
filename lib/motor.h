@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <RP2040_PWM.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 /*
@@ -38,7 +38,7 @@
 
 #define POWER_MIN 0			//
 #define POWER_MAX 100		//
-#define BASE_MOTOR_POWER 10 //< 10% minimal throttle in fly mode for preventing stop of the motors
+#define BASE_MOTOR_POWER 20 //< 10% minimal throttle in fly mode for preventing stop of the motors
 #define PIN_ESC_ON 15
 #define DUTYCYCLE_MIN 40000
 #define DUTYCYCLE_MAX 80000
@@ -55,6 +55,7 @@ public:
 	typedef enum
 	{
 		arming = 0,
+		power_on,
 		busy,
 		finished,
 		off,
@@ -113,11 +114,14 @@ public:
 		case arming:
 			LOGGER_NOTICE("arming begin");
 			resultingPower = DUTYCYCLE_MAX;
-			_lastMillis = millis();
-			digitalWrite(PIN_ESC_ON, HIGH);	// ESC´s einschalten der PIN wird 4 mal auf HIGH gesetzt
-			_motorState = busy;
+			_motorState = power_on;
 			break;
-
+		case power_on:
+			delay(20);
+			digitalWrite(PIN_ESC_ON, LOW);	// ESC´s einschalten der PIN wird 4 mal auf HIGH gesetzt
+			_motorState = busy;
+			_lastMillis = millis();
+			break;		
 		case busy:
 			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Arming is busy");
 			if(millis() - _lastMillis > 2000){
@@ -144,6 +148,7 @@ public:
 
 		case on:
 			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Motor on");
+			//_power = 50;  //Debug
 			resultingPower = map(_power, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
 			if (resultingPower < map(BASE_MOTOR_POWER, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX))
 			{

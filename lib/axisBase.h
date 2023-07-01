@@ -9,7 +9,7 @@
 
 #include <TaskManager.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "newPID.h"
@@ -44,8 +44,10 @@ public:
     AxisBase(const String &name) : Task::Base(name)
     {
         eepromAddress = sizeof(pidData_t) * _instanceCounter++;
-        _newPID = new NewPID(this->getName(),eepromAddress); // Adresse in Variable speichern
-        
+        _newPID = new NewPID(name,eepromAddress); // Adresse in Variable speichern
+        //_newPID = new NewPID(this->getName(),eepromAddress); // Adresse in Variable speichern
+
+
         _lastMillis = millis();
         _error = 0;
         _sp = 0;

@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include <HardwareSerial.h>
 
-#define LOCAL_DEBUG	// enable = debug this class  /  disable no debug
+//#define LOCAL_DEBUG	// enable = debug this class  /  disable no debu
 #include "..\lib\myLogger.h"
 
 #include "..\lib\putty_out.h"

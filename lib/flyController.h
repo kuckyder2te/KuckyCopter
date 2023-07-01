@@ -18,7 +18,8 @@
 #include "model.h"
 
 #define PIN_LED_STATE 7
-#define POWER_LIFT_UP 60 ///< The KuckyCopter will start, if throttle > 60
+//#define POWER_LIFT_UP 60 ///< The KuckyCopter will start, if throttle > 60
+#define POWER_LIFT_UP 10 ///Test Value
 #define DOWN_TIME 2000   ///< Time to turn off the engines (in Microseconds).
 #define PID_ACTIVE_AT 9     ///< PID aktiviert ab einer Höhe von 9cm
 
@@ -42,7 +43,7 @@ typedef enum
         fly,                ///< Normal fly mode
         ground              ///< Kuckycopter stand on the ground
     } flyState_e;
-        flyState_e flyState;
+        flyState_e flyState,Debug_flyState;
 
 void updateModel(){
     _model->RC_interface.TX_payload.yaw = _model->sensorData.yaw;
@@ -121,13 +122,15 @@ public:
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_MIN))
             {
                 flyState = prestart;
-                LOGGER_NOTICE("standby is fineshed");
+                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"standby is fineshed");
+                //LOGGER_NOTICE("standby is fineshed");
             }
             else
             {
             //    _model->yawData.power = 0;
                 flyState = standby;
-                LOGGER_NOTICE("standby is held");
+                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"standby is held");
+                //LOGGER_NOTICE("standby is held");
             }          
             break;
 
@@ -188,11 +191,15 @@ public:
         case fly:
             /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, the status is set to ground. */
             LOGGER_VERBOSE("fly");
-            //_model->sonicData.closeRange = 10;          // nur zum testen, ob Flycontroller                      
+            //_model->sonicData.closeRange = 10;          // nur zum testen, ob Flycontroller 
+
+            // Test
+            _model->RC_interface.RX_payload.rcThrottle = 100;
+
             _model->yawData.power= _model->RC_interface.RX_payload.rcThrottle;
            //_model->yawData.throttle = 50;             // durchläuft
 
-            if ((_model->RC_interface.RX_payload.rcThrottle <= POWER_LIFT_UP) || (_model->sonicData.closeRange < PID_ACTIVE_AT))
+            if ((_model->yawData.power <= POWER_LIFT_UP) || (_model->sonicData.closeRange < PID_ACTIVE_AT))
             //if ((_model->RC_interface.RX_payload.rcThrottle <= POWER_LIFT_UP))
             {
                 flyState = ground;

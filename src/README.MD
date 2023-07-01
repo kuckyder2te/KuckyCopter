@@ -133,6 +133,7 @@ new bracnch
 [Change 200]	RC erfolgreich eingebunden, aber ohne echte Werte	
 [Change 201]	RC Daten kommen jetzt. Serial Studio implemetiert		
 [Change 300]	Monitor erweitert und RC Model verwendet
+[Change 301]	Testmodule eingefügt.
 
 ### **WICHTIG**
 In der Klasse Sensor muss die Fehlermeldung "FATAL_ERROR....." wieder einkommentiert werden. Erledigt.

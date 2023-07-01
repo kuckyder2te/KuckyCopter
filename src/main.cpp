@@ -13,11 +13,11 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HardwareSerial.h>
-#include <SPI.h>
-#include <Wire.h>
-// #include <Adafruit_Sensor.h>
-// #include <Adafruit_I2CDevice.h>
-// #include <Adafruit_SPIDevice.h>
+// #include <SPI.h>
+// #include <Wire.h>
+ #include <Adafruit_Sensor.h>
+ #include <Adafruit_I2CDevice.h>
+ #include <Adafruit_SPIDevice.h>
 #include "EEPROM.h"
 
 #define SERIAL_STUDIO
@@ -57,8 +57,47 @@ model_t model; /// Speicherplatz wird angelegt und instanziert
   PID_adjust *_pid_adjust;
 #endif
 
+void base_setup();
+void motor_test_setup();
+void main_setup();
+void motor_test_loop();
+void main_loop();
+
+#ifdef _MAIN
+  
+#else
+// Motor* motor[4];
+  Motor m1(PIN_MOTOR_FL);    
+  Motor m2(PIN_MOTOR_FR);    
+  Motor m3(PIN_MOTOR_BL);    
+  Motor m4(PIN_MOTOR_BR);    
+#endif
+
+
 void setup()
 {
+  base_setup();
+#ifdef _MAIN
+  main_setup();
+  #else
+  motor_test_setup();
+  #endif
+}
+
+
+void loop()
+{
+  
+  //  unsigned long enter = micros();
+  #ifdef _MAIN
+    main_loop();
+  #else
+    motor_test_loop();
+  #endif
+  
+} /*------------------------ end of loop -----------------------------------------------*/
+
+void base_setup(){
   pinMode(PIN_ESC_ON, OUTPUT);
   digitalWrite(PIN_ESC_ON, LOW); // MainPower für ESC´s abgeschaltet
   pinMode(PIN_LED_STATE, OUTPUT);
@@ -101,7 +140,9 @@ void setup()
   EEPROM.begin(512);
   
   delay(100);
+}
 
+void main_setup(){
   LOGGER_VERBOSE("Enter....");
   Tasks.add<AxisMotor>("axismotor_a")
       ->setModel(&model.axisData[0])
@@ -120,16 +161,16 @@ void setup()
       ->setAxisOrdered(reinterpret_cast<AxisMotor *>(Tasks["axismotor_b"].get()))
       ->startFps(AXIS_FPS);
   Tasks.add<FlyController>("flycontroller")
-      ->init(&model) // bekommt das komplette Model, Master of Desater!!
+      ->init(&model) // bekommt das komplette Model, Master of Desaster!!
       ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
       ->startFps(100);
-  Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(100); // Übergabe des models in das objekt Sensor
-  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2); 
+  Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(10); // Übergabe des models in das objekt Sensor
+//  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2); 
 //  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1)
 
-  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
+//  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
   #ifdef SERIAL_STUDIO 
-    Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(10);
+    Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(0.1);
   #endif
 
 #ifdef _PID_ADJUST
@@ -148,10 +189,100 @@ void setup()
   delay(100);
 } /*------------------------ end of setup ----------------------------------------------*/
 
-void loop()
-{
+void motor_test_setup(){
+  LOGGER_VERBOSE("Enter....");
+  //motor[0] = new Motor(PIN_MOTOR_FL);
+  //motor[1] = new Motor(PIN_MOTOR_FR);
+  // ....
+
+  //for(uint8_t i = 0;i<4;i++) motor[i]->setup();
+  m1.setup();
+  m2.setup();
+  m3.setup();
+  m4.setup();
+  m1.setMotorState(Motor::arming);
+  m2.setMotorState(Motor::arming);
+  m3.setMotorState(Motor::arming);
+  m4.setMotorState(Motor::arming);
+  
+}
+
+#define TEST_POWER 50
+void motor_test_loop(){
   LOGGER_VERBOSE("loop has begun");
-  //  unsigned long enter = micros();
+  static uint8_t POWER = 10;
+  m1.update();      // array
+  m2.update();
+  m3.update();
+  m4.update();
+  if(m1.isArmed() && m4.isArmed()){
+    if(Serial.available()){
+      char key = Serial.read();
+        switch(key){
+          case '1':
+          //case '2':
+          //case '3':
+          //case '4':
+            Serial.println("M1");
+            Serial.println(m1.getPower());
+            //motor[key-48]->setMotorState(Motor::on);
+            m1.setMotorState(Motor::on);
+          break;
+          case '2':
+            Serial.println("M2");
+            Serial.println(m2.getPower());
+            m2.setMotorState(Motor::on);
+          break;
+          case '3':
+            Serial.println("M3");
+            Serial.println(m3.getPower());
+            m3.setMotorState(Motor::on);
+          break;
+          case '4':
+            Serial.println("M4");
+            Serial.println(m4.getPower());
+            m4.setMotorState(Motor::on);
+          break;
+          case '0':
+            Serial.println("Motor off");
+            m1.setMotorState(Motor::off);
+            m2.setMotorState(Motor::off);
+            m3.setMotorState(Motor::off);
+            m4.setMotorState(Motor::off);
+          break;
+          case '+':
+            POWER++;
+            m1.setPower(POWER);
+            m2.setPower(POWER);
+            m3.setPower(POWER);
+            m4.setPower(POWER);
+            Serial.println(POWER);
+          break;
+          case '-':
+            POWER--;
+            m1.setPower(POWER);
+            m2.setPower(POWER);
+            m3.setPower(POWER);
+            m4.setPower(POWER);
+            Serial.println(POWER);
+          break;
+
+          default:
+          ;
+        };
+    }else{
+      Serial.println(m1.getMotorState());
+      Serial.println(m2.getMotorState());
+      Serial.println(m3.getMotorState());
+      Serial.println(m4.getMotorState());
+      Serial.println("------------------------");
+    }
+  }
+  LOGGER_VERBOSE("Loop completed successfully");
+}
+
+void main_loop(){
+  LOGGER_VERBOSE("loop has begun");
   Tasks.update();
   Tasks["sensor"]->enter();
 
@@ -168,4 +299,4 @@ void loop()
   //  if(model.performance.last_loop_time < model.performance.min_loop_time)
   //    model.performance.min_loop_time = model.performance.last_loop_time;
   LOGGER_VERBOSE("Loop completed successfully");
-} /*------------------------ end of loop -----------------------------------------------*/
+}

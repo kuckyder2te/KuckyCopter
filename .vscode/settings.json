@@ -7,5 +7,6 @@
         "map": "cpp",
         "system_error": "cpp",
         "new": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }

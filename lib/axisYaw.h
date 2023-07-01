@@ -96,19 +96,22 @@ public:
 	virtual void begin()
 	{
 		AxisBase::begin();
+		digitalWrite(PIN_ESC_ON, LOW);
 	} /*------------------------------- end of virtual begin --------------------------*/
 
 	virtual void update()
 	{
 		AxisBase::update();
 
+		LOGGER_VERBOSE("Update axisYaw");
+
 		switch (_state)
 		{
 		case arming_start:
 			/* The arming procedure will start. */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter arming_start State %d",_state);
-			digitalWrite(PIN_ESC_ON, HIGH);
-			delay(20);
+			//digitalWrite(PIN_ESC_ON, HIGH);
+			//delay(20);
 			_axisMotor[axisName_e::primary]->setState(AxisMotor::motorState_e::arming_start);
 			_axisMotor[axisName_e::secondary]->setState(AxisMotor::motorState_e::arming_start);
 			_state = arming_finished;
@@ -131,8 +134,6 @@ public:
 			/* Disables the YawAxis PID controller and initiates deactivation for the motor axes. */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter disablePID State %d",_state);
 			_newPID->disablePID();
-			//			_yawData->axisData[0]->state = motor_state_e::disablePID;
-			//			_yawData->axisData[1]->state = motor_state_e::disablePID;
 			_axisMotor[axisName_e::primary]->setState(AxisMotor::disablePID);
 			_axisMotor[axisName_e::secondary]->setState(AxisMotor::disablePID);
 			LOGGER_VERBOSE("....leave");
@@ -143,8 +144,6 @@ public:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter enablePID State %d",_state);
 			_newPID->enablePID();
 			*_yaw->horz_Position = 0;
-			//		_yawData->axisData[0]->state = motor_state_e::enablePID;
-			//		_yawData->axisData[1]->state = motor_state_e::enablePID;
 			_axisMotor[axisName_e::primary]->setState(AxisMotor::enablePID);
 			_axisMotor[axisName_e::secondary]->setState(AxisMotor::enablePID);
 			_lastCompass = *_axisData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
@@ -157,7 +156,8 @@ public:
 			_axisMotor[axisName_e::primary]->setState(AxisMotor::ready);
 			_axisMotor[axisName_e::secondary]->setState(AxisMotor::ready);
 
-			_axisData->power = 10;		// Test
+			// _axisData->power = 10;		// Test
+			// *_yaw->rotationSpeed = 100; // Test
 
 			if ((*_yaw->rotationSpeed > YAW_SENSIBILITY) || (*_yaw->rotationSpeed < (-YAW_SENSIBILITY)))
 			{ ///< YAW Joystick is not moved....

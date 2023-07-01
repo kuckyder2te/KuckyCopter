@@ -10,13 +10,11 @@
 
 #include "axisBase.h"
 #include "motor.h"
-
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 class AxisMotor : public AxisBase
 {
-
 public:
 	typedef enum
 	{
@@ -137,7 +135,7 @@ public:
 			break;
 
 		case arming_end:
-			LOGGER_VERBOSE_FMT("arming end %s ", this->getName().c_str());
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"arming end %s ", this->getName().c_str());
 			_motor[motor_t::first]->setMotorState(Motor::off);
 			_motor[motor_t::second]->setMotorState(Motor::off);
 			break;
@@ -145,24 +143,24 @@ public:
 		case disablePID:
 			/* Deactivate the PID controller from the motor axes. Does it have to be that way?
 			 * Look at module AxisYaw */
-			LOGGER_VERBOSE("deactivate PID");
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"deactivate PID %s ", this->getName().c_str());
 			AxisBase::_newPID->disablePID();
 			break;
 
 		case enablePID:
 			/* Activate the PID controller from the MotorAxis with the current coefficients. */
-			LOGGER_VERBOSE("activate PID");
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"activate PID %s ", this->getName().c_str());
 			AxisBase::_newPID->enablePID();
 			break;
 
 		case standby:
-			LOGGER_VERBOSE("standby");
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"standby %s ", this->getName().c_str());
 			_motor[motor_t::first]->setMotorState(Motor::off);
 			_motor[motor_t::second]->setMotorState(Motor::off);
 			break;
 
 		case ready:
-			LOGGER_VERBOSE("ready");
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"ready %s ", this->getName().c_str());
 			_motor[motor_t::first]->setMotorState(Motor::on);
 			_motor[motor_t::second]->setMotorState(Motor::on);
 
@@ -172,7 +170,7 @@ public:
 
 			_motor[motor_t::first]->setPower(_axisData->power - _axisData->pidError);
 			_motor[motor_t::second]->setPower(_axisData->power + _axisData->pidError);
-			LOGGER_VERBOSE_FMT("AxisMotor SP:%d, Power:%d, Error:%d", _axisData->setpoint, _axisData->power, _axisData->pidError);
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"AxisMotor SP:%d, Power:%d, Error:%d", _axisData->setpoint, _axisData->power, _axisData->pidError);
 			break;
 		} /* end of switch */
 	
@@ -180,8 +178,9 @@ public:
 
 	void setState(motorState_e state)
 	{
+		//if(state!=_state)
+		//	LOGGER_NOTICE_FMT("set AxisMotor State = %d", _state);		// Does not work. Somehow Update() is called
 		_state = state;
-		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"set AxisMotor State = %d", _state);
 	} /*--------------------- end of setState -----------------------------------------*/
 
 	void setPower(int16_t _power)
@@ -201,19 +200,19 @@ public:
 
 	boolean isDeactivatePID()
 	{
-		LOGGER_VERBOSE("Enter....isDeactivatePID");
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isDeactivatePID %s ", this->getName().c_str());
 		return (_state == disablePID);
 	} /*--------------------- end of isDeactivatePID ----------------------------------*/
 
-	boolean isStandby() const
+	boolean isStandby()
 	{
-		LOGGER_VERBOSE("Enter....isStandby");
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isStandby %s ", this->getName().c_str());
 		return (_state == standby);
 	} /*--------------------- end of isStandby ----------------------------------------*/
 
-	boolean isReady() const
+	boolean isReady()
 	{
-		LOGGER_VERBOSE("Enter....isReady");
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isReady %s ", this->getName().c_str());
 		return (_state == ready);
 	} /*---------------------- end of isReady -----------------------------------------*/
 }; /*.................................. end of axisMotor class ------------------------*/
