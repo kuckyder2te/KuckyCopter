@@ -5,12 +5,12 @@
     Description : Drohne
     Hardware : Raspberry Pi Pico 2020
                Gyro : MPU9250
-               Baro : BMP280
+               Baro : MS5911
                Radio : NRF24
                Sonic : HRS04
 */
 
-#include <Arduino.h>
+#include <Arduino.h> 
 #include <TaskManager.h>
 #include <HardwareSerial.h>
 // #include <SPI.h>
@@ -66,14 +66,14 @@ void main_loop();
 #ifdef _MAIN
   
 #else
-// Motor* motor[4];
-  Motor m1(PIN_MOTOR_FL);    
-  Motor m2(PIN_MOTOR_FR);    
-  Motor m3(PIN_MOTOR_BL);    
-  Motor m4(PIN_MOTOR_BR);    
+Motor* motor[4];
+  // Motor m1(PIN_MOTOR_FL);    
+  // Motor m2(PIN_MOTOR_FR);    
+  // Motor m3(PIN_MOTOR_BL);    
+  // Motor m4(PIN_MOTOR_BR);    
 #endif
 
-
+/*--------------------------- end of declarations -----------------------------------------------*/
 void setup()
 {
   base_setup();
@@ -81,13 +81,12 @@ void setup()
   main_setup();
   #else
   motor_test_setup();
-  #endif
+#endif
 }
-
+/*--------------------------- end of standard setup ---------------------------------------------*/
 
 void loop()
 {
-  
   //  unsigned long enter = micros();
   #ifdef _MAIN
     main_loop();
@@ -95,7 +94,7 @@ void loop()
     motor_test_loop();
   #endif
   
-} /*------------------------ end of loop -----------------------------------------------*/
+} /*------------------------ end of standard loop -----------------------------------------------*/
 
 void base_setup(){
   pinMode(PIN_ESC_ON, OUTPUT);
@@ -140,7 +139,7 @@ void base_setup(){
   EEPROM.begin(512);
   
   delay(100);
-}
+}/*------------------------ end of base setup ---------------------------------------------------*/
 
 void main_setup(){
   LOGGER_VERBOSE("Enter....");
@@ -187,95 +186,114 @@ void main_setup(){
 
   LOGGER_NOTICE("Program is initialized");
   delay(100);
-} /*------------------------ end of setup ----------------------------------------------*/
+} /*------------------------ end of setup -------------------------------------------------------*/
 
 void motor_test_setup(){
   LOGGER_VERBOSE("Enter....");
-  //motor[0] = new Motor(PIN_MOTOR_FL);
-  //motor[1] = new Motor(PIN_MOTOR_FR);
-  // ....
+  motor[0] = new Motor(PIN_MOTOR_FL);
+  motor[1] = new Motor(PIN_MOTOR_FR);
+  motor[2] = new Motor(PIN_MOTOR_BL);
+  motor[3] = new Motor(PIN_MOTOR_BR);
 
-  //for(uint8_t i = 0;i<4;i++) motor[i]->setup();
-  m1.setup();
-  m2.setup();
-  m3.setup();
-  m4.setup();
-  m1.setMotorState(Motor::arming);
-  m2.setMotorState(Motor::arming);
-  m3.setMotorState(Motor::arming);
-  m4.setMotorState(Motor::arming);
+  for(uint8_t i = 0; i<4; i++) {
+    motor[i]->setup();
+    motor[i]->setMotorState(Motor::arming);
+  }
+
+  // m1.setup();
+  // m2.setup();
+  // m3.setup();
+  // m4.setup();
+  // m1.setMotorState(Motor::arming);
+  // m2.setMotorState(Motor::arming);
+  // m3.setMotorState(Motor::arming);
+  // m4.setMotorState(Motor::arming);
   
-}
+} /*------------------------ end of motor_test_setup --------------------------------------------*/
 
 #define TEST_POWER 50
 void motor_test_loop(){
   LOGGER_VERBOSE("loop has begun");
-  static uint8_t POWER = 10;
-  m1.update();      // array
-  m2.update();
-  m3.update();
-  m4.update();
-  if(m1.isArmed() && m4.isArmed()){
+  static uint8_t test_power = 10;
+  // m1.update();      // array
+  // m2.update();
+  // m3.update();
+  // m4.update();
+  if(motor[0]->isArmed()&&motor[3]->isArmed()){
+  //if(m1.isArmed() && m4.isArmed()){
     if(Serial.available()){
       char key = Serial.read();
         switch(key){
           case '1':
-          //case '2':
-          //case '3':
-          //case '4':
-            Serial.println("M1");
-            Serial.println(m1.getPower());
-            //motor[key-48]->setMotorState(Motor::on);
-            m1.setMotorState(Motor::on);
-          break;
           case '2':
+          case '3':
+          case '4': 
+            LOGGER_NOTICE_FMT("Motor %i Power %i", key-48, motor[key-48]->getPower());
+       //     Serial.println("Motor %i", key-48);
+       //     Serial.println(motor[key-48]->getPower());
+            motor[key-48]->setMotorState(Motor::on);
+          break;
+/*          case '2':
             Serial.println("M2");
-            Serial.println(m2.getPower());
-            m2.setMotorState(Motor::on);
+            // Serial.println(m2.getPower());
+            // m2.setMotorState(Motor::on);
           break;
           case '3':
             Serial.println("M3");
-            Serial.println(m3.getPower());
-            m3.setMotorState(Motor::on);
+            // Serial.println(m3.getPower());
+            // m3.setMotorState(Motor::on);
           break;
           case '4':
             Serial.println("M4");
-            Serial.println(m4.getPower());
-            m4.setMotorState(Motor::on);
-          break;
+            // Serial.println(m4.getPower());
+            // m4.setMotorState(Motor::on);
+          break;*/
           case '0':
-            Serial.println("Motor off");
-            m1.setMotorState(Motor::off);
-            m2.setMotorState(Motor::off);
-            m3.setMotorState(Motor::off);
-            m4.setMotorState(Motor::off);
+            LOGGER_NOTICE("Motors off");
+//            Serial.println("Motor off");
+            for(uint8_t i = 0; i<4; i++)
+              motor[i]->setMotorState(Motor::off);
+            // m1.setMotorState(Motor::off);
+            // m2.setMotorState(Motor::off);
+            // m3.setMotorState(Motor::off);
+            // m4.setMotorState(Motor::off);
           break;
           case '+':
-            POWER++;
-            m1.setPower(POWER);
-            m2.setPower(POWER);
-            m3.setPower(POWER);
-            m4.setPower(POWER);
-            Serial.println(POWER);
+            test_power++;
+              for(uint8_t i = 0; i<4; i++){
+                motor[i]->setPower(test_power);
+                LOGGER_NOTICE_FMT("Motor %i Power %i", key-48, motor[key-48]->getPower());
+              }
+            // m1.setPower(POWER);
+            // m2.setPower(POWER);
+            // m3.setPower(POWER);
+            // m4.setPower(POWER);
+
           break;
           case '-':
-            POWER--;
-            m1.setPower(POWER);
-            m2.setPower(POWER);
-            m3.setPower(POWER);
-            m4.setPower(POWER);
-            Serial.println(POWER);
+            test_power--;
+               for(uint8_t i = 0; i<4; i++){
+                motor[i]->setPower(test_power);   
+                LOGGER_NOTICE_FMT("Motor %i Power %i", key-48, motor[key-48]->getPower());
+              }        
+            // m1.setPower(POWER);
+            // m2.setPower(POWER);
+            // m3.setPower(POWER);
+            // m4.setPower(POWER);
+          //  Serial.println(test_power);
           break;
 
           default:
           ;
         };
     }else{
-      Serial.println(m1.getMotorState());
-      Serial.println(m2.getMotorState());
-      Serial.println(m3.getMotorState());
-      Serial.println(m4.getMotorState());
-      Serial.println("------------------------");
+      for(uint8_t i = 0; i<4; i++)
+        motor[i]->getMotorState();
+      // Serial.println(m1.getMotorState());
+      // Serial.println(m2.getMotorState());
+      // Serial.println(m3.getMotorState());
+      // Serial.println(m4.getMotorState());
+      LOGGER_NOTICE("------------------------");
     }
   }
   LOGGER_VERBOSE("Loop completed successfully");
