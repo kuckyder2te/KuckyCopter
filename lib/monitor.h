@@ -15,12 +15,17 @@
 //#define LOCAL_DEBUG
 #include "myLogger.h"
 
+#define DISPLAY_DELAY 1000
+
+
 class Monitor : public Task::Base {
 private:
     model_t *_model;
+    unsigned long _lastMillis;
 public:
     Monitor(const String& name)
     : Task::Base(name) {
+        _lastMillis = millis();
     }
 
     virtual ~Monitor() {}
@@ -40,6 +45,8 @@ public:
     // }
 
     virtual void update() override {
+        if(millis()-_lastMillis < DISPLAY_DELAY){
+            _lastMillis = millis();
     /*
     IMU-> Yaw,Pitch,Roll
     Sonic-> closeRange
@@ -48,7 +55,7 @@ public:
     Motor
     */
 
-        Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i*/\r\n",
+        Serial.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i*/\r\n",
             _model->sensorData.yaw,
             _model->sensorData.pitch,
             _model->sensorData.roll,
@@ -57,5 +64,6 @@ public:
             _model->sonicData.closeRange,
             _model->RC_interface.isconnect
             );
+        }
     }
 };

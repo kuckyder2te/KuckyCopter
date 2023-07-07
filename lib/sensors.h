@@ -73,9 +73,6 @@ public:
         LOGGER_VERBOSE("Enter....");
         Wire.begin();
         LOGGER_NOTICE("MPU9250 initialized");
-        //_mpu9250 = new MPU9250(); // Adresse in Variable speichern
-        LOGGER_NOTICE("End init MPU9250");
-
         uint8_t sensorId;
         int result;
 
@@ -88,14 +85,15 @@ public:
         setting.accel_fchoice = 0x01;
         setting.accel_dlpf_cfg = ACCEL_DLPF_CFG::DLPF_45HZ;
         _mpu9250.setMagneticDeclination(51);
-        // if (!_mpu9250.setup(0x68))
-        // { // change to your own address
-        //     while (1)
-        //     {
-        //         LOGGER_FATAL("MPU connection failed. Please check your connection with `connection_check` example.");
-        //         delay(5000);
-        //     }
-        // }
+        if (!_mpu9250.setup(0x68))
+        { // change to your own address
+            while (1)
+            {
+                LOGGER_FATAL("MPU connection failed. Please check your connection with `connection_check` example.");
+                delay(5000);
+            }
+        }
+        LOGGER_NOTICE("End init MPU9250");
 
         LOGGER_NOTICE("MS5611 initialized");
         _ms5611 = new MS5611();

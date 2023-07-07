@@ -33,7 +33,11 @@
 #include "..\lib\performance.h"
 #include "..\lib\PID_adjust.h"
 //#include "..\lib\model.h"
+
+#define LOCAL_DEBUG
+
 #include "..\lib\myLogger.h"
+
 #include "..\lib\monitor.h"
 
 #define PIN_BT_TX 8
@@ -58,19 +62,24 @@ model_t model; /// Speicherplatz wird angelegt und instanziert
 #endif
 
 void base_setup();
-void motor_test_setup();
-void main_setup();
-void motor_test_loop();
-void main_loop();
 
 #ifdef _MAIN
-  
-#else
-Motor* motor[4];
-  // Motor m1(PIN_MOTOR_FL);    
-  // Motor m2(PIN_MOTOR_FR);    
-  // Motor m3(PIN_MOTOR_BL);    
-  // Motor m4(PIN_MOTOR_BR);    
+void main_setup();  
+void main_loop();
+#elif _MOTOR
+void motor_test_setup();
+void motor_test_loop();
+  Motor* motor[4]; 
+#elif _AXIS
+void axis_test_setup();
+void axis_test_loop();
+  AxisMotor* axis[2];
+  axisData_t axisData;
+#elif _SENSOR
+void sensor_test_setup();
+void sensor_test_loop();
+  Sensor* sensor;
+  Monitor* monitor;
 #endif
 
 /*--------------------------- end of declarations -----------------------------------------------*/
@@ -79,8 +88,12 @@ void setup()
   base_setup();
 #ifdef _MAIN
   main_setup();
-  #else
+  #elif _MOTOR
   motor_test_setup();
+  #elif _AXIS
+  axis_test_setup();
+  #elif _SENSOR
+  sensor_test_setup();
 #endif
 }
 /*--------------------------- end of standard setup ---------------------------------------------*/
@@ -90,15 +103,20 @@ void loop()
   //  unsigned long enter = micros();
   #ifdef _MAIN
     main_loop();
-  #else
+  #elif _MOTOR
     motor_test_loop();
+  #elif _AXIS
+    axis_test_loop();
+  #elif _SENSOR
+    sensor_test_loop();
   #endif
   
 } /*------------------------ end of standard loop -----------------------------------------------*/
 
 void base_setup(){
   pinMode(PIN_ESC_ON, OUTPUT);
-  digitalWrite(PIN_ESC_ON, LOW); // MainPower für ESC´s abgeschaltet
+  digitalWrite(PIN_ESC_ON, HIGH); // MainPower für ESC´s eingeschaltet,
+                                  // will sagen, BC547 schaltet nicht durch, da die Basis HIGH ist
   pinMode(PIN_LED_STATE, OUTPUT);
   digitalWrite(PIN_LED_STATE, LOW);
 
@@ -140,7 +158,7 @@ void base_setup(){
   
   delay(100);
 }/*------------------------ end of base setup ---------------------------------------------------*/
-
+#ifdef _MAIN
 void main_setup(){
   LOGGER_VERBOSE("Enter....");
   Tasks.add<AxisMotor>("axismotor_a")
@@ -187,7 +205,9 @@ void main_setup(){
   LOGGER_NOTICE("Program is initialized");
   delay(100);
 } /*------------------------ end of setup -------------------------------------------------------*/
+#endif
 
+#ifdef _MOTOR
 void motor_test_setup(){
   LOGGER_VERBOSE("Enter....");
   motor[0] = new Motor(PIN_MOTOR_FL);
@@ -197,30 +217,47 @@ void motor_test_setup(){
 
   for(uint8_t i = 0; i<4; i++) {
     motor[i]->setup();
-    motor[i]->setMotorState(Motor::arming);
   }
-
-  // m1.setup();
-  // m2.setup();
-  // m3.setup();
-  // m4.setup();
-  // m1.setMotorState(Motor::arming);
-  // m2.setMotorState(Motor::arming);
-  // m3.setMotorState(Motor::arming);
-  // m4.setMotorState(Motor::arming);
   
 } /*------------------------ end of motor_test_setup --------------------------------------------*/
+#endif
+#ifdef _AXIS
+void axis_test_setup(){
 
-#define TEST_POWER 50
+  LOGGER_VERBOSE("Enter....");
+  axis[0] = new AxisMotor("axismotor_a");
+  axis[1] = new AxisMotor("axismotor_b");
+  axis[0]->setModel(&axisData);
+  axis[1]->setModel(&axisData);
+
+  for(uint8_t i = 0; i < 2; i++){
+    axis[i]->begin();
+    //axis[i]->setState(AxisMotor::arming_start);
+  }
+} /*------------------------ end of axis_test_setup -------------------------------------------*/
+#endif
+#ifdef _SENSOR
+void sensor_test_setup(){
+
+  LOGGER_VERBOSE("Enter....");
+  sensor = new Sensor("sensor");
+  monitor = new Monitor("monitor");
+  monitor->setModel(&model);
+  sensor->setModel(&model.sensorData);
+  sensor->begin();
+} /*------------------------ end of sensor_test_setup -------------------------------------------*/
+#endif
+
+#ifdef _MOTOR
 void motor_test_loop(){
   LOGGER_VERBOSE("loop has begun");
-  static uint8_t test_power = 10;
-  // m1.update();      // array
-  // m2.update();
-  // m3.update();
-  // m4.update();
+  static uint8_t test_power = BASE_MOTOR_POWER;
+
+  for(uint8_t i = 0; i<4; i++)
+    motor[i]->update();
+
   if(motor[0]->isArmed()&&motor[3]->isArmed()){
-  //if(m1.isArmed() && m4.isArmed()){
+  
     if(Serial.available()){
       char key = Serial.read();
         switch(key){
@@ -228,77 +265,70 @@ void motor_test_loop(){
           case '2':
           case '3':
           case '4': 
-            LOGGER_NOTICE_FMT("Motor %i Power %i", key-48, motor[key-48]->getPower());
-       //     Serial.println("Motor %i", key-48);
-       //     Serial.println(motor[key-48]->getPower());
-            motor[key-48]->setMotorState(Motor::on);
+            LOGGER_NOTICE_FMT("Motor %i Power %i", key-'1', motor[key-'1']->getPower());
+            motor[key-'1']->setMotorState(Motor::on);
           break;
-/*          case '2':
-            Serial.println("M2");
-            // Serial.println(m2.getPower());
-            // m2.setMotorState(Motor::on);
-          break;
-          case '3':
-            Serial.println("M3");
-            // Serial.println(m3.getPower());
-            // m3.setMotorState(Motor::on);
-          break;
-          case '4':
-            Serial.println("M4");
-            // Serial.println(m4.getPower());
-            // m4.setMotorState(Motor::on);
-          break;*/
           case '0':
             LOGGER_NOTICE("Motors off");
-//            Serial.println("Motor off");
             for(uint8_t i = 0; i<4; i++)
               motor[i]->setMotorState(Motor::off);
-            // m1.setMotorState(Motor::off);
-            // m2.setMotorState(Motor::off);
-            // m3.setMotorState(Motor::off);
-            // m4.setMotorState(Motor::off);
           break;
           case '+':
             test_power++;
               for(uint8_t i = 0; i<4; i++){
                 motor[i]->setPower(test_power);
-                LOGGER_NOTICE_FMT("Motor %i Power %i", key-48, motor[key-48]->getPower());
+                LOGGER_NOTICE_FMT("Motor %i Power %i", key-'1', motor[key-'1']->getPower());
               }
-            // m1.setPower(POWER);
-            // m2.setPower(POWER);
-            // m3.setPower(POWER);
-            // m4.setPower(POWER);
-
           break;
           case '-':
             test_power--;
                for(uint8_t i = 0; i<4; i++){
                 motor[i]->setPower(test_power);   
-                LOGGER_NOTICE_FMT("Motor %i Power %i", key-48, motor[key-48]->getPower());
-              }        
-            // m1.setPower(POWER);
-            // m2.setPower(POWER);
-            // m3.setPower(POWER);
-            // m4.setPower(POWER);
-          //  Serial.println(test_power);
+                LOGGER_NOTICE_FMT("Motor %i Power %i", key-'1', motor[key-'1']->getPower());
+              }
+          break;
+          case 'x':
+            motor[0]->setMotorState(Motor::power_off);
           break;
 
           default:
           ;
         };
     }else{
+      
       for(uint8_t i = 0; i<4; i++)
         motor[i]->getMotorState();
-      // Serial.println(m1.getMotorState());
-      // Serial.println(m2.getMotorState());
-      // Serial.println(m3.getMotorState());
-      // Serial.println(m4.getMotorState());
       LOGGER_NOTICE("------------------------");
     }
+  }else{
+    if(Serial.available()){
+        char key = Serial.read();
+        switch(key){
+          case 'a':
+            for(uint8_t i = 0; i<4; i++) {
+              motor[i]->setMotorState(Motor::arming);
+            }
+          break;
+        }
+      }
   }
   LOGGER_VERBOSE("Loop completed successfully");
 }
+#endif
+#ifdef _AXIS
+void axis_test_loop(){
 
+}
+#endif
+
+#ifdef _SENSOR
+void sensor_test_loop(){
+  monitor->update();
+  sensor->update();
+}
+#endif
+
+#ifdef _MAIN
 void main_loop(){
   LOGGER_VERBOSE("loop has begun");
   Tasks.update();
@@ -318,3 +348,4 @@ void main_loop(){
   //    model.performance.min_loop_time = model.performance.last_loop_time;
   LOGGER_VERBOSE("Loop completed successfully");
 }
+#endif

@@ -38,7 +38,7 @@
 
 #define POWER_MIN 0			//
 #define POWER_MAX 100		//
-#define BASE_MOTOR_POWER 20 //< 10% minimal throttle in fly mode for preventing stop of the motors
+#define BASE_MOTOR_POWER 7 //< 10% minimal throttle in fly mode for preventing stop of the motors
 #define PIN_ESC_ON 15
 #define DUTYCYCLE_MIN 40000
 #define DUTYCYCLE_MAX 80000
@@ -56,6 +56,7 @@ public:
 	{
 		arming = 0,
 		power_on,
+		power_off,
 		busy,
 		finished,
 		off,
@@ -91,7 +92,6 @@ public:
 
 		if (_motor)
 		{
-		//	digitalWrite(PIN_ESC_ON, HIGH); // Main Power für die ESC´s eingeschaltet
 			LOGGER_NOTICE_FMT("_motor Pin = %d", _pin);
 			_motor->setPWM();
 		}else{
@@ -107,7 +107,7 @@ public:
 	{
 		LOGGER_VERBOSE("Enter....");
 		if(_motorState!=_lastMotorState){
-			LOGGER_NOTICE_FMT("*******New State to Update - Pin %d ********",_pin);
+			LOGGER_VERBOSE_FMT("*******New State to Update - Pin %d ********",_pin);
 		}
 		switch (_motorState)
 		{
@@ -121,7 +121,11 @@ public:
 			digitalWrite(PIN_ESC_ON, LOW);	// ESC´s einschalten der PIN wird 4 mal auf HIGH gesetzt
 			_motorState = busy;
 			_lastMillis = millis();
-			break;		
+			break;
+		case power_off:
+			digitalWrite(PIN_ESC_ON, HIGH);	// ESC´s ausschalten
+			_isArmed = false;
+			break;
 		case busy:
 			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Arming is busy");
 			if(millis() - _lastMillis > 2000){
@@ -148,7 +152,6 @@ public:
 
 		case on:
 			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Motor on");
-			//_power = 50;  //Debug
 			resultingPower = map(_power, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
 			if (resultingPower < map(BASE_MOTOR_POWER, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX))
 			{
@@ -162,6 +165,11 @@ public:
 			_motor->setPWM_Int(_pin, frequency, resultingPower);
 			_lastResultingPower= resultingPower;
 		}
+
+		if((digitalRead(PIN_ESC_ON)==HIGH) && (_motorState!=power_on)){
+			_motorState= power_off;
+		}
+
 
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of updateState ---------------------------------*/
