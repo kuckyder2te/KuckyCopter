@@ -10,6 +10,7 @@
 
 #include "axisBase.h"
 #include "motor.h"
+
 #define LOCAL_DEBUG
 #include "myLogger.h"
 
@@ -102,7 +103,7 @@ public:
 		LOGGER_NOTICE_FMT("Enter %s",this->getName().c_str());
 		LOGGER_NOTICE_FMT("%s", this->getName().c_str()); // Adresse von array of char
 		AxisBase::begin();
-		//..und weiter Configgeschichten
+		//..und weitere Configgeschichten
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of begin ---------------------------------*/
 

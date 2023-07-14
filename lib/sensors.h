@@ -20,7 +20,7 @@
 #include <MPU9250.h>
 #include <MS5611.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 typedef struct
@@ -41,13 +41,13 @@ class Sensor : public Task::Base
 {
 
 private:
-    uint32_t start, stop, count, result;
+    uint32_t start, stop, count;
     MPU9250Setting setting;
     uint16_t _updateCounter;
 
 protected:
     MPU9250 _mpu9250; // Speicherplatz reserviert
-    MS5611 *_ms5611;
+    MS5611 _ms5611;
     sensorData_t *_sensorData;
     sensorData_t __sensorData;
 
@@ -73,9 +73,7 @@ public:
         LOGGER_VERBOSE("Enter....");
         Wire.begin();
         LOGGER_NOTICE("MPU9250 initialized");
-        uint8_t sensorId;
-        int result;
-
+ 
         setting.accel_fs_sel = ACCEL_FS_SEL::A16G;
         setting.gyro_fs_sel = GYRO_FS_SEL::G2000DPS;
         setting.mag_output_bits = MAG_OUTPUT_BITS::M16BITS;
@@ -84,24 +82,25 @@ public:
         setting.gyro_dlpf_cfg = GYRO_DLPF_CFG::DLPF_41HZ;
         setting.accel_fchoice = 0x01;
         setting.accel_dlpf_cfg = ACCEL_DLPF_CFG::DLPF_45HZ;
+
         _mpu9250.setMagneticDeclination(51);
         if (!_mpu9250.setup(0x68))
         { // change to your own address
             while (1)
             {
-                LOGGER_FATAL("MPU connection failed. Please check your connection with `connection_check` example.");
+                LOGGER_FATAL("MPU connection failed.");
                 delay(5000);
             }
         }
         LOGGER_NOTICE("End init MPU9250");
 
         LOGGER_NOTICE("MS5611 initialized");
-        _ms5611 = new MS5611();
+    //    _ms5611 = new MS5611();
         LOGGER_NOTICE("End init MS5611");
 
-        LOGGER_WARNING_FMT("File %s : MS5611 lib vesion: %s", __FILE__, MS5611_LIB_VERSION);
+//        LOGGER_WARNING_FMT("File %s : MS5611 lib vesion: %s", __FILE__, MS5611_LIB_VERSION);
 
-        if (_ms5611->begin() == true)
+        if (_ms5611.begin() == true)
         {
             LOGGER_NOTICE("MS5611 found.");
         }
@@ -111,9 +110,9 @@ public:
             while (1) ;
         }
 
-        _ms5611->setOversampling(OSR_STANDARD);
+        _ms5611.setOversampling(OSR_STANDARD);
 
-        LOGGER_WARNING_FMT("Oversampling = %i", _ms5611->getOversampling());
+        LOGGER_WARNING_FMT("Oversampling = %i", _ms5611.getOversampling());
         delay(500);
         LOGGER_VERBOSE("....leave");
     } /* ------------------ end of begin ----------------------------------------------*/
@@ -122,51 +121,54 @@ public:
     {
         LOGGER_VERBOSE("Enter....");
         LOGGER_VERBOSE("....leave");
-    } /* ------------------ end of enter ---------------------------------------------*/
+    } /* ------------------ end of update ---------------------------------------------*/
 
     virtual void enter() override
     {
         LOGGER_VERBOSE("Enter....");
-        LOGGER_VERBOSE_FMT("Wire %d",Wire.availableForWrite());
+        LOGGER_NOTICE_FMT("Wire %d",Wire.availableForWrite());
         if (_mpu9250.update()){
-            LOGGER_VERBOSE("_mpu9250.update");
+            LOGGER_NOTICE("_mpu9250.update");
 
             _sensorData->yaw = _mpu9250.getYaw();
             _sensorData->pitch = _mpu9250.getPitch();
             _sensorData->roll = _mpu9250.getRoll();
 
-            #ifndef SERIAL_STUDIO
+            #ifdef _SERIAL_STUDIO
+                // Serial2.printf("/*%.2f,%.2f,%.2f*/\r\n",_mpu9250.getYaw(), _mpu9250.getPitch(), _mpu9250.getRoll());
+            #else
                 LOGGER_NOTICE_FMT("Yaw: %0.2f Pitch: %0.2f Roll: %0.2f",_mpu9250.getYaw(),_mpu9250.getPitch(),_mpu9250.getRoll());
                 LOGGER_NOTICE_FMT_CHK(_sensorData->yaw, __sensorData.yaw, "Yaw = %0.2f", _sensorData->yaw);
                 LOGGER_NOTICE_FMT_CHK(_sensorData->pitch, __sensorData.pitch, "Pitch = %0.2f", _sensorData->pitch);
                 LOGGER_NOTICE_FMT_CHK(_sensorData->roll, __sensorData.yaw, "Roll = %0.2f", _sensorData->yaw);
                 LOGGER_NOTICE_FMT_CHK(_sensorData->compass, __sensorData.compass, "compass = %0.2f", _sensorData->compass);                   
             #endif    
-            LOGGER_VERBOSE("_mpu9250 leave");
+            LOGGER_NOTICE("_mpu9250 leave");
  
         }else{
-            LOGGER_VERBOSE("_ms5611->read");
-            _ms5611->read(); // uses default OSR_ULTRA_LOW  (fastest)
-            _sensorData->_seaLevel = getSeaLevel(_ms5611->getPressure(), HOME_ALTITUDE); // Warum immer hier
-            _sensorData->temperature_baro = _ms5611->getTemperature();
-            _sensorData->pressure = _ms5611->getPressure();
+            LOGGER_NOTICE("_ms5611.read");
+            _ms5611.read(); // uses default OSR_ULTRA_LOW  (fastest)
+            _sensorData->_seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE); // Warum immer hier
+            _sensorData->temperature_baro = _ms5611.getTemperature();
+            _sensorData->pressure = _ms5611.getPressure();
             _sensorData->altitude = getAltitude(_sensorData->pressure, _sensorData->_seaLevel);
 
-            #ifndef SERIAL_STUDIO
-                LOGGER_NOTICE_FMT_CHK(_sensorData->altitude, __sensorData.y_altitude, "Altitude = %0.2f", _sensorData->altitude);
+            #ifdef _SERIAL_STUDIO
+                /* Ausgabe von Rohdaten*/
+                // Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n",_aX, _aY, _aZ, _aSqrt, _gX, _gY, _gZ, _mDirection, _mX, _mY, _mZ);
+                // Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n",
+                //                    _aX, _aY, _aZ, _gX, _gY, _gZ, _mX, _mY, _mZ);
+            #else
+                LOGGER_NOTICE_FMT_CHK(_sensorData->altitude, __sensorData.altitude, "Altitude = %0.2f", _sensorData->altitude);
                 LOGGER_NOTICE_FMT_CHK(_sensorData->pressure, __sensorData.pressure, "Pressure = %0.2f", _sensorData->pressure);
                 LOGGER_NOTICE_FMT_CHK(_sensorData->_seaLevel, __sensorData._seaLevel, "SeaLevel = %0.2f", _sensorData->_seaLevel);
                 LOGGER_NOTICE_FMT_CHK(_sensorData->temperature_baro, __sensorData.temperature_baro, "Temperature_baro = %0.2f", _sensorData->temperature_baro);
             #endif
-            LOGGER_VERBOSE("_ms5611 leave");
+
+            LOGGER_NOTICE("_ms5611 leave");
         }
-
-        /* Ausgabe von Rohdaten*/
-        // Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n",_aX, _aY, _aZ, _aSqrt, _gX, _gY, _gZ, _mDirection, _mX, _mY, _mZ);
-        // Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n",_aX, _aY, _aZ, _gX, _gY, _gZ, _mX, _mY, _mZ);
-
         LOGGER_VERBOSE("....leave");
-    } /*------------------------------- end of update ---------------------------------*/
+    } /*------------------------------- end of enter ---------------------------------*/
 
     float getAltitude(double press, double seaLevel)
     {
@@ -179,5 +181,5 @@ public:
     double getSeaLevel(double pressure, double altitude)
     {
         return ((double)pressure / pow(1.0f - ((double)altitude / 44330.0f), 5.255f));
-    } //-------------------------------- end of getSeaLevel --------------------------------------
+    } //-------------------------------- end of getSeaLevel ---------------------------------------
 };    /*----------------------------------- end of sensor.h class ---------------------*/

@@ -70,8 +70,6 @@ protected:
 	int16_t _power,_lastPower,_maxPower;
 	motorstate_e _motorState,_lastMotorState;
 
-//	uint8_t _motor_address; ///< Gives everyone axis a title
-
 public:
 	Motor(uint8_t pin) : _pin(pin)
 	{

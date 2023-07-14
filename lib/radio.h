@@ -129,7 +129,7 @@ public:
      
             _radio->read(&RC_interface->RX_payload, sizeof(RX_payload_t));  // get incoming payload
             _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t));
-            #ifndef SERIAL_STUDIO
+            #ifdef _SERIAL_STUDIO
                 LOGGER_NOTICE_FMT("Reseived %i bytes", bytes);
                 LOGGER_NOTICE_FMT("RX_Payload Throttle =  %i ", RC_interface->RX_payload.rcThrottle);
                 LOGGER_NOTICE_FMT("RX_Payload Yaw =  %i ", RC_interface->RX_payload.rcYaw);
