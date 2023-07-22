@@ -19,7 +19,6 @@ typedef struct
 {
     sensorData_t sensorData; // Data from imu and baro
     sonicData_t sonicData;
-//    performance_t performance;
     RC_interface_t RC_interface;
     AxisBase::axisData_t axisData[2];
     AxisBase::axisData_t yawData;

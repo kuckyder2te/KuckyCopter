@@ -58,7 +58,7 @@ model_t model; /// Speicherplatz wird angelegt und instanziert
 // UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
 #ifdef _PID_ADJUST
-PID_adjust *_pid_adjust;
+  PID_adjust *_pid_adjust;
 #endif
 
 void base_setup();
@@ -91,7 +91,8 @@ void main_setup()
                                                                           //  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2);
                                                                           //  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1)
 
-  //  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
+  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
+  
 #ifdef SERIAL_STUDIO
   Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(0.1);
 #endif
@@ -135,7 +136,19 @@ void motor_test_setup()
   {
     motor[i]->setup();
   }
-}
+
+    if (Serial.available()){
+      if(!Serial.read()){
+        Serial.println("----------- Motor setup menu -------------------");
+        Serial.println("Key 1- 4 choose the motor.");
+        Serial.println("Key 0 will stop all motors.");
+        Serial.println("Key (+) or (-) increment or decrement the speed.");
+        Serial.println("Key X set motorstate to off.");
+        Serial.println("Press any key to contin.");
+        Serial.println("------------------------------------------------");
+      }
+    }
+  }
 //---------------------------------------------------------------------------------------
 void motor_test_loop()
 {
@@ -288,8 +301,34 @@ void radio_test_loop(){
   radio->update();
   monitor->update();
 }
-#endif
 
+#elif _PID
+NewPID *newPID[3];
+
+  void pid_test_setup(){
+
+  }
+
+  void pid_test_loop(){
+
+  }
+
+#elif _FLYCONTROL
+FlyController *flycontrol;
+Monitor* monitor;
+  void flycontrol_test_setup(){
+    flycontrol = new FlyController("Flycontrol");
+    monitor = new Monitor("monitor",Report_t::FLYCONTROL);
+    monitor->setModel(&model);
+
+  }
+
+  void flycontrol_test_loop(){
+      flycontrol->update();
+      monitor->update();
+  }
+
+#endif
 /*--------------------------- end of declarations -----------------------------------------------*/
 void setup()
 {
@@ -305,7 +344,9 @@ void setup()
 #elif _SONIC
   sonic_test_setup();
 #elif _RADIO
-radio_test_setup();
+  radio_test_setup();
+#elif _PID
+  pid_test_setup();
 #endif
 }
 /*--------------------------- end of standard setup ---------------------------------------------*/
@@ -325,6 +366,8 @@ void loop()
   sonic_test_loop();
 #elif _RADIO
   radio_test_loop();
+#elif _PID
+  pid_test_loop();
 #endif
 
 } /*------------------------ end of standard loop -----------------------------------------------*/

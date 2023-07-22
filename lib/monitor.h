@@ -19,9 +19,11 @@
 typedef enum
     {
         MOTOR,
+        AXIS,
         SENSOR,
         RADIO,
         SONIC,
+        FLYCONTROL,
         DEFAULT
     } Report_t;
 class Monitor : public Task::Base
@@ -73,7 +75,7 @@ public:
                               _model->sensorData.roll,
                               _model->sensorData.pressure,
                               _model->sensorData.temperature_baro,
-                              _model->sonicData.closeRange,
+                              _model->sonicData.down_distance,
                               _model->RC_interface.isconnect);
                 break;
             case RADIO:
@@ -96,3 +98,4 @@ public:
         }
     }
 };
+/* -------------------------- end of monitor class ----------------------------*/

@@ -20,25 +20,25 @@
 #define LOCAL_DEBUG
 #include "myLogger.h"
 
-#define PIN_ECHO_1 21 // Sonic down
-#define PIN_TRIGGER_1 22
-#define PIN_ECHO_2 3 // Sonic front
-#define PIN_TRIGGER_2 1
+#define PIN_ECHO_1      21   // Sonic down
+#define PIN_TRIGGER_1   22
+#define PIN_ECHO_2       3   // Sonic front
+#define PIN_TRIGGER_2    2
 
 #define PIN_DHT 6
 #define DHTTYPE DHT22
 
 #define MAX_DISTANCE 200
-HC_SR04_BASE *slaves[] = {new HC_SR04<PIN_ECHO_2>(PIN_TRIGGER_2)};
-HC_SR04<PIN_ECHO_1> sensorSonic(PIN_TRIGGER_1, slaves, 1); // sensor with echo and trigger pin
+HC_SR04_BASE *slaves[] = {new HC_SR04<PIN_ECHO_2>(PIN_TRIGGER_2)};      // dies ist der slave, in diesem Fall nur einen
+HC_SR04<PIN_ECHO_1> sonic(PIN_TRIGGER_1, slaves, 1); // sensor with echo and trigger pin
+
 DHT dht(PIN_DHT, DHTTYPE);
 
 typedef struct
 {
     float temperature;
     float humidity;
-    float closeRange, _closeRange; // Entfernung, Temperatur kompensiert
-    float closeRange_raw;          // Entfernung ohne Kompensation
+ //   float closeRange_raw;          // Entfernung ohne Kompensation
     float speedOfSoundInCmPerMicroSec;
     float down_distance;
     float front_distance;
@@ -67,14 +67,14 @@ public:
     {
         LOGGER_VERBOSE("Enter....");
         dht.begin();
-        sensorSonic.beginAsync();
-        for (int i = 0; i < sensorSonic.getNumberOfSensors(); i++)
-            if (!sensorSonic.isInterruptSupported(i))
+        sonic.beginAsync();
+        for (int i = 0; i < sonic.getNumberOfSensors(); i++)
+            if (!sonic.isInterruptSupported(i))
                 //LOGGER_FATAL_FMT("Sensor, %i: *FAILED Interrupt!", i);
                 //LOGGER_FATAL(String(i).c_str());
                 Serial.println(i);
                 
-        sensorSonic.startAsync(200000);
+        sonic.startAsync(200000);
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end of begin --------------------------------------------*/
 
@@ -82,11 +82,11 @@ public:
     {
         LOGGER_VERBOSE("Enter....");
         
-        if (sensorSonic.isFinished())
+        if (sonic.isFinished())
         {
-            _sonicData->down_distance = sensorSonic.getDist_cm(0);
-            _sonicData->front_distance = sensorSonic.getDist_cm(1);
-            sensorSonic.startAsync(200000);
+            _sonicData->down_distance = sonic.getDist_cm(0);
+            _sonicData->front_distance = sonic.getDist_cm(1);
+            sonic.startAsync(200000);
         }
         
         LOGGER_VERBOSE("....leave");

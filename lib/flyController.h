@@ -52,7 +52,7 @@ void updateModel(){
     _model->RC_interface.TX_payload.altitude = _model->sensorData.altitude;
     _model->RC_interface.TX_payload.pressure = _model->sensorData.pressure;
     _model->RC_interface.TX_payload.temperature = _model->sensorData.temperature_baro;
-    _model->RC_interface.TX_payload.sonic = _model->sonicData.closeRange; 
+    _model->RC_interface.TX_payload.distance_down = _model->sonicData.down_distance; 
 }
 
 public:
@@ -191,7 +191,7 @@ public:
         case fly:
             /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, the status is set to ground. */
             LOGGER_VERBOSE("fly");
-            //_model->sonicData.closeRange = 10;          // nur zum testen, ob Flycontroller 
+            //_model->sonicData.down_distance = 10;          // nur zum testen, ob Flycontroller 
 
             // Test
             _model->RC_interface.RX_payload.rcThrottle = 100;
@@ -199,7 +199,7 @@ public:
             _model->yawData.power= _model->RC_interface.RX_payload.rcThrottle;
            //_model->yawData.throttle = 50;             // durchläuft
 
-            if ((_model->yawData.power <= POWER_LIFT_UP) || (_model->sonicData.closeRange < PID_ACTIVE_AT))
+            if ((_model->yawData.power <= POWER_LIFT_UP) || (_model->sonicData.down_distance < PID_ACTIVE_AT))
             //if ((_model->RC_interface.RX_payload.rcThrottle <= POWER_LIFT_UP))
             {
                 flyState = ground;

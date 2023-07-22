@@ -42,11 +42,11 @@ typedef struct __attribute__((__packed__))
     uint8_t rcPitch;
     uint8_t rcRoll;
     int16_t rcThrottle; //!< Get the positions of the rc joysticks
-    uint16_t rcAltitudeSonicAdj;
-    uint16_t rcAltitudeBaroAdj;
-    bool rcSwi1;
-    bool rcSwi2;
-    bool rcSwi3;
+    uint16_t rcAltitudeSonicAdj;        // Wert wird über RC Poti eingestellt 0 - 200cm
+    uint16_t rcAltitudeBaroAdj;         // Wert wird über RC Poti eingestellt 0 - 10m
+    bool rcSwi1;                        // Schaltet in den Programmier-Modus
+    bool rcSwi2;                        // autonomes fliegen    
+    bool rcSwi3;                        //
 } RX_payload_t;
 
 typedef struct __attribute__((__packed__))
@@ -55,14 +55,14 @@ typedef struct __attribute__((__packed__))
     float pitch;
     float roll;
     uint16_t altitude;  // Höhe via MS5611  
-    uint16_t sonic;     // US Sensor
+    uint16_t distance_down;     // US Sensor
     float temperature;  // MPU9250
     float pressure;     // MS5611
 } TX_payload_t;
 
 typedef struct
 {
-  TX_payload_t TX_payload;  //Do not change position !!!!! Must be the first entry
+  TX_payload_t  TX_payload;  //Do not change position !!!!! Must be the first entry
   RX_payload_t RX_payload; 
   bool isconnect;
 } RC_interface_t;
