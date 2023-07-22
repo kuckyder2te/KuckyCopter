@@ -29,9 +29,9 @@
 #define LOCAL_DEBUG
 #include "myLogger.h"
 
-#define PIN_RADIO_CE 20
+#define PIN_RADIO_CE  20
 #define PIN_RADIO_CSN 17
-#define PIN_RADIO_LED 1
+#define PIN_RADIO_LED  1
 
 #define ACK_PACKAGE_MAX_COUNT 10
 
@@ -41,7 +41,7 @@ typedef struct __attribute__((__packed__))
     uint16_t rcYaw;
     uint8_t rcPitch;
     uint8_t rcRoll;
-    int16_t rcThrottle; //!< Get the positions of the rc joysticks
+    int16_t rcThrottle;                 //!< Get the positions of the rc joysticks
     uint16_t rcAltitudeSonicAdj;        // Wert wird über RC Poti eingestellt 0 - 200cm
     uint16_t rcAltitudeBaroAdj;         // Wert wird über RC Poti eingestellt 0 - 10m
     bool rcSwi1;                        // Schaltet in den Programmier-Modus
@@ -51,13 +51,14 @@ typedef struct __attribute__((__packed__))
 
 typedef struct __attribute__((__packed__))
 {
-    float yaw;          // Fluglage via MPU9250
+    float yaw;              // Fluglage via MPU9250
     float pitch;
     float roll;
-    uint16_t altitude;  // Höhe via MS5611  
-    uint16_t distance_down;     // US Sensor
-    float temperature;  // MPU9250
-    float pressure;     // MS5611
+    uint16_t altitude;      // Höhe via MS5611  
+    float temperature;      // MS5611
+    float pressure;         
+    uint16_t distance_down; // US Sensor
+    uint16_t distance_front;
 } TX_payload_t;
 
 typedef struct
@@ -94,7 +95,7 @@ public:
         RC_interface = _model;
         LOGGER_VERBOSE("....leave");
         return this;
-    }
+    } /*----------------------------- end of setModel ------------------------------------*/
 
     virtual void begin() override
     {

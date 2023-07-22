@@ -11,8 +11,8 @@
 //#define LOCAL_DEBUG
 #include "myLogger.h"
 
-#define PIN_BATTERY 26 // analog
-#define PIN_LED_ALERT 10
+#define PIN_BATTERY     26 // analog
+#define PIN_LED_ALERT   10
 
 typedef struct
 {
@@ -36,7 +36,7 @@ public:
     virtual ~Battery(){}
 
     Battery *setModel(batteryData_t *_model)
-    { // Rückgabe wert ist das eigene Objekt (this)
+    {
      LOGGER_VERBOSE("Enter setModel....");
 
         _batteryData = _model;
@@ -66,5 +66,3 @@ public:
     LOGGER_VERBOSE("....leave");
     }
 }; /*--------------------------------- end of class battery.h --------------------------*/
-
-//#undef _DEBUG_

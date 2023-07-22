@@ -23,7 +23,7 @@
 // #define SERIAL_STUDIO
 
 #include "..\lib\sensors.h"
-#include "..\lib\sonic.h"
+#include "..\lib\sonics.h"
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
 #include "..\lib\axisBase.h"
@@ -88,7 +88,7 @@ void main_setup()
       ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
       ->startFps(100);
   Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(10); // Übergabe des models in das objekt Sensor
-                                                                          //  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2);
+  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2);
                                                                           //  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1)
 
   Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
@@ -229,8 +229,8 @@ void motor_test_loop()
 }
 //---------------------------------------------------------------------------------------
 #elif _SONIC
-Sonic* sonic;
-Monitor* monitor;
+Sonic *sonic;
+Monitor *monitor;
 void sonic_test_setup(){
   LOGGER_VERBOSE("Enter....");
   sonic = new Sonic("sonic");

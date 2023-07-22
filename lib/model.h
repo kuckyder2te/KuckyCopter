@@ -7,7 +7,7 @@
 #pragma once
 
 #include "sensors.h"
-#include "sonic.h"
+#include "sonics.h"
 #include "radio.h"
 #include "performance.h"
 #include "axisYaw.h"

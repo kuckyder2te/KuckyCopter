@@ -20,32 +20,36 @@
 #define LOCAL_DEBUG
 #include "myLogger.h"
 
-#define PIN_ECHO_1      21   // Sonic down
+#define PIN_ECHO_1      21  // Sonic down
 #define PIN_TRIGGER_1   22
-#define PIN_ECHO_2       3   // Sonic front
+#define PIN_ECHO_2       3  // Sonic front
 #define PIN_TRIGGER_2    2
+#define NUMBER_OF_SLAVES 1  // Number of possible slave sonic sensors
 
 #define PIN_DHT 6
 #define DHTTYPE DHT22
 
-#define MAX_DISTANCE 200
-HC_SR04_BASE *slaves[] = {new HC_SR04<PIN_ECHO_2>(PIN_TRIGGER_2)};      // dies ist der slave, in diesem Fall nur einen
-HC_SR04<PIN_ECHO_1> sonic(PIN_TRIGGER_1, slaves, 1); // sensor with echo and trigger pin
+#define MAX_DISTANCE 200    // max distance range 2 to 400cm
 
 DHT dht(PIN_DHT, DHTTYPE);
 
+char buffer[128];
+
 typedef struct
 {
-    float temperature;
-    float humidity;
- //   float closeRange_raw;          // Entfernung ohne Kompensation
+    uint16_t temperature;
+    uint16_t humidity;
     float speedOfSoundInCmPerMicroSec;
-    float down_distance;
-    float front_distance;
+    uint16_t down_distance;
+    uint16_t front_distance;
 } sonicData_t;
 
 class Sonic : public Task::Base
 {
+private:
+    HC_SR04_BASE *slave;
+    HC_SR04_BASE *sonic;
+    HC_SR04_BASE *slaves[NUMBER_OF_SLAVES];
 
 public:
     sonicData_t *_sonicData;
@@ -53,10 +57,15 @@ public:
 
 protected:
 public:
-    Sonic(const String &name) : Task::Base(name){}
+    Sonic(const String &name) : Task::Base(name)
+    {
+        slave = new HC_SR04<PIN_ECHO_2>(PIN_TRIGGER_2);    // This is a slave sensor, in this case only on
+        slaves[0] = slave;
+        sonic = new HC_SR04<PIN_ECHO_1>(PIN_TRIGGER_1, slaves, NUMBER_OF_SLAVES); // Master sensor with echo and trigger pin
+    }
 
     Sonic *setModel(sonicData_t *_model)
-    { // Rückgabe wert ist das eigene Objekt (this)
+    { 
         LOGGER_VERBOSE("Enter....");
         _sonicData = _model;
         LOGGER_VERBOSE("....leave");
@@ -67,29 +76,28 @@ public:
     {
         LOGGER_VERBOSE("Enter....");
         dht.begin();
-        sonic.beginAsync();
-        for (int i = 0; i < sonic.getNumberOfSensors(); i++)
-            if (!sonic.isInterruptSupported(i))
-                //LOGGER_FATAL_FMT("Sensor, %i: *FAILED Interrupt!", i);
-                //LOGGER_FATAL(String(i).c_str());
+        sonic->beginAsync();
+        for (int i = 0; i < sonic->getNumberOfSensors(); i++)
+            if (!sonic->isInterruptSupported(i))
+            {
+                LOGGER_FATAL_FMT("Sensor, %i: *FAILED Interrupt!", i);
+                LOGGER_FATAL(String(i).c_str());
                 Serial.println(i);
-                
-        sonic.startAsync(200000);
+            }
+        sonic->startAsync(200000);
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end of begin --------------------------------------------*/
 
     virtual void update() override
     {
         LOGGER_VERBOSE("Enter....");
-        
-        if (sonic.isFinished())
-        {
-            _sonicData->down_distance = sonic.getDist_cm(0);
-            _sonicData->front_distance = sonic.getDist_cm(1);
-            sonic.startAsync(200000);
-        }
-        
-        LOGGER_VERBOSE("....leave");
-    } /*--------------------- end of update -------------------------------------------*/
 
+        if (sonic->isFinished())
+        {
+            _sonicData->down_distance = sonic->getDist_cm(0);
+            _sonicData->front_distance = sonic->getDist_cm(1);
+            sonic->startAsync(200000);
+        }
+        LOGGER_VERBOSE("....leave"); 
+    }/*--------------------- end of update -------------------------------------------*/
 }; /*----------------------------------- end of sonic.h class -------------------------*/

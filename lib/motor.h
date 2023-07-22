@@ -167,8 +167,6 @@ public:
 		if((digitalRead(PIN_ESC_ON)==HIGH) && (_motorState!=power_on)){
 			_motorState= power_off;
 		}
-
-
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of updateState ---------------------------------*/
 

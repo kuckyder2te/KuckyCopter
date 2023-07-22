@@ -46,16 +46,12 @@ public:
     virtual ~Monitor() {}
 
     Monitor *setModel(model_t *_mod)
-    { // Rückgabe wert ist das eigene Objekt (this)
+    { 
         LOGGER_VERBOSE("Enter....");
         _model = _mod;
         LOGGER_VERBOSE("....leave");
         return this;
     } /*--------------------- end of setModel -----------------------------------------*/
-
-    // optional (you can remove this method)
-    // virtual void begin() override {
-    // }
 
     virtual void update() override
     {

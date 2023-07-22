@@ -61,7 +61,7 @@ public:
     virtual ~Sensor() {}
 
     Sensor *setModel(sensorData_t *_model)
-    { // Rückgabe wert ist das eigene Objekt (this)
+    { 
         LOGGER_VERBOSE("Enter....");
         _sensorData = _model;
         LOGGER_VERBOSE("....leave");

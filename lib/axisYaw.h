@@ -50,8 +50,8 @@ public:
 	AxisYaw(const String &name) : AxisBase(name)
 	{											/// Hier war der Fehler, ich muss das Basisobjekt weiterleiten
 		_virtualSetpoint = 0;					/// SP ist immer 0 da dies der aktuellen Position entspricht die in der Mittelstellung verwendet wird
-		AxisBase::_sp = &_virtualSetpoint;		// -Zuweisen des Modells zu den PID Parametern �ber Zeiger
-		AxisBase::_fb = &_virtualFeedback;		// -Ist notwendig um AxisBase.Service den PID error f�r beliebige Achsen berechnen z lassen
+		AxisBase::_sp = &_virtualSetpoint;		// -Zuweisen des Models zu den PID Parametern ueber Zeiger
+		AxisBase::_fb = &_virtualFeedback;		// -Ist notwendig um AxisBase.Service den PID error fuer beliebige Achsen berechnen z lassen
 		AxisBase::_error = &_axisData->pidError; // -
 
 		_axisMotor[axisName_e::primary] = NULL;
@@ -63,7 +63,7 @@ public:
 	virtual ~AxisYaw(){};
 
 	AxisYaw *setModel(axisData_t *_model, yaw_t *yaw)
-	{ // Rückgabe wert ist das eigene Objekt (this)
+	{ 
 		LOGGER_VERBOSE("Enter....");
 		_axisData = _model;
 		_yaw = yaw;
@@ -108,7 +108,6 @@ public:
 		switch (_state)
 		{
 		case arming_start:
-			/* The arming procedure will start. */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter arming_start State %d",_state);
 			//digitalWrite(PIN_ESC_ON, HIGH);
 			//delay(20);
@@ -119,7 +118,6 @@ public:
 			break;
 
 		case arming_finished:
-			/* Arming procedure is finished */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter arming_finished State %d",_state);
 			if(_axisMotor[axisName_e::primary]->isArmed() && _axisMotor[axisName_e::secondary]->isArmed()){
 				LOGGER_NOTICE("All Motors armed");

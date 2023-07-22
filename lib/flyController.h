@@ -14,7 +14,7 @@
 #include "myLogger.h"
 
 #include "radio.h"
-#include "sonic.h"
+#include "sonics.h"
 #include "model.h"
 
 #define PIN_LED_STATE 7
