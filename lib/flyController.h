@@ -85,6 +85,7 @@ public:
     virtual void update() override
     {
         static uint16_t downTime = 0;
+        //Serial.println("update");
         switch (flyState)
         {
 

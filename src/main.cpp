@@ -61,6 +61,14 @@ model_t model; /// Speicherplatz wird angelegt und instanziert
   PID_adjust *_pid_adjust;
 #endif
 
+void performance_test(uint16_t threshold){
+    static unsigned long last_runtime = micros();
+    uint16_t delta = micros()-last_runtime;
+    if (delta > threshold)
+      Serial.println(delta);
+    last_runtime = micros();
+}
+
 void base_setup();
 
 #ifdef _MAIN
@@ -243,6 +251,7 @@ void sonic_test_setup(){
 void sonic_test_loop(){
   monitor->update();
   sonic->update();
+  performance_test(60);
 }
 //---------------------------------------------------------------------------------------------------------------------
 #elif _AXIS

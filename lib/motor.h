@@ -38,7 +38,7 @@
 
 #define POWER_MIN 0			//
 #define POWER_MAX 100		//
-#define BASE_MOTOR_POWER 7 //< 10% minimal throttle in fly mode for preventing stop of the motors
+#define BASE_MOTOR_POWER 5 //< 10% minimal throttle in fly mode for preventing stop of the motors
 #define PIN_ESC_ON 15
 #define DUTYCYCLE_MIN 40000
 #define DUTYCYCLE_MAX 80000
