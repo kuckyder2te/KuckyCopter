@@ -127,7 +127,7 @@ public:
     {
         if (_radio->available()) {                     // is there a payload? get the pipe number that recieved it
              uint8_t bytes = _radio->getDynamicPayloadSize();  // get the size of the payload
-     
+            Serial.println("rc available");
             _radio->read(&RC_interface->RX_payload, sizeof(RX_payload_t));  // get incoming payload
             _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t));
             #ifdef _SERIAL_STUDIO
