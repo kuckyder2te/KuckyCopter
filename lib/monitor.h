@@ -75,7 +75,7 @@ public:
                               _model->RC_interface.isconnect);
                 break;
             case RADIO:
-                Serial.printf("/*%d,%i,%i,%i*/\r\n",
+                Serial.printf("/*%i,%i,%i,%i*/\r\n",
                               _model->RC_interface.isconnect,
                               _model->RC_interface.RX_payload.rcPitch,
                               _model->RC_interface.RX_payload.rcRoll,

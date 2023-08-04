@@ -13,8 +13,6 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HardwareSerial.h>
-// #include <SPI.h>
-// #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
@@ -32,7 +30,6 @@
 #include "..\lib\flyController.h"
 #include "..\lib\performance.h"
 #include "..\lib\PID_adjust.h"
-// #include "..\lib\model.h"
 
 #define LOCAL_DEBUG
 
@@ -54,7 +51,7 @@
 
 #define AXIS_FPS 100
 
-model_t model; /// Speicherplatz wird angelegt und instanziert
+model_t model;
 // UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
 #ifdef _PID_ADJUST
@@ -269,7 +266,6 @@ void axis_test_setup()
   for (uint8_t i = 0; i < 2; i++)
   {
     axis[i]->begin();
-    // axis[i]->setState(AxisMotor::arming_start);
   }
 }
 //---------------------------------------------------------------------------------------------------------------------
@@ -309,6 +305,14 @@ void radio_test_setup(){
 void radio_test_loop(){
   radio->update();
   monitor->update();
+  model.RC_interface.TX_payload.altitude++;
+  model.RC_interface.TX_payload.distance_down++;
+  model.RC_interface.TX_payload.distance_front++;
+  model.RC_interface.TX_payload.pitch++;
+  model.RC_interface.TX_payload.pressure++;
+  model.RC_interface.TX_payload.roll++;
+  model.RC_interface.TX_payload.temperature++;
+  model.RC_interface.TX_payload.yaw++;
 }
 
 #elif _PID
@@ -405,7 +409,6 @@ void base_setup()
 
   delay(5000);
   LOGGER_NOTICE("Program will initialized");
-  // model.performance.min_loop_time = 0xffff;
   model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
   model.yaw.axisData[1] = &model.axisData[1];
 

@@ -26,14 +26,18 @@
 #include <printf.h>   //funktioniert hier nicht
 #include <RF24.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #define PIN_RADIO_CE  20
 #define PIN_RADIO_CSN 17
 #define PIN_RADIO_LED  1
 
-#define ACK_PACKAGE_MAX_COUNT 10
+#ifdef _RADIO
+    #define ACK_PACKAGE_MAX_COUNT 10000
+#elif 
+    #define ACK_PACKAGE_MAX_COUNT 10
+#endif
 
 typedef struct __attribute__((__packed__))
 {
@@ -63,19 +67,18 @@ typedef struct __attribute__((__packed__))
 
 typedef struct
 {
-  TX_payload_t  TX_payload;  //Do not change position !!!!! Must be the first entry
+  TX_payload_t TX_payload;  //Do not change position !!!!! Must be the first entry
   RX_payload_t RX_payload; 
   bool isconnect;
 } RC_interface_t;
 
-
 class Radio : public Task::Base
 {
-    const uint64_t pipe_TX = 0xF0F0F0F0E1LL;
-    const uint64_t pipe_RX = 0xF0F0F0F0D2LL;
+    const uint64_t pipe_TX = 0xF0F0F0E1L;
+    const uint64_t pipe_RX = 0xF0F0F0D2L;
     RX_payload_t _RX_payload;
     unsigned long _lastReceivedPacket;
-    uint8_t _lostAckPackageCount;
+    uint16_t _lostAckPackageCount;
 
 protected:
     RF24 *_radio; 
@@ -93,6 +96,7 @@ public:
     { 
         LOGGER_VERBOSE("Enter....");
         RC_interface = _model;
+        RC_interface->isconnect = false;
         LOGGER_VERBOSE("....leave");
         return this;
     } /*----------------------------- end of setModel ------------------------------------*/
@@ -110,36 +114,24 @@ public:
             while (1)
             {} 
         }
-        
-        _radio->setPALevel(RF24_PA_HIGH);  // RF24_PA_MAX is default.
-        _radio->enableDynamicPayloads();  // ACK payloads are dynamically sized
+        _radio->setPALevel(RF24_PA_LOW);     // RF24_PA_MAX is default.
+        _radio->enableDynamicPayloads();     // ACK payloads are dynamically sized
         _radio->enableAckPayload();
-        _radio->openWritingPipe(pipe_TX);     // always uses pipe 0
+        _radio->openWritingPipe(pipe_TX);    // always uses pipe 0
         _radio->openReadingPipe(1, pipe_RX); // using pipe 1
+        _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t));  // load the first response into the FIFO
         _radio->startListening(); 
-  
-    delay(100);
-    
         LOGGER_VERBOSE("...leave");
     } /*----------------------------- end of begin ------------------------------------*/
 
     virtual void update() override
     {
-        if (_radio->available()) {                     // is there a payload? get the pipe number that recieved it
-             uint8_t bytes = _radio->getDynamicPayloadSize();  // get the size of the payload
-            Serial.println("rc available");
-            _radio->read(&RC_interface->RX_payload, sizeof(RX_payload_t));  // get incoming payload
+        if (_radio->available()) {                   
+            LOGGER_NOTICE("radio available");
+            _radio->read(&RC_interface->RX_payload, sizeof(RX_payload_t));
             _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t));
-            #ifdef _SERIAL_STUDIO
-                LOGGER_NOTICE_FMT("Reseived %i bytes", bytes);
-                LOGGER_NOTICE_FMT("RX_Payload Throttle =  %i ", RC_interface->RX_payload.rcThrottle);
-                LOGGER_NOTICE_FMT("RX_Payload Yaw =  %i ", RC_interface->RX_payload.rcYaw);
-                LOGGER_NOTICE_FMT("RX_Payload Pitch =  %i ", RC_interface->RX_payload.rcPitch);
-                LOGGER_NOTICE_FMT("RX_Payload Roll =  %i ", RC_interface->RX_payload.rcRoll);
-            #endif
             _lostAckPackageCount = 0;
             RC_interface->isconnect = true;
-            _radio->startListening();
         }else{
             _lostAckPackageCount++;
             if(_lostAckPackageCount>ACK_PACKAGE_MAX_COUNT){
