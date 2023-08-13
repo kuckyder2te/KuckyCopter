@@ -1,7 +1,7 @@
 #pragma once
 /*  File name : radio.h
     Project: Phantom 1
-    Autor: Wilhelm Kuckelsberg
+    Autor: Stephan Scholz / Wilhelm Kuckelsberg
     Date: 2022-05-31 (2021.05.24)
     Description: Kommunikation zwischen Drohne und RC
 
@@ -23,122 +23,170 @@
 
 #include <Arduino.h>
 #include <TaskManager.h>
-#include <printf.h>   //funktioniert hier nicht
+#include <printf.h> //funktioniert hier nicht
 #include <RF24.h>
 
-//#define LOCAL_DEBUG
+// #define LOCAL_DEBUG
 #include "myLogger.h"
 
-#define PIN_RADIO_CE  20
+#define PIN_RADIO_CE 20
 #define PIN_RADIO_CSN 17
-#define PIN_RADIO_LED  1
+#define LED_RADIO 1
 
 #ifdef _RADIO
-    #define ACK_PACKAGE_MAX_COUNT 10000
-#elif 
-    #define ACK_PACKAGE_MAX_COUNT 10
+#define ACK_PACKAGE_MAX_COUNT 10000
+#elif
+#define ACK_PACKAGE_MAX_COUNT 10
 #endif
 
 typedef struct __attribute__((__packed__))
 {
     float checksum;
-    uint16_t rcYaw;
-    uint8_t rcPitch;
-    uint8_t rcRoll;
-    int16_t rcThrottle;                 //!< Get the positions of the rc joysticks
-    uint16_t rcAltitudeSonicAdj;        // Wert wird über RC Poti eingestellt 0 - 200cm
-    uint16_t rcAltitudeBaroAdj;         // Wert wird über RC Poti eingestellt 0 - 10m
-    bool rcSwi1;                        // Schaltet in den Programmier-Modus
-    bool rcSwi2;                        // autonomes fliegen    
-    bool rcSwi3;                        //
-} RX_payload_t;
+    int16_t rcYaw;
+    int8_t rcPitch;
+    int8_t rcRoll;
+    int16_t rcThrottle;          //!< Get the positions of the rc joysticks
+    uint16_t rcAltitudeSonicAdj; // Value is set via RC potentiometer 0 - 200cm
+    uint16_t rcAltitudeBaroAdj;  // Value is set via RC potentiometer 0 - 10m
+    bool rcSwi1;                 // Switches to programming mode, not active
+    bool rcSwi2;                 // autonomous flying, not active
+    bool rcSwi3;                 // ???
+} RX_payload_t;                  // The drone receives data from the RC.
 
 typedef struct __attribute__((__packed__))
 {
-    float yaw;              // Fluglage via MPU9250
+    float yaw; // MPU9250
     float pitch;
     float roll;
-    uint16_t altitude;      // Höhe via MS5611  
-    float temperature;      // MS5611
-    float pressure;         
+    uint16_t altitude; // MS5611
+    float temperature; // MS5611
+    float pressure;
     uint16_t distance_down; // US Sensor
     uint16_t distance_front;
-} TX_payload_t;
+    uint16_t battery; // State of the battery
+} TX_payload_t;       // Transmit data to RC
 
 typedef struct
 {
-  TX_payload_t TX_payload;  //Do not change position !!!!! Must be the first entry
-  RX_payload_t RX_payload; 
-  bool isconnect;
+    TX_payload_t TX_payload; // Do not change position !!!!! Must be the first entry
+    RX_payload_t RX_payload;
+    bool isconnect;
 } RC_interface_t;
 
 class Radio : public Task::Base
 {
     const uint64_t pipe_TX = 0xF0F0F0E1L;
     const uint64_t pipe_RX = 0xF0F0F0D2L;
-    RX_payload_t _RX_payload;
+ //   RX_payload_t _RX_payload; /// ist das richtig, wäre doppelt
     unsigned long _lastReceivedPacket;
     uint16_t _lostAckPackageCount;
 
 protected:
-    RF24 *_radio; 
-    RC_interface_t *RC_interface;   
+    RF24 *_radio;
+    RC_interface_t *RC_interface;
+    TX_payload_t debugTX_payload;   //Displays only values that differ from the previous value
+    RX_payload_t debugRX_payload;
 
 public:
+    /// @brief Constructor
+    /// @param name Name from Taskmanager
     Radio(const String &name)
-        : Task::Base(name){
+        : Task::Base(name)
+    {
         _lostAckPackageCount = 0;
-        }
-
-    virtual ~Radio() {}
-
+    }
+    /// @brief
+    /// @param _model
+    /// @return himself
     Radio *setModel(RC_interface_t *_model)
-    { 
+    {
         LOGGER_VERBOSE("Enter....");
         RC_interface = _model;
         RC_interface->isconnect = false;
         LOGGER_VERBOSE("....leave");
         return this;
-    } /*----------------------------- end of setModel ------------------------------------*/
+    } /*----------------------------- end of setModel ------------------------------------------*/
 
     virtual void begin() override
     {
         LOGGER_VERBOSE("Enter....");
-        pinMode(PIN_RADIO_LED, OUTPUT);
-        digitalWrite(PIN_RADIO_LED, LOW);
-        _radio = new RF24(PIN_RADIO_CE, PIN_RADIO_CSN); // Adresse in Variable speichern -> constructor
+        pinMode(LED_RADIO, OUTPUT);
+        digitalWrite(LED_RADIO, LOW);
+        _radio = new RF24(PIN_RADIO_CE, PIN_RADIO_CSN);
 
         if (!_radio->begin())
         {
             LOGGER_FATAL("radio hardware is not responding!!");
             while (1)
-            {} 
+            {
+            }
         }
-        _radio->setPALevel(RF24_PA_LOW);     // RF24_PA_MAX is default.
-        _radio->enableDynamicPayloads();     // ACK payloads are dynamically sized
+        _radio->setPALevel(RF24_PA_LOW); // RF24_PA_MAX is default.
+        _radio->enableDynamicPayloads(); // ACK payloads are dynamically sized
         _radio->enableAckPayload();
-        _radio->openWritingPipe(pipe_TX);    // always uses pipe 0
-        _radio->openReadingPipe(1, pipe_RX); // using pipe 1
-        _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t));  // load the first response into the FIFO
-        _radio->startListening(); 
+        _radio->openWritingPipe(pipe_TX);                                            // always uses pipe 0
+        _radio->openReadingPipe(1, pipe_RX);                                         // using pipe 1
+        _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t)); // load the first response into the FIFO
+        _radio->startListening();
         LOGGER_VERBOSE("...leave");
-    } /*----------------------------- end of begin ------------------------------------*/
+
+        RC_interface->TX_payload.yaw = 12.34f;
+    } /*----------------------------- end of begin ----------------------------------------------*/
 
     virtual void update() override
     {
-        if (_radio->available()) {                   
+        if (_radio->available())
+        {
             LOGGER_NOTICE("radio available");
+            digitalWrite(LED_RADIO, LOW);
             _radio->read(&RC_interface->RX_payload, sizeof(RX_payload_t));
+            received_data_from_RC();
+
             _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t));
+            transmit_data_to_RC();
+
             _lostAckPackageCount = 0;
             RC_interface->isconnect = true;
-        }else{
+
+            digitalWrite(LED_RADIO, HIGH);
+        }
+        else
+        {
+            LOGGER_FATAL("Transmission fault or time out");
+            digitalWrite(LED_RADIO, LOW);
             _lostAckPackageCount++;
-            if(_lostAckPackageCount>ACK_PACKAGE_MAX_COUNT){
-                _lostAckPackageCount = ACK_PACKAGE_MAX_COUNT;   // protect against variable overflow (uint8_t)
+            if (_lostAckPackageCount > ACK_PACKAGE_MAX_COUNT)
+            {
+                _lostAckPackageCount = ACK_PACKAGE_MAX_COUNT; // protect against variable overflow (uint8_t)
                 RC_interface->isconnect = false;
             }
         }
         LOGGER_VERBOSE("....leave");
-    } // ------------------- end of update --------------------------------------------*/
-}; /*----------------------------- end of radio->.h class -------------------------------*/
+    } // ------------------- end of update ------------------------------------------------------*/
+
+    void received_data_from_RC()
+    {
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcThrottle, debugRX_payload.rcThrottle, "Received Thottle = %i", RC_interface->RX_payload.rcThrottle);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcYaw, debugRX_payload.rcYaw, "Received Yaw = %i", RC_interface->RX_payload.rcYaw);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcPitch, debugRX_payload.rcPitch, "Received Pitch = %i", RC_interface->RX_payload.rcPitch);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcRoll, debugRX_payload.rcRoll, "Received Roll = %i", RC_interface->RX_payload.rcRoll);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi1, debugRX_payload.rcSwi1, "Received Swi1 = %i", RC_interface->RX_payload.rcSwi1); // Switch noch nicht aktiv
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi2, debugRX_payload.rcSwi2, "Received Swi2 = %i", RC_interface->RX_payload.rcSwi2);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi3, debugRX_payload.rcSwi3, "Received Swi3 = %i", RC_interface->RX_payload.rcSwi3);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcAltitudeBaroAdj, debugRX_payload.rcAltitudeBaroAdj, "Received max Alt. = %i", RC_interface->RX_payload.rcAltitudeBaroAdj);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcAltitudeSonicAdj, debugRX_payload.rcAltitudeSonicAdj, "Received max from ground = %i", RC_interface->RX_payload.rcAltitudeSonicAdj);
+    } // ------------------- end of received_data_from_RC ---------------------------------------*/
+
+    void transmit_data_to_RC()
+    {
+        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.yaw, debugTX_payload.yaw, "Transmit Yaw = %i", RC_interface->TX_payload.yaw);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.Pitch, debugTX_payload.Pitch, "Transmit Pitch = %i", RC_interface->TX_payload.Pitch);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.Roll, debugTX_payload.Roll, "Transmit Roll = %i", RC_interface->TX_payload.Roll);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.altitude, debugTX_payload.altitude, "Transmit Altitude = %i", RC_interface->TX_payload.altitude); // Switch noch nicht aktiv
+        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.distance_down, debugTX_payload.distance_down, "Transmit Dist. down = %i", RC_interface->TX_payload.distance_down);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.distance_front, debugTX_payload.distance_front, "Transmit Dist. fronr = %i", RC_interface->TX_payload.distance_front);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.pressure, debugTX_payload.pressure, "Transmit Pressure = %i", RC_interface->TX_payload.pressure);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.temperature, debugTX_payload.temperature, "Transmit Temperatur = %i", RC_interface->TX_payload.temperature);
+    } // ------------------- end of transmit_data_to_RC -----------------------------------------*/
+
+}; /*----------------------------- end of radio class -------------------------------------------*/

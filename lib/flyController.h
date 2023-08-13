@@ -1,7 +1,7 @@
 #pragma once
 /*  File name :
     Project name : KuCo_Phantom 1
-    Author: Wilhelm Kuckelsberg
+    Author: Stephan Scholz / Wilhelm Kuckelsberg
     Date : 2022-06-19
 
     Description : Drohne
@@ -18,20 +18,19 @@
 #include "model.h"
 
 #define PIN_LED_STATE 7
-//#define POWER_LIFT_UP 60 ///< The KuckyCopter will start, if throttle > 60
-#define POWER_LIFT_UP 10 ///Test Value
+// #define POWER_LIFT_UP 60 ///< The KuckyCopter will start, if throttle > 60
+#define POWER_LIFT_UP 10 /// Test Value
 #define DOWN_TIME 2000   ///< Time to turn off the engines (in Microseconds).
-#define PID_ACTIVE_AT 9     ///< PID aktiviert ab einer Höhe von 9cm
+#define PID_ACTIVE_AT 9  ///< PID aktiviert ab einer Höhe von 9cm
 
 class FlyController : public Task::Base
 {
 public:
-    
 private:
     AxisYaw *_axisYaw;
     model_t *_model;
 
-typedef enum
+    typedef enum
     {
         arming_begin = 0,   ///< When the Kuckycopter is first turned on, the arming starts.
         arming_busy,        ///< ist das nötig?
@@ -43,17 +42,18 @@ typedef enum
         fly,                ///< Normal fly mode
         ground              ///< Kuckycopter stand on the ground
     } flyState_e;
-        flyState_e flyState,Debug_flyState;
+    flyState_e flyState, Debug_flyState;
 
-void updateModel(){
-    _model->RC_interface.TX_payload.yaw = _model->sensorData.yaw;
-    _model->RC_interface.TX_payload.pitch = _model->sensorData.pitch;
-    _model->RC_interface.TX_payload.roll = _model->sensorData.roll;
-    _model->RC_interface.TX_payload.altitude = _model->sensorData.altitude;
-    _model->RC_interface.TX_payload.pressure = _model->sensorData.pressure;
-    _model->RC_interface.TX_payload.temperature = _model->sensorData.temperature_baro;
-    _model->RC_interface.TX_payload.distance_down = _model->sonicData.down_distance; 
-}
+    void updateModel()
+    {
+        _model->RC_interface.TX_payload.yaw = _model->sensorData.yaw;
+        _model->RC_interface.TX_payload.pitch = _model->sensorData.pitch;
+        _model->RC_interface.TX_payload.roll = _model->sensorData.roll;
+        _model->RC_interface.TX_payload.altitude = _model->sensorData.altitude;
+        _model->RC_interface.TX_payload.pressure = _model->sensorData.pressure;
+        _model->RC_interface.TX_payload.temperature = _model->sensorData.temperature_baro;
+        _model->RC_interface.TX_payload.distance_down = _model->sonicData.down_distance;
+    }
 
 public:
     FlyController(const String &name)
@@ -63,8 +63,8 @@ public:
 
     virtual ~FlyController() {}
 
-    FlyController *init(model_t *model){ // Rückgabe wert ist das eigene Objekt (this)
-                                         //_axis_data  wird aus dem Model in die Achsen geschrieben
+    FlyController *init(model_t *model)
+    { 
         LOGGER_VERBOSE("Enter....");
         _model = model;
         flyState = arming_begin;
@@ -73,19 +73,19 @@ public:
         return this;
     }
 
-    FlyController *setYawAxis(AxisYaw *axisYaw){
+    FlyController *setYawAxis(AxisYaw *axisYaw)
+    {
         _axisYaw = axisYaw;
         return this;
     }
 
-    virtual void begin() override   // Wird nach dem Erzeugen das Tasks automatisch aufgerufen. _model ist hier noch nicht bekannt
+    virtual void begin() override // Wird nach dem Erzeugen das Tasks automatisch aufgerufen. _model ist hier noch nicht bekannt
     {
     }
 
     virtual void update() override
     {
         static uint16_t downTime = 0;
-        //Serial.println("update");
         switch (flyState)
         {
 
@@ -101,7 +101,7 @@ public:
             LOGGER_VERBOSE("arming busy");
             if (_axisYaw->isArmed())
             {
-                flyState = disablePID; 
+                flyState = disablePID;
                 LOGGER_NOTICE("arming busy is fineshed");
             }
             break;
@@ -117,22 +117,20 @@ public:
         case standby:
             LOGGER_VERBOSE("standby");
             /* Make sure the throttle lever is set to 0 and RC is connected. */
-            // _model->RC_interface.isconnect = true;          // nur zum testen, ob Flycontroller
-            // _model->RC_interface.RX_payload.rcThrottle = 1;    // durchläuft
-            
+            // _model->RC_interface.isconnect = true;           // Just to test if Flycontroller is running.
+            // _model->RC_interface.RX_payload.rcThrottle = 1;   //          ""
+
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_MIN))
             {
                 flyState = prestart;
-                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"standby is fineshed");
-                //LOGGER_NOTICE("standby is fineshed");
+                LOGGER_NOTICE_CHK(flyState, Debug_flyState, "standby is fineshed");
             }
             else
             {
-            //    _model->yawData.power = 0;
+                //    _model->yawData.power = 0;
                 flyState = standby;
-                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"standby is held");
-                //LOGGER_NOTICE("standby is held");
-            }          
+                LOGGER_NOTICE_CHK(flyState, Debug_flyState, "standby is held");
+            }
             break;
 
         case prestart:
@@ -146,35 +144,35 @@ public:
             }
             else
             {
-                flyState = prestart; 
+                flyState = prestart;
                 LOGGER_NOTICE("prestart is held");
             }
             break;
 
-            case takeoff:
-                LOGGER_VERBOSE("take off");
-                /* Throttle greater than POWER_LIFT_UP and RC is connected, go to the next state. */
-                //_radio->RC_interface->isconnect = true;          // nur zum testen, ob Flycontroller           
-                 _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
-                //_radio->RC_interface->RX_payload.rcThrottle = 1;    // durchläuft
-                if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle < POWER_LIFT_UP))
-                {
-                    flyState = set_pid;
-                    LOGGER_NOTICE("take off is fineshed");
-                }
-                else
-                {
-                    flyState = takeoff;
-                    LOGGER_NOTICE("take off is held");
-                }              
-                break;
+        case takeoff:
+            LOGGER_VERBOSE("take off");
+            /* Throttle greater than POWER_LIFT_UP and RC is connected, go to the next state. */
+            //_radio->RC_interface->isconnect = true;           // Just to test if Flycontroller is running.
+            _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
+            //_radio->RC_interface->RX_payload.rcThrottle = 1;  // Just to test if Flycontroller is running.
+            if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle < POWER_LIFT_UP))
+            {
+                flyState = set_pid;
+                LOGGER_NOTICE("take off is fineshed");
+            }
+            else
+            {
+                flyState = takeoff;
+                LOGGER_NOTICE("take off is held");
+            }
+            break;
 
         case set_pid:
             /* If everything is checked, the PID controller is activated. */
             LOGGER_VERBOSE("set pid");
-            _model->RC_interface.isconnect = true;          // nur zum testen, ob Flycontroller           
+            _model->RC_interface.isconnect = true; // Just to test if Flycontroller is running.
             _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
-            _model->RC_interface.RX_payload.rcThrottle = 65;    // durchläuft
+            _model->RC_interface.RX_payload.rcThrottle = 65; // Just to test if Flycontroller is running.
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_LIFT_UP))
             {
                 _axisYaw->setState(AxisYaw::enablePID);
@@ -184,24 +182,23 @@ public:
             }
             else
             {
-                flyState = set_pid; /// new 23.05.21
+                flyState = set_pid;
                 LOGGER_NOTICE("set pid is held");
             }
             break;
 
         case fly:
-            /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, the status is set to ground. */
+            /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, 
+            the status is set to ground. */
             LOGGER_VERBOSE("fly");
-            //_model->sonicData.down_distance = 10;          // nur zum testen, ob Flycontroller 
+            //_model->sonicData.down_distance = 10;          // Just to test if Flycontroller is running.
 
-            // Test
             _model->RC_interface.RX_payload.rcThrottle = 100;
 
-            _model->yawData.power= _model->RC_interface.RX_payload.rcThrottle;
-           //_model->yawData.throttle = 50;             // durchläuft
+            _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
+            //_model->yawData.throttle = 50;                  // Just to test if Flycontroller is running.
 
             if ((_model->yawData.power <= POWER_LIFT_UP) || (_model->sonicData.down_distance < PID_ACTIVE_AT))
-            //if ((_model->RC_interface.RX_payload.rcThrottle <= POWER_LIFT_UP))
             {
                 flyState = ground;
                 LOGGER_NOTICE("fly is fineshed");
@@ -237,4 +234,4 @@ public:
         } /* end of switch flyState */
         updateModel();
     } /*------------------------------- end of update ---------------------------------*/
-}; /*---------------------------------- end of flyController --------------------------*/
+};    /*---------------------------------- end of flyController --------------------------*/

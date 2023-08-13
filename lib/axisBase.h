@@ -1,7 +1,7 @@
 #pragma once
 /*  File name : axisBase.h
     Project name : KuCo_Phantom 1
-    Author: Wilhelm Kuckelsberg
+    Authors: Stephan cholz / Wilhelm Kuckelsberg
     Date : 2022-06-16
 
     Description :
@@ -29,7 +29,7 @@ public:
     } axisData_t;
 
 private:
-    static uint8_t _instanceCounter; ///< static entfernt
+    static uint8_t _instanceCounter; ///< static entfernt ??
 
 protected:
     NewPID *_newPID;
@@ -41,58 +41,56 @@ protected:
     axisData_t *_axisData;
 
 public:
+    /// @brief Defindet the base axis
+    /// @param name Task name
     AxisBase(const String &name) : Task::Base(name)
     {
         eepromAddress = sizeof(pidData_t) * _instanceCounter++;
-        _newPID = new NewPID(name,eepromAddress); // Adresse in Variable speichern
-        //_newPID = new NewPID(this->getName(),eepromAddress); // Adresse in Variable speichern
-
+        _newPID = new NewPID(name, eepromAddress); 
 
         _lastMillis = millis();
         _error = 0;
         _sp = 0;
         _fb = 0;
-     //   loadPIDConfig();
+        //   loadPIDConfig();
     }
-
-    virtual ~AxisBase() {}
 
     NewPID *getPid()
     {
         return _newPID;
-    } /*----------------------------------- end of getPid ----------------------------*/
+    } /*----------------------------------- end of getPid -------------------------------------*/
 
     void savePIDConfig()
     {
-    LOGGER_VERBOSE("Enter....");    
+        LOGGER_VERBOSE("Enter....");
 
         _newPID->saveParameters();
 
-    LOGGER_VERBOSE("....leave");     
-    } /*----------------------------------- end of savePIDConfig ----------------------*/
+        LOGGER_VERBOSE("....leave");
+    } /*----------------------------------- end of savePIDConfig -------------------------------*/
 
     void loadPIDConfig()
     {
-    LOGGER_VERBOSE("Enter....");
+        LOGGER_VERBOSE("Enter....");
 
         _newPID->loadParameters();
 
-    LOGGER_VERBOSE("....leave");    
-    } /*----------------------------------- end of loadPIDConfig ----------------------*/
+        LOGGER_VERBOSE("....leave");
+    } /*----------------------------------- end of loadPIDConfig -------------------------------*/
 
     virtual void begin() override
     {
-     LOGGER_VERBOSE("Enter....");    
+        LOGGER_VERBOSE("Enter....");
 
         LOGGER_NOTICE("New PID initialized");
         _newPID->setEF(PID_FREQUENCY);
 
-    LOGGER_VERBOSE("....leave"); 
-    } /*----------------------------------- end of begin ------------------------------*/
+        LOGGER_VERBOSE("....leave");
+    } /*----------------------------------- end of begin ----------------------------------------*/
 
     virtual void update() override
     {
-    LOGGER_VERBOSE("Enter....");
+        LOGGER_VERBOSE("Enter....");
 
         /* _sp Position of the joysticks.
            _fb Position of the drohne.  */
@@ -103,8 +101,8 @@ public:
             _lastMillis = millis();
         }
 
-    LOGGER_VERBOSE("....leave");    
-    } /*----------------------------------- end of update -----------------------------*/
-};    /*----------------------------------- end of axisBase class ---------------------*/
+        LOGGER_VERBOSE("....leave");
+    } /*----------------------------------- end of update -------------------------------------*/
+};    /*----------------------------------- end of axisBase class -----------------------------*/
 
 uint8_t AxisBase::_instanceCounter = 0; // https://stackoverflow.com/questions/5391973/undefined-reference-to-static-const-int

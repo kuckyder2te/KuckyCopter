@@ -1,6 +1,6 @@
 /* 		File name: newPID.h
  *  	Created: 2022-06-13
- *      Author: willy
+ *      Author: Stephan Scholz / Wilhelm Kuckelsberg
  * 		Project: Phantom 1
  *      https://github.com/mike-matera/FastPID
  *
@@ -63,7 +63,7 @@ public:
 		this->setOutputConfig(PID_OUTPUT_BITS, PID_OUTPUT_SIGNED);
 		loadParameters();
 		//EEPROM.begin(512);
-	} /*-------------------------------- end of constructor ---------------------------*/
+	} /*-------------------------------- end of constructor ------------------------------------*/
 
 	void saveParameters()
 	{
@@ -72,7 +72,7 @@ public:
 		saveParameters(&_pidData);
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of saveParameters ------------------------*/
+	} /*-------------------------------- end of saveParameters ---------------------------------*/
 
 	void saveParameters(pidData_t *data)
 	{
@@ -101,7 +101,7 @@ public:
 		}
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of saveParameters ------------------------*/
+	} /*-------------------------------- end of saveParameters ---------------------------------*/
 
 	void loadParameters()
 	{
@@ -123,7 +123,7 @@ public:
 		LOGGER_NOTICE_FMT("_pidData kD = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of loadParameters ------------------------*/
+	} /*-------------------------------- end of loadParameters ---------------------------------*/
 
 	void disablePID()
 	{
@@ -135,7 +135,7 @@ public:
 		// _isEnabled = false;
 
 	LOGGER_VERBOSE("....leave");	
-	} /*-------------------------------- end of deactivatePID -------------------------*/
+	} /*-------------------------------- end of deactivatePID ----------------------------------*/
 
 	void enablePID()
 	{
@@ -153,21 +153,21 @@ public:
 		_isEnabled = true;
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of activatePID ---------------------------*/
+	} /*-------------------------------- end of activatePID ------------------------------------*/
 
 	// void putPID_Data_into_EEPROM()
 	// {
 	// LOGGER_NOTICE("Enter....");
 		
 	// LOGGER_VERBOSE("....leave");
-	// } /*-------------------------------- end of putPID_Data_into_EEPROM ---------------*/
+	// } /*-------------------------------- end of putPID_Data_into_EEPROM ------------------------*/
 
 	// void getPID_Data_from_EEPROM()
 	// {
 	// LOGGER_NOTICE("Enter....");
 	
 	// LOGGER_VERBOSE("....leave");
-	// } /*-------------------------------- end of getPID_Data_into_EEPROM ---------------*/
+	// } /*-------------------------------- end of getPID_Data_into_EEPROM ------------------------*/
 
 	void setP(float p)
 	{
@@ -189,7 +189,7 @@ public:
 		}
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of setP ----------------------------------*/
+	} /*-------------------------------- end of setP -------------------------------------------*/
 
 	void setI(float i)
 	{
@@ -207,7 +207,7 @@ public:
 		}
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of setI ----------------------------------*/
+	} /*-------------------------------- end of setI -------------------------------------------*/
 
 	void setD(float d)
 	{
@@ -223,7 +223,7 @@ public:
 		}
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of setD ----------------------------------*/
+	} /*-------------------------------- end of setD -------------------------------------------*/
 
 	void setEF(float ef)
 	{
@@ -238,7 +238,7 @@ public:
 		}//
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of setEF ----------------------------------*/
+	} /*-------------------------------- end of setEF -------------------------------------------*/
 
 	float getExecutionTime()
 	{
@@ -250,7 +250,7 @@ public:
 
 		
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of getExecutionTime ----------------------*/
+	} /*-------------------------------- end of getExecutionTime -------------------------------*/
 
 	// void updateEEPROM(void)
 	// {
@@ -260,7 +260,7 @@ public:
 	// 	enablePID();
 
 	// LOGGER_VERBOSE("....leave");
-	// } /*-------------------------------- end of updateEEPROM --------------------------*/
+	// } /*-------------------------------- end of updateEEPROM -----------------------------------*/
 	//
 	// void readEEPROM(void)
 	// {
@@ -270,7 +270,7 @@ public:
 	// 	enablePID();
 
 	// LOGGER_VERBOSE("....leave");
-	// } /*-------------------------------- end of readEEPROM ----------------------------*/
+	// } /*-------------------------------- end of readEEPROM -------------------------------------*/
 
 	float getP() const
 	{
@@ -280,7 +280,7 @@ public:
 		return _pidData.pidCoefficient[pidCoeffi_e::kP];
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of getP ----------------------------------*/
+	} /*-------------------------------- end of getP -------------------------------------------*/
 
 	float getI() const
 	{
@@ -290,7 +290,7 @@ public:
 		return _pidData.pidCoefficient[pidCoeffi_e::kI];
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of getI ----------------------------------*/
+	} /*-------------------------------- end of getI -------------------------------------------*/
 
 	float getD() const
 	{
@@ -300,7 +300,7 @@ public:
 		return _pidData.pidCoefficient[pidCoeffi_e::kD];
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of getD ----------------------------------*/
+	} /*-------------------------------- end of getD -------------------------------------------*/
 
 	float getEF() const
 	{
@@ -310,7 +310,7 @@ public:
 		return _pidData.pidCoefficient[pidCoeffi_e::eF];
 
 	LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of getEF ---------------------------------*/
+	} /*-------------------------------- end of getEF ------------------------------------------*/
 
-}; /*--------------------------- end of newPID class ----------------------------------*/
+}; /*--------------------------- end of newPID class -------------------------------------------*/
 

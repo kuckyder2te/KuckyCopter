@@ -1,18 +1,18 @@
 #pragma once
 /*  File name : battery.h
     Project name : KuCo_Phantom 1
-    Author: Wilhelm Kuckelsberg
+    Author: Stephan Scholz / Wilhelm Kuckelsberg
     Date : 2022-06-13
-    Description : Kontrolle des Ladezustands
+    Description : Check battery condition.
 */
 #include <Arduino.h>
 #include <TaskManager.h>
 
-//#define LOCAL_DEBUG
+// #define LOCAL_DEBUG
 #include "myLogger.h"
 
-#define PIN_BATTERY     26 // analog
-#define PIN_LED_ALERT   10
+#define PIN_BATTERY 26 
+#define LED_PIN_ALERT 10
 
 typedef struct
 {
@@ -33,36 +33,36 @@ public:
         LOGGER_VERBOSE("....leave");
     }
 
-    virtual ~Battery(){}
+    virtual ~Battery() {}
 
     Battery *setModel(batteryData_t *_model)
     {
-     LOGGER_VERBOSE("Enter setModel....");
+        LOGGER_VERBOSE("Enter setModel....");
 
         _batteryData = _model;
         LOGGER_VERBOSE("....leave");
         return this;
 
-    LOGGER_VERBOSE("....leave");
+        LOGGER_VERBOSE("....leave");
     }
 
     virtual void begin()
     {
-    LOGGER_VERBOSE("Enter begin....");  
+        LOGGER_VERBOSE("Enter begin....");
 
-        pinMode(PIN_LED_ALERT, OUTPUT);
-        digitalWrite(PIN_LED_ALERT, LOW);
+        pinMode(LED_PIN_ALERT, OUTPUT);
+        digitalWrite(LED_PIN_ALERT, LOW);
 
-    LOGGER_VERBOSE("....leave");
+        LOGGER_VERBOSE("....leave");
     }
 
     virtual void update() override
     {
-    LOGGER_VERBOSE("Enter update....");
+        LOGGER_VERBOSE("Enter update....");
 
-        //   _batteryData->battery_State = analogRead(PIN_BATTERY);
-        //   LOGGER_NOTICE_FMT("Battery state = %i", _batteryData->battery_State);
+        _batteryData->battery_State = analogRead(PIN_BATTERY);
+        LOGGER_NOTICE_FMT("Battery state = %i", _batteryData->battery_State);
 
-    LOGGER_VERBOSE("....leave");
+        LOGGER_VERBOSE("....leave");
     }
-}; /*--------------------------------- end of class battery.h --------------------------*/
+}; /*--------------------------------- end of class battery.h -----------------------------------*/

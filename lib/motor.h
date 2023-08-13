@@ -1,6 +1,6 @@
 #pragma once
 /*  File name : motor.h
-	Author: WilhelmKuckelsberg
+	Author: Stephan Scholz / WilhelmKuckelsberg
 	Project name : KuCo_Phantom 1
 	Date : 2022-06-14
 
@@ -168,14 +168,14 @@ public:
 			_motorState= power_off;
 		}
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------- end of updateState ---------------------------------*/
+	} /*-------------------------- end of updateState ----------------------------------------------*/
 
 	uint16_t getPower() const
 	{
 		LOGGER_VERBOSE("Enter....");
 		return _power;
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------- end of getPower ------------------------------------*/
+	} /*-------------------------- end of getPower -------------------------------------------------*/
 
 	uint16_t setPower(int16_t power)
 	{
@@ -197,14 +197,14 @@ public:
 		LOGGER_NOTICE_FMT_CHK(_power,_lastPower,"setPower %d - Pin: %d", _power,_pin);
 		LOGGER_VERBOSE("....leave");
 		return _power;
-	} /*-------------------------- end of setPower ------------------------------------*/
+	} /*-------------------------- end of setPower ---------------------------------------------*/
 
 	uint8_t getMaxPower() const
 	{
 		LOGGER_VERBOSE("Enter....");
 		return _maxPower;
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------- end of getMaxPower ---------------------------------*/
+	} /*-------------------------- end of getMaxPower ------------------------------------------*/
 
 	void setMaxPower(uint8_t maxPower)
 	{
@@ -214,29 +214,30 @@ public:
 		else
 			_maxPower = maxPower;
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------- end of setMaxPower ---------------------------------*/
+	} /*-------------------------- end of setMaxPower ------------------------------------------*/
 
 	bool isArmed(){
 		return _isArmed;
-	} /*-------------------------- end of isArmed -------------------------------------*/
+	} /*-------------------------- end of isArmed ----------------------------------------------*/
 	
 	bool isMotorOff()
 	{
 		LOGGER_VERBOSE("Enter....");
 		return (_motorState == off);
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------- end of isMotorOff ----------------------------------*/
+	} /*-------------------------- end of isMotorOff -------------------------------------------*/
 
 	motorstate_e getMotorState()
 	{
 		LOGGER_VERBOSE("Enter....");
 		return _motorState;
-	} /*-------------------------- end of getMotorState ------------------------------*/
+	} /*-------------------------- end of getMotorState ---------------------------------------*/
 
 	void setMotorState(motorstate_e state)
 	{
 		LOGGER_VERBOSE("Enter....");
 		_motorState = state;
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------- end of setMotorStates ------------------------------*/
-};	  /*--------------------------- end of Motor class --------------------------------*/
+	} /*-------------------------- end of setMotorStates ---------------------------------------*/
+	
+};	  /*--------------------------- end of Motor class -----------------------------------------*/

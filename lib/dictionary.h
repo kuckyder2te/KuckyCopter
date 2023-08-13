@@ -1,7 +1,7 @@
 
 /*  File name : dictionary.h
 	Project name : KuCo_Phantom 1
-	Author: Wilhelm Kuckelsberg
+	Author: Stephan Scholz / Wilhelm Kuckelsberg
 	Date : 2022-07-18
 	Description : Constants for PID_adjust
 				  

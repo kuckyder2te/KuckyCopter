@@ -18,8 +18,6 @@
 #include <Adafruit_SPIDevice.h>
 #include "EEPROM.h"
 
-// #define SERIAL_STUDIO
-
 #include "..\lib\sensors.h"
 #include "..\lib\sonics.h"
 #include "..\lib\radio.h"
@@ -34,7 +32,6 @@
 #define LOCAL_DEBUG
 
 #include "..\lib\myLogger.h"
-
 #include "..\lib\monitor.h"
 
 #define PIN_BT_TX 8
@@ -55,15 +52,18 @@ model_t model;
 // UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
 #ifdef _PID_ADJUST
-  PID_adjust *_pid_adjust;
+PID_adjust *_pid_adjust;
 #endif
 
-void performance_test(uint16_t threshold){
-    static unsigned long last_runtime = micros();
-    uint16_t delta = micros()-last_runtime;
-    if (delta > threshold)
-      Serial.println(delta);
-    last_runtime = micros();
+void send_data_to_drohne();
+
+void performance_test(uint16_t threshold)
+{
+  static unsigned long last_runtime = micros();
+  uint16_t delta = micros() - last_runtime;
+  if (delta > threshold)
+    Serial.println(delta);
+  last_runtime = micros();
 }
 
 void base_setup();
@@ -94,10 +94,10 @@ void main_setup()
       ->startFps(100);
   Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(10); // Übergabe des models in das objekt Sensor
   Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2);
-                                                                          //  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1)
+  //  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1)
 
   Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
-  
+
 #ifdef SERIAL_STUDIO
   Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(0.1);
 #endif
@@ -142,18 +142,20 @@ void motor_test_setup()
     motor[i]->setup();
   }
 
-    if (Serial.available()){
-      if(!Serial.read()){
-        Serial.println("----------- Motor setup menu -------------------");
-        Serial.println("Key 1- 4 choose the motor.");
-        Serial.println("Key 0 will stop all motors.");
-        Serial.println("Key (+) or (-) increment or decrement the speed.");
-        Serial.println("Key X set motorstate to off.");
-        Serial.println("Press any key to contin.");
-        Serial.println("------------------------------------------------");
-      }
+  if (Serial.available())
+  {
+    if (!Serial.read())
+    {
+      Serial.println("----------- Motor setup menu -------------------");
+      Serial.println("Key 1- 4 choose the motor.");
+      Serial.println("Key 0 will stop all motors.");
+      Serial.println("Key (+) or (-) increment or decrement the speed.");
+      Serial.println("Key X set motorstate to off.");
+      Serial.println("Press any key to contin.");
+      Serial.println("------------------------------------------------");
     }
   }
+}
 //---------------------------------------------------------------------------------------
 void motor_test_loop()
 {
@@ -236,7 +238,8 @@ void motor_test_loop()
 #elif _SONIC
 Sonic *sonic;
 Monitor *monitor;
-void sonic_test_setup(){
+void sonic_test_setup()
+{
   LOGGER_VERBOSE("Enter....");
   sonic = new Sonic("sonic");
   monitor = new Monitor("monitor", Report_t::SONIC);
@@ -245,7 +248,8 @@ void sonic_test_setup(){
   sonic->begin();
 }
 //---------------------------------------------------------------------------------------------------------------------
-void sonic_test_loop(){
+void sonic_test_loop()
+{
   monitor->update();
   sonic->update();
   performance_test(60);
@@ -284,7 +288,7 @@ void sensor_test_setup()
   monitor->setModel(&model);
   sensor->setModel(&model.sensorData);
   sensor->begin();
-} 
+}
 /*------------------------ end of sensor_test_setup -------------------------------------------*/
 void sensor_test_loop()
 {
@@ -293,53 +297,50 @@ void sensor_test_loop()
 }
 /*------------------------ end of sensor_test_loop -------------------------------------------*/
 #elif _RADIO
-Radio* radio;
-Monitor* monitor;
-void radio_test_setup(){
+Radio *radio;
+Monitor *monitor;
+void radio_test_setup()
+{
   radio = new Radio("radio");
   radio->setModel(&model.RC_interface);
   radio->begin();
-  monitor = new Monitor("monitor",Report_t::RADIO);
+  monitor = new Monitor("monitor", Report_t::RADIO);
   monitor->setModel(&model);
 }
-void radio_test_loop(){
+void radio_test_loop()
+{
   radio->update();
   monitor->update();
-  model.RC_interface.TX_payload.altitude++;
-  model.RC_interface.TX_payload.distance_down++;
-  model.RC_interface.TX_payload.distance_front++;
-  model.RC_interface.TX_payload.pitch++;
-  model.RC_interface.TX_payload.pressure++;
-  model.RC_interface.TX_payload.roll++;
-  model.RC_interface.TX_payload.temperature++;
-  model.RC_interface.TX_payload.yaw++;
+
+  send_data_to_drohne();
 }
 
 #elif _PID
 NewPID *newPID[3];
 
-  void pid_test_setup(){
+void pid_test_setup()
+{
+}
 
-  }
-
-  void pid_test_loop(){
-
-  }
+void pid_test_loop()
+{
+}
 
 #elif _FLYCONTROL
 FlyController *flycontrol;
-Monitor* monitor;
-  void flycontrol_test_setup(){
-    flycontrol = new FlyController("Flycontrol");
-    monitor = new Monitor("monitor",Report_t::FLYCONTROL);
-    monitor->setModel(&model);
+Monitor *monitor;
+void flycontrol_test_setup()
+{
+  flycontrol = new FlyController("Flycontrol");
+  monitor = new Monitor("monitor", Report_t::FLYCONTROL);
+  monitor->setModel(&model);
+}
 
-  }
-
-  void flycontrol_test_loop(){
-      flycontrol->update();
-      monitor->update();
-  }
+void flycontrol_test_loop()
+{
+  flycontrol->update();
+  monitor->update();
+}
 
 #endif
 /*--------------------------- end of declarations -----------------------------------------------*/
@@ -407,7 +408,7 @@ void base_setup()
   Logger::setLogLevel(Logger::_DEBUG_); // Muss immer einen Wert in platformio.ini haben (SILENT)
 #endif
 
-  delay(5000);
+  delay(1000);
   LOGGER_NOTICE("Program will initialized");
   model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
   model.yaw.axisData[1] = &model.axisData[1];
@@ -429,4 +430,17 @@ void base_setup()
   EEPROM.begin(512);
 
   delay(100);
-} /*------------------------ end of base setup ---------------------------------------------------*/
+} /*------------------------ end of base setup --------------------------------------------------*/
+
+void send_data_to_drohne()
+{
+  model.RC_interface.TX_payload.yaw = model.RC_interface.RX_payload.rcYaw;
+  model.RC_interface.TX_payload.pitch = model.RC_interface.RX_payload.rcPitch;
+  model.RC_interface.TX_payload.roll = model.RC_interface.RX_payload.rcRoll;
+  model.RC_interface.TX_payload.altitude = model.RC_interface.RX_payload.rcThrottle;
+  model.RC_interface.TX_payload.distance_down = (uint16_t)model.RC_interface.RX_payload.rcSwi1;
+  model.RC_interface.TX_payload.distance_front = (uint16_t)model.RC_interface.RX_payload.rcSwi2;
+  model.RC_interface.TX_payload.pressure = (float)model.RC_interface.RX_payload.rcSwi3;
+  model.RC_interface.TX_payload.temperature = model.RC_interface.RX_payload.rcAltitudeBaroAdj;
+  model.RC_interface.TX_payload.battery = model.RC_interface.RX_payload.rcAltitudeSonicAdj;
+} /*------------------------ end of send_data_to_drohne -----------------------------------------*/

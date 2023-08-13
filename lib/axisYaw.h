@@ -1,7 +1,7 @@
 #pragma once
 /*  File name : axisYaw.h
 	Project name : KuCo_Phantom 1
-	Author: Wilhelm Kuckelsberg
+	Author: Stephan Scholz /  Wilhelm Kuckelsberg
 	Date : 2022-06-17
 	Description : Drohne
 */
@@ -70,9 +70,9 @@ public:
 		begin();
 		LOGGER_VERBOSE("....leave");
 		return this;
-	} /*------------------------------- end of setModel -------------------------------*/
+	} /*------------------------------- end of setModel ----------------------------------------*/
 	
-	AxisYaw *setAxisOrdered(AxisMotor *_axis)	// *_axis ist die Adresse
+	AxisYaw *setAxisOrdered(AxisMotor *_axis)	// *_axis is the address
 	{
 		LOGGER_VERBOSE("Enter....");
 		if (_axisMotor[axisName_e::primary] == NULL)
@@ -91,13 +91,13 @@ public:
 		}
 		LOGGER_VERBOSE("....leave");
 		return this;
-	} /*------------------------------- end of setAxisOrdered -------------------------*/
+	} /*------------------------------- end of setAxisOrdered ----------------------------------*/
 
 	virtual void begin()
 	{
 		AxisBase::begin();
 		digitalWrite(PIN_ESC_ON, LOW);
-	} /*------------------------------- end of virtual begin --------------------------*/
+	} /*------------------------------- end of virtual begin -----------------------------------*/
 
 	virtual void update()
 	{
@@ -109,8 +109,6 @@ public:
 		{
 		case arming_start:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter arming_start State %d",_state);
-			//digitalWrite(PIN_ESC_ON, HIGH);
-			//delay(20);
 			_axisMotor[axisName_e::primary]->setState(AxisMotor::motorState_e::arming_start);
 			_axisMotor[axisName_e::secondary]->setState(AxisMotor::motorState_e::arming_start);
 			_state = arming_finished;
@@ -177,32 +175,33 @@ public:
 			break;
 		default:;
 		} /* end of switch */
-	} /*--------------------- end of virtual service ----------------------------------*/
+	} /*--------------------- end of virtual service -------------------------------------------*/
 
 	void setState(state_e state)
 	{
 		LOGGER_NOTICE_FMT("set YawAxis State = %d", _state);
 		_state = state;
 		LOGGER_NOTICE("Leave  setState");
-	} /*---------------------- end of setState ----------------------------------------*/
+	} /*---------------------- end of setState -------------------------------------------------*/
 
 	boolean isArmed()
 	{
 		LOGGER_VERBOSE_FMT("State %d ", _state);
 		return (_axisMotor[axisName_e::primary]->isArmed() && _axisMotor[axisName_e::secondary]->isArmed());		
-	} /*---------------------- end of isArmed -----------------------------------------*/
+	} /*---------------------- end of isArmed --------------------------------------------------*/
 
 	boolean isDeactivatePID()
 	{
 		return ((_state == disablePID)) && (_axisMotor[axisName_e::primary]->isDeactivatePID()) 
 										&& (_axisMotor[axisName_e::secondary]->isDeactivatePID());
 		LOGGER_NOTICE_FMT("Yaw isDeactivatePID %d", _state);
-	} /*---------------------- end of isDeactivatePID ---------------------------------*/
+	} /*---------------------- end of isDeactivatePID ------------------------------------------*/
 
 	boolean isReady()
 	{
 		LOGGER_NOTICE_FMT("getYawAxisState %d ", _state);
 		return ((_state == ready))  && (_axisMotor[axisName_e::primary]->isReady()) 
 									&& (_axisMotor[axisName_e::secondary]->isReady());
-	} /*---------------------- end of isReady -----------------------------------------*/
-}; /* ------------------------ end of AxisYaw Class -----------------------------------*/
+	} /*---------------------- end of isReady --------------------------------------------------*/
+	
+}; /* ------------------------ end of AxisYaw Class --------------------------------------------*/

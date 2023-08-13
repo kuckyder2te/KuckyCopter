@@ -1,6 +1,6 @@
 /*  File name : PID_Calbration.h
 	Project name : KuCo_Phantom 1
-	Author: Wilhelm Kuckelsberg
+	Author: Stephan Scholz / Wilhelm Kuckelsberg
 	Date : 2022-07-02
 	Description : Einstellen de PID Regler via Bluetooth
 				  und die maximalen Flughöhen
@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include <HardwareSerial.h>
 
-//#define LOCAL_DEBUG	// enable = debug this class  /  disable no debu
+//#define LOCAL_DEBUG
 #include "..\lib\myLogger.h"
 
 #include "..\lib\putty_out.h"
@@ -156,13 +156,13 @@ public:
 		_dict = new (Dictionary);
 	//	displayPIDcoefficients();
 		LOGGER_VERBOSE("....leave");
-	} /* -------------------- end of begin --------------------------------------------*/
+	} /* -------------------- end of begin -----------------------------------------------------*/
 
 	virtual void update() override
 	{
 		LOGGER_VERBOSE("Enter....");
 
-		if (_serial->available() > 0) // Hier werden die gedrückten keys abgefragt
+		if (_serial->available() > 0) 
 		{
 			char key = _serial->read();
 			switch (key)
@@ -375,7 +375,7 @@ public:
 			} /* end of switch(key) */
 		} /* end of _serial.available */
 		LOGGER_VERBOSE("....leave");
-	} /* -------------------- end of update -------------------------------------------*/
+	} /* -------------------- end of update ----------------------------------------------------*/
 
 	void setItemAxis(uint8_t itemAxis)
 	{
@@ -385,12 +385,12 @@ public:
 		 * Key Z = primary axis (3)	 */
 		_itemAxis = itemAxis;
 		LOGGER_NOTICE_FMT("itemAxis = %d", _itemAxis);
-	} /*----------------------------- end of setItemAxis ------------------------------*/
+	} /*----------------------------- end of setItemAxis ---------------------------------------*/
 
 	// void setItemExecFreq(uint8_t itemExFr)
 	// {
 	// 	_itemCoefficient = itemExFr;
-	// } /*----------------------------- end of setItemExecFreq --------------------------*/
+	// } /*----------------------------- end of setItemExecFreq -----------------------------------*/
 
 	void setItemCoefficient(uint8_t itemCoefficient)
 	{
@@ -401,7 +401,7 @@ public:
 		 * Key E = ExecutingFrequency (40)	 */
 		_itemCoefficient = itemCoefficient;
 		LOGGER_NOTICE_FMT("itemCoefficient = %d", _itemCoefficient);
-	} /*----------------------------- end of setItemCoefficient -----------------------*/
+	} /*----------------------------- end of setItemCoefficient --------------------------------*/
 
 	/* Set the "PID Type",
 	 * e.g _itemAxis = 1 and _itemCoefficient = 20 ~ _pidType 21
@@ -428,19 +428,19 @@ public:
 				_addOn = -1;
 		}
 		return _pidType;
-	} /*----------------------------- end of getPidType -------------------------------*/
+	} /*----------------------------- end of getPidType ----------------------------------------*/
 
 	/* Increment the coefficient according the PID Type. Shown "getPidType". */
 	void coefficient_Up()
 	{
 		select(getPidType(true));
-	} /*----------------------------- end of coefficient_Up ---------------------------*/
+	} /*----------------------------- end of coefficient_Up ------------------------------------*/
 
 	/* decrement the coefficient according the PID Type. Shown "getPidType". */
 	void coefficient_Down()
 	{
 		select(getPidType(false));
-	} /*----------------------------- end of coefficient_Down -------------------------*/
+	} /*----------------------------- end of coefficient_Down ----------------------------------*/
 
 	/* Here you sets the real coefficient into the model, and print it into the GUI. +/- _addOn
 	   like this: Pri. P = 2.20
@@ -593,7 +593,7 @@ public:
 		// 	}
 		// 	break;
 		} /* end of switch */
-	}	  /*----------------------------- end of select -------------------------------*/
+	}	  /*----------------------------- end of select ----------------------------------------*/
 
 	void display_Menu()
 	{
@@ -629,7 +629,7 @@ public:
 		_putty_out->print(ROW_STATE, COL_MENU, "State message : ");
 
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------- end of display_Menu --------------------------------*/
+	} /*-------------------------- end of display_Menu -----------------------------------------*/
 
 	void displayPIDcoefficients()
 	{
@@ -680,7 +680,7 @@ public:
 			return true;
 		else
 			return false;
-	} /*----------------------------- end of checkValue -------------------------------*/
+	} /*----------------------------- end of checkValue ----------------------------------------*/
 
 	void setDecimalPlaces(uint8_t dot)
 	{
@@ -700,8 +700,8 @@ public:
 			break;
 		} // end of switch
 		LOGGER_NOTICE_FMT("New Factor = %f", _newAddOn);
-	} /*----------------------------- end of setDecimalPlaces -------------------------*/
+	} /*----------------------------- end of setDecimalPlaces ----------------------------------*/
 
-}; /*------------------------- end of PID_adjust class --------------------------------*/
+}; /*------------------------- end of PID_adjust class -----------------------------------------*/
 
 #endif

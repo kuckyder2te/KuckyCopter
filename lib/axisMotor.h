@@ -1,7 +1,7 @@
 #pragma once
 /*  File name : axisMotor.h
 	Project name : KuCo_Phantom 1
-	Author: Wilhelm Kuckelsberg
+	Author: Stephan cholz / Wilhelm Kuckelsberg
 	Date : 2022-06-13
 	Description : Drohne
 */
@@ -66,7 +66,7 @@ public:
 		begin();
 		LOGGER_NOTICE("....leave");
 		return this;
-	} /*---------------------- setModel ------------------------------------------------*/
+	} /*---------------------- setModel ---------------------------------------------------------*/
 
 	AxisMotor *initMotorOrdered(uint8_t _pin)
 	{
@@ -90,13 +90,13 @@ public:
 		}
 		LOGGER_NOTICE_FMT("....leave %s",this->getName().c_str());
 		return this;
-	} /*---------------------- setMotorPinOrdered -------------------------------------*/
+	} /*---------------------- setMotorPinOrdered ----------------------------------------------*/
 
 	AxisMotor *InvertRoll()
 	{
 		_invertRoll = true;
 		return this;
-	} /*---------------------- InvertRoll ---------------------------------------------*/
+	} /*---------------------- InvertRoll ------------------------------------------------------*/
 
 	virtual void begin() override
 	{
@@ -105,7 +105,7 @@ public:
 		AxisBase::begin();
 		//..und weitere Configgeschichten
 		LOGGER_VERBOSE("....leave");
-	} /*-------------------------------- end of begin ---------------------------------*/
+	} /*-------------------------------- end of begin ------------------------------------------*/
 
 	virtual void update() override
 	{
@@ -175,14 +175,12 @@ public:
 			break;
 		} /* end of switch */
 	
-	} /*..................... end of update -------------------------------------------*/
+	} /*..................... end of update ----------------------------------------------------*/
 
 	void setState(motorState_e state)
 	{
-		//if(state!=_state)
-		//	LOGGER_NOTICE_FMT("set AxisMotor State = %d", _state);		// Does not work. Somehow Update() is called
 		_state = state;
-	} /*--------------------- end of setState -----------------------------------------*/
+	} /*--------------------- end of setState --------------------------------------------------*/
 
 	void setPower(int16_t _power)
 	{
@@ -191,29 +189,29 @@ public:
 			_axisData->power = 0;
 		else
 			_axisData->power = _power;
-	} /*--------------------- end of setPower -----------------------------------------*/
+	} /*--------------------- end of setPower --------------------------------------------------*/
 
 	boolean isArmed() const
 	{
 		LOGGER_VERBOSE("Enter....isArmed");
 		return ((_motor[motor_t::first]->isArmed()) && (_motor[motor_t::second]->isArmed()));
-	} /*---------------------- end of isArmed -----------------------------------------*/
+	} /*---------------------- end of isArmed --------------------------------------------------*/
 
 	boolean isDeactivatePID()
 	{
 		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isDeactivatePID %s ", this->getName().c_str());
 		return (_state == disablePID);
-	} /*--------------------- end of isDeactivatePID ----------------------------------*/
+	} /*--------------------- end of isDeactivatePID -------------------------------------------*/
 
 	boolean isStandby()
 	{
 		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isStandby %s ", this->getName().c_str());
 		return (_state == standby);
-	} /*--------------------- end of isStandby ----------------------------------------*/
+	} /*--------------------- end of isStandby -------------------------------------------------*/
 
 	boolean isReady()
 	{
 		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isReady %s ", this->getName().c_str());
 		return (_state == ready);
-	} /*---------------------- end of isReady -----------------------------------------*/
-}; /*.................................. end of axisMotor class ------------------------*/
+	} /*---------------------- end of isReady ---------------------------------------------------*/
+}; /*.................................. end of axisMotor class ---------------------------------*/

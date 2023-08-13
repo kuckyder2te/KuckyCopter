@@ -2,7 +2,7 @@
 /*  File name: sonic.h
  *	Project name: KuCo_Phantom 1
  *  Date: 2022-05-28
- *  Author: Wilhelm Kuckelsberg
+ *  Author: Stephan Scholz / Wilhelm Kuckelsberg
  *  Description: Niederflug
  *  HCSR04 max. Distanz 400cm
  *
@@ -20,16 +20,16 @@
 #define LOCAL_DEBUG
 #include "myLogger.h"
 
-#define PIN_ECHO_1      21  // Sonic down
+#define PIN_ECHO_1      21 // Sonic down
 #define PIN_TRIGGER_1   22
-#define PIN_ECHO_2       3  // Sonic front
+#define PIN_ECHO_2       3 // Sonic front
 #define PIN_TRIGGER_2    2
-#define NUMBER_OF_SLAVES 1  // Number of possible slave sonic sensors
+#define NUMBER_OF_SLAVES 1 // Number of possible slave sonic sensors
 
 #define PIN_DHT 6
 #define DHTTYPE DHT22
 
-#define MAX_DISTANCE 200    // max distance range 2 to 400cm
+#define MAX_DISTANCE 200 // distance range 2 to 400cm
 
 DHT dht(PIN_DHT, DHTTYPE);
 
@@ -39,7 +39,7 @@ typedef struct
 {
     uint16_t temperature;
     uint16_t humidity;
-    float speedOfSoundInCmPerMicroSec;
+    //float speedOfSoundInCmPerMicroSec;
     uint16_t down_distance;
     uint16_t front_distance;
 } sonicData_t;
@@ -53,24 +53,24 @@ private:
 
 public:
     sonicData_t *_sonicData;
-    sonicData_t __sonicData;
+    sonicData_t __sonicData;    // makes the logger readable "...CHK..."
 
 protected:
 public:
     Sonic(const String &name) : Task::Base(name)
     {
-        slave = new HC_SR04<PIN_ECHO_2>(PIN_TRIGGER_2);    // This is a slave sensor, in this case only on
+        slave = new HC_SR04<PIN_ECHO_2>(PIN_TRIGGER_2); // This is a slave sensor, in this case only on
         slaves[0] = slave;
         sonic = new HC_SR04<PIN_ECHO_1>(PIN_TRIGGER_1, slaves, NUMBER_OF_SLAVES); // Master sensor with echo and trigger pin
     }
 
     Sonic *setModel(sonicData_t *_model)
-    { 
+    {
         LOGGER_VERBOSE("Enter....");
         _sonicData = _model;
         LOGGER_VERBOSE("....leave");
         return this;
-    } /*--------------------- end of setModel -----------------------------------------*/
+    } /*--------------------- end of setModel ---------------------------------------------------*/
 
     virtual void begin() override
     {
@@ -86,7 +86,7 @@ public:
             }
         sonic->startAsync(200000);
         LOGGER_VERBOSE("....leave");
-    } /*--------------------- end of begin --------------------------------------------*/
+    } /*--------------------- end of begin ------------------------------------------------------*/
 
     virtual void update() override
     {
@@ -98,6 +98,7 @@ public:
             _sonicData->front_distance = sonic->getDist_cm(1);
             sonic->startAsync(200000);
         }
-        LOGGER_VERBOSE("....leave"); 
-    }/*--------------------- end of update -------------------------------------------*/
-}; /*----------------------------------- end of sonic.h class -------------------------*/
+        LOGGER_VERBOSE("....leave");
+    } /*--------------------- end of update -----------------------------------------------------*/
+
+};/*----------------------------------- end of sonic.h class ------------------------------------*/
