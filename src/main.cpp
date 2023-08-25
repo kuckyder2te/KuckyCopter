@@ -109,6 +109,8 @@ void main_loop()
 #include "..\test\motor_test.h"
 #elif _AXIS
 #include "..\test\axis_test.h"
+#elif _YAW
+#include "..\test\yaw_test.h"
 #elif _SONIC
 #include "..\test\sonic_test.h"
 #elif _SENSOR

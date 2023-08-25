@@ -2,8 +2,8 @@
 
 #include "..\src\config.h"
 #include "..\lib\axisBase.h"
-#include "..\lib\axisMotor.h"
-#include "..\lib\axisYaw.h"
+#include "..\lib\axisMotor.h" //eigener testfall
+#include "..\lib\newPID.h"
 
 AxisMotor *axis[2];
 AxisBase::axisData_t axisData;
