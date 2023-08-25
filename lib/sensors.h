@@ -20,7 +20,7 @@ Höhe 55m von Strasse zum Dach + ca. 6m
 #include <MPU9250.h>
 #include <MS5611.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 typedef struct
@@ -41,7 +41,6 @@ class Sensor : public Task::Base
 {
 
 private:
-    uint32_t start, stop, count;
     MPU9250Setting setting;
     uint16_t _updateCounter;
 
@@ -49,7 +48,7 @@ protected:
     MPU9250 _mpu9250; // Speicherplatz reserviert
     MS5611 _ms5611;
     sensorData_t *_sensorData;
-    sensorData_t __sensorData;
+    sensorData_t __sensorData;      // for better reading
 
 public:
     Sensor(const String &name) : Task::Base(name)
@@ -106,7 +105,7 @@ public:
         _ms5611.setOversampling(OSR_STANDARD);
 
         LOGGER_NOTICE_FMT("Oversampling = %i", _ms5611.getOversampling());
-        delay(500);
+        delay(100 );
         LOGGER_VERBOSE("....leave");
     } /* ------------------ end of begin --------------------------------------------------------*/
 
@@ -136,10 +135,10 @@ public:
         {
             LOGGER_VERBOSE("_ms5611.read");
             _ms5611.read();                                                             // uses default OSR_ULTRA_LOW  (fastest)
-            _sensorData->seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE); // Warum immer hier
+        //    _sensorData->seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE); 
             _sensorData->temperature_baro = _ms5611.getTemperature();
             _sensorData->pressure = _ms5611.getPressure();
-            _sensorData->altitude = getAltitude(_sensorData->pressure, _sensorData->seaLevel);
+            _sensorData->altitude = getAltitude(_ms5611.getPressure(), (getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE)));
 
             display_baro_data();
 
@@ -151,8 +150,8 @@ public:
     float getAltitude(double press, double seaLevel)
     {
         // return (1.0f - pow(press/101325.0f, 0.190295f)) * 4433000.0f;
-        // return ((pow((seaLevel / press), 1/5.257) - 1.0) * (temp + 273.15)) / 0.0065;
-        return (44330.0f * (1.0f - pow((double)press / (double)seaLevel, 0.1902949f)));
+         return ((pow((seaLevel / press), 1/5.257) - 1.0) * ( _ms5611.getTemperature() + 273.15)) / 0.0065;
+        //  return (44330.0f * (1.0f - pow((double)press / (double)seaLevel, 0.1902949f)));
     } /*------------------------------- end of getAltitude --------------------------------------*/
 
     // Calculate sea level from Pressure given on specific altitude
@@ -163,26 +162,18 @@ public:
 
     void display_imu_data()
     {
-        Serial2.printf("/*%.2f,%.2f,%.2f*/\r\n", _mpu9250.getYaw(), _mpu9250.getPitch(), _mpu9250.getRoll());
 
-        // LOGGER_NOTICE_FMT("Yaw: %0.2f Pitch: %0.2f Roll: %0.2f", _mpu9250.getYaw(), _mpu9250.getPitch(), _mpu9250.getRoll());
-        // LOGGER_NOTICE_FMT_CHK(_sensorData->yaw, __sensorData.yaw, "Yaw = %0.2f", _sensorData->yaw);
+        LOGGER_NOTICE_FMT_CHK(_sensorData->yaw, __sensorData.yaw, "Yaw = %0.2f", _sensorData->yaw);
         LOGGER_NOTICE_FMT_CHK(_sensorData->pitch, __sensorData.pitch, "Pitch = %0.2f", _sensorData->pitch);
-        // LOGGER_NOTICE_FMT_CHK(_sensorData->roll, __sensorData.yaw, "Roll = %0.2f", _sensorData->roll);
-        // LOGGER_NOTICE_FMT_CHK(_sensorData->compass, __sensorData.compass, "compass = %0.2f", _sensorData->compass);
+        LOGGER_NOTICE_FMT_CHK(_sensorData->roll, __sensorData.yaw, "Roll = %0.2f", _sensorData->roll);
+        LOGGER_NOTICE_FMT_CHK(_sensorData->compass, __sensorData.compass, "compass = %0.2f", _sensorData->compass);
     } /*-------------------------------- end of display_imu_data --------------------------------*/
 
     void display_baro_data()
     {
-        /* Ausgabe von Rohdaten*/
-        //    Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n", _aX, _aY, _aZ, _aSqrt, _gX, _gY, _gZ, _mDirection, _mX, _mY, _mZ);
-        //    Serial2.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f*/\r\n",
-        //                   _aX, _aY, _aZ, _gX, _gY, _gZ, _mX, _mY, _mZ);
-
-        // LOGGER_NOTICE_FMT_CHK(_sensorData->altitude, __sensorData.altitude, "Altitude = %0.2f", _sensorData->altitude);
-        // LOGGER_NOTICE_FMT_CHK(_sensorData->pressure, __sensorData.pressure, "Pressure = %0.2f", _sensorData->pressure);
-        // LOGGER_NOTICE_FMT_CHK(_sensorData->_seaLevel, __sensorData._seaLevel, "SeaLevel = %0.2f", _sensorData->_seaLevel);
-        // LOGGER_NOTICE_FMT_CHK(_sensorData->temperature_baro, __sensorData.temperature_baro, "Temperature_baro = %0.2f", _sensorData->temperature_baro);
+        LOGGER_NOTICE_FMT_CHK(_sensorData->altitude, __sensorData.altitude, "Altitude = %0.2f", _sensorData->altitude);
+        LOGGER_NOTICE_FMT_CHK(_sensorData->pressure, __sensorData.pressure, "Pressure = %0.2f", _sensorData->pressure);
+        LOGGER_NOTICE_FMT_CHK(_sensorData->temperature_baro, __sensorData.temperature_baro, "Temperature_baro = %0.2f", _sensorData->temperature_baro);
     } /*-------------------------------- end of display_baro_data -------------------------------*/
 
 }; /*----------------------------------- end of sensor.h class ----------------------------------*/

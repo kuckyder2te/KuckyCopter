@@ -26,7 +26,7 @@
 #include <printf.h> //funktioniert hier nicht
 #include <RF24.h>
 
-// #define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #define PIN_RADIO_CE 20
@@ -34,9 +34,9 @@
 #define LED_RADIO 1
 
 #ifdef _RADIO
-#define ACK_PACKAGE_MAX_COUNT 10000
-#elif
-#define ACK_PACKAGE_MAX_COUNT 10
+    #define ACK_PACKAGE_MAX_COUNT 10000
+#else
+    #define  ACK_PACKAGE_MAX_COUNT 10
 #endif
 
 typedef struct __attribute__((__packed__))
@@ -130,7 +130,6 @@ public:
         _radio->startListening();
         LOGGER_VERBOSE("...leave");
 
-        RC_interface->TX_payload.yaw = 12.34f;
     } /*----------------------------- end of begin ----------------------------------------------*/
 
     virtual void update() override
@@ -180,8 +179,8 @@ public:
     void transmit_data_to_RC()
     {
         LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.yaw, debugTX_payload.yaw, "Transmit Yaw = %i", RC_interface->TX_payload.yaw);
-        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.Pitch, debugTX_payload.Pitch, "Transmit Pitch = %i", RC_interface->TX_payload.Pitch);
-        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.Roll, debugTX_payload.Roll, "Transmit Roll = %i", RC_interface->TX_payload.Roll);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.pitch, debugTX_payload.pitch, "Transmit Pitch = %i", RC_interface->TX_payload.pitch);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.roll, debugTX_payload.roll, "Transmit Roll = %i", RC_interface->TX_payload.roll);
         LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.altitude, debugTX_payload.altitude, "Transmit Altitude = %i", RC_interface->TX_payload.altitude); // Switch noch nicht aktiv
         LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.distance_down, debugTX_payload.distance_down, "Transmit Dist. down = %i", RC_interface->TX_payload.distance_down);
         LOGGER_NOTICE_FMT_CHK(RC_interface->TX_payload.distance_front, debugTX_payload.distance_front, "Transmit Dist. fronr = %i", RC_interface->TX_payload.distance_front);
