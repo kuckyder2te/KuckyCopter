@@ -116,7 +116,7 @@ void main_loop()
 #elif _RADIO
 #include "..\test\radio_test.h"
 #elif _RADIO_SENSOR
-#include "..\test\sensor_motor_test.h"
+#include "..\test\sensor_radio_test.h"
 #elif _PID
 #include "..\test\pid_test.h"
 #elif _FLYCONTROL
@@ -136,13 +136,11 @@ void setup()
 
 void loop()
 {
-//  unsigned long enter = micros();
 #ifdef _MAIN
   main_loop();
 #else
   test_loop();
 #endif
-
 } /*------------------------ end of standard loop -----------------------------------------------*/
 
 void base_setup()
