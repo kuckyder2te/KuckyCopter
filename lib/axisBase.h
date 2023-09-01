@@ -82,9 +82,6 @@ public:
     {
         LOGGER_VERBOSE("Enter....");
 
-        LOGGER_NOTICE("New PID initialized");
-        _newPID->setEF(PID_FREQUENCY);
-
         LOGGER_VERBOSE("....leave");
     } /*----------------------------------- end of begin ----------------------------------------*/
 
@@ -96,7 +93,7 @@ public:
            _fb Position of the drohne.  */
 
         if (millis() - _lastMillis >= _newPID->getExecutionTime())
-        {                                        /// muss hier so sein? wird in der service loop immer wieder aufgerufen
+        {                                       
             *_error = _newPID->step(*_sp, *_fb); ///< Calculate PID error
             _lastMillis = millis();
         }

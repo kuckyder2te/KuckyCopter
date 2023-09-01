@@ -172,7 +172,7 @@ public:
             LOGGER_VERBOSE("set pid");
             _model->RC_interface.isconnect = true; // Just to test if Flycontroller is running.
             _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
-            _model->RC_interface.RX_payload.rcThrottle = 65; // Just to test if Flycontroller is running.
+            _model->RC_interface.RX_payload.rcThrottle = 65; // Just to test if Flycontroller is running. Debug
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_LIFT_UP))
             {
                 _axisYaw->setState(AxisYaw::enablePID);

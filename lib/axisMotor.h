@@ -52,8 +52,6 @@ public:
 		LOGGER_NOTICE("....leave");
 	}
 
-	virtual ~AxisMotor() {}
-
 	AxisMotor *setModel(axisData_t *_model)
 	{ // Rückgabe wert ist das eigene Objekt (this)
 	  //_axis_data  wird aus dem Model in die Achse geschrieben

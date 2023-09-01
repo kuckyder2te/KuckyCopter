@@ -117,6 +117,8 @@ public:
                     _model->sonicData.down_distance,
                     _model->sonicData.front_distance);
                 break;
+            case AXIS:
+                break;
             default:
                 Serial.println("Default");
                 break;

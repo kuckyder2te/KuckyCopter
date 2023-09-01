@@ -42,8 +42,7 @@ model_t model;
 PID_adjust *_pid_adjust;
 #endif
 
-
-void base_setup();
+//void base_setup();
 
 #ifdef _MAIN
 void main_setup()
@@ -125,25 +124,7 @@ void main_loop()
 #include "..\test\flycontroller_test.h"
 #endif
 /*--------------------------- end of declarations -----------------------------------------------*/
-void setup()
-{
-  base_setup();
-#ifdef _MAIN
-  main_setup();
-#else
-  test_setup();
-#endif
-}
-/*--------------------------- end of standard setup ---------------------------------------------*/
 
-void loop()
-{
-#ifdef _MAIN
-  main_loop();
-#else
-  test_loop();
-#endif
-} /*------------------------ end of standard loop -----------------------------------------------*/
 
 void base_setup()
 {
@@ -190,3 +171,22 @@ void base_setup()
 
   delay(100);
 } /*------------------------ end of base setup --------------------------------------------------*/
+
+void setup()
+{
+  base_setup();
+#ifdef _MAIN
+  main_setup();
+#else
+  test_setup();
+#endif
+}
+
+void loop()
+{
+#ifdef _MAIN
+  main_loop();
+#else
+  test_loop();
+#endif
+} /*------------------------ end of standard setup and loop --------------------------------------*/

@@ -7,8 +7,8 @@
 
 #define PIN_MOTOR_FL 11
 #define PIN_MOTOR_FR 12
-#define PIN_MOTOR_BL 13
-#define PIN_MOTOR_BR 14
+#define PIN_MOTOR_BL 14
+#define PIN_MOTOR_BR 13
 
 #define PIN_LED_STATE 4 // mainloop is running
 
