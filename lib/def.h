@@ -6,12 +6,13 @@
 */
 #pragma once
 
-typedef enum
-{
-    primary = 0,
-    secondary,
-    yaw
-} axisName_e;
+// typedef enum
+// {
+//     primary = 0,
+//     secondary,
+//     yaw
+// } axisName_e;
+
 typedef enum
 {
     kP = 0,

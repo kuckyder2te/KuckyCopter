@@ -14,6 +14,12 @@ NewPID *newPid;
 extern model_t model;
 
 bool menu = false;
+
+uint8_t pidCoeff = 0;
+float Pmin = 0.00390625;
+float testI = 0;
+float testD = 0;
+
 void print_pid_menu();
 
 void print_main_menu()
@@ -35,13 +41,13 @@ void print_main_menu()
 void main_gui(char key)
 {
   static int16_t power = 0;
-  switch (key)
+  switch (toupper(key))
   {
-  case 'A':
+  // case 'A':
   case 'a':
     axis->setState(AxisMotor::motorState_e::arming_start);
     break;
-  case 'S':
+  // case 'S':
   case 's':
     Serial.print("isStandby: ");
     Serial.println(axis->isStandby());
@@ -65,22 +71,22 @@ void main_gui(char key)
     Serial.println(power);
     axis->setPower(power);
     break;
-  case 'I':
+  // case 'I':
   case 'i':
     Serial.println("Invert Roll");
     axis->InvertRoll();
     break;
-  case 'O':
+  // case 'O':
   case 'o':
     Serial.println("Stop Motor");
     axis->setState(AxisMotor::motorState_e::standby);
     break;
-  case 'R':
+  // case 'R':
   case 'r':
     Serial.println("Motor Start");
     axis->setState(AxisMotor::motorState_e::ready);
     break;
-  case 'P':
+  // case 'P':
   case 'p':
     print_pid_menu();
     menu = true;
@@ -93,34 +99,83 @@ void main_gui(char key)
 
 void pid_gui(char key)
 {
-  switch(key){
-    case 'M':
-    case 'm':
-      print_main_menu();
-      menu = false;
-      break;
-    case '?':
-      print_pid_menu();
-      break;
+  switch (toupper(key))
+  {
+  case 'p':
+    pidCoeff = 1;
+    break;
+  case 'i':
+    pidCoeff = 2;
+    break;
+  case 'd':
+    pidCoeff = 3;
+    break;
+
+  case 'e':
+    newPid->enablePID();
+    break;
+  case 'a':
+    newPid->disablePID();
+    break;
+  case '+':
+    if (pidCoeff == 1)
+    {
+      Pmin = Pmin + 0.01;
+      newPid->setP(Pmin);
+    }
+    if (pidCoeff == 2)
+    {
+      testI = testI + 0.01;
+      newPid->setP(testI);
+    }
+    if (pidCoeff == 3)
+    {
+      testD = testD + 0.01;
+      newPid->setP(testD);
+    }
+
+    break;
+
+  // case 'M':
+  case 'm':
+    print_main_menu();
+    menu = false;
+    break;
+  case '?':
+    print_pid_menu();
+    break;
   }
 }
 
 void print_pid_menu()
 {
   Serial.println("----------- Axis Test PID Menu -------------------");
-  
+
+  Serial.println("P - kP");
+  Serial.println("I - kI");
+  Serial.println("D - kD");
+  Serial.println("E - enable PID");
+  Serial.println("A - disable PID");
+
   Serial.println("M for Main menu");
   Serial.println("? for this Menu");
   Serial.println("------------------------------------------------");
 }
 
-
 void test_setup()
 {
   delay(5000); // for switching terminal on
   LOGGER_VERBOSE("Enter....");
+
+  typedef enum
+  {
+    primary = 0,
+    secondary,
+    yaw
+  } axisName_e;
+
   axis = new AxisMotor("axismotor");
-  axis->setModel(&model.axisData[0])->begin();
+  axis->setModel(&model.axisData[axisName_e::primary])->begin();
   axis->initMotorOrdered(PIN_MOTOR_FL)->initMotorOrdered(PIN_MOTOR_BR);
   newPid = axis->getPid();
   newPid->initPID();
@@ -137,10 +192,12 @@ void test_loop()
     char key = Serial.read();
     switch (menu)
     {
-      case false: main_gui(key);
-        break;
-      case true: pid_gui(key);
-        break;
+    case false:
+      main_gui(key);
+      break;
+    case true:
+      pid_gui(key);
+      break;
     }
   }
   axis->update();
