@@ -22,8 +22,6 @@
 #include "def.h"
 
 //#define PID_FREQUENCY 50 ///< PID parameter (can be deleted)
-// #define PID_SEC_FREQUENCY 51
-// #define PID_YAW_FREQUENCY 52
 
 #define PID_OUTPUT_BITS 16
 #define PID_OUTPUT_SIGNED false
@@ -32,7 +30,6 @@
 #ifndef EEPROM_OFFSET
 	#define EEPROM_OFFSET 0
 #endif
-
 
 typedef struct
 {
@@ -134,14 +131,14 @@ public:
 		LOGGER_NOTICE_FMT("_pidData eF = %.2f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
 
 	LOGGER_NOTICE("....leave");
-	} /*-------------------------------- end of loadParameters ---------------------------------*/
+	} /*-------------------------------- end of loadParameters ----------------------------------*/
 
 	void initPID(){
 		LOGGER_NOTICE("Enter..");
 		saveParameters(&initPid);
 		loadParameters();
 		LOGGER_NOTICE(".. leave");
-	}
+	} /*-------------------------------- end of initPID -----------------------------------------*/
 
 	void disablePID()
 	{

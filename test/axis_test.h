@@ -16,9 +16,10 @@ extern model_t model;
 bool menu = false;
 
 uint8_t pidCoeff = 0;
-float Pmin = 0.00390625;
+float testP = 0.1;
 float testI = 0;
 float testD = 0;
+float testEF = 50;
 
 void print_pid_menu();
 
@@ -110,6 +111,9 @@ void pid_gui(char key)
   case 'd':
     pidCoeff = 3;
     break;
+  case 'f':
+    pidCoeff = 4;
+    break;
 
   case 'e':
     newPid->enablePID();
@@ -120,20 +124,78 @@ void pid_gui(char key)
   case '+':
     if (pidCoeff == 1)
     {
-      Pmin = Pmin + 0.01;
-      newPid->setP(Pmin);
+      testP = testP + 0.01;
+      newPid->setP(testP);
+      Serial.print("P: ");
+      Serial.println(testP, 2);
     }
-    if (pidCoeff == 2)
+    else if (pidCoeff == 2)
     {
       testI = testI + 0.01;
       newPid->setP(testI);
+      Serial.print("I: ");
+      Serial.println(testI, 2);
     }
-    if (pidCoeff == 3)
+    else if (pidCoeff == 3)
     {
       testD = testD + 0.01;
       newPid->setP(testD);
+      Serial.print("D: ");
+      Serial.println(testD), 2;
     }
-
+    else if (pidCoeff == 4)
+    {
+      testEF = testEF + 1;
+      newPid->setP(testEF);
+      Serial.print("ExFreq: ");
+      Serial.println(testEF, 0);
+    }
+    break;
+  case '-':
+    if (pidCoeff == 1)
+    {
+      testP = testP - 0.01;
+      if (testP >= PID_P_MIN)
+      {
+        testP = PID_P_MIN;
+      }
+      newPid->setP(testP);
+      Serial.print("P: ");
+      Serial.println(testP);
+    }
+    else if (pidCoeff == 2)
+    {
+      testI = testI - 0.01;
+      if (testI >= 0)
+      {
+        testI = 0;
+      }
+      newPid->setP(testI);
+      Serial.print("I: ");
+      Serial.println(testI);
+    }
+    else if (pidCoeff == 3)
+    {
+      testD = testD - 0.01;
+      if (testD >= 0)
+      {
+        testD = 0;
+      }
+      newPid->setP(testD);
+      Serial.print("D: ");
+      Serial.println(testD);
+    }
+    else if (pidCoeff == 4)
+    {
+      testEF = testEF - 1;
+      if (testEF >= 1)
+      {
+        testEF = 1;
+      }
+      newPid->setP(testEF);
+      Serial.print("ExFreq: ");
+      Serial.println(testEF, 0);
+    }
     break;
 
   // case 'M':
@@ -149,13 +211,16 @@ void pid_gui(char key)
 
 void print_pid_menu()
 {
-  Serial.println("----------- Axis Test PID Menu -------------------");
+  Serial.println("----------- Axis Test PID Menu -----------------");
 
-  Serial.println("P - kP");
-  Serial.println("I - kI");
-  Serial.println("D - kD");
-  Serial.println("E - enable PID");
-  Serial.println("A - disable PID");
+  Serial.println(" P - kP");
+  Serial.println(" I - kI");
+  Serial.println(" D - kD");
+  Serial.println(" F - ef");
+  Serial.println(" E - enable PID");
+  Serial.println(" A - disable PID");
+  Serial.println("(+) - increment PID coefftient");
+  Serial.println("(-) - decrement PID coefftient");
 
   Serial.println("M for Main menu");
   Serial.println("? for this Menu");
