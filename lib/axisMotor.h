@@ -31,14 +31,15 @@ public:
 		disablePID,
 		enablePID,
 		standby,
-		ready
-	} motorState_e;
+		ready,
+		off
+	} state;
 	
 private:
 	Motor *_motor[2];
 	double _roll;
 	bool _invertRoll;
-	motorState_e _state, _lastState;
+	state _state, _lastState;
 	uint16_t _lastPower;
 
 public:
@@ -58,10 +59,9 @@ public:
 		LOGGER_NOTICE("Enter....");
 		_axisData = _model;
 		_state = standby;
-		AxisBase::_sp = &_axisData->setpoint; /// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisDatat->setpoint holt
+		AxisBase::_sp = &_axisData->setpoint; /// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisData->setpoint holt
 		AxisBase::_fb = _axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
-		begin();
 		LOGGER_NOTICE("....leave");
 		return this;
 	} /*---------------------- setModel ---------------------------------------------------------*/
@@ -135,8 +135,8 @@ public:
 
 		case arming_end:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"arming end %s ", this->getName().c_str());
-			_motor[motor_t::first]->setMotorState(Motor::off);
-			_motor[motor_t::second]->setMotorState(Motor::off);
+			_motor[motor_t::first]->setMotorState(Motor::stop);
+			_motor[motor_t::second]->setMotorState(Motor::stop);
 			break;
 
 		case disablePID:
@@ -154,14 +154,14 @@ public:
 
 		case standby:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"standby %s ", this->getName().c_str());
-			_motor[motor_t::first]->setMotorState(Motor::off);
-			_motor[motor_t::second]->setMotorState(Motor::off);
+			_motor[motor_t::first]->setMotorState(Motor::stop);
+			_motor[motor_t::second]->setMotorState(Motor::stop);
 			break;
 
 		case ready:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"ready %s ", this->getName().c_str());
-			_motor[motor_t::first]->setMotorState(Motor::on);
-			_motor[motor_t::second]->setMotorState(Motor::on);
+			_motor[motor_t::first]->setMotorState(Motor::rotating);
+			_motor[motor_t::second]->setMotorState(Motor::rotating);
 
 			_roll = (_invertRoll ? (-(*_axisData->rcX)) : (*_axisData->rcX));
 
@@ -171,11 +171,16 @@ public:
 			_motor[motor_t::second]->setPower(_axisData->power + _axisData->pidError);
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"AxisMotor SP:%d, Power:%d, Error:%d", _axisData->setpoint, _axisData->power, _axisData->pidError);
 			break;
+		case off:
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"off %s ", this->getName().c_str());
+			_motor[motor_t::first]->setMotorState(Motor::power_off);
+			_motor[motor_t::second]->setMotorState(Motor::power_off);
+			break;
 		} /* end of switch */
 	
 	} /*..................... end of update ----------------------------------------------------*/
 
-	void setState(motorState_e state)
+	void setState(state state)
 	{
 		_state = state;
 	} /*--------------------- end of setState --------------------------------------------------*/

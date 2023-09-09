@@ -25,8 +25,8 @@ Höhe 55m von Strasse zum Dach + ca. 6m
 
 typedef struct
 {
-    float pitch;
-    float roll;
+    int16_t pitch;
+    int16_t roll;
     float yaw;
     double compass;
     float pressure;
@@ -124,8 +124,8 @@ public:
             LOGGER_VERBOSE("_mpu9250.update");
 
             _sensorData->yaw = _mpu9250.getYaw();
-            _sensorData->pitch = _mpu9250.getPitch();
-            _sensorData->roll = _mpu9250.getRoll();
+            _sensorData->pitch = _mpu9250.getPitch()*100;       // For more range
+            _sensorData->roll = _mpu9250.getRoll()*100;         // For more range
 
             display_imu_data();
 

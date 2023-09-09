@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <RP2040_PWM.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 /*
@@ -59,8 +59,8 @@ public:
 		power_off,
 		busy,
 		finished,
-		off,
-		on
+		stop,
+		rotating
 	} motorstate_e;
 
 protected:
@@ -75,7 +75,7 @@ public:
 	{
 		_power = 0;
 		_maxPower = 100; // %
-		_motorState = off;
+		_motorState = stop;
 		_isArmed = false;
 		LOGGER_NOTICE_FMT("PIN = %d", _pin);
 	}; /*--------------------------------------------------------------*/
@@ -137,18 +137,18 @@ public:
 			if(millis() - _lastMillis > 1000){
 				_isArmed = true;
 				_lastMillis = millis();
-				_motorState = off;
+				_motorState = stop;
 			}
 			resultingPower = DUTYCYCLE_MIN;
 			break;
 
-		case off:
+		case stop:
 			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Motor off");
 			_power = 0;
 			resultingPower = DUTYCYCLE_MIN;
 			break;
 
-		case on:
+		case rotating:
 			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Motor on");
 			resultingPower = map(_power, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
 			if (resultingPower < map(BASE_MOTOR_POWER, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX))
@@ -223,7 +223,7 @@ public:
 	bool isMotorOff()
 	{
 		LOGGER_VERBOSE("Enter....");
-		return (_motorState == off);
+		return (_motorState == stop);
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of isMotorOff -------------------------------------------*/
 

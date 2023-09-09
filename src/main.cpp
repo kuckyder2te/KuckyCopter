@@ -42,7 +42,7 @@ model_t model;
 PID_adjust *_pid_adjust;
 #endif
 
-//void base_setup();
+void base_setup();
 
 #ifdef _MAIN
 void main_setup()
@@ -70,11 +70,9 @@ void main_setup()
       ->startFps(100);
   Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(10); // Übergabe des models in das objekt Sensor
   Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2);
-  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1)
+  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);
 
-      Tasks.add<Radio>("radio")
-          ->setModel(&model.RC_interface)
-          ->startFps(10);
+  //  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
 
 #ifdef SERIAL_STUDIO
   Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(0.1);
@@ -95,19 +93,23 @@ void main_setup()
   LOGGER_NOTICE("Program is initialized");
   delay(100);
 }
-//---------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 void main_loop()
 {
   LOGGER_VERBOSE("loop has begun");
+  digitalWrite(LED_BUILTIN, HIGH);
   Tasks.update();
   Tasks["sensor"]->enter();
   LOGGER_VERBOSE("Loop completed successfully");
+  digitalWrite(LED_BUILTIN, LOW);
 }
-//---------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 #elif _MOTOR
 #include "..\test\motor_test.h"
-#elif _AXIS
-#include "..\test\axis_test.h"
+#elif _AXIS_PRI
+#include "..\test\axis_pri_test.h"
+#elif _AXIS_SEC
+#include "..\test\axis_sec_test.h"
 #elif _YAW
 #include "..\test\yaw_test.h"
 #elif _SONIC
@@ -125,7 +127,6 @@ void main_loop()
 #endif
 /*--------------------------- end of declarations -----------------------------------------------*/
 
-
 void base_setup()
 {
   pinMode(PIN_ESC_ON, OUTPUT);
@@ -133,6 +134,9 @@ void base_setup()
                                   // will sagen, BC547 schaltet nicht durch, da die Basis HIGH ist
   pinMode(PIN_LED_STATE, OUTPUT);
   digitalWrite(PIN_LED_STATE, LOW);
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
 
   Serial.begin(COM_SPEED);
   Serial2.begin(BT_SPEED);
@@ -148,7 +152,6 @@ void base_setup()
   Logger::setLogLevel(Logger::_DEBUG_); // Muss immer einen Wert in platformio.ini haben (SILENT)
 #endif
 
-  delay(1000);
   LOGGER_NOTICE("Program will initialized");
   model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
   model.yaw.axisData[1] = &model.axisData[1];
@@ -169,7 +172,8 @@ void base_setup()
 
   EEPROM.begin(512);
 
-  delay(100);
+  delay(2000);
+  digitalWrite(LED_BUILTIN, LOW);
 } /*------------------------ end of base setup --------------------------------------------------*/
 
 void setup()
@@ -185,8 +189,10 @@ void setup()
 void loop()
 {
 #ifdef _MAIN
+  // digitalWrite(LED_BUILTIN, LOW);  // only for debug
   main_loop();
+//  digitalWrite(LED_BUILTIN, HIGH);
 #else
   test_loop();
 #endif
-} /*------------------------ end of standard setup and loop --------------------------------------*/
+} /*------------------------ end of standard setup and loop -------------------------------------*/

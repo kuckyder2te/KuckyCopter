@@ -1,15 +1,26 @@
 #pragma once
 
+//#define EEPROM_OFFSET 300
+
 #include "..\src\config.h"
 #include "..\lib\axisBase.h"
 #include "..\lib\axisMotor.h"
 #include "..\lib\monitor.h"
 #include "..\lib\model.h"
 #include "..\lib\newPID.h"
+#include "..\lib\sensors.h"
 
 AxisMotor *axis;
 Monitor *monitor;
 NewPID *newPid;
+Sensor *sensor;
+
+  typedef enum
+  {
+    primary = 0,
+    secondary,
+    yaw
+  } axisName_e;
 
 extern model_t model;
 
@@ -21,11 +32,13 @@ float testI = 0;
 float testD = 0;
 float testEF = 50;
 
+int16_t test = 123;
+
 void print_pid_menu();
 
 void print_main_menu()
 {
-  Serial.println("----------- Axis Test setup menu -------------------");
+  Serial.println("----------- Primary Axis Test setup menu -------");
   Serial.println("A for arming");
   Serial.println("S for current State");
   Serial.println("Key (+) or (-) increment or decrement Power.");
@@ -34,6 +47,7 @@ void print_main_menu()
   Serial.println("E enable PID");
   Serial.println("St(o)p Motor");
   Serial.println("R for ready (Start Motors)");
+  Serial.println("[SPACE] Power Off");
   Serial.println("P for PID Menu");
   Serial.println("? for this Menu");
   Serial.println("------------------------------------------------");
@@ -44,12 +58,10 @@ void main_gui(char key)
   static int16_t power = 0;
   switch (toupper(key))
   {
-  // case 'A':
-  case 'a':
-    axis->setState(AxisMotor::motorState_e::arming_start);
+  case 'A':
+    axis->setState(AxisMotor::state::arming_start);
     break;
-  // case 'S':
-  case 's':
+  case 'S':
     Serial.print("isStandby: ");
     Serial.println(axis->isStandby());
     Serial.print("isReady: ");
@@ -72,23 +84,23 @@ void main_gui(char key)
     Serial.println(power);
     axis->setPower(power);
     break;
-  // case 'I':
-  case 'i':
+   case 'I':
     Serial.println("Invert Roll");
     axis->InvertRoll();
     break;
-  // case 'O':
-  case 'o':
+  case 'O':
+
     Serial.println("Stop Motor");
-    axis->setState(AxisMotor::motorState_e::standby);
+    axis->setState(AxisMotor::state::standby);
     break;
-  // case 'R':
-  case 'r':
+  case 'R':
     Serial.println("Motor Start");
-    axis->setState(AxisMotor::motorState_e::ready);
+    axis->setState(AxisMotor::state::ready);
     break;
-  // case 'P':
-  case 'p':
+  case ' ':
+    axis->setState(AxisMotor::state::off);
+    break;
+  case 'P':
     print_pid_menu();
     menu = true;
     break;
@@ -102,24 +114,57 @@ void pid_gui(char key)
 {
   switch (toupper(key))
   {
-  case 'p':
+  case 'L':
+    Serial.print("Pitch Level: ");Serial.println(model.sensorData.pitch);
+    Serial.print("Roll Level: ");Serial.println(model.sensorData.roll);
+    Serial.print("SetPoint: ");Serial.println(model.axisData[axisName_e::primary].setpoint);
+    break;
+  case 'W':
+    Serial.print("Error: ");Serial.println(model.axisData[0].pidError);
+    Serial.print("Axis PidError: ");Serial.println(axis->getPidError());
+    break;
+  case 'S':
+    Serial.print("P:");Serial.println(newPid->getP(),2);
+    Serial.print("I:");Serial.println(newPid->getI(),2);
+    Serial.print("D:");Serial.println(newPid->getD(),2);
+    Serial.print("EF:");Serial.println(newPid->getEF());
+    Serial.print("ExecutionTime:");Serial.println(newPid->getExecutionTime());
+    break;  
+  case 'R':
+    Serial.println("Reset");
+    newPid->initPID();
+    break;
+  case 'P':
+    Serial.println("P");
     pidCoeff = 1;
     break;
-  case 'i':
+  case 'I':
+    Serial.println("I");
     pidCoeff = 2;
     break;
-  case 'd':
+  case 'D':
+    Serial.println("D");
     pidCoeff = 3;
     break;
-  case 'f':
+  case 'F':
+    Serial.println("F");
     pidCoeff = 4;
     break;
-
-  case 'e':
-    newPid->enablePID();
+  case 'E':
+    Serial.println("Enable PID");
+    axis->setState(AxisMotor::state::enablePID);
+    //newPid->enablePID();
     break;
-  case 'a':
-    newPid->disablePID();
+  case 'A':
+    Serial.println("Disable PID");
+    axis->setState(AxisMotor::state::disablePID);
+    //newPid->disablePID();
+    break;
+  case '8':
+    Serial.print("rcX: ");Serial.println(++model.RC_interface.RX_payload.rcRoll);  // erst erhöhen und dann schreiben
+    break;
+  case '2':
+    Serial.print("rcX: ");Serial.println(--model.RC_interface.RX_payload.rcRoll);
     break;
   case '+':
     if (pidCoeff == 1)
@@ -132,21 +177,21 @@ void pid_gui(char key)
     else if (pidCoeff == 2)
     {
       testI = testI + 0.01;
-      newPid->setP(testI);
+      newPid->setI(testI);
       Serial.print("I: ");
       Serial.println(testI, 2);
     }
     else if (pidCoeff == 3)
     {
       testD = testD + 0.01;
-      newPid->setP(testD);
+      newPid->setD(testD);
       Serial.print("D: ");
       Serial.println(testD), 2;
     }
     else if (pidCoeff == 4)
     {
       testEF = testEF + 1;
-      newPid->setP(testEF);
+      newPid->setEF(testEF);
       Serial.print("ExFreq: ");
       Serial.println(testEF, 0);
     }
@@ -170,7 +215,7 @@ void pid_gui(char key)
       {
         testI = 0;
       }
-      newPid->setP(testI);
+      newPid->setI(testI);
       Serial.print("I: ");
       Serial.println(testI);
     }
@@ -181,7 +226,7 @@ void pid_gui(char key)
       {
         testD = 0;
       }
-      newPid->setP(testD);
+      newPid->setD(testD);
       Serial.print("D: ");
       Serial.println(testD);
     }
@@ -192,14 +237,15 @@ void pid_gui(char key)
       {
         testEF = 1;
       }
-      newPid->setP(testEF);
+      newPid->setEF(testEF);
       Serial.print("ExFreq: ");
       Serial.println(testEF, 0);
     }
     break;
-
-  // case 'M':
-  case 'm':
+  case ' ':
+    axis->setState(AxisMotor::state::off);
+    break;
+  case 'M':
     print_main_menu();
     menu = false;
     break;
@@ -217,11 +263,17 @@ void print_pid_menu()
   Serial.println(" I - kI");
   Serial.println(" D - kD");
   Serial.println(" F - ef");
+  Serial.println(" W - Show Error");
   Serial.println(" E - enable PID");
   Serial.println(" A - disable PID");
   Serial.println("(+) - increment PID coefftient");
   Serial.println("(-) - decrement PID coefftient");
-
+  Serial.println(" 8 - increment setPoint");
+  Serial.println(" 2 - decrement setPoint");
+  Serial.println("[SPACE] Power Off");
+  Serial.println(" R - Reset/Init PID");
+  Serial.println(" S - Show PID-Values");
+  Serial.println(" L - Show IMU Levels");
   Serial.println("M for Main menu");
   Serial.println("? for this Menu");
   Serial.println("------------------------------------------------");
@@ -232,21 +284,20 @@ void test_setup()
   delay(5000); // for switching terminal on
   LOGGER_VERBOSE("Enter....");
 
-  typedef enum
-  {
-    primary = 0,
-    secondary,
-    yaw
-  } axisName_e;
-
+  sensor = new Sensor("Sensor");
+  sensor->setModel(&model.sensorData)->begin();
   axis = new AxisMotor("axismotor");
+  model.axisData[0].feedback = &model.sensorData.roll;                  // must be before setNodel because of feedback Pointer
+  model.axisData[0].rcX = &model.RC_interface.RX_payload.rcRoll;
+  model.axisData[0].rcY = &model.RC_interface.RX_payload.rcPitch;
   axis->setModel(&model.axisData[axisName_e::primary])->begin();
   axis->initMotorOrdered(PIN_MOTOR_FL)->initMotorOrdered(PIN_MOTOR_BR);
   newPid = axis->getPid();
-  newPid->initPID();
-  newPid->setI(0);
+  //newPid->initPID();
+  //newPid->setI(0);
   monitor = new Monitor("Monitor", Report_t::AXIS);
   monitor->setModel(&model)->begin();
+
   print_main_menu();
 }
 
@@ -265,7 +316,9 @@ void test_loop()
       break;
     }
   }
+  model.axisData[0].setpoint = model.RC_interface.RX_payload.rcRoll;
   axis->update();
   monitor->update();
+  sensor->enter();
 }
-/*------------------------ end of axis test programm -------------------------------------------*/
+/*------------------------ end of axis pri test programm ----------------------------------------*/

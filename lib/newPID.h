@@ -15,7 +15,7 @@
 
 #include <FastPID.h>
 
-#define LOCAL_DEBUG		// enable = debug this class  /  disable no debug
+//#define LOCAL_DEBUG		// enable = debug this class  /  disable no debug
 #include "myLogger.h"
 
 #include "EEPROM.h"
@@ -24,7 +24,7 @@
 //#define PID_FREQUENCY 50 ///< PID parameter (can be deleted)
 
 #define PID_OUTPUT_BITS 16
-#define PID_OUTPUT_SIGNED false
+#define PID_OUTPUT_SIGNED true
 #define PID_P_MIN 0.00390626 ///< The parameter P domain is [0.00390625 to 255] inclusive.
 //#define PID_EEPROM_ADRRESS 50
 #ifndef EEPROM_OFFSET

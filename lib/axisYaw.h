@@ -115,8 +115,8 @@ public:
 		{
 		case arming_start:
 			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter arming_start State %d", _state);
-			_axisMotor[axisName_e::primary]->setState(AxisMotor::motorState_e::arming_start);
-			_axisMotor[axisName_e::secondary]->setState(AxisMotor::motorState_e::arming_start);
+			_axisMotor[axisName_e::primary]->setState(AxisMotor::state::arming_start);
+			_axisMotor[axisName_e::secondary]->setState(AxisMotor::state::arming_start);
 			_state = arming_finished;
 			LOGGER_VERBOSE("....leave arming_start");
 			break;
@@ -128,8 +128,6 @@ public:
 				LOGGER_NOTICE("All Motors armed");
 				_state = ready;
 			}
-			// _axisMotor[axisName_e::primary]->setState(AxisMotor::arming_end);
-			// _axisMotor[axisName_e::secondary]->setState(AxisMotor::arming_end);
 			LOGGER_VERBOSE("....leave");
 			break;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "..\src\config.h"
-#include "..\lib\sensors.h"#
+#include "..\lib\sensors.h"
 #include "..\lib\monitor.h"
 #include "..\lib\model.h"
 

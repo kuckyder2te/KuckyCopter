@@ -24,8 +24,8 @@ public:
         int16_t pidError;
         int16_t setpoint;  ///< Memory for detuning the physical axis.
         int16_t *feedback; ///< Current value from the IMU
-        double *rcX;       ///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
-        double *rcY;       ///< virtual axis. Corresponds to the PITCH axis.
+        int8_t *rcX;       ///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
+        int8_t *rcY;       ///< virtual axis. Corresponds to the PITCH axis.
     } axisData_t;
 
 private:
@@ -93,13 +93,20 @@ public:
            _fb Position of the drohne.  */
 
         if (millis() - _lastMillis >= _newPID->getExecutionTime())
-        {                                       
-            *_error = _newPID->step(*_sp, *_fb); ///< Calculate PID error
+        {              
+            int16_t err = _newPID->step(*_sp, *_fb);                        
+            //*_error = _newPID->step(*_sp, *_fb); ///< Calculate PID error
+            *_error = err;
+            //Serial.print("sp:");Serial.print(*_sp);Serial.print("fb:");Serial.print(*_fb);
+            //Serial.print("err:");Serial.print(err);
             _lastMillis = millis();
         }
 
         LOGGER_VERBOSE("....leave");
     } /*----------------------------------- end of update -------------------------------------*/
+    int16_t getPidError(){
+        return *_error;
+    }
 };    /*----------------------------------- end of axisBase class -----------------------------*/
 
 uint8_t AxisBase::_instanceCounter = 0; // https://stackoverflow.com/questions/5391973/undefined-reference-to-static-const-int
