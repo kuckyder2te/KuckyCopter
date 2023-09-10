@@ -12,6 +12,7 @@
 
 //#define LOCAL_DEBUG
 #include "myLogger.h"
+#include "config.h"
 
 /*
 #define _PWM_LOGLEVEL_ 0
@@ -36,12 +37,7 @@
 #endif
 */
 
-#define POWER_MIN 0			//
-#define POWER_MAX 100		//
-#define BASE_MOTOR_POWER 5 //< 10% minimal throttle in fly mode for preventing stop of the motors
-#define PIN_ESC_ON 15
-#define DUTYCYCLE_MIN 40000
-#define DUTYCYCLE_MAX 80000
+
 
 class Motor
 {

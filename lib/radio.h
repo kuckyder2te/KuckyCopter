@@ -23,15 +23,12 @@
 
 #include <Arduino.h>
 #include <TaskManager.h>
-#include <printf.h> //funktioniert hier nicht
 #include <RF24.h>
 
 //#define LOCAL_DEBUG
 #include "myLogger.h"
 
-#define PIN_RADIO_CE 20
-#define PIN_RADIO_CSN 17
-#define LED_RADIO 1
+#include "config.h"
 
 #ifdef _RADIO
     #define ACK_PACKAGE_MAX_COUNT 10000
@@ -59,7 +56,7 @@ typedef struct __attribute__((__packed__))
     float pitch;
     float roll;
     uint16_t altitude; // MS5611
-    float temperature; // MS5611
+    float temperature;
     float pressure;
     uint16_t distance_down; // US Sensor
     uint16_t distance_front;
@@ -77,7 +74,6 @@ class Radio : public Task::Base
 {
     const uint64_t pipe_TX = 0xF0F0F0E1L;
     const uint64_t pipe_RX = 0xF0F0F0D2L;
- //   RX_payload_t _RX_payload; /// ist das richtig, wäre doppelt
     unsigned long _lastReceivedPacket;
     uint16_t _lostAckPackageCount;
 
@@ -129,7 +125,6 @@ public:
         _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t)); // load the first response into the FIFO
         _radio->startListening();
         LOGGER_VERBOSE("...leave");
-
     } /*----------------------------- end of begin ----------------------------------------------*/
 
     virtual void update() override

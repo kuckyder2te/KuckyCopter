@@ -19,14 +19,8 @@
 #include "myLogger.h"
 
 #include "EEPROM.h"
-#include "def.h"
+#include "..\lib\def.h"
 
-//#define PID_FREQUENCY 50 ///< PID parameter (can be deleted)
-
-#define PID_OUTPUT_BITS 16
-#define PID_OUTPUT_SIGNED true
-#define PID_P_MIN 0.00390626 ///< The parameter P domain is [0.00390625 to 255] inclusive.
-//#define PID_EEPROM_ADRRESS 50
 #ifndef EEPROM_OFFSET
 	#define EEPROM_OFFSET 0
 #endif
@@ -93,10 +87,10 @@ public:
 			LOGGER_NOTICE_FMT("addr = %i current %i", EEPROM_OFFSET + _eepromAddress, (*(current+i)));
 		}
 
-		LOGGER_NOTICE_FMT("_pidData kP = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
-		LOGGER_NOTICE_FMT("_pidData kI = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
-		LOGGER_NOTICE_FMT("_pidData kD = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
-		LOGGER_NOTICE_FMT("_pidData eF = %.2f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
+		LOGGER_NOTICE_FMT("_pidData kP = %.2f", _pidData.pidCoefficient[pidCoefficient::kP]);
+		LOGGER_NOTICE_FMT("_pidData kI = %.2f", _pidData.pidCoefficient[pidCoefficient::kI]);
+		LOGGER_NOTICE_FMT("_pidData kD = %.2f", _pidData.pidCoefficient[pidCoefficient::kD]);
+		LOGGER_NOTICE_FMT("_pidData eF = %.2f", _pidData.pidCoefficient[pidCoefficient::eF]);
 
 		if (EEPROM.commit())
 		{
@@ -125,10 +119,10 @@ public:
 			LOGGER_NOTICE_FMT("i = %i ADDR = %i", (uint8_t) * (current + i), EEPROM_OFFSET + _eepromAddress);
 		}
 
-		LOGGER_NOTICE_FMT("_pidData kP = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
-		LOGGER_NOTICE_FMT("_pidData kI = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
-		LOGGER_NOTICE_FMT("_pidData kD = %.2f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
-		LOGGER_NOTICE_FMT("_pidData eF = %.2f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
+		LOGGER_NOTICE_FMT("_pidData kP = %.2f", _pidData.pidCoefficient[pidCoefficient::kP]);
+		LOGGER_NOTICE_FMT("_pidData kI = %.2f", _pidData.pidCoefficient[pidCoefficient::kI]);
+		LOGGER_NOTICE_FMT("_pidData kD = %.2f", _pidData.pidCoefficient[pidCoefficient::kD]);
+		LOGGER_NOTICE_FMT("_pidData eF = %.2f", _pidData.pidCoefficient[pidCoefficient::eF]);
 
 	LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of loadParameters ----------------------------------*/
@@ -159,10 +153,10 @@ public:
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
 		LOGGER_NOTICE("enablePID");
-		this->setCoefficients(_pidData.pidCoefficient[pidCoeffi_e::kP],
-							  _pidData.pidCoefficient[pidCoeffi_e::kI],
-							  _pidData.pidCoefficient[pidCoeffi_e::kD],
-							  _pidData.pidCoefficient[pidCoeffi_e::eF]);
+		this->setCoefficients(_pidData.pidCoefficient[pidCoefficient::kP],
+							  _pidData.pidCoefficient[pidCoefficient::kI],
+							  _pidData.pidCoefficient[pidCoefficient::kD],
+							  _pidData.pidCoefficient[pidCoefficient::eF]);
 
 		_isEnabled = true;
 
@@ -179,9 +173,9 @@ public:
 			p = PID_P_MIN;
 		}
 
-		_pidData.pidCoefficient[pidCoeffi_e::kP] = p;
+		_pidData.pidCoefficient[pidCoefficient::kP] = p;
 
-		LOGGER_NOTICE_FMT(" _pidCoeff.kP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
+		LOGGER_NOTICE_FMT(" _pidCoeff.kP: %.3f", _pidData.pidCoefficient[pidCoefficient::kP]);
 
 		if (_isEnabled)
 		{
@@ -197,9 +191,9 @@ public:
 
 		LOGGER_NOTICE_FMT("setI: %f", i);
 
-		_pidData.pidCoefficient[pidCoeffi_e::kI] = i;
+		_pidData.pidCoefficient[pidCoefficient::kI] = i;
 
-		LOGGER_NOTICE_FMT("_pidCoeff.kI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
+		LOGGER_NOTICE_FMT("_pidCoeff.kI: %.3f", _pidData.pidCoefficient[pidCoefficient::kI]);
 
 		if (_isEnabled)
 		{
@@ -213,9 +207,9 @@ public:
 	{
 	LOGGER_NOTICE("Enter....");
 
-		_pidData.pidCoefficient[pidCoeffi_e::kD] = d;
+		_pidData.pidCoefficient[pidCoefficient::kD] = d;
 
-		LOGGER_NOTICE_FMT("_pidCoeff.kD: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
+		LOGGER_NOTICE_FMT("_pidCoeff.kD: %.3f", _pidData.pidCoefficient[pidCoefficient::kD]);
 
 		if (_isEnabled)
 		{
@@ -228,9 +222,9 @@ public:
 	void setEF(float ef)
 	{
 	LOGGER_NOTICE("Enter....");
-		_pidData.pidCoefficient[pidCoeffi_e::eF] = ef;
+		_pidData.pidCoefficient[pidCoefficient::eF] = ef;
 
-		LOGGER_NOTICE_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
+		LOGGER_NOTICE_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoefficient::eF]);
 
 		if (_isEnabled)
 		{
@@ -242,8 +236,8 @@ public:
 
 	float getExecutionTime()
 	{
-	//	LOGGER_NOTICE_FMT("PID getExecutionTime %.3f", (1 / _pidData.pidCoefficient[pidCoeffi_e::eF]) * 1000);
-		return ((1.0 / (float)_pidData.pidCoefficient[pidCoeffi_e::eF]) * 1000);
+	//	LOGGER_NOTICE_FMT("PID getExecutionTime %.3f", (1 / _pidData.pidCoefficient[pidCoefficient::eF]) * 1000);
+		return ((1.0 / (float)_pidData.pidCoefficient[pidCoefficient::eF]) * 1000);
 		///< Convert frequency to millis
 	} /*-------------------------------- end of getExecutionTime -------------------------------*/
 
@@ -251,8 +245,8 @@ public:
 	{
 	LOGGER_NOTICE("Enter....");
 
-		LOGGER_NOTICE_FMT("_pidCoeff KP: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kP]);
-		return _pidData.pidCoefficient[pidCoeffi_e::kP];
+		LOGGER_NOTICE_FMT("_pidCoeff KP: %.3f", _pidData.pidCoefficient[pidCoefficient::kP]);
+		return _pidData.pidCoefficient[pidCoefficient::kP];
 
 	LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of getP -------------------------------------------*/
@@ -261,8 +255,8 @@ public:
 	{
 	LOGGER_NOTICE("Enter....");
 
-		LOGGER_NOTICE_FMT("_pidCoeff KI: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kI]);
-		return _pidData.pidCoefficient[pidCoeffi_e::kI];
+		LOGGER_NOTICE_FMT("_pidCoeff KI: %.3f", _pidData.pidCoefficient[pidCoefficient::kI]);
+		return _pidData.pidCoefficient[pidCoefficient::kI];
 
 	LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of getI -------------------------------------------*/
@@ -271,8 +265,8 @@ public:
 	{
 	LOGGER_NOTICE("Enter....");
 
-		LOGGER_NOTICE_FMT("_pidCoeff KD: %.3f", _pidData.pidCoefficient[pidCoeffi_e::kD]);
-		return _pidData.pidCoefficient[pidCoeffi_e::kD];
+		LOGGER_NOTICE_FMT("_pidCoeff KD: %.3f", _pidData.pidCoefficient[pidCoefficient::kD]);
+		return _pidData.pidCoefficient[pidCoefficient::kD];
 
 	LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of getD -------------------------------------------*/
@@ -281,8 +275,8 @@ public:
 	{
 	LOGGER_NOTICE("Enter....");
 
-		LOGGER_NOTICE_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoeffi_e::eF]);
-		return _pidData.pidCoefficient[pidCoeffi_e::eF];
+		LOGGER_NOTICE_FMT("_pidCoeff.EF: %.3f", _pidData.pidCoefficient[pidCoefficient::eF]);
+		return _pidData.pidCoefficient[pidCoefficient::eF];
 
 	LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of getEF ------------------------------------------*/

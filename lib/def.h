@@ -6,12 +6,12 @@
 */
 #pragma once
 
-// typedef enum
-// {
-//     primary = 0,
-//     secondary,
-//     yaw
-// } axisName_e;
+typedef enum
+{
+    primary = 0,
+    secondary,
+    yaw
+} axisName;
 
 typedef enum
 {
@@ -19,4 +19,4 @@ typedef enum
     kI,
     kD,
     eF
-} pidCoeffi_e;
+} pidCoefficient;

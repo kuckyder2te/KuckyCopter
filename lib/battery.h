@@ -11,8 +11,7 @@
 // #define LOCAL_DEBUG
 #include "myLogger.h"
 
-#define PIN_BATTERY 26 
-#define LED_PIN_ALERT 10
+#include "config.h"
 
 typedef struct
 {
