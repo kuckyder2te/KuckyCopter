@@ -20,7 +20,6 @@ extern model_t model;
 
 bool menu = false;
 uint8_t _pidParameter = 0;
-float temp;
 
 void print_pid_menu();
 
@@ -99,132 +98,141 @@ void main_gui(char key)
 
 void pid_gui(char key)
 {
+  static float temp;
+
   switch (toupper(key))
   {
-      case 'L':
-        Serial.print("Pitch Level: ");
-        Serial.println(model.sensorData.pitch);
-        Serial.print("Roll Level: ");
-        Serial.println(model.sensorData.roll);
-        Serial.print("SetPoint: ");
-        Serial.println(model.axisData[axisName::secondary].setpoint);
-        break;
-      case 'W':
-        Serial.print("Error: ");
-        Serial.println(model.axisData[0].pidError);
-        Serial.print("Axis PidError: ");
-        Serial.println(axis->getPidError());
-        break;
-      case 'S':
-        Serial.print("P: ");
-        Serial.println(newPid->getP(), 2);
-        Serial.print("I: ");
-        Serial.println(newPid->getI(), 2);
-        Serial.print("D: ");
-        Serial.println(newPid->getD(), 2);
-        Serial.print("EF: ");
-        Serial.println(newPid->getEF());
-        Serial.print("ExecutionTime:");
-        Serial.println(newPid->getExecutionTime());
-        break;
-      case 'R':
-        Serial.println("Reset");
-        newPid->initPID();
-        break;
-      case 'P':
-        Serial.println("P");
-        _pidParameter = 1;
-        break;
-      case 'I':
-        Serial.println("I");
-        _pidParameter = 2;
-        break;
-      case 'D':
-        Serial.println("D");
-        _pidParameter = 3;
-        break;
-      case 'F':
-        Serial.println("F");
-        _pidParameter = 4;
-        break;
-      case 'E':
-        Serial.println("Enable PID");
-        axis->setState(AxisMotor::state::enablePID);
-        break;
-      case 'A':
-        Serial.println("Disable PID");
-        axis->setState(AxisMotor::state::disablePID);
-        break;
-      case '8':
-        Serial.print("rcX: ");
-        Serial.println(++model.RC_interface.RX_payload.rcRoll); // erst erhöhen und dann schreiben
-        break;
-      case '2':
-        Serial.print("rcX: ");
-        Serial.println(--model.RC_interface.RX_payload.rcRoll);
-        break;
-        
-      case '+':
-      switch (_pidParameter)
-      {
-        case 1:
-          temp = newPid->setP_inc();
-          Serial.print("P: ");
-          Serial.println(temp);
-          break;
-        case 2:
-          temp = newPid->setI_inc();
-          Serial.print("I: ");
-          Serial.println(temp);
-          break;
-        case 3:
-          temp = newPid->setD_inc();
-          Serial.print("D: ");
-          Serial.println(temp);
-          break;
-        case 4:
-          temp = newPid->setEF_inc();
-          Serial.print("EF: ");
-          Serial.println(temp);
-          break;
-      }
-
-    case '-':
-      switch (_pidParameter)
-      {
-        case 1:
-          temp = newPid->setP_dec();
-          Serial.print("P: ");
-          Serial.println(temp);
-          break;
-        case 2:
-          temp = newPid->setI_dec();
-          Serial.print("I: ");
-          Serial.println(temp);
-          break;
-        case 3:
-          temp = newPid->setD_dec();
-          Serial.print("D: ");
-          Serial.println(temp);
-          break;
-        case 4:
-          temp = newPid->setEF_dec();
-          Serial.print("EF: ");
-          Serial.println(temp);
-          break;
-      }    
+  case 'L':
+    Serial.print("Pitch Level: ");
+    Serial.println(model.sensorData.pitch);
+    Serial.print("Roll Level: ");
+    Serial.println(model.sensorData.roll);
+    Serial.print("SetPoint: ");
+    Serial.println(model.axisData[axisName::secondary].setpoint);
+    break;
+  case 'W':
+    Serial.print("Error: ");
+    Serial.println(model.axisData[0].pidError);
+    Serial.print("Axis PidError: ");
+    Serial.println(axis->getPidError());
+    break;
+  case 'S':
+    Serial.print("P: ");
+    Serial.println(newPid->getP(), 2);
+    Serial.print("I: ");
+    Serial.println(newPid->getI(), 2);
+    Serial.print("D: ");
+    Serial.println(newPid->getD(), 2);
+    Serial.print("EF: ");
+    Serial.println(newPid->getEF());
+    Serial.print("ExecutionTime:");
+    Serial.println(newPid->getExecutionTime());
+    break;
+  case 'R':
+    Serial.println("Reset");
+    newPid->initPID();
+    break;
+  case 'P':
+    Serial.println("Parameter P is selected");
+    _pidParameter = 1;
+    break;
+  case 'I':
+    Serial.println("Parameter I is selected");
+    _pidParameter = 2;
+    break;
+  case 'D':
+    Serial.println("Parameter D is selected");
+    _pidParameter = 3;
+    break;
+  case 'F':
+    Serial.println("Parameter eF is selected");
+    _pidParameter = 4;
+    break;
+  case 'E':
+    Serial.println("Enable PID");
+    axis->setState(AxisMotor::state::enablePID);
+    break;
+  case 'A':
+    Serial.println("Disable PID");
+    axis->setState(AxisMotor::state::disablePID);
+    break;
+  case '8':
+    Serial.print("rcX: ");
+    Serial.println(++model.RC_interface.RX_payload.rcRoll); // erst erhöhen und dann schreiben
+    break;
+  case '2':
+    Serial.print("rcX: ");
+    Serial.println(--model.RC_interface.RX_payload.rcRoll);
+    break;
+  case '+':
+    switch (_pidParameter)
+    {
+    case 1:
+      temp = newPid->getP();
+      newPid->setP(temp += 0.001);
+      Serial.print("kP: ");
+      Serial.println(temp, 4);
       break;
-      
-      case ' ':
-        axis->setState(AxisMotor::state::off);
-        break;
-      case 'M':
-        print_main_menu();
-        menu = false;
-        break;
-      case '?':
-        print_pid_menu();
-        break;
+    case 2:
+      temp = newPid->getI();
+      newPid->setI(temp += 0.0001);
+      Serial.print("kI: ");
+      Serial.println(temp, 4);
+      break;
+    case 3:
+      temp = newPid->getD();
+      newPid->setD(temp += 0.0001);
+      Serial.print("kD: ");
+      Serial.println(temp, 4);
+      break;
+    case 4:
+       temp = newPid->getEF();
+      newPid->setEF(temp += 1);
+      Serial.print("eF: ");
+      Serial.println(temp, 4);
+     break;
+    } // end of switch
+
+  case '-':
+    switch (_pidParameter)
+    {
+    case 1:
+      temp = newPid->getP();
+      newPid->setP(temp -= 0.001);
+      Serial.print("kP: ");
+      Serial.println(temp, 4);
+      break;
+    case 2:
+      temp = newPid->getI();
+      newPid->setI(temp -= 0.001);
+      Serial.print("kI: ");
+      Serial.println(temp, 4);
+      break;
+    case 3:
+      temp = newPid->getD();
+      newPid->setD(temp -= 0.001);
+      Serial.print("kD: ");
+      Serial.println(temp, 4);
+      break;
+    case 4:
+      temp = newPid->getEF();
+      newPid->setEF(temp -= 0.001);
+      Serial.print("eF: ");
+      Serial.println(temp, 4);
+      break;
+    }
+    break;
+
+  case ' ':
+    axis->setState(AxisMotor::state::off);
+    break;
+  case 'M':
+    print_main_menu();
+    menu = false;
+    break;
+  case '?':
+    print_pid_menu();
+    break;
   }
 } /*------------------------- end of pid_gui ---------------------------------------------------*/
 
