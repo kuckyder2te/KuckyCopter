@@ -19,12 +19,8 @@ Sensor *sensor;
 extern model_t model;
 
 bool menu = false;
-
 uint8_t _pidParameter = 0;
-float testP = 0.1;
-float testI = 0;
-float testD = 0;
-float testEF = 50;
+float temp;
 
 void print_pid_menu();
 
@@ -171,64 +167,54 @@ void pid_gui(char key)
       case '+':
       switch (_pidParameter)
       {
-      case 1:
-        testP += 0.001;
-        newPid->setP(testP);
-        Serial.print("P: ");
-        Serial.println(testP, 2);
-        break;
-
-      case 2:
-        testI += 0.0001;
-        newPid->setI(testI);
-        Serial.print("I: ");
-        Serial.println(testI, 2);
-        break;
-      case 3:
-        testD += 0.0001;
-        newPid->setD(testD);
-        Serial.print("D: ");
-        Serial.println(testD), 2;
-        break;
-      case 4:
-        testEF += 1;
-        newPid->setEF(testEF);
-        Serial.print("ExFreq: ");
-        Serial.println(testEF, 0);
-        break;
+        case 1:
+          temp = newPid->setP_inc();
+          Serial.print("P: ");
+          Serial.println(temp);
+          break;
+        case 2:
+          temp = newPid->setI_inc();
+          Serial.print("I: ");
+          Serial.println(temp);
+          break;
+        case 3:
+          temp = newPid->setD_inc();
+          Serial.print("D: ");
+          Serial.println(temp);
+          break;
+        case 4:
+          temp = newPid->setEF_inc();
+          Serial.print("EF: ");
+          Serial.println(temp);
+          break;
       }
 
     case '-':
       switch (_pidParameter)
       {
-      case 1:
-        testP -= 0.001;
-        newPid->setP(testP);
-        Serial.print("P: ");
-        Serial.println(testP, 2);
-        break;
-
-      case 2:
-        testI -= 0.0001;
-        newPid->setI(testI);
-        Serial.print("I: ");
-        Serial.println(testI, 2);
-        break;
-      case 3:
-        testD -= 0.0001;
-        newPid->setD(testD);
-        Serial.print("D: ");
-        Serial.println(testD), 2;
-        break;
-      case 4:
-        testEF -= 1;
-        newPid->setEF(testEF);
-        Serial.print("ExFreq: ");
-        Serial.println(testEF, 0);
-        break;
-      }
-      
+        case 1:
+          temp = newPid->setP_dec();
+          Serial.print("P: ");
+          Serial.println(temp);
+          break;
+        case 2:
+          temp = newPid->setI_dec();
+          Serial.print("I: ");
+          Serial.println(temp);
+          break;
+        case 3:
+          temp = newPid->setD_dec();
+          Serial.print("D: ");
+          Serial.println(temp);
+          break;
+        case 4:
+          temp = newPid->setEF_dec();
+          Serial.print("EF: ");
+          Serial.println(temp);
+          break;
+      }    
       break;
+      
       case ' ':
         axis->setState(AxisMotor::state::off);
         break;
@@ -272,7 +258,7 @@ void test_setup()
 
   sensor = new Sensor("Sensor");
   sensor->setModel(&model.sensorData)->begin();
-  axis = new AxisMotor("Primary axismotor");
+  axis = new AxisMotor("Secondary axismotor");
   model.axisData[0].feedback = &model.sensorData.roll; // must be before setNodel because of feedback Pointer
   model.axisData[0].rcX = &model.RC_interface.RX_payload.rcRoll;
   model.axisData[0].rcY = &model.RC_interface.RX_payload.rcPitch;

@@ -43,6 +43,7 @@ private:
 	bool _isEnabled;
 	String _ParentName;
 	uint16_t _eepromAddress;
+	float temp;
 
 protected:
 	float RC_SP;
@@ -129,7 +130,8 @@ public:
 
 	void initPID(){
 		LOGGER_NOTICE("Enter..");
-		saveParameters(&initPid);
+		//saveParameters(&initPid);
+		saveParameters();
 		loadParameters();
 		LOGGER_NOTICE(".. leave");
 	} /*-------------------------------- end of initPID -----------------------------------------*/
@@ -233,6 +235,60 @@ public:
 
 	LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of setEF -------------------------------------------*/
+
+	float setP_inc(float _temp){
+		//temp = getP();
+		// temp =+ 0.001;
+		// Serial.print("Px: ");
+        // Serial.println(temp, 4);
+		return temp;
+	} /*-------------------------------- end of setP_inc ----------------------------------------*/
+
+	float setI_inc(float inc = 0.0001){
+		temp = getI();
+		setI(temp =+ inc);
+		Serial.print("Ix: ");
+        Serial.println(temp, 4);
+		return temp;
+	} /*-------------------------------- end of setI_inc ----------------------------------------*/
+
+	float setD_inc(float inc = 0.0001){
+		temp = getD();
+		setD(temp =+ inc);
+		return temp;
+	} /*-------------------------------- end of setD_inc ----------------------------------------*/
+
+	float setEF_inc(float inc = 1){
+		temp = getEF();
+		setEF(temp =+ inc);
+		return temp;
+	} /*-------------------------------- end of setEF_dec ---------------------------------------*/
+	
+		float setP_dec(float inc = 0.001){
+		temp = getP();
+		setP(temp =- inc);
+	
+		return temp;
+
+	} /*-------------------------------- end of setP_dec ----------------------------------------*/
+
+	float setI_dec(float inc = 0.0001){
+		temp = getI();
+		setI(temp =- inc);
+		return temp;
+	} /*-------------------------------- end of setI_dec ----------------------------------------*/
+
+	float setD_dec(float inc = 0.0001){
+		temp = getD();
+		setD(temp =- inc);
+		return temp;
+	} /*-------------------------------- end of setD_dec ----------------------------------------*/
+
+	float setEF_dec(float inc = 1){
+		temp = getEF();
+		setEF(temp =- inc);
+		return temp;
+	} /*-------------------------------- end of setEF_dec ---------------------------------------*/
 
 	float getExecutionTime()
 	{
