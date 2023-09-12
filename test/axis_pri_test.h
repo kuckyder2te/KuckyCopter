@@ -169,19 +169,19 @@ void pid_gui(char key)
     {
     case 1:
       temp = newPid->getP();
-      newPid->setP(temp += 0.001);
+      newPid->setP(temp += DOT_3);
       Serial.print("kP: ");
       Serial.println(temp, 4);
       break;
     case 2:
       temp = newPid->getI();
-      newPid->setI(temp += 0.0001);
+      newPid->setI(temp += DOT_4);
       Serial.print("kI: ");
       Serial.println(temp, 4);
       break;
     case 3:
       temp = newPid->getD();
-      newPid->setD(temp += 0.0001);
+      newPid->setD(temp += DOT_4);
       Serial.print("kD: ");
       Serial.println(temp, 4);
       break;
@@ -199,25 +199,25 @@ void pid_gui(char key)
     {
     case 1:
       temp = newPid->getP();
-      newPid->setP(temp -= 0.001);
+      newPid->setP(temp -= DOT_3);
       Serial.print("kP: ");
       Serial.println(temp, 4);
       break;
     case 2:
       temp = newPid->getI();
-      newPid->setI(temp -= 0.001);
+      newPid->setI(temp -= DOT_4);
       Serial.print("kI: ");
       Serial.println(temp, 4);
       break;
     case 3:
       temp = newPid->getD();
-      newPid->setD(temp -= 0.001);
+      newPid->setD(temp -= DOT_4);
       Serial.print("kD: ");
       Serial.println(temp, 4);
       break;
     case 4:
       temp = newPid->getEF();
-      newPid->setEF(temp -= 0.001);
+      newPid->setEF(temp -= 1);
       Serial.print("eF: ");
       Serial.println(temp, 4);
       break;

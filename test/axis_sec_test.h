@@ -169,28 +169,28 @@ void pid_gui(char key)
     {
     case 1:
       temp = newPid->getP();
-      newPid->setP(temp += 0.001);
+      newPid->setP(temp += DOT_3);
       Serial.print("kP: ");
       Serial.println(temp, 4);
       break;
     case 2:
       temp = newPid->getI();
-      newPid->setI(temp += 0.0001);
+      newPid->setI(temp += DOT_4);
       Serial.print("kI: ");
       Serial.println(temp, 4);
       break;
     case 3:
       temp = newPid->getD();
-      newPid->setD(temp += 0.0001);
+      newPid->setD(temp += DOT_4);
       Serial.print("kD: ");
       Serial.println(temp, 4);
       break;
     case 4:
-       temp = newPid->getEF();
+      temp = newPid->getEF();
       newPid->setEF(temp += 1);
       Serial.print("eF: ");
       Serial.println(temp, 4);
-     break;
+      break;
     } // end of switch
 
   case '-':
@@ -198,25 +198,25 @@ void pid_gui(char key)
     {
     case 1:
       temp = newPid->getP();
-      newPid->setP(temp -= 0.001);
+      newPid->setP(temp -= DOT_3);
       Serial.print("kP: ");
       Serial.println(temp, 4);
       break;
     case 2:
       temp = newPid->getI();
-      newPid->setI(temp -= 0.001);
+      newPid->setI(temp -= DOT_4);
       Serial.print("kI: ");
       Serial.println(temp, 4);
       break;
     case 3:
       temp = newPid->getD();
-      newPid->setD(temp -= 0.001);
+      newPid->setD(temp -= DOT_4);
       Serial.print("kD: ");
       Serial.println(temp, 4);
       break;
     case 4:
       temp = newPid->getEF();
-      newPid->setEF(temp -= 0.001);
+      newPid->setEF(temp -= 1);
       Serial.print("eF: ");
       Serial.println(temp, 4);
       break;
@@ -261,7 +261,7 @@ void print_pid_menu()
 
 void test_setup()
 {
-  delay(2000); // for switching terminal on
+  delay(1000); // for switching terminal on
   LOGGER_VERBOSE("Enter....");
 
   sensor = new Sensor("Sensor");
@@ -299,4 +299,4 @@ void test_loop()
   monitor->update();
   sensor->enter();
 }
-/*------------------------ end of axis pri test programm ----------------------------------------*/
+/*------------------------ end of axis sec test programm ----------------------------------------*/

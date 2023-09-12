@@ -6,7 +6,8 @@
         "type_traits": "cpp",
         "map": "cpp",
         "system_error": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "random": "cpp"
     },
     "cmake.configureOnOpen": false
 }
