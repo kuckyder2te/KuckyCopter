@@ -97,8 +97,6 @@ public:
             int16_t err = _newPID->step(*_sp, *_fb);                        
             //*_error = _newPID->step(*_sp, *_fb); ///< Calculate PID error
             *_error = err;
-            //Serial.print("sp:");Serial.print(*_sp);Serial.print("fb:");Serial.print(*_fb);
-            //Serial.print("err:");Serial.print(err);
             _lastMillis = millis();
         }
 

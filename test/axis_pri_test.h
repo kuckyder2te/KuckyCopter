@@ -112,9 +112,7 @@ void pid_gui(char key)
     break;
   case 'W':
     Serial.print("Error: ");
-    Serial.println(model.axisData[0].pidError);
-    Serial.print("Axis PidError: ");
-    Serial.println(axis->getPidError());
+    Serial.println(model.axisData[axisName::primary].pidError);
     break;
   case 'S':
     Serial.print("P: ");
@@ -169,19 +167,19 @@ void pid_gui(char key)
     {
     case 1:
       temp = newPid->getP();
-      newPid->setP(temp += DOT_3);
+      newPid->setP(temp += DOT_1);
       Serial.print("kP: ");
       Serial.println(temp, 4);
       break;
     case 2:
       temp = newPid->getI();
-      newPid->setI(temp += DOT_4);
+      newPid->setI(temp += DOT_2);
       Serial.print("kI: ");
       Serial.println(temp, 4);
       break;
     case 3:
       temp = newPid->getD();
-      newPid->setD(temp += DOT_4);
+      newPid->setD(temp += DOT_2);
       Serial.print("kD: ");
       Serial.println(temp, 4);
       break;
@@ -191,7 +189,8 @@ void pid_gui(char key)
       Serial.print("eF: ");
       Serial.println(temp, 4);
       break;
-    } // end of switch
+    }     // end of switch
+    newPid->saveParameters();
     break;
 
   case '-':
@@ -199,19 +198,19 @@ void pid_gui(char key)
     {
     case 1:
       temp = newPid->getP();
-      newPid->setP(temp -= DOT_3);
+      newPid->setP(temp -= DOT_1);
       Serial.print("kP: ");
       Serial.println(temp, 4);
       break;
     case 2:
       temp = newPid->getI();
-      newPid->setI(temp -= DOT_4);
+      newPid->setI(temp -= DOT_2);
       Serial.print("kI: ");
       Serial.println(temp, 4);
       break;
     case 3:
       temp = newPid->getD();
-      newPid->setD(temp -= DOT_4);
+      newPid->setD(temp -= DOT_2);
       Serial.print("kD: ");
       Serial.println(temp, 4);
       break;
@@ -268,9 +267,9 @@ void test_setup()
   sensor = new Sensor("Sensor");
   sensor->setModel(&model.sensorData)->begin();
   axis = new AxisMotor("Primary axismotor");
-  model.axisData[0].feedback = &model.sensorData.roll; // must be before setNodel because of feedback Pointer
-  model.axisData[0].rcX = &model.RC_interface.RX_payload.rcRoll;
-  model.axisData[0].rcY = &model.RC_interface.RX_payload.rcPitch;
+  model.axisData[axisName::primary].feedback = &model.sensorData.roll; // must be before setModel because of feedback Pointer
+  model.axisData[axisName::primary].rcX = &model.RC_interface.RX_payload.rcRoll;
+  model.axisData[axisName::primary].rcY = &model.RC_interface.RX_payload.rcPitch;
   axis->setModel(&model.axisData[axisName::primary])->begin();
   axis->initMotorOrdered(PIN_MOTOR_FL)->initMotorOrdered(PIN_MOTOR_BR);
   newPid = axis->getPid();

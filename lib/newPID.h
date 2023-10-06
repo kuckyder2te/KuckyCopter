@@ -33,7 +33,7 @@ typedef struct
 	bool modified;			 // 1   muss gesetzt werden wenn die Parameter manuell geändert wurden
 } pidData_t;
 
-static pidData_t initPid = {{1.11f, 2.22f, 3.33f, 50.0f}, 8, false, false};
+static pidData_t initPid = {{1.0f, 0.0f, 0.0f, 50.0f}, 8, false, false};
 
 class NewPID : public FastPID
 {
@@ -130,8 +130,8 @@ public:
 
 	void initPID(){
 		LOGGER_NOTICE("Enter..");
-		//saveParameters(&initPid);
-		saveParameters();
+		saveParameters(&initPid);
+		//saveParameters();
 		loadParameters();
 		LOGGER_NOTICE(".. leave");
 	} /*-------------------------------- end of initPID -----------------------------------------*/
