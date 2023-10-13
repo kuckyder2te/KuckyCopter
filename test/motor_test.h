@@ -5,6 +5,9 @@
 #include "..\lib\axisMotor.h"
 
 Motor *motor[4];
+extern HardwareSerial *TestOutput;
+
+
 void test_setup()
 {
   LOGGER_VERBOSE("Enter....");
@@ -18,17 +21,17 @@ void test_setup()
     motor[i]->setup();
   }
 
-  if (Serial.available())
+  if (TestOutput->available())
   {
-    if (!Serial.read())
+    if (!TestOutput->read())
     {
-      Serial.println("----------- Motor setup menu -------------------");
-      Serial.println("Key 1- 4 choose the motor.");
-      Serial.println("Key 0 will stop all motors.");
-      Serial.println("Key (+) or (-) increment or decrement the speed.");
-      Serial.println("Key X set motorstate to off.");
-      Serial.println("Press any key to continue.");
-      Serial.println("------------------------------------------------");
+      TestOutput->println("----------- Motor setup menu -------------------");
+      TestOutput->println("Key 1- 4 choose the motor.");
+      TestOutput->println("Key 0 will stop all motors.");
+      TestOutput->println("Key (+) or (-) increment or decrement the speed.");
+      TestOutput->println("Key X set motorstate to off.");
+      TestOutput->println("Press any key to continue.");
+      TestOutput->println("------------------------------------------------");
     }
   }
 }
@@ -44,9 +47,9 @@ void test_loop()
   if (motor[0]->isArmed() && motor[3]->isArmed())
   {
 
-    if (Serial.available())
+    if (TestOutput->available())
     {
-      char key = Serial.read(); // z.B. Key 1 ~ 49  ~ motor[key-'1'] = motor[0]
+      char key = TestOutput->read(); // z.B. Key 1 ~ 49  ~ motor[key-'1'] = motor[0]
       switch (key)
       {
       case '1':
@@ -94,9 +97,9 @@ void test_loop()
   }
   else
   {
-    if (Serial.available())
+    if (TestOutput->available())
     {
-      char key = Serial.read();
+      char key = TestOutput->read();
       switch (key)
       {
       case 'a':

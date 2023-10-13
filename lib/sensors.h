@@ -124,8 +124,8 @@ public:
             LOGGER_VERBOSE("_mpu9250.update");
 
             _sensorData->yaw = _mpu9250.getYaw();
-            _sensorData->pitch = _mpu9250.getPitch();       // For more range
-            _sensorData->roll = _mpu9250.getRoll();         // For more range
+            _sensorData->pitch = _mpu9250.getPitch();       // * 200 For more range
+            _sensorData->roll = _mpu9250.getRoll();         // * 200 For more range
 
             display_imu_data();
 

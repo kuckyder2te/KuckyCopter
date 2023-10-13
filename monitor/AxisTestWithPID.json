@@ -1,0 +1,152 @@
+{
+    "frameEnd": "",
+    "frameStart": "",
+    "groups": [
+        {
+            "datasets": [
+                {
+                    "alarm": 100,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 100,
+                    "min": 0,
+                    "title": "Throttle",
+                    "units": "%",
+                    "value": "%1",
+                    "widget": ""
+                },
+                {
+                    "alarm": 100,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 100,
+                    "min": 0,
+                    "title": "Motor 1",
+                    "units": "",
+                    "value": "%2",
+                    "widget": ""
+                },
+                {
+                    "alarm": 100,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 100,
+                    "min": 0,
+                    "title": "Motor 2",
+                    "units": "",
+                    "value": "%3",
+                    "widget": ""
+                }
+            ],
+            "title": "Leistung",
+            "widget": "multiplot"
+        },
+        {
+            "datasets": [
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Roll",
+                    "units": "",
+                    "value": "%4",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Error",
+                    "units": "",
+                    "value": "%5",
+                    "widget": ""
+                }
+            ],
+            "title": "Position",
+            "widget": "multiplot"
+        },
+        {
+            "datasets": [
+                {
+                    "alarm": 1,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 2,
+                    "min": 0,
+                    "title": "P",
+                    "units": "",
+                    "value": "%6",
+                    "widget": "bar"
+                },
+                {
+                    "alarm": 2,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 2,
+                    "min": 0,
+                    "title": "I",
+                    "units": "",
+                    "value": "%7",
+                    "widget": "bar"
+                },
+                {
+                    "alarm": 2,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 2,
+                    "min": 0,
+                    "title": "D",
+                    "units": "",
+                    "value": "%8",
+                    "widget": "bar"
+                },
+                {
+                    "alarm": 8000,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 8000,
+                    "min": 0,
+                    "title": "Loop time",
+                    "units": "µs",
+                    "value": "%9",
+                    "widget": ""
+                }
+            ],
+            "title": "Regler",
+            "widget": ""
+        }
+    ],
+    "separator": ";",
+    "title": "Axis Test mit PID"
+}

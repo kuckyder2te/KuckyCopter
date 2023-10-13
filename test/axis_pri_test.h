@@ -15,29 +15,34 @@ AxisMotor *axis;
 Monitor *monitor;
 NewPID *newPid;
 Sensor *sensor;
+Motor *motor;
 
+extern HardwareSerial *TestOutput;
 extern model_t model;
 
 bool menu = false;
+bool recorded = false;
+
 uint8_t _pidParameter = 0;
 
 void print_pid_menu();
 
 void print_main_menu()
 {
-  Serial.println("----------- Primary Axis Test setup menu -------");
-  Serial.println("A for arming");
-  Serial.println("S for current State");
-  Serial.println("Key (+) or (-) increment or decrement Power.");
-  Serial.println("I for invertRoll");
-  Serial.println("D disable PID");
-  Serial.println("E enable PID");
-  Serial.println("St(o)p Motor");
-  Serial.println("R for ready (Start Motors)");
-  Serial.println("[SPACE] Power Off");
-  Serial.println("P for PID Menu");
-  Serial.println("? for this Menu");
-  Serial.println("------------------------------------------------");
+  TestOutput->println("----------- Primary Axis Test setup menu -------");
+  TestOutput->println("A for arming");
+  TestOutput->println("S for current State");
+  TestOutput->println("Key (+) or (-) increment or decrement Power.");
+  TestOutput->println("G get resulting power.");
+  TestOutput->println("I for invertRoll");
+  TestOutput->println("D disable PID");
+  TestOutput->println("E enable PID");
+  TestOutput->println("St(o)p Motor");
+  TestOutput->println("R for ready (Start Motors)");
+  TestOutput->println("[SPACE] Power Off");
+  TestOutput->println("P for PID Menu");
+  TestOutput->println("? for this Menu");
+  TestOutput->println("------------------------------------------------");
 }
 
 void main_gui(char key)
@@ -49,38 +54,42 @@ void main_gui(char key)
     axis->setState(AxisMotor::state::arming_start);
     break;
   case 'S':
-    Serial.print("isStandby: ");
-    Serial.println(axis->isStandby());
-    Serial.print("isReady: ");
-    Serial.println(axis->isReady());
-    Serial.print("isDeactivatePID: ");
-    Serial.println(axis->isDeactivatePID());
-    Serial.print("isArmed: ");
-    Serial.println(axis->isArmed());
+    TestOutput->print("isStandby: ");
+    TestOutput->println(axis->isStandby());
+    TestOutput->print("isReady: ");
+    TestOutput->println(axis->isReady());
+    TestOutput->print("isDeactivatePID: ");
+    TestOutput->println(axis->isDeactivatePID());
+    TestOutput->print("isArmed: ");
+    TestOutput->println(axis->isArmed());
     break;
+  case 'G':
+    TestOutput->println(motor->getResultingPower());
+    break;
+    
   case '+':
     power++;
-    Serial.print("Power: ");
-    Serial.println(power);
+    TestOutput->print("Power: ");
+    TestOutput->println(power);
     axis->setPower(power);
     break;
   case '-':
     if (power > 0)
       power--;
-    Serial.print("Power: ");
-    Serial.println(power);
+    TestOutput->print("Power: ");
+    TestOutput->println(power);
     axis->setPower(power);
     break;
   case 'I':
-    Serial.println("Invert Roll");
+    TestOutput->println("Invert Roll");
     axis->InvertRoll();
     break;
   case 'O':
-    Serial.println("Stop Motor");
+    TestOutput->println("Stop Motor");
     axis->setState(AxisMotor::state::standby);
     break;
   case 'R':
-    Serial.println("Motor Start");
+    TestOutput->println("Motor Start");
     axis->setState(AxisMotor::state::ready);
     break;
   case ' ':
@@ -103,64 +112,71 @@ void pid_gui(char key)
   switch (toupper(key))
   {
   case 'L':
-    Serial.print("Pitch Level: ");
-    Serial.println(model.sensorData.pitch);
-    Serial.print("Roll Level: ");
-    Serial.println(model.sensorData.roll);
-    Serial.print("SetPoint: ");
-    Serial.println(model.axisData[axisName::primary].setpoint);
+    TestOutput->print("Pitch Level: ");
+    TestOutput->println(model.sensorData.pitch);
+    TestOutput->print("Roll Level: ");
+    TestOutput->println(model.sensorData.roll);
+    TestOutput->print("SetPoint: ");
+    TestOutput->println(model.axisData[axisName::primary].setpoint);
     break;
   case 'W':
-    Serial.print("Error: ");
-    Serial.println(model.axisData[axisName::primary].pidError);
+    TestOutput->print("Error: ");
+    TestOutput->println(model.axisData[axisName::primary].pidError);
     break;
   case 'S':
-    Serial.print("P: ");
-    Serial.println(newPid->getP(), 2);
-    Serial.print("I: ");
-    Serial.println(newPid->getI(), 2);
-    Serial.print("D: ");
-    Serial.println(newPid->getD(), 2);
-    Serial.print("EF: ");
-    Serial.println(newPid->getEF());
-    Serial.print("ExecutionTime:");
-    Serial.println(newPid->getExecutionTime());
+    TestOutput->print("P: ");
+    TestOutput->println(newPid->getP(), 2);
+    TestOutput->print("I: ");
+    TestOutput->println(newPid->getI(), 2);
+    TestOutput->print("D: ");
+    TestOutput->println(newPid->getD(), 2);
+    TestOutput->print("EF: ");
+    TestOutput->println(newPid->getEF());
+    TestOutput->print("ExecutionTime:");
+    TestOutput->println(newPid->getExecutionTime());
     break;
   case 'R':
-    Serial.println("Reset");
+    TestOutput->println("Reset");
     newPid->initPID();
     break;
+  case 'O':
+    TestOutput->print("Throttle is selected. Power= ");TestOutput->print(axis->getPower());
+    _pidParameter = 5;
+    break;  
   case 'P':
-    Serial.println("Parameter P is selected");
+    TestOutput->print("Parameter P is selected. P= ");TestOutput->print(newPid->getP());
     _pidParameter = 1;
     break;
   case 'I':
-    Serial.println("Parameter I is selected");
+    TestOutput->println("Parameter I is selected. I= ");TestOutput->print(newPid->getI());
     _pidParameter = 2;
     break;
   case 'D':
-    Serial.println("Parameter D is selected");
+    TestOutput->println("Parameter D is selected. D= ");TestOutput->print(newPid->getD());
     _pidParameter = 3;
     break;
   case 'F':
-    Serial.println("Parameter eF is selected");
+    TestOutput->println("Parameter eF is selected");
     _pidParameter = 4;
     break;
   case 'E':
-    Serial.println("Enable PID");
+    TestOutput->println("Enable PID");
     axis->setState(AxisMotor::state::enablePID);
     break;
   case 'A':
-    Serial.println("Disable PID");
+    TestOutput->println("Disable PID");
     axis->setState(AxisMotor::state::disablePID);
     break;
+  case 'C':
+    recorded = !recorded;
+    break;
   case '8':
-    Serial.print("rcX: ");
-    Serial.println(++model.RC_interface.RX_payload.rcRoll); // erst erhöhen und dann schreiben
+    TestOutput->print("rcX: ");
+    TestOutput->println(++model.RC_interface.RX_payload.rcRoll); // erst erhöhen und dann schreiben
     break;
   case '2':
-    Serial.print("rcX: ");
-    Serial.println(--model.RC_interface.RX_payload.rcRoll);
+    TestOutput->print("rcX: ");
+    TestOutput->println(--model.RC_interface.RX_payload.rcRoll);
     break;
   case '+':
     switch (_pidParameter)
@@ -168,26 +184,32 @@ void pid_gui(char key)
     case 1:
       temp = newPid->getP();
       newPid->setP(temp += DOT_1);
-      Serial.print("kP: ");
-      Serial.println(temp, 4);
+      TestOutput->print("kP: ");
+      TestOutput->println(temp, 4);
       break;
     case 2:
       temp = newPid->getI();
       newPid->setI(temp += DOT_2);
-      Serial.print("kI: ");
-      Serial.println(temp, 4);
+      TestOutput->print("kI: ");
+      TestOutput->println(temp, 4);
       break;
     case 3:
       temp = newPid->getD();
       newPid->setD(temp += DOT_2);
-      Serial.print("kD: ");
-      Serial.println(temp, 4);
+      TestOutput->print("kD: ");
+      TestOutput->println(temp, 4);
       break;
     case 4:
       temp = newPid->getEF();
       newPid->setEF(temp += 1);
-      Serial.print("eF: ");
-      Serial.println(temp, 4);
+      TestOutput->print("eF: ");
+      TestOutput->println(temp, 4);
+      break;
+    case 5:
+      temp = axis->getPower();
+      axis->setPower(++temp);
+      TestOutput->print("Throttle = ");
+      TestOutput->println(temp);
       break;
     }     // end of switch
     newPid->saveParameters();
@@ -199,26 +221,32 @@ void pid_gui(char key)
     case 1:
       temp = newPid->getP();
       newPid->setP(temp -= DOT_1);
-      Serial.print("kP: ");
-      Serial.println(temp, 4);
+      TestOutput->print("kP: ");
+      TestOutput->println(temp, 4);
       break;
     case 2:
       temp = newPid->getI();
       newPid->setI(temp -= DOT_2);
-      Serial.print("kI: ");
-      Serial.println(temp, 4);
+      TestOutput->print("kI: ");
+      TestOutput->println(temp, 4);
       break;
     case 3:
       temp = newPid->getD();
       newPid->setD(temp -= DOT_2);
-      Serial.print("kD: ");
-      Serial.println(temp, 4);
+      TestOutput->print("kD: ");
+      TestOutput->println(temp, 4);
       break;
     case 4:
       temp = newPid->getEF();
       newPid->setEF(temp -= 1);
-      Serial.print("eF: ");
-      Serial.println(temp, 4);
+      TestOutput->print("eF: ");
+      TestOutput->println(temp, 4);
+      break;
+    case 5:
+      temp = axis->getPower();
+      axis->setPower(--temp);
+      TestOutput->print("Throttle = ");
+      TestOutput->println(temp);
       break;
     }
     break;
@@ -238,25 +266,27 @@ void pid_gui(char key)
 
 void print_pid_menu()
 {
-  Serial.println("----------- Primary Axis Test PID Menu ---------");
-  Serial.println(" P - kP");
-  Serial.println(" I - kI");
-  Serial.println(" D - kD");
-  Serial.println(" F - ef");
-  Serial.println(" W - Show Error");
-  Serial.println(" E - enable PID");
-  Serial.println(" A - disable PID");
-  Serial.println("(+) - increment PID coefftient");
-  Serial.println("(-) - decrement PID coefftient");
-  Serial.println(" 8 - increment setPoint");
-  Serial.println(" 2 - decrement setPoint");
-  Serial.println("[SPACE] Power Off");
-  Serial.println(" R - Reset/Init PID");
-  Serial.println(" S - Show PID-Values");
-  Serial.println(" L - Show IMU Levels");
-  Serial.println(" M for Main menu");
-  Serial.println(" ? for this Menu");
-  Serial.println("------------------------------------------------");
+  TestOutput->println("----------- Primary Axis Test PID Menu ---------");
+  TestOutput->println(" P - kP");
+  TestOutput->println(" I - kI");
+  TestOutput->println(" D - kD");
+  TestOutput->println(" F - ef");
+  TestOutput->println(" W - Show Error");
+  TestOutput->println(" E - enable PID");
+  TestOutput->println(" A - disable PID");
+  TestOutput->println("(+) - increment PID coefftient");
+  TestOutput->println("(-) - decrement PID coefftient");
+  TestOutput->println(" 8 - increment setPoint");
+  TestOutput->println(" 2 - decrement setPoint");
+  TestOutput->println("[SPACE] Power Off");
+  TestOutput->println(" R - Reset/Init PID");
+  TestOutput->println(" O - for ready (Start Motors)");
+  TestOutput->println(" S - Show PID-Values");
+  TestOutput->println(" L - Show IMU Levels");
+  TestOutput->println(" M for Main menu");
+  TestOutput->println(" Re(c)ord on/off");
+  TestOutput->println(" ? for this Menu");
+  TestOutput->println("------------------------------------------------");
 } /*------------------------- end of print_pid_menu ----------------------------------------------*/
 
 void test_setup()
@@ -281,9 +311,42 @@ void test_setup()
 
 void test_loop()
 {
-  if (Serial.available())
+  unsigned long _lastLooptime = micros();
+  static unsigned long _lastMillis = millis();
+  if(recorded&&(millis()-_lastMillis>100)){
+    _lastMillis = millis();    
+    TestOutput->print("/*");
+    // Throttle
+    TestOutput->print(model.axisData[axisName::primary].power);
+    TestOutput->print(";");
+    // Motor 1 Power
+    TestOutput->print(axis->getMotorPower(false));
+    TestOutput->print(";");
+    // Motor 2 Power
+    TestOutput->print(axis->getMotorPower(true));
+    TestOutput->print(";");
+    // IMU Roll
+    TestOutput->print(model.sensorData.roll);
+    TestOutput->print(";");
+    // Error
+    TestOutput->print(model.axisData[axisName::primary].pidError);
+    TestOutput->print(";");
+    // P
+    TestOutput->print(newPid->getP());
+    TestOutput->print(";");
+    // I
+    TestOutput->print(newPid->getI());
+    TestOutput->print(";");
+    // D
+    TestOutput->print(newPid->getD());
+    TestOutput->print(";");
+    // LoopTime
+    TestOutput->print(model.looptime);
+    TestOutput->println("*/");
+  }
+  if (TestOutput->available())
   {
-    char key = Serial.read();
+    char key = TestOutput->read();
     switch (menu)
     {
     case false:
@@ -298,5 +361,6 @@ void test_loop()
   axis->update();
   monitor->update();
   sensor->enter();
+  model.looptime = micros()-_lastLooptime;
 }
 /*------------------------ end of axis pri test programm ----------------------------------------*/

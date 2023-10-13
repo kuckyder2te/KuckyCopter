@@ -169,9 +169,22 @@ public:
 	uint16_t getPower() const
 	{
 		LOGGER_VERBOSE("Enter....");
-		return _power;
+		return _power;	
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of getPower -------------------------------------------------*/
+
+	String getResultingPower() const
+	{
+		char buffer1[20];
+		char buffer2[20];
+		LOGGER_VERBOSE("Enter....");
+		String One = "Resultingpower ";
+		String ResultingPower = "Resultingpower " + _resultingPower;
+		String Pin = " on Pin " +_pin;
+		String Output =ResultingPower +Pin;
+		return Output;	
+		LOGGER_VERBOSE("....leave");
+	} /*-------------------------- end of getResultingPower --------------------------------------*/
 
 	uint16_t setPower(int16_t power)
 	{
@@ -194,7 +207,9 @@ public:
 		LOGGER_VERBOSE("....leave");
 		return _power;
 	} /*-------------------------- end of setPower ---------------------------------------------*/
-
+	uint16_t getPower(){
+		return _power;
+	}
 	uint8_t getMaxPower() const
 	{
 		LOGGER_VERBOSE("Enter....");

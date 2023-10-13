@@ -8,6 +8,10 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 
+#include <stdio.h>
+#include "pico/stdlib.h"
+#include "hardware/adc.h"
+
 // #define LOCAL_DEBUG
 #include "myLogger.h"
 
@@ -32,8 +36,6 @@ public:
         LOGGER_VERBOSE("....leave");
     }
 
-    virtual ~Battery() {}
-
     Battery *setModel(batteryData_t *_model)
     {
         LOGGER_VERBOSE("Enter setModel....");
@@ -49,8 +51,12 @@ public:
     {
         LOGGER_VERBOSE("Enter begin....");
 
-        pinMode(LED_PIN_ALERT, OUTPUT);
-        digitalWrite(LED_PIN_ALERT, LOW);
+            stdio_init_all();
+            adc_init();
+            adc_gpio_init(PIN_BATTERY);
+            adc_select_input(0);
+            pinMode(LED_PIN_ALERT, OUTPUT);
+            digitalWrite(LED_PIN_ALERT, LOW);
 
         LOGGER_VERBOSE("....leave");
     }
@@ -59,7 +65,11 @@ public:
     {
         LOGGER_VERBOSE("Enter update....");
 
-        _batteryData->battery_State = analogRead(PIN_BATTERY);
+            //_batteryData->battery_State = analogRead(PIN_BATTERY);
+            uint16_t result = adc_read();
+            float conversion_factor = 3.3f / (1 << 12);
+            _batteryData->battery_State = result * conversion_factor;
+
         LOGGER_NOTICE_FMT("Battery state = %i", _batteryData->battery_State);
 
         LOGGER_VERBOSE("....leave");

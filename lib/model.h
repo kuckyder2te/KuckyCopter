@@ -24,4 +24,5 @@ typedef struct
     AxisBase::axisData_t yawData;
     yaw_t yaw;
     batteryData_t batteryData;
+    uint32_t looptime;
 } model_t;

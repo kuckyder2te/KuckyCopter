@@ -36,7 +36,11 @@
 #include "..\lib\monitor.h"
 
 model_t model;
-// UART Serial2(PIN_BT_TX, PIN_BT_RX);
+//UART Serial2(PIN_BT_TX, PIN_BT_RX);
+
+HardwareSerial *TestOutput = &Serial2;
+HardwareSerial *DebugOutput = &Serial;
+
 
 #ifdef _PID_ADJUST
 PID_adjust *_pid_adjust;
@@ -129,6 +133,7 @@ void main_loop()
 
 void base_setup()
 {
+  delay(5000);
   pinMode(PIN_ESC_ON, OUTPUT);
   digitalWrite(PIN_ESC_ON, HIGH); // MainPower für ESC´s ausgeschaltet,
                                   // will sagen, BC547 schaltet nicht durch, da die Basis HIGH ist
@@ -138,13 +143,13 @@ void base_setup()
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
-  Serial.begin(COM_SPEED);
-  Serial2.begin(BT_SPEED);
-  Serial.println("Serial COM OK");
-  Serial2.println("BT COM OK ");
-  Serial2.print(__DATE__);
-  Serial2.print(" ");
-  Serial2.println(__TIME__);
+  DebugOutput->begin(COM_SPEED);
+  TestOutput->begin(BT_SPEED);
+  DebugOutput->println("Serial COM OK");
+  TestOutput->println("BT COM OK ");
+  TestOutput->print(__DATE__);
+  TestOutput->print(" ");
+  TestOutput->println(__TIME__);
 
 #ifdef _DEBUG_
   Logger::setOutputFunction(&localLogger);
@@ -156,18 +161,18 @@ void base_setup()
   model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
   model.yaw.axisData[1] = &model.axisData[1];
 
-  Serial.println("********************************");
-  Serial.println("*       KuCo Phantom 1         *");
-  Serial.println("*                              *");
-  Serial.print("*     ");
-  Serial.print(__DATE__);
-  Serial.print(" ");
-  Serial.print(__TIME__);
-  Serial.println("     *");
-  Serial.print("*    EEPROM PID Address   "); /*Serial.print(PID_EEPROM_ADRRESS);*/
-  Serial.println("     *");
-  Serial.println("********************************");
-  Serial.flush();
+  DebugOutput->println("********************************");
+  DebugOutput->println("*       KuCo Phantom 1         *");
+  DebugOutput->println("*                              *");
+  DebugOutput->print("*     ");
+  DebugOutput->print(__DATE__);
+  DebugOutput->print(" ");
+  DebugOutput->print(__TIME__);
+  DebugOutput->println("     *");
+  DebugOutput->print("*    EEPROM PID Address   "); /*DebugOutput->print(PID_EEPROM_ADRRESS);*/
+  DebugOutput->println("     *");
+  DebugOutput->println("********************************");
+  DebugOutput->flush();
   Wire.begin();
 
   EEPROM.begin(512);

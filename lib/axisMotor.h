@@ -145,19 +145,17 @@ public:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"deactivate PID %s ", this->getName().c_str());
 			AxisBase::_newPID->disablePID();
 			break;
-
 		case enablePID:
 			/* Activate the PID controller from the MotorAxis with the current coefficients. */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"activate PID %s ", this->getName().c_str());
 			AxisBase::_newPID->enablePID();
+			_state = ready;
 			break;
-
 		case standby:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"standby %s ", this->getName().c_str());
 			_motor[motor_t::first]->setMotorState(Motor::stop);
 			_motor[motor_t::second]->setMotorState(Motor::stop);
 			break;
-
 		case ready:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"ready %s ", this->getName().c_str());
 			_motor[motor_t::first]->setMotorState(Motor::rotating);
@@ -193,6 +191,18 @@ public:
 		else
 			_axisData->power = _power;
 	} /*--------------------- end of setPower --------------------------------------------------*/
+
+	int16_t getPower(){
+		return _axisData->power;
+	}
+
+	uint32_t getMotorPower(bool motor){
+		if(motor==false){
+			return _motor[motor_t::first]->getPower();
+		}else{
+			return _motor[motor_t::second]->getPower();
+		}
+	}
 
 	boolean isArmed() const
 	{
