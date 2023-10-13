@@ -1,4 +1,4 @@
-# KuckCopter
+# KuckyCopter
 ## Abstract
 ## Platform
 ## Resouses
