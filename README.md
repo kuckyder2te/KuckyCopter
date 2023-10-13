@@ -1,8 +1,7 @@
-# KuckyCopter
+# KuckCopter
 ## Abstract
 ## Platform
-## Resorces
-
+## Resouses
 Fun **Project** dfsdjhfkhdfhsdhh sdsdfasdfs
 
 |tab|col1|
