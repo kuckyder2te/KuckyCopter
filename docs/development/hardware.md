@@ -1,6 +1,6 @@
 # Hardware
 ## Controller
-![RP2040](../../images/Raspberry-Pi-Pico-Entwicklung-Bord-TYPE-C-High-Leistung-Mikrocontroller-board-RP2040-128Mbit-4M-16MB-Dual.jpg)
+![RP2040](D:\myData\MyProjects\KuckyCopter\images\RP2040.jpg)
 ## Pins
 ![RP2040DevBoardPins](D:\myData\MyProjects\KuckyCopter\images\PicoPins.png)
 ## Board
