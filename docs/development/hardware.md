@@ -1,6 +1,6 @@
 # Hardware
 ## Controller
-![RP2040](D:\myData\MyProjects\KuckyCopter\images\RP2040.jpg)
+![RP2040](../../images/RP2040.jpg)
 ## Pins
 ![RP2040DevBoardPins](../../images/PicoPins.png)
 ## Board
