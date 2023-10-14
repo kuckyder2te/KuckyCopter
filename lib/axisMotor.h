@@ -194,7 +194,7 @@ public:
 
 	int16_t getPower(){
 		return _axisData->power;
-	}
+	} /*--------------------- end of getPower --------------------------------------------------*/
 
 	uint32_t getMotorPower(bool motor){
 		if(motor==false){
@@ -202,7 +202,7 @@ public:
 		}else{
 			return _motor[motor_t::second]->getPower();
 		}
-	}
+	} /*--------------------- end of getMotorPower ----------------------------------------------*/
 
 	boolean isArmed() const
 	{
