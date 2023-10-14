@@ -1,6 +1,6 @@
 # Hardware
 ## Controller
-![RP2040](../../images/RP2040.jpg)
+![RP2040](../images/RP2040.jpg)
 ## Pins
 ![RP2040DevBoardPins](../../images/picoPins.png)
 ## Board
