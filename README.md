@@ -1,9 +1,10 @@
 # KuckyCopter
 ## Abstract
 ## Platform
-## irgedwas
-## Resouses
-Fun **Project** dfsdjhfkhdfhsdhh sdsdfasdfs
+## Resources
+## Development
+### [Hardware](/docs/development/hardware.md)
+### [Software](/docs/development/software.md)
 
 |tab|col1|
 |---|----|
