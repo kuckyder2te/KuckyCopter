@@ -9,10 +9,10 @@ Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP
 ![Bottom](../images/board_bottom.JPG)
 ## IMU
 Breakout CJMCU-10DOF
-![NRF](../images/NRF24.JPG)
+![IMU](../images/IMU.JPG)
 ## Radio
 NRF24
-![Imu](../images/IMU.JPG)
+![NRF24](../images/NRF24.JPG)
 ## Sonic
 HC-SR04
 ![Sonic](../images/HCSR04.JPG)
