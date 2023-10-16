@@ -14,6 +14,7 @@ Breakout CJMCU-10DOF
 ## Radio
 NRF24
 ![NRF24](../images/NRF24.JPG)
+
 | Funkt. | Pin | GPIO  | Color | Stripe |
 |------  |:-----:|---|-------|-----|---|
 | MISO   | 21  | 16  |       |     |  1 |
