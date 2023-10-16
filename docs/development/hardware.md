@@ -5,5 +5,5 @@ Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP
 ## Pins
 ![RP2040DevBoardPins](../images/picoPins.jpg)  
 ## Board
-![Top](../images/board_top.jpg)
-![Bottom](../images/board_bottom.jpg)
+![Top](../images/board_top.JPG)
+![Bottom](../images/board_bottom.JPG)
