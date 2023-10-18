@@ -16,7 +16,6 @@ Breakout CJMCU-10DOF
 |  SDA | 6  | 4  |
 |  SCL | 7  | 5  |
 
-
 ## Radio
 **NRF24**
 ![NRF24](../images/NRF24.JPG)
@@ -30,7 +29,6 @@ Breakout CJMCU-10DOF
 | CE   | 26 | 20 |     |   5  |
 | 3V3  |    |    | Red |      |
 | GND  |    |    |Black|      |
-
 
 ## Sonic
 **HC-SR04**
