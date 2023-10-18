@@ -11,19 +11,25 @@ Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP
 Breakout CJMCU-10DOF
 ![IMU](../images/IMU.JPG)
 
+|Spalte 1|Spalte 2|
+|--------|--------|
+|    A    |    B    |
+|    C    |    D    |
+
+
 ## Radio
-NRF24
+**NRF24**
 ![NRF24](../images/NRF24.JPG)
 
-| Funkt. | Pin | GPIO  | Color | Stripe |
-|------  |:---:|---|-------|-----|--- |
-| MISO   | 21  | 16  |       |     |  1 |
-| CSN    | 22  | 17  |       |     |  2 |
-| SLK    | 24  | 18  |       |     |  3 |
-| MOSI   | 25  | 19  |       |     |  4 |
-| CE     | 26  | 20  |       |     |  5 |
-| 3V3    |     |     |  Red  |     |    |
-| GND    |     |     | Black |     |    |
+| Funkt. | Pin | GPIO| Color | Stripe|
+|------  |:---:|-----|-------|-------|
+| MISO   | 21  | 16  |       |   1   |
+| CSN    | 22  | 17  |       |    2  |
+| SLK    | 24  | 18  |       |    3  |
+| MOSI   | 25  | 19  |       |   4   |
+| CE     | 26  | 20  |       |   4   |
+| 3V3    |     |     |  Red  |       |
+| GND    |     |     | Black |       |
 
 ## Sonic
 **HC-SR04**
