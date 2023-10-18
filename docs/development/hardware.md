@@ -21,6 +21,12 @@ Breakout CJMCU-10DOF
 **NRF24**
 ![NRF24](../images/NRF24.JPG)
 
+|Spalte 1|Spalte 2|GPIO|Color|Stripe|
+|--------|--------|----|-----|------|
+|    A   |    B   |
+|    C   |    D   |
+
+
 | Funkt. | Pin | GPIO| Color | Stripe|
 |------  |:---:|-----|-------|-------|
 | MISO   | 21  | 16  |       |   1   |
