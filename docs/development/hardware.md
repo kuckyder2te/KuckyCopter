@@ -16,7 +16,7 @@ NRF24
 ![NRF24](../images/NRF24.JPG)
 
 | Funkt. | Pin | GPIO  | Color | Stripe |
-|------  |:-----:|---|-------|-----|--- |
+|------  |:---:|---|-------|-----|--- |
 | MISO   | 21  | 16  |       |     |  1 |
 | CSN    | 22  | 17  |       |     |  2 |
 | SLK    | 24  | 18  |       |     |  3 |
@@ -26,7 +26,7 @@ NRF24
 | GND    |     |     | Black |     |    |
 
 ## Sonic
-HC-SR04
+**HC-SR04**
 ![Sonic](../images/HCSR04.JPG)
 ## Temperatur
 DS18B20
