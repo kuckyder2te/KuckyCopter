@@ -8,7 +8,7 @@
     Open BT COM 
     Start the program, and the main menu opens.
 
-##  Achse auswählen
+##  Select axis and coefficient.
     "X" selects the primary axis and sets a "1" with setItemAxis()
     Afterward
     "P" selects the first (P)IDParameter and sets a "10" with setItemOffset()
