@@ -11,10 +11,10 @@ Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP
 Breakout CJMCU-10DOF
 ![IMU](../images/IMU.JPG)
 
-|Spalte 1|Spalte 2|
-|--------|--------|
-|    A    |    B    |
-|    C    |    D    |
+|Funkt.|Pin |GPIO|
+|------|----|----|
+|  SDA | 6  | 4  |
+|  SCL | 7  | 5  |
 
 
 ## Radio
@@ -35,6 +35,18 @@ Breakout CJMCU-10DOF
 ## Sonic
 **HC-SR04**
 ![Sonic](../images/HCSR04.JPG)
+
+|Funkt. |Pin |GPIO|Color|
+|-------|----|----|-----|
+|Echo 1 | 25 | 21 |
+|Trig 1 | 29 | 22 |
+|Echo 2 | 5  | 3  |
+|Trig 2 | 4  | 2  |
+
 ## Temperatur
-DS18B20
+**DS18B20**
 ![Dallas](../images/Dallas.JPG)
+
+|Funkt. |Pin |GPIO|Color|
+|-------|----|----|-----|
+|Temp.  | 9  | 6  |
