@@ -45,7 +45,7 @@ Breakout CJMCU-10DOF
 
 ## Temperatur
 **DS18B20**
-![Dallas](../images/Dallas.JPG)
+![Dallas](../images/Dallas.jpg)
 
 |Funkt. |Pin |GPIO|Color|
 |-------|----|----|-----|
