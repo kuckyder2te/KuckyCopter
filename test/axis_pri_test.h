@@ -311,6 +311,7 @@ void test_setup()
 
 void test_loop()
 {
+  //TestOutput->println("loop");
   unsigned long _lastLooptime = micros();
   static unsigned long _lastMillis = millis();
   if(recorded&&(millis()-_lastMillis>100)){
