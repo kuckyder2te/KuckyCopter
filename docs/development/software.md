@@ -1,7 +1,6 @@
 # Software
 ## PID adjust
 
-#   Setting the PID values
     **Preparation**
 
     Platformio.ini - Activate MINITERM and PID_ADJUST
@@ -24,9 +23,9 @@
                                         increased or decreased. In addition, the accuracy
                                         set.
         
-        The value is passed to the PIDType in the __void select(uint8_t type)__ function.
+        The value is passed to the PIDType in the void select(uint8_t type) function.
         In this case 
-            pri_kP_value
+            pri_kP_value = 11
 
    **virtual void update() override**
     starts entering various parameters

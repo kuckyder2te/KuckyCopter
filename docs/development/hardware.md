@@ -8,8 +8,22 @@ Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP
 ![Top](../images/board_top.JPG)
 ![Bottom](../images/board_bottom.JPG)
 ## IMU
-Breakout CJMCU-10DOF
-![IMU](../images/IMU.JPG)
+MPU9250/MS5611 CJMCU-117 High Precision 9 Axis 10DOF Attitude Module SPI/IIC Communication
+![IMU](../images/IMU.jpg)
+
+Chip: MPU-9250
+Power supply: 3-5v (internal low dropout regulator)
+Communication: standard IIC / SPI communications protocol
+Chip built 16bit AD converter, 16-bit data output
+Gyroscopes range: ± 250 500 1000 2000 ° / s
+Acceleration range: ± 2 ± 4 ± 8 ± 16g
+Magnetic field range: ± 4800uT
+
+Module Model: GY-63-03
+Name: MS5611 module (atmospheric pressure module)
+Built-in 24bit AD converter chip
+High quality Immersion Gold PCB, machine welding process to ensure quality
+Use chip: MS5611-01BA03
 
 |Funkt.|Pin |GPIO|
 |------|----|----|
@@ -31,8 +45,28 @@ Breakout CJMCU-10DOF
 | GND  |    |    |Black|      |
 
 ## Sonic
-**HC-SR04**
-![Sonic](../images/HCSR04.JPG)
+**HC-SR04 Ultrasonic Wave Detector Distance Sensor**
+![Sonic](../images/HCSR04.jpg)
+
+1: Voltage: DC5V 
+2: Quiescent Current: <2mA
+3: level output: the output of the high-5V
+4: level: the end of 0V
+5: Induction Angle: not more than 15 degrees
+6: detection range: 2cm-450cm
+7: High precision: up to 0.3cm
+
+Panel wiring, VCC, trig 's (control side), the echo (receiving end), out (empty feet), GND
+Note: TRIP-pin internal pull-up 10K resistor, down TRIP microcontroller IO port pin, and then to a 10us pulse signal.
+OUT pin for this module as the switch output pin when the anti-theft module, ranging modules do not use this foot!
+Note: The module should be inserted Fortunately, the circuit board re-energized, and avoid the high malfunction, if they have re-energized before they solve.
+This module can be provided ranging program: C51, PIC18F877 microcontroller Yoshitatsu three MCU test reference.
+
+3 the module URF04 works:
+(1) IO trigger ranging to at least 10us high signal;
+(2) module automatically sends eight 40kHz square wave, automatically detect whether a signal return;
+(3) a signal to return to a high IO output, high duration of the ultrasonic time from launch to return.
+Test distance = (time high * speed of sound (340M / S)) / 2;
 
 |Funkt. |Pin |GPIO|Color|
 |-------|----|----|-----|
@@ -41,10 +75,30 @@ Breakout CJMCU-10DOF
 |Echo 2 | 5  | 3  |
 |Trig 2 | 4  | 2  |
 
+## ESC
+**BLHeli Serie 30A Elektronische Geschwindigkeit Controller**
+![ESC](../images/ESC.jpg)
+![ESC](../images/ILRIZ44N.jpg)
+
+|-Funkt.-|Pin |GPIO|Color|
+|--------|----|----|-----|
+| ESC FL | 15 | 11 |     | 
+| ESC FR | 16 | 12 |     |
+| ESC BR | 17 | 13 |     |
+| ESC BL | 19 | 14 |     |
+
 ## Temperatur
-**DS18B20**
+**DS18B20 temperatur sensor**
 ![Dallas](../images/Dallas.jpg)
 
 |Funkt. |Pin |GPIO|Color|
 |-------|----|----|-----|
 |Temp.  | 9  | 6  |
+
+## Alarm
+**aktiver Summer kontinuierlicher Piepton 12*9,5mm 5V**
+![Buzzer](../images/Buzzer.jpg)
+
+|Funkt. |Pin |GPIO|
+|-------|----|----|
+| Alarm | 14 | 10 |
