@@ -2,14 +2,18 @@
 ## Controller
 Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP2040 128Mbit 4M 16MB Dual-core ARM Prozessor
 ![RP2040](../images/RP2040.jpg)
+
 ## Pins
 ![RP2040DevBoardPins](../images/picoPins.jpg)  
+
 ## Circut Board
 ![Top](../images/board_top.JPG)
 ![Bottom](../images/board_bottom.JPG)
+
 ## IMU
 MPU9250/MS5611 CJMCU-117 High Precision 9 Axis 10DOF Attitude Module SPI/IIC Communication
-![IMU](../images/IMU.jpg)
+![IMU](../images/IMU.JPG)
+![IMU2](../images/IMU_2.JPG)
 
 Chip: MPU-9250
 Power supply: 3-5v (internal low dropout regulator)
@@ -46,7 +50,7 @@ Use chip: MS5611-01BA03
 
 ## Sonic
 **HC-SR04 Ultrasonic Wave Detector Distance Sensor**
-![Sonic](../images/HCSR04.jpg)
+![Sonic](../images/HCSR04.JPG)
 
 1: Voltage: DC5V 
 2: Quiescent Current: <2mA
