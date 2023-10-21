@@ -1,4 +1,8 @@
 # Software
+
+## Links
+https://youtu.be/JBvnB0279-Q?si=LplhdbVDn-7sKslk
+
 ## PID adjust
 
     **Preparation**
@@ -8,36 +12,24 @@
     Start the program, and the main menu opens.
 
 ##  Select axis and coefficient.
-```cpp
-#include <test>
-#define dfgdfg
-
-void main(){
-
-}
-
-```
 
 
-    "X" selects the primary axis and sets a "1" with setItemAxis()
+**"X"** selects the primary axis and sets a "1" with setItemAxis()
 
-    Afterward
-    "P" selects the first (P)IDParameter and sets a "10" with setItemOffset()
-        setItemAxis() + setItemOffset() + setItemOffset() = PidType.
+Afterward<br>
+**"P"** selects the first (P)IDParameter and sets a "10" with setItemOffset()
+    setItemAxis() + setItemOffset() + setItemOffset() = PidType.
 
-    "+" or "-" selects coefficient_Up() or coefficient_Down()  
-                                        select(getPidType(true)) added
-                                        setItemAxis() + setItemOffset()
-                                        and returns the PIDtype "11".
-                                        In this case, the P-value of the primary-axis
+**"+" or "-"** selects coefficient_Up() or coefficient_Down()<br>  
+select(getPidType(true)) +  setItemAxis() + setItemOffset() = PIDtype "11"<br>
+                                    
+In this case, the P-value of the primary-axis<br>
+It is also decided whether the value
+increased or decreased. In addition, the accuracy set.
+    
+The value is passed to the PIDType in the void select(uint8_t type) function.
+In this case:<br> 
+    pri_kP_value = 11
 
-                                        It is also decided whether the value
-                                        increased or decreased. In addition, the accuracy
-                                        set.
-        
-        The value is passed to the PIDType in the void select(uint8_t type) function.
-        In this case 
-            pri_kP_value = 11
-
-   **virtual void update() override**
-    starts entering various parameters
+**virtual void update() override**
+starts entering various parameters
