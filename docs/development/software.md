@@ -8,7 +8,19 @@
     Start the program, and the main menu opens.
 
 ##  Select axis and coefficient.
+```cpp
+#include <test>
+#define dfgdfg
+
+void main(){
+
+}
+
+```
+
+
     "X" selects the primary axis and sets a "1" with setItemAxis()
+
     Afterward
     "P" selects the first (P)IDParameter and sets a "10" with setItemOffset()
         setItemAxis() + setItemOffset() + setItemOffset() = PidType.

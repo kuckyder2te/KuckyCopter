@@ -50,11 +50,11 @@ public:
     virtual void begin()
     {
         LOGGER_VERBOSE("Enter begin....");
-
-            stdio_init_all();
-            adc_init();
-            adc_gpio_init(PIN_BATTERY);
-            adc_select_input(0);
+        //    analogRead(PIN_BATTERY);
+            // stdio_init_all();
+            // adc_init();
+            // adc_gpio_init(PIN_BATTERY);
+            // adc_select_input(0);
             pinMode(LED_PIN_ALERT, OUTPUT);
             digitalWrite(LED_PIN_ALERT, LOW);
 
@@ -65,10 +65,10 @@ public:
     {
         LOGGER_VERBOSE("Enter update....");
 
-            //_batteryData->battery_State = analogRead(PIN_BATTERY);
-            uint16_t result = adc_read();
-            float conversion_factor = 3.3f / (1 << 12);
-            _batteryData->battery_State = result * conversion_factor;
+            _batteryData->battery_State = analogRead(PIN_BATTERY);
+         //   uint16_t result = adc_read();
+         //   float conversion_factor = 3.3f / (1 << 12);
+         //   _batteryData->battery_State = result * conversion_factor;
 
         LOGGER_NOTICE_FMT("Battery state = %i", _batteryData->battery_State);
 
