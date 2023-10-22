@@ -14,6 +14,8 @@ Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP
 MPU9250/MS5611 CJMCU-117 High Precision 9 Axis 10DOF Attitude Module SPI/IIC Communication
 ![IMU](../images/IMU.JPG)
 ![IMU2](../images/IMU_2.JPG)
+**Attention: Pad NCS and PS must be connected**
+
 
 Chip: MPU-9250<br> 
 Power supply: 3-5v (internal low dropout regulator)<br> 
@@ -80,7 +82,7 @@ Test distance = (time high * speed of sound (340M / S)) / 2;
 |Trig 2 | 4  | 2  |
 
 ## ESC
-**BLHeli Serie 30A Elektronische Geschwindigkeit Controller**
+**BLHeli Serie 30A electronic speed controller**
 ![ESC](../images/ESC.jpg)
 ![ESC](../images/ILRIZ44N.jpg)
 
@@ -90,6 +92,10 @@ Test distance = (time high * speed of sound (340M / S)) / 2;
 | ESC FR | 16 | 12 |     |
 | ESC BR | 17 | 13 |     |
 | ESC BL | 19 | 14 |     |
+
+brown = GND<br>
+red = +5V<br>
+yellow = signal<br>
 
 ## Temperatur
 **DS18B20 temperatur sensor**
