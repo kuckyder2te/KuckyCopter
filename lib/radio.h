@@ -25,7 +25,7 @@
 #include <TaskManager.h>
 #include <RF24.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "config.h"
@@ -38,7 +38,6 @@
 
 typedef struct __attribute__((__packed__))
 {
-    float checksum;
     int16_t rcYaw;
     int8_t rcPitch;
     int8_t rcRoll;
@@ -52,9 +51,9 @@ typedef struct __attribute__((__packed__))
 
 typedef struct __attribute__((__packed__))
 {
-    float yaw; // MPU9250
-    float pitch;
-    float roll;
+    int16_t yaw; // MPU9250
+    int8_t pitch;
+    int8_t roll;
     uint16_t altitude; // MS5611
     float temperature;
     float pressure;
@@ -146,7 +145,7 @@ public:
         }
         else
         {
-            LOGGER_FATAL("Transmission fault or time out");
+            LOGGER_NOTICE("Transmission fault or time out");
             digitalWrite(LED_RADIO, LOW);
             _lostAckPackageCount++;
             if (_lostAckPackageCount > ACK_PACKAGE_MAX_COUNT)

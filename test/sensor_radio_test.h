@@ -5,6 +5,7 @@
 #include "..\lib\monitor.h"
 #include "..\lib\model.h"
 #include "..\lib\battery.h"
+#include "..\lib\radio.h"
 
 extern model_t model;
 

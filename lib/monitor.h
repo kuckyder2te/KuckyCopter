@@ -16,6 +16,8 @@
 #include "myLogger.h"
 
 #define DISPLAY_DELAY 1000
+
+extern HardwareSerial *TestOutput;
 typedef enum
 {
     MOTOR,
@@ -69,8 +71,8 @@ public:
 
                 break;
             case SENSOR:
-                Serial.println("SENSOR");
-                Serial.printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i*/\r\n",
+                TestOutput->println("SENSOR");
+                TestOutput->printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i*/\r\n",
                     _model->sensorData.yaw,
                     _model->sensorData.pitch,
                     _model->sensorData.roll,
@@ -80,8 +82,8 @@ public:
                     _model->RC_interface.isconnect);
                 break;
             case RADIO:
-            Serial.println("DROHNE RADIO");
-                Serial.printf("/*%i,%i,%i,%i,%i,%i,%i,%i,%i,%i*/\r\n",
+            TestOutput->println("DROHNE RADIO");
+                TestOutput->printf("/*%i,%i,%i,%i,%i,%i,%i,%i,%i,%i*/\r\n",
                     _model->RC_interface.isconnect,
                     _model->RC_interface.RX_payload.rcThrottle,
                     _model->RC_interface.RX_payload.rcYaw,
@@ -95,7 +97,7 @@ public:
                     
                 break;
             case RADIO_SENSOR:
-            Serial.println("DROHNE RADIO_SENSOR");
+            TestOutput->println("DROHNE RADIO_SENSOR");
                 sprintf(strBuf,"/*%d,%d,%d,%d,%d,%d,%d,%d,%d,%d*/",
                     _model->RC_interface.isconnect,
                     _model->RC_interface.RX_payload.rcThrottle,
@@ -107,20 +109,20 @@ public:
                     _model->RC_interface.RX_payload.rcSwi3,
                     _model->RC_interface.RX_payload.rcAltitudeBaroAdj,
                     _model->RC_interface.RX_payload.rcAltitudeSonicAdj);
-                Serial.println(strBuf);         // auskommentiert wegen leerer Daten
+                TestOutput->println(strBuf);         // auskommentiert wegen leerer Daten
 
                 break;
 
             case SONIC:
-            Serial.println("SONIC");
-                Serial.printf("/*%i,%i*/\r\n",
+            TestOutput->println("SONIC");
+                TestOutput->printf("/*%i,%i*/\r\n",
                     _model->sonicData.down_distance,
                     _model->sonicData.front_distance);
                 break;
             case AXIS:
                 break;
             default:
-                Serial.println("Default");
+                TestOutput->println("Default");
                 break;
             }
         }
