@@ -97,12 +97,12 @@ brown = GND<br>
 red = +5V<br>
 yellow = signal<br>
 
-Kontinuierlicher Strom: 30a
-Berst strom: 30a
-Lixx Batterie: 2 ~ 4s
-Abmessungen: 52*26*7mm
-Bec Ausgang: 2a/5v
-Gewicht: 28g
+Kontinuierlicher Strom: 30a<br>
+Berst strom: 30a<br>
+Lixx Batterie: 2 ~ 4s<br>
+Abmessungen: 52*26*7mm<br>
+Bec Ausgang: 2a/5v<br>
+Gewicht: 28g<br>
 
 Basierend auf blheli Firmware, weiter optimiert für perfekte Antriebsleistung.<br>
 Niederspannungsschutz, Überhitzungsschutz und Drosselklappen Signal verlustsschutz.<br>
