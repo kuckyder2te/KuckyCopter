@@ -302,6 +302,7 @@ void test_setup()
   model.axisData[axisName::primary].rcY = &model.RC_interface.RX_payload.rcPitch;
   axis->setModel(&model.axisData[axisName::primary])->begin();
   axis->initMotorOrdered(PIN_MOTOR_FL)->initMotorOrdered(PIN_MOTOR_BR);
+  //axis->initMotorOrdered(PIN_MOTOR_FR)->initMotorOrdered(PIN_MOTOR_BL);
   newPid = axis->getPid();
   monitor = new Monitor("Monitor", Report_t::AXIS);
   monitor->setModel(&model)->begin();

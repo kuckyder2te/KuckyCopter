@@ -38,7 +38,7 @@
 model_t model;
 //UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
-HardwareSerial *TestOutput = &Serial2;
+HardwareSerial *TestOutput = &Serial;
 HardwareSerial *DebugOutput = &Serial;
 
 

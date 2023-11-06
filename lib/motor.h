@@ -112,7 +112,7 @@ public:
 			break;
 		case power_on:
 			delay(20);
-			digitalWrite(PIN_ESC_ON, LOW);	// ESC´s einschalten der PIN wird 4 mal auf HIGH gesetzt
+			digitalWrite(PIN_ESC_ON, LOW);	// ESC´s einschalten der PIN wird 4 mal auf LOW gesetzt
 			_motorState = busy;
 			_lastMillis = millis();
 			break;

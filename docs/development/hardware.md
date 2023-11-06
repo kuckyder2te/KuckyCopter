@@ -86,16 +86,30 @@ Test distance = (time high * speed of sound (340M / S)) / 2;
 ![ESC](../images/ESC.jpg)
 ![ESC](../images/ILRIZ44N.jpg)
 
-|-Funkt.-|Pin |GPIO|Color|
-|--------|----|----|-----|
-| ESC FL | 15 | 11 |     | 
-| ESC FR | 16 | 12 |     |
-| ESC BR | 17 | 13 |     |
-| ESC BL | 19 | 14 |     |
+|-Funkt.-|Pin |GPIO|Color|  ESC - Motor  |
+|--------|----|----|-----|---------------|
+| ESC FL | 15 | 11 |  x  | 1-1 ; 2-2 ; 3-3 |
+| ESC FR | 16 | 12 |  x  | 1-3 ; 2-2 ; 3-1 |
+| ESC BR | 17 | 13 |  x  | 1-1 ; 2-2 ; 3-3 |
+| ESC BL | 19 | 14 |  x  | 1-3 ; 2-2 ; 3-1 |
 
 brown = GND<br>
 red = +5V<br>
 yellow = signal<br>
+
+Kontinuierlicher Strom: 30a
+Berst strom: 30a
+Lixx Batterie: 2 ~ 4s
+Abmessungen: 52*26*7mm
+Bec Ausgang: 2a/5v
+Gewicht: 28g
+
+Basierend auf blheli Firmware, weiter optimiert für perfekte Antriebsleistung.<br>
+Niederspannungsschutz, Überhitzungsschutz und Drosselklappen Signal verlustsschutz.<br>
+Separate Stromversorgung für mcu und bec, Verbesserung der esc Fähigkeit, magnetische Störungen.<br>
+Die Esc-Parameter können über die Programmkarte oder den Sender konfiguriert werden.<br>
+Drosselbereich kann so konfiguriert werden, dass er mit verschiedenen Empfängern kompatibel ist.<br>
+Ausgestattet mit integriertem linearen bec oder bec Schalter.<br>
 
 ## Temperatur
 **DS18B20 temperatur sensor**

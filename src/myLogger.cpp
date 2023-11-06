@@ -23,6 +23,7 @@ Autor: Wilhelm Kuckelsberg
 
 #include "..\lib\myLogger.h"
 
+extern HardwareSerial *DebugOutput;
 char logBuf[100];
 
 void localLogger(Logger::Level level, const char* module, const char* message)
@@ -30,31 +31,31 @@ void localLogger(Logger::Level level, const char* module, const char* message)
   #ifdef _MINITERM    // Ausgabe via USB
 
     #ifdef LOG_TIMESTAMP
-      Serial.print(millis());
-      Serial.print(" - ");
+      DebugOutput->print(millis());
+      DebugOutput->print(" - ");
     #endif
-      Serial.print(F("["));
-      Serial.print(Logger::asString(level));
-      Serial.print(F("]:"));
+      DebugOutput->print(F("["));
+      DebugOutput->print(Logger::asString(level));
+      DebugOutput->print(F("]:"));
       if (strlen(module) > 0)
       {
-          Serial.print(module);
-          Serial.print(":");
+          DebugOutput->print(module);
+          DebugOutput->print(":");
       }
-      Serial.println(message);
+      DebugOutput->println(message);
   #else
     #ifdef LOG_TIMESTAMP
-      Serial2.print(millis());
-      Serial2.print(" - ");
+      DebugOutput->print(millis());
+      DebugOutput->print(" - ");
     #endif
-      Serial2.print(F("["));
-      Serial2.print(Logger::asString(level));
-      Serial2.print(F("]:"));
+      DebugOutput->print(F("["));
+      DebugOutput->print(Logger::asString(level));
+      DebugOutput->print(F("]:"));
       if (strlen(module) > 0)
       {
-          Serial2.print(module);
-          Serial2.print(":");
+          DebugOutput->print(module);
+          DebugOutput->print(":");
       }
-      Serial2.println(message);
+      DebugOutput->println(message);
   #endif
 }

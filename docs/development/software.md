@@ -11,7 +11,7 @@ https://youtu.be/JBvnB0279-Q?si=LplhdbVDn-7sKslk
     Open BT COM 
     Start the program, and the main menu opens.
 
-##  Select axis and coefficient.
+###  Select axis and coefficient.
 
 
 **"X"** selects the primary axis and sets a "1" with setItemAxis()
@@ -31,5 +31,17 @@ The value is passed to the PIDType in the void select(uint8_t type) function.
 In this case:<br> 
     pri_kP_value = 11
 
-**virtual void update() override**
+### **virtual void update() override**
 starts entering various parameters
+
+## Test codes
+
+### axis_pri_test.h
+### axis_sec_test.h
+the primary/secondary axis is tested, including<br>
+- engines<br>
+- IMU sensor<br>
+- PID settings<br>
+
+### sensor_radio_test.h
+The radio class is tested in combination with the IMU sensor.

@@ -1,4 +1,6 @@
 #pragma once
+#define LOCAL_DEBUG
+#include "..\lib\myLogger.h"
 
 #include "..\src\config.h"
 #include "..\lib\axisBase.h"
@@ -57,12 +59,12 @@ void test_loop()
       case '3':
       case '4':
         LOGGER_NOTICE_FMT("Motor %i Power %i", key - '1', motor[key - '1']->getPower());
-        motor[key - '1']->setMotorState(Motor::on);
+        motor[key - '1']->setMotorState(Motor::power_on);
         break;
       case '0':
         LOGGER_NOTICE("Motors off");
         for (uint8_t i = 0; i < 4; i++)
-          motor[i]->setMotorState(Motor::off);
+          motor[i]->setMotorState(Motor::power_off);
         break;
       case '+':
         test_power++;
