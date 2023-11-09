@@ -84,7 +84,7 @@ Test distance = (time high * speed of sound (340M / S)) / 2;
 ## ESC
 **BLHeli Serie 30A electronic speed controller**
 ![ESC](../images/ESC.jpg)
-![ESC](../images/ILRIZ44N.jpg)
+![ESC1](../images/ILRIZ44N.jpg)
 
 |-Funkt.-|Pin |GPIO|Color|  ESC - Motor  |
 |--------|----|----|-----|---------------|

@@ -50,14 +50,8 @@ public:
     virtual void begin()
     {
         LOGGER_VERBOSE("Enter begin....");
-        //    analogRead(PIN_BATTERY);
-            // stdio_init_all();
-            // adc_init();
-            // adc_gpio_init(PIN_BATTERY);
-            // adc_select_input(0);
             pinMode(LED_PIN_ALERT, OUTPUT);
             digitalWrite(LED_PIN_ALERT, LOW);
-
         LOGGER_VERBOSE("....leave");
     }
 
