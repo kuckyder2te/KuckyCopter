@@ -139,14 +139,28 @@
                     "min": 0,
                     "title": "Loop time",
                     "units": "µs",
-                    "value": "%9",
+                    "value": "%10",
                     "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 30,
+                    "min": -30,
+                    "title": "SetPoint",
+                    "units": "",
+                    "value": "%9",
+                    "widget": "bar"
                 }
             ],
             "title": "Regler",
             "widget": ""
         }
     ],
-    "separator": ";",
+    "separator": ",",
     "title": "Axis Test mit PID"
 }

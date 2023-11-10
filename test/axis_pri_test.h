@@ -21,7 +21,7 @@ extern HardwareSerial *TestOutput;
 extern model_t model;
 
 bool menu = false;
-bool recorded = false;
+bool recorded = true;
 
 uint8_t _pidParameter = 0;
 
@@ -183,7 +183,7 @@ void pid_gui(char key)
     {
     case 1:
       temp = newPid->getP();
-      newPid->setP(temp += DOT_1);
+      newPid->setP(temp += DOT_2);
       TestOutput->print("kP: ");
       TestOutput->println(temp, 4);
       break;
@@ -220,7 +220,7 @@ void pid_gui(char key)
     {
     case 1:
       temp = newPid->getP();
-      newPid->setP(temp -= DOT_1);
+      newPid->setP(temp -= DOT_2);
       TestOutput->print("kP: ");
       TestOutput->println(temp, 4);
       break;
@@ -302,7 +302,6 @@ void test_setup()
   model.axisData[axisName::primary].rcY = &model.RC_interface.RX_payload.rcPitch;
   axis->setModel(&model.axisData[axisName::primary])->begin();
   axis->initMotorOrdered(PIN_MOTOR_FL)->initMotorOrdered(PIN_MOTOR_BR);
-  //axis->initMotorOrdered(PIN_MOTOR_FR)->initMotorOrdered(PIN_MOTOR_BL);
   newPid = axis->getPid();
   monitor = new Monitor("Monitor", Report_t::AXIS);
   monitor->setModel(&model)->begin();
@@ -317,34 +316,17 @@ void test_loop()
   static unsigned long _lastMillis = millis();
   if(recorded&&(millis()-_lastMillis>100)){
     _lastMillis = millis();    
-    TestOutput->print("/*");
-    // Throttle
-    TestOutput->print(model.axisData[axisName::primary].power);
-    TestOutput->print(";");
-    // Motor 1 Power
-    TestOutput->print(axis->getMotorPower(false));
-    TestOutput->print(";");
-    // Motor 2 Power
-    TestOutput->print(axis->getMotorPower(true));
-    TestOutput->print(";");
-    // IMU Roll
-    TestOutput->print(model.sensorData.roll);
-    TestOutput->print(";");
-    // Error
-    TestOutput->print(model.axisData[axisName::primary].pidError);
-    TestOutput->print(";");
-    // P
-    TestOutput->print(newPid->getP());
-    TestOutput->print(";");
-    // I
-    TestOutput->print(newPid->getI());
-    TestOutput->print(";");
-    // D
-    TestOutput->print(newPid->getD());
-    TestOutput->print(";");
-    // LoopTime
-    TestOutput->print(model.looptime);
-    TestOutput->println("*/");
+    TestOutput->printf("/*%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i*/\r\n",
+                    model.axisData[axisName::primary].power,
+                    axis->getMotorPower(false),
+                    axis->getMotorPower(true),
+                    model.sensorData.roll,
+                    model.axisData[axisName::primary].pidError,
+                    newPid->getP(),
+                    newPid->getI(),
+                    newPid->getD(),
+                    model.axisData[axisName::primary].setpoint,
+                    model.looptime);
   }
   if (TestOutput->available())
   {

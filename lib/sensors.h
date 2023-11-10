@@ -20,9 +20,9 @@ Höhe 55m von Strasse zum Dach + ca. 6m
 #include <MPU9250.h>
 #include <MS5611.h>
 
-//#define LOCAL_DEBUG
+//s#define LOCAL_DEBUG
 #include "myLogger.h"
-
+#define MIN_SENSOR_DELAY 1000
 typedef struct
 {
     int16_t pitch;
@@ -43,7 +43,7 @@ class Sensor : public Task::Base
 private:
     MPU9250Setting setting;
     uint16_t _updateCounter;
-
+    unsigned long _lastEnter;
 protected:
     MPU9250 _mpu9250; // Speicherplatz reserviert
     MS5611 _ms5611;
@@ -68,6 +68,7 @@ public:
     virtual void begin() override
     {
         LOGGER_VERBOSE("Enter....");
+        //Wire.setClock(200000);
         Wire.begin();
         LOGGER_NOTICE("MPU9250 initialized");
 
@@ -118,14 +119,17 @@ public:
     virtual void enter() override
     {
         LOGGER_VERBOSE("Enter....");
+        if(micros()-_lastEnter<MIN_SENSOR_DELAY){
+            return;
+        }        
         //    LOGGER_NOTICE_FMT("Wire %d", Wire.availableForWrite());
         if (_mpu9250.update())
         {
             LOGGER_VERBOSE("_mpu9250.update");
 
             _sensorData->yaw = _mpu9250.getYaw();
-            _sensorData->pitch = _mpu9250.getPitch();       // * 200 For more range
-            _sensorData->roll = _mpu9250.getRoll();         // * 200 For more range
+            _sensorData->pitch = _mpu9250.getPitch();       
+            _sensorData->roll = _mpu9250.getRoll();        
 
             display_imu_data();
 
@@ -144,6 +148,7 @@ public:
 
             LOGGER_VERBOSE("_ms5611 leave");
         }
+        _lastEnter = micros();
         LOGGER_VERBOSE("....leave");
     } /*------------------------------- end of enter --------------------------------------------*/
 
