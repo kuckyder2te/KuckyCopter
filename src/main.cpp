@@ -114,6 +114,8 @@ void main_loop()
 #include "..\test\axis_pri_test.h"
 #elif _AXIS_SEC
 #include "..\test\axis_sec_test.h"
+#elif _ALL_AXIS
+#include "..\test\all_axis_test.h"
 #elif _YAW
 #include "..\test\yaw_test.h"
 #elif _SONIC

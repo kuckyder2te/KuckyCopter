@@ -22,6 +22,7 @@ typedef enum
 {
     MOTOR,
     AXIS,
+    ALL_AXIS,
     SENSOR,
     RADIO,
     RADIO_SENSOR,
@@ -120,6 +121,9 @@ public:
                     _model->sonicData.front_distance);
                 break;
             case AXIS:
+                break;
+            case ALL_AXIS:
+                
                 break;
             default:
                 TestOutput->println("Default");
