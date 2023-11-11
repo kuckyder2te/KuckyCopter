@@ -53,7 +53,7 @@ Use chip: MS5611-01BA03
 
 ## Radio
 **NRF24**
-![NRF24](../images/NRF24.JPG)
+![NRF24](../images/NRF24L01_E01-ML01DP5.jpg)
 
 |Funkt.|Pin |GPIO|Color|Stripe|
 |------|----|----|-----|------|
@@ -64,6 +64,21 @@ Use chip: MS5611-01BA03
 | CE   | 26 | 20 |     |   5  |
 | 3V3  |    |    | Red |      |
 | GND  |    |    |Black|      |
+
+Modell: E01-ML01DP5<br>
+Schnitts telle: spi<br>
+Leistung: 20dbm<br>
+Abstand: 2100m<br>
+HF-Verbindungsstück: SMA-K<br>
+Frequenz: 2,4 GHz(2400MHz-2525MHz)<br>
+Supply voltage 2,0 to 3,6 VDC<br>
+Communikation level 0,7VCC to 5V(VCC refers to the supply voltage)<br>
+Operation range <br>
+Transmitting power 20dBm (100mW)<br>
+
+Feature: E01-ML01DP5 basiert auf original importierten nrf24l01p Form nordic in Norwegen. Und ausgestattet mit 20dbm Leistungsverstärker chip, der aus den USA importiert wird, wodurch die Sende- leistung 100mw (20dbm) erreicht, während die Empfangsempfindlichkeit um 10db erhöht wird. Diese Eigenschaften machen die Übertragungsdistanz 10 mal länger als nrf24l01p selbst. Die Anti-Interferenz-Abschirmung-Abdeckung auf dem Modul macht die Anti-Interferenz-Leistung besser.
+![NRF24_1](../images/NRF24L01_E01-ML01DP5-Technical.jpg)
+![NRF24_2](../images/NRF24L01_E01-ML01DP5-dimension.jpg)
 
 ## Sonic
 **HC-SR04 Ultrasonic Wave Detector, Distance Sensor**
