@@ -3,6 +3,12 @@
 ## Links
 https://youtu.be/JBvnB0279-Q?si=LplhdbVDn-7sKslk
 
+## Old PID coefficients
+    P		I		D
+    Pri		0,14	0,18	0,102
+    Sec		0,14	0,18	0,102
+    Yaw		0,01	0		0
+
 ## PID adjust
 
     **Preparation**
@@ -11,7 +17,7 @@ https://youtu.be/JBvnB0279-Q?si=LplhdbVDn-7sKslk
     Open BT COM 
     Start the program, and the main menu opens.
 
-###  Select axis and coefficient.
+### Select axis and coefficient.
 
 
 **"X"** selects the primary axis and sets a "1" with setItemAxis()
