@@ -27,6 +27,7 @@ Accelerated integer and floating-point libraries on-chip<br>
 
 ## IMU
 MPU9250/MS5611 CJMCU-117 High Precision 9 Axis 10DOF Attitude Module SPI/IIC Communication
+
 ![IMU](../images/IMU.JPG)
 ![IMU2](../images/IMU_2.JPG)
 
