@@ -1,7 +1,22 @@
 # Hardware
 ## Controller
 Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP2040<br>  128Mbit 4M 16MB Dual-core ARM Prozessor
+
 ![RP2040](../images/RP2040.jpg)
+
+Dual-core Arm Cortex-M0+ processor, flexible clock running up to 133 MHz<br>
+264kB on-chip SRAM<br>
+2 × UART<br>
+2 × SPI controllers<br>
+2 × I2C controllers<br>
+16 × PWM channels<br>
+1 × USB 1.1 controller and PHY, with host and device support<br>
+8 × Programmable I/O (PIO) state machines for custom peripheral support<br>
+Operating temperature -40°C to +85°C<br>
+Drag-and-drop programming using mass storage over USB<br>
+Low-power sleep and dormant modes<br>
+Temperature sensor<br>
+Accelerated integer and floating-point libraries on-chip<br>
 
 ## PinOut
 ![RP2040DevBoardPins](../images/picoPins.jpg)  
