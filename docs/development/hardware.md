@@ -2,7 +2,7 @@
 ## Controller
 Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP2040<br>  128Mbit 4M 16MB Dual-core ARM Prozessor
 
-            ![RP2040](../images/RP2040.jpg)
+![RP2040](../images/RP2040.jpg)
 
 Dual-core Arm Cortex-M0+ processor, flexible clock running up to 133 MHz<br>
 264kB on-chip SRAM<br>
