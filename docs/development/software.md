@@ -19,7 +19,6 @@ https://youtu.be/JBvnB0279-Q?si=LplhdbVDn-7sKslk
 
 ### Select axis and coefficient.
 
-
 **"X"** selects the primary axis and sets a "1" with setItemAxis()
 
 Afterward<br>
@@ -44,7 +43,8 @@ starts entering various parameters
 
 ### axis_pri_test.h
 ### axis_sec_test.h
-the primary/secondary axis is tested, including<br>
+### all_axis_test.h
+the primary and/or secondary axis is tested, including<br>
 - engines<br>
 - IMU sensor<br>
 - PID settings<br>
