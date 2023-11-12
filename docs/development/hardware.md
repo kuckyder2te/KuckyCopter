@@ -1,5 +1,5 @@
 # Hardware
-## Controller
+## Controller: Raspberry Pi Pico
 Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP2040<br>  128Mbit 4M 16MB Dual-core ARM Prozessor
 
 ![RP2040](../images/RP2040.jpg)
@@ -25,7 +25,7 @@ Accelerated integer and floating-point libraries on-chip<br>
 ![Top](../images/board_top.JPG)
 ![Bottom](../images/board_bottom.JPG)
 
-## IMU
+## IMU CJMCU-117
 MPU9250/MS5611 CJMCU-117 High Precision 9 Axis 10DOF Attitude Module SPI/IIC Communication
 
 ![IMU](../images/IMU.JPG)
@@ -52,8 +52,7 @@ Use chip: MS5611-01BA03<br>
 |  SDA | 6  | 4  |
 |  SCL | 7  | 5  |
 
-## Radio
-**nRF24L01**
+## Radio: nRF24L01
 ![NRF24](../images/NRF24L01_E01-ML01DP5.jpg)
 
 |Funkt.|Pin |GPIO|Color|Stripe|
@@ -91,8 +90,7 @@ Feature: E01-ML01DP5 is based on original imported nrf24l01p form nordic in Norw
 
 ![NRF24_2](../images/NRF24L01_E01-ML01DP5-dimension.jpg)
 
-## Sonic
-**HC-SR04 Ultrasonic Wave Detector, Distance Sensor**
+## Sonic: HC-SR04 Ultrasonic Wave Detector, Distance Sensor
 ![Sonic](../images/HCSR04.JPG)
 
 1: Voltage: DC5V<br> 
@@ -121,8 +119,7 @@ Test distance = (time high * speed of sound (340M / S)) / 2;
 |Echo 2 | 5  | 3  |
 |Trig 2 | 4  | 2  |
 
-## ESC
-**BLHeli Serie 30A electronic speed controller**
+## ESC: BLHeli Serie 30A electronic speed controller
 ![ESC](../images/ESC.jpg)
 ![ESC1](../images/ILRIZ44N.jpg)
 
@@ -151,8 +148,7 @@ The Esc parameters can be configured via the program card or the transmitter.<br
 Throttle range can be configured to be compatible with different receivers.<br>
 Equipped with integrated linear bec or bec switch.<br>
 
-## Temperatur
-**DS18B20 temperatur sensor**
+## Temperatur: DS18B20 temperatur sensor
 ![Dallas](../images/Dallas.jpg)
 
 |Funkt. |Pin |GPIO|Color|
@@ -162,8 +158,7 @@ Equipped with integrated linear bec or bec switch.<br>
 Working temperature -55 °c ~ 125 °c<br>
 Power suply range 3,6 to 5,5V<br>
 
-## Alarm
-**aktiver Summer kontinuierlicher Piepton 12*9,5mm 5V**
+## Alarm: aktiver Summer kontinuierlicher Piepton 12*9,5mm 5V
 ![Buzzer](../images/Buzzer.jpg)
 
 |Funkt. |Pin |GPIO|
