@@ -2,7 +2,7 @@
 ## Controller
 Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP2040<br>  128Mbit 4M 16MB Dual-core ARM Prozessor
 
-![RP2040](../images/RP2040.jpg)
+            ![RP2040](../images/RP2040.jpg)
 
 Dual-core Arm Cortex-M0+ processor, flexible clock running up to 133 MHz<br>
 264kB on-chip SRAM<br>
@@ -33,7 +33,6 @@ MPU9250/MS5611 CJMCU-117 High Precision 9 Axis 10DOF Attitude Module SPI/IIC Com
 
 **Attention: Pad NCS and PS must be connected**
 
-
 Chip: MPU-9250<br> 
 Power supply: 3-5v (internal low dropout regulator)<br> 
 Communication: standard IIC / SPI communications protocol<br> 
@@ -54,7 +53,7 @@ Use chip: MS5611-01BA03<br>
 |  SCL | 7  | 5  |
 
 ## Radio
-**NRF24**
+**nRF24L01**
 ![NRF24](../images/NRF24L01_E01-ML01DP5.jpg)
 
 |Funkt.|Pin |GPIO|Color|Stripe|
@@ -110,10 +109,9 @@ OUT pin for this module as the switch output pin when the anti-theft module, ran
 Note: The module should be inserted Fortunately, the circuit board re-energized, and avoid the high malfunction, if they have re-energized before they solve.
 This module can be provided ranging program: C51, PIC18F877 microcontroller Yoshitatsu three MCU test reference.
 
-**3 the module URF04 works:**<br> 
-1. IO trigger ranging to at least 10us high signal;
-2. module automatically sends eight 40kHz square wave, automatically detect whether a signal return;
-3. a signal to return to a high IO output, high duration of the ultrasonic time from launch to return.
+1: IO trigger ranging to at least 10us high signal;
+2: module automatically sends eight 40kHz square wave, automatically detect whether a signal return;
+3: a signal to return to a high IO output, high duration of the ultrasonic time from launch to return.
 Test distance = (time high * speed of sound (340M / S)) / 2;
 
 |Funkt. |Pin |GPIO|Color|

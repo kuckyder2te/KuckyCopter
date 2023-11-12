@@ -11,11 +11,15 @@
 #include "..\lib\sensors.h"
 #include "..\lib\def.h"
 
-AxisMotor *axis1;
-AxisMotor *axis2;
+//AxisMotor *axis_primary;
+//AxisMotor *axis[axisName::secondary];
+AxisMotor *axisTest[2];
+
 Monitor *monitor;
-NewPID *newPid1;
-NewPID *newPid2;
+//NewPID *newPid_primary;
+//NewPID *newPid_secondary;
+NewPID *newPid[2];
+
 Sensor *sensor;
 Motor *motor;
 
@@ -53,18 +57,18 @@ void main_gui(char key)
   switch (toupper(key))
   {
   case 'A':
-    axis1->setState(AxisMotor::state::arming_start);
-    axis2->setState(AxisMotor::state::arming_start);
+    axisTest[axisName::primary]->setState(AxisMotor::state::arming_start);
+    axisTest[axisName::secondary]->setState(AxisMotor::state::arming_start);
     break;
   case 'S':
     TestOutput->print("isStandby: ");
-    TestOutput->println(axis1->isStandby());
+    TestOutput->println(axisTest[axisName::primary]->isStandby());
     TestOutput->print("isReady: ");
-    TestOutput->println(axis1->isReady());
+    TestOutput->println(axisTest[axisName::primary]->isReady());
     TestOutput->print("isDeactivatePID: ");
-    TestOutput->println(axis1->isDeactivatePID());
+    TestOutput->println(axisTest[axisName::primary]->isDeactivatePID());
     TestOutput->print("isArmed: ");
-    TestOutput->println(axis1->isArmed());
+    TestOutput->println(axisTest[axisName::primary]->isArmed());
     break;
   case 'G':
     TestOutput->println(motor->getResultingPower());
@@ -74,34 +78,34 @@ void main_gui(char key)
     power++;
     TestOutput->print("Power: ");
     TestOutput->println(power);
-    axis1->setPower(power);
-    axis2->setPower(power);
+    axisTest[axisName::primary]->setPower(power);
+    axisTest[axisName::secondary]->setPower(power);
     break;
   case '-':
     if (power > 0)
       power--;
     TestOutput->print("Power: ");
     TestOutput->println(power);
-    axis1->setPower(power);
-    axis2->setPower(power);
+    axisTest[axisName::primary]->setPower(power);
+    axisTest[axisName::secondary]->setPower(power);
     break;
   case 'I':
     TestOutput->println("Invert Roll");
-    axis1->InvertRoll();
+    axisTest[axisName::primary]->InvertRoll();  /// ??? nicht für pitch ???
     break;
   case 'O':
     TestOutput->println("Stop Motor");
-    axis1->setState(AxisMotor::state::standby);
-    axis2->setState(AxisMotor::state::standby);
+    axisTest[axisName::primary]->setState(AxisMotor::state::standby);
+    axisTest[axisName::secondary]->setState(AxisMotor::state::standby);
     break;
   case 'R':
     TestOutput->println("Motor Start");
-    axis1->setState(AxisMotor::state::ready);
-    axis2->setState(AxisMotor::state::ready);
+    axisTest[axisName::primary]->setState(AxisMotor::state::ready);
+    axisTest[axisName::secondary]->setState(AxisMotor::state::ready);
     break;
   case ' ':
-    axis1->setState(AxisMotor::state::off);
-    axis2->setState(AxisMotor::state::off);
+    axisTest[axisName::primary]->setState(AxisMotor::state::off);
+    axisTest[axisName::secondary]->setState(AxisMotor::state::off);
     break;
   case 'P':
     print_pid_menu();
@@ -115,7 +119,7 @@ void main_gui(char key)
 
 void pid_gui(char key)
 {
-  static float temp;
+  static float temp1,temp2;
 
   switch (toupper(key))
   {
@@ -133,46 +137,46 @@ void pid_gui(char key)
     break;
   case 'S':
     TestOutput->print("P: ");
-    TestOutput->println(newPid1->getP(), 2);
+    TestOutput->println(newPid[axisName::primary]->getP(), 2);
     TestOutput->print("I: ");
-    TestOutput->println(newPid1->getI(), 2);
+    TestOutput->println(newPid[axisName::primary]->getI(), 2);
     TestOutput->print("D: ");
-    TestOutput->println(newPid1->getD(), 2);
+    TestOutput->println(newPid[axisName::primary]->getD(), 2);
     TestOutput->print("EF: ");
-    TestOutput->println(newPid1->getEF());
+    TestOutput->println(newPid[axisName::primary]->getEF());
     TestOutput->print("ExecutionTime:");
-    TestOutput->println(newPid1->getExecutionTime());
+    TestOutput->println(newPid[axisName::primary]->getExecutionTime());
 
     TestOutput->print("P: ");
-    TestOutput->println(newPid2->getP(), 2);
+    TestOutput->println(newPid[axisName::secondary]->getP(), 2);
     TestOutput->print("I: ");
-    TestOutput->println(newPid2->getI(), 2);
+    TestOutput->println(newPid[axisName::secondary]->getI(), 2);
     TestOutput->print("D: ");
-    TestOutput->println(newPid2->getD(), 2);
+    TestOutput->println(newPid[axisName::secondary]->getD(), 2);
     TestOutput->print("EF: ");
-    TestOutput->println(newPid2->getEF());
+    TestOutput->println(newPid[axisName::secondary]->getEF());
     TestOutput->print("ExecutionTime:");
-    TestOutput->println(newPid2->getExecutionTime());
+    TestOutput->println(newPid[axisName::secondary]->getExecutionTime());
     break;
   case 'R':
     TestOutput->println("Reset");
-    newPid1->initPID();
-    newPid2->initPID();
+    newPid[axisName::primary]->initPID();
+    newPid[axisName::secondary]->initPID();
     break;
   case 'O':
-    TestOutput->print("Throttle is selected. Power= ");TestOutput->print(axis1->getPower());
+    TestOutput->print("Throttle is selected. Power= ");TestOutput->print(axisTest[axisName::primary]->getPower());
     _pidParameter = 5;
     break;  
   case 'P':
-    TestOutput->print("Parameter P is selected. P= ");TestOutput->print(newPid1->getP());
+    TestOutput->print("Parameter P is selected. P= ");TestOutput->print(newPid[axisName::primary]->getP());
     _pidParameter = 1;
     break;
   case 'I':
-    TestOutput->println("Parameter I is selected. I= ");TestOutput->print(newPid1->getI());
+    TestOutput->println("Parameter I is selected. I= ");TestOutput->print(newPid[axisName::primary]->getI());
     _pidParameter = 2;
     break;
   case 'D':
-    TestOutput->println("Parameter D is selected. D= ");TestOutput->print(newPid1->getD());
+    TestOutput->println("Parameter D is selected. D= ");TestOutput->print(newPid[axisName::primary]->getD());
     _pidParameter = 3;
     break;
   case 'F':
@@ -181,13 +185,13 @@ void pid_gui(char key)
     break;
   case 'E':
     TestOutput->println("Enable PID");
-    axis1->setState(AxisMotor::state::enablePID);
-    axis2->setState(AxisMotor::state::enablePID);
+    axisTest[axisName::primary]->setState(AxisMotor::state::enablePID);
+    axisTest[axisName::secondary]->setState(AxisMotor::state::enablePID);
     break;
   case 'A':
     TestOutput->println("Disable PID");
-    axis1->setState(AxisMotor::state::disablePID);
-    axis2->setState(AxisMotor::state::disablePID);
+    axisTest[axisName::primary]->setState(AxisMotor::state::disablePID);
+    axisTest[axisName::secondary]->setState(AxisMotor::state::disablePID);
     break;
   case 'C':
     recorded = !recorded;
@@ -204,89 +208,99 @@ void pid_gui(char key)
     switch (_pidParameter)
     {
     case 1:
-      temp = newPid1->getP();
-      newPid1->setP(temp += DOT_2);
-      newPid2->setP(temp);
+      temp1 = newPid[axisName::primary]->getP();
+      temp2 = newPid[axisName::secondary]->getP();
+      newPid[axisName::primary]->setP(temp1 += DOT_3);
+      newPid[axisName::secondary]->setP(temp2 += DOT_3);
       TestOutput->print("kP: ");
-      TestOutput->println(temp, 4);
+      TestOutput->println(temp1, 4);
       break;
     case 2:
-      temp = newPid1->getI();
-      newPid1->setI(temp += DOT_2);
-      newPid2->setI(temp);
+      temp1 = newPid[axisName::primary]->getI();
+      temp2 = newPid[axisName::secondary]->getI();
+      newPid[axisName::primary]->setI(temp1 += DOT_3);
+      newPid[axisName::secondary]->setI(temp2 += DOT_3);
       TestOutput->print("kI: ");
-      TestOutput->println(temp, 4);
+      TestOutput->println(temp1, 4);
       break;
     case 3:
-      temp = newPid1->getD();
-      newPid1->setD(temp += DOT_2);
-      newPid2->setD(temp);
+      temp1 = newPid[axisName::primary]->getD();
+      temp2 = newPid[axisName::secondary]->getD();
+      newPid[axisName::primary]->setD(temp1 += DOT_3);
+      newPid[axisName::secondary]->setD(temp2 += DOT_3);
       TestOutput->print("kD: ");
-      TestOutput->println(temp, 4);
+      TestOutput->println(temp1, 4);
       break;
     case 4:
-      temp = newPid1->getEF();
-      newPid1->setEF(temp += 1);
-      newPid2->setEF(temp);
+      temp1 = newPid[axisName::primary]->getEF();
+      temp2 = newPid[axisName::secondary]->getEF();
+      newPid[axisName::primary]->setEF(temp1 += 1);
+      newPid[axisName::secondary]->setEF(temp2 += 1);
       TestOutput->print("eF: ");
-      TestOutput->println(temp, 4);
+      TestOutput->println(temp1, 4);
       break;
     case 5:
-      temp = axis1->getPower();
-      axis1->setPower(++temp);
-      axis2->setPower(temp);
+      temp1 = axisTest[axisName::primary]->getPower();
+      temp2 = axisTest[axisName::secondary]->getPower();
+      axisTest[axisName::primary]->setPower(++temp1);
+      axisTest[axisName::secondary]->setPower(++temp2);
       TestOutput->print("Throttle = ");
-      TestOutput->println(temp);
+      TestOutput->println(temp1);
       break;
     }     // end of switch
-    newPid1->saveParameters();
-    newPid2->saveParameters();
+    newPid[axisName::primary]->saveParameters();
+    newPid[axisName::secondary]->saveParameters();
     break;
 
   case '-':
     switch (_pidParameter)
     {
     case 1:
-      temp = newPid1->getP();
-      newPid1->setP(temp -= DOT_2);
-      newPid2->setP(temp);
+      temp1 = newPid[axisName::primary]->getP();
+      temp2 = newPid[axisName::secondary]->getP();
+      newPid[axisName::primary]->setP(temp1 -= DOT_3);
+      newPid[axisName::secondary]->setP(temp2 -= DOT_3);
       TestOutput->print("kP: ");
-      TestOutput->println(temp, 4);
+      TestOutput->println(temp1, 4);
       break;
     case 2:
-      temp = newPid1->getI();
-      newPid1->setI(temp -= DOT_2);
-      newPid2->setI(temp);
+      temp1 = newPid[axisName::primary]->getI();
+      temp2 = newPid[axisName::secondary]->getI();
+      newPid[axisName::primary]->setI(temp1 -= DOT_3);
+      newPid[axisName::secondary]->setI(temp2 -= DOT_3);
       TestOutput->print("kI: ");
-      TestOutput->println(temp, 4);
+      TestOutput->println(temp1, 4);
       break;
     case 3:
-      temp = newPid1->getD();
-      newPid1->setD(temp -= DOT_2);
-      newPid2->setD(temp);
+      temp1 = newPid[axisName::primary]->getD();
+      temp2 = newPid[axisName::secondary]->getD();
+      newPid[axisName::primary]->setD(temp1 -= DOT_3);
+      newPid[axisName::secondary]->setD(temp2 -= DOT_3);
       TestOutput->print("kD: ");
-      TestOutput->println(temp, 4);
+      TestOutput->println(temp1, 4);
       break;
     case 4:
-      temp = newPid1->getEF();
-      newPid1->setEF(temp -= 1);
-      newPid2->setEF(temp);
+      temp1 = newPid[axisName::primary]->getEF();
+      temp2 = newPid[axisName::secondary]->getEF();
+      newPid[axisName::primary]->setEF(temp1 -= 1);
+      newPid[axisName::secondary]->setEF(temp1 -= 1);
       TestOutput->print("eF: ");
-      TestOutput->println(temp, 4);
+      TestOutput->println(temp1, 4);
       break;
     case 5:
-      temp = axis1->getPower();
-      axis1->setPower(--temp);
-      axis2->setPower(temp);
+      temp1 = axisTest[axisName::primary]->getPower();
+      temp2 = axisTest[axisName::secondary]->getPower();
+      axisTest[axisName::primary]->setPower(--temp1);
+      axisTest[axisName::secondary]->setPower(--temp1);
       TestOutput->print("Throttle = ");
-      TestOutput->println(temp);
+      TestOutput->println(temp1);
       break;
     }
     break;
 
   case ' ':
-    axis1->setState(AxisMotor::state::off);
-    axis2->setState(AxisMotor::state::off);
+    axisTest[axisName::primary]->setState(AxisMotor::state::off);
+    axisTest[axisName::secondary]->setState(AxisMotor::state::off);
     break;
   case 'M':
     print_main_menu();
@@ -330,20 +344,20 @@ void test_setup()
 
   sensor = new Sensor("Sensor");
   sensor->setModel(&model.sensorData)->begin();
-  axis1 = new AxisMotor("Primary axismotor");
-  axis2 = new AxisMotor("Secondary axismotor");
+  axisTest[axisName::primary] = new AxisMotor("Primary axismotor");
+  axisTest[axisName::secondary] = new AxisMotor("Secondary axismotor");
   model.axisData[axisName::primary].feedback = &model.sensorData.roll; // must be before setModel because of feedback Pointer
   model.axisData[axisName::primary].rcX = &model.RC_interface.RX_payload.rcRoll;
   model.axisData[axisName::primary].rcY = &model.RC_interface.RX_payload.rcPitch;
   model.axisData[axisName::secondary].feedback = &model.sensorData.roll; // must be before setModel because of feedback Pointer
   model.axisData[axisName::secondary].rcX = &model.RC_interface.RX_payload.rcRoll;
   model.axisData[axisName::secondary].rcY = &model.RC_interface.RX_payload.rcPitch;
-  axis1->setModel(&model.axisData[axisName::primary])->begin();
-  axis2->setModel(&model.axisData[axisName::secondary])->begin();
-  axis1->initMotorOrdered(PIN_MOTOR_FL)->initMotorOrdered(PIN_MOTOR_BR);
-  axis2->initMotorOrdered(PIN_MOTOR_FR)->initMotorOrdered(PIN_MOTOR_BL);
-  newPid1 = axis1->getPid();
-  newPid2 = axis2->getPid();
+  axisTest[axisName::primary]->setModel(&model.axisData[axisName::primary])->begin();
+  axisTest[axisName::secondary]->setModel(&model.axisData[axisName::secondary])->begin();
+  axisTest[axisName::primary]->initMotorOrdered(PIN_MOTOR_FL)->initMotorOrdered(PIN_MOTOR_BR);
+  axisTest[axisName::secondary]->initMotorOrdered(PIN_MOTOR_FR)->initMotorOrdered(PIN_MOTOR_BL);
+  newPid[axisName::primary] = axisTest[axisName::primary]->getPid();
+  newPid[axisName::secondary] = axisTest[axisName::secondary]->getPid();
   monitor = new Monitor("Monitor", Report_t::ALL_AXIS);
   monitor->setModel(&model)->begin();
 
@@ -359,13 +373,13 @@ void test_loop()
     _lastMillis = millis();    
     TestOutput->printf("/*%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i*/\r\n",
                     model.axisData[axisName::primary].power,
-                    axis1->getMotorPower(false),
-                    axis1->getMotorPower(true),
+                    axisTest[axisName::primary]->getMotorPower(false),
+                    axisTest[axisName::primary]->getMotorPower(true),
                     model.sensorData.roll,
                     model.axisData[axisName::primary].pidError,
-                    newPid1->getP(),
-                    newPid1->getI(),
-                    newPid1->getD(),
+                    newPid[axisName::primary]->getP(),
+                    newPid[axisName::primary]->getI(),
+                    newPid[axisName::primary]->getD(),
                     model.axisData[axisName::primary].setpoint,
                     model.looptime);
   }
@@ -384,8 +398,8 @@ void test_loop()
   }
   model.axisData[0].setpoint = model.RC_interface.RX_payload.rcRoll;
   model.axisData[1].setpoint = model.RC_interface.RX_payload.rcRoll;
-  axis1->update();
-  axis2->update();
+  axisTest[axisName::primary]->update();
+  axisTest[axisName::secondary]->update();
   monitor->update();
   sensor->enter();
   model.looptime = micros()-_lastLooptime;
