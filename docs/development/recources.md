@@ -1,4 +1,4 @@
-# Resources
+# Recources
 
 ## Propeller rotation order
 ![propeller](../images/Motor_Rotation_order.jpg)
