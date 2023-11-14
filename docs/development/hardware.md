@@ -164,3 +164,28 @@ Power suply range 3,6 to 5,5V<br>
 |Funkt. |Pin |GPIO|
 |-------|----|----|
 | Alarm | 14 | 10 |
+
+## BT Modul HC6 Version: v2.0 + edr
+![BT_topview](../images/BT_HC6_1.png)
+![BT_backview](../images/BT_HC6_1.png)
+
+Allows your device to send or receive the TTL data via Bluetooth technology without connecting a serial cable to your computer.<br>
+Feature:<br>
+Works with any USB Bluetooth adapter.<br>
+Default baud rate: 9600,8,1,n.<br>
+Built-in antenna.<br>
+Coverage up to 30ft.<br>
+Operating voltage: 3.3~6V<br>
+Piece weight: 3g<br>
+With LED indicator lamp, use 150ma and 3.3v rule chip.<br>
+Compatible with Bluetooth master module "slave module" or master-slave (whole) module.<br>
+Size: 1.55cm*3.98cm<br>
+
+Module used
+
+|   Bez.     |        |
+|------------|--------|
+|Port:       | COM 4  |
+|Baute rate: | 115200 |
+|Device name:| BT1990 |
+|PIN code:   | 1990   |

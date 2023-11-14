@@ -26,6 +26,8 @@
 #define PIN_BATTERY 26
 #define LED_PIN_ALERT 10
 
+#define LED_POSITION 7
+
 #define POWER_MIN 0
 #define POWER_MAX 100
 #define BASE_MOTOR_POWER 5 //< 5% minimal throttle in fly mode for preventing stop of the motors

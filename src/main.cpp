@@ -145,6 +145,9 @@ void base_setup()
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
+  pinMode(LED_POSITION, OUTPUT);
+  digitalWrite(LED_POSITION, LOW);
+
   DebugOutput->begin(COM_SPEED);
   TestOutput->begin(BT_SPEED);
   DebugOutput->println("Serial COM OK");
