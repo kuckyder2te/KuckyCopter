@@ -4,10 +4,11 @@
 https://youtu.be/JBvnB0279-Q?si=LplhdbVDn-7sKslk
 
 ## Old PID coefficients
-    P		I		D
-    Pri		0,14	0,18	0,102
-    Sec		0,14	0,18	0,102
-    Yaw		0,01	0		0
+|     Axis      |  P   |  I	  |	 D    |
+|---------------|------|------|-------|
+|Primary axis   | 0,14 | 0,18 |	0,102 |
+|Secondarx axis | 0,14 | 0,18 | 0,102 |
+|Yaw	        | 0,01 |  0	  |	 0    | 
 
 ## PID adjust
 

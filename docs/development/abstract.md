@@ -6,10 +6,12 @@ Taret:<br>
 An RC controlled drohne who can hold a position in all 3 directions.An RC controlled drohne who can hold a position in all 3 directions. 
 
 ## Used software
-    VSCode
-    KiCad/FlatCam
-    VNC
-    Freecad
+    Codng: VSCode
+    Circut: KiCad
+    Platine: FlatCam
+    Connetion to Cyclone: VNC
+    CAD: Freecad
+
 ## Used Devices
     3D Drucker Voron 300
     CNC Cyclone

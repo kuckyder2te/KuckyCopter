@@ -1,5 +1,5 @@
 /*  File name : main.cpp
-    Project name : KuCo_Phantom 1
+    Project name : KuckyCopter
     Date : 2022-04-23
 
     Description : Drohne
@@ -8,6 +8,7 @@
                Baro : MS5911
                Radio : NRF24
                Sonic : HRS04
+               COM : BT HC6 v1.05
 */
 
 #include <Arduino.h>
