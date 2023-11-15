@@ -16,6 +16,7 @@ Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP
 6. Thermosensor
 7. State LED´s
 8. Position LED´s
+
 ![Bottom](../images/Board_backside_1.png)
 
 ## IMU
