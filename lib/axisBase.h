@@ -28,6 +28,18 @@ public:
         int8_t *rcY;       ///< virtual axis. Corresponds to the PITCH axis.
     } axisData_t;
 
+    typedef enum
+	{
+		arming_start = 0,
+		arming_busy,
+		arming_end,
+		disablePID,
+		enablePID,
+		standby,
+		ready,
+		off
+	} state;
+
 private:
     static uint8_t _instanceCounter; ///< static entfernt ??
 
@@ -39,6 +51,7 @@ protected:
     int16_t *_error;
     uint32_t _lastMillis;
     axisData_t *_axisData;
+    state _state, _lastState;
 
 public:
     /// @brief Defindet the base axis
@@ -54,6 +67,8 @@ public:
         _fb = 0;
         //   loadPIDConfig();
     }
+
+    virtual boolean isArmed() = 0;
 
     NewPID *getPid()
     {
@@ -105,6 +120,25 @@ public:
     int16_t getPidError(){
         return *_error;
     }
+
+    virtual boolean isStandby()
+	{
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isStandby %s ", this->getName().c_str());
+		return (_state == standby);
+	} /*--------------------- end of isStandby -------------------------------------------------*/
+    
+
+	virtual boolean isDeactivatePID()
+	{
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isDeactivatePID %s ", this->getName().c_str());
+		return (_state == disablePID);
+	} /*--------------------- end of isDeactivatePID -------------------------------------------*/
+
+	virtual boolean isReady()
+	{
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isReady %s ", this->getName().c_str());
+		return (_state == ready);
+	} /*---------------------- end of isReady ---------------------------------------------------*/
 };    /*----------------------------------- end of axisBase class -----------------------------*/
 
 uint8_t AxisBase::_instanceCounter = 0; // https://stackoverflow.com/questions/5391973/undefined-reference-to-static-const-int

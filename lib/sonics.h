@@ -3,7 +3,7 @@
  *	Project name: KuCo_Phantom 1
  *  Date: 2022-05-28
  *  Author: Stephan Scholz / Wilhelm Kuckelsberg
- *  Description: Niederflug
+ *  Description: Low flight and obstacle detection
  *  HCSR04 max. Distanz 400cm
  *
  *  Impulsdauer 100cm   2,9137 mSec * 2 = 5,8275 mSec

@@ -11,6 +11,10 @@
 #include "..\lib\sensors.h"
 #include "..\lib\def.h"
 
+#define LOCAL_DEBUG
+
+#include "..\lib\myLogger.h"
+
 //AxisMotor *axis_primary;
 //AxisMotor *axis[axisName::secondary];
 AxisMotor *axisTest[2];
@@ -119,7 +123,7 @@ void main_gui(char key)
 
 void pid_gui(char key)
 {
-  static float temp1,temp2;
+  static float temp;
 
   switch (toupper(key))
   {
@@ -137,22 +141,22 @@ void pid_gui(char key)
     break;
   case 'S':
     TestOutput->print("P: ");
-    TestOutput->println(newPid[axisName::primary]->getP(), 2);
+    TestOutput->println(newPid[axisName::primary]->getP(), 3);
     TestOutput->print("I: ");
-    TestOutput->println(newPid[axisName::primary]->getI(), 2);
+    TestOutput->println(newPid[axisName::primary]->getI(), 3);
     TestOutput->print("D: ");
-    TestOutput->println(newPid[axisName::primary]->getD(), 2);
+    TestOutput->println(newPid[axisName::primary]->getD(), 3);
     TestOutput->print("EF: ");
     TestOutput->println(newPid[axisName::primary]->getEF());
     TestOutput->print("ExecutionTime:");
     TestOutput->println(newPid[axisName::primary]->getExecutionTime());
 
     TestOutput->print("P: ");
-    TestOutput->println(newPid[axisName::secondary]->getP(), 2);
+    TestOutput->println(newPid[axisName::secondary]->getP(), 3);
     TestOutput->print("I: ");
-    TestOutput->println(newPid[axisName::secondary]->getI(), 2);
+    TestOutput->println(newPid[axisName::secondary]->getI(), 3);
     TestOutput->print("D: ");
-    TestOutput->println(newPid[axisName::secondary]->getD(), 2);
+    TestOutput->println(newPid[axisName::secondary]->getD(), 3);
     TestOutput->print("EF: ");
     TestOutput->println(newPid[axisName::secondary]->getEF());
     TestOutput->print("ExecutionTime:");
@@ -208,44 +212,39 @@ void pid_gui(char key)
     switch (_pidParameter)
     {
     case 1:
-      temp1 = newPid[axisName::primary]->getP();
-      temp2 = newPid[axisName::secondary]->getP();
-      newPid[axisName::primary]->setP(temp1 += DOT_3);
-      newPid[axisName::secondary]->setP(temp2 += DOT_3);
+      temp = newPid[axisName::primary]->getP();
+      newPid[axisName::primary]->setP(temp += DOT_3); 
+      newPid[axisName::secondary]->setP(temp);
       TestOutput->print("kP: ");
-      TestOutput->println(temp1, 4);
+      TestOutput->println(temp, 4);
       break;
     case 2:
-      temp1 = newPid[axisName::primary]->getI();
-      temp2 = newPid[axisName::secondary]->getI();
-      newPid[axisName::primary]->setI(temp1 += DOT_3);
-      newPid[axisName::secondary]->setI(temp2 += DOT_3);
+      temp = newPid[axisName::primary]->getI();
+      newPid[axisName::primary]->setI(temp += DOT_3);
+      newPid[axisName::secondary]->setI(temp);
       TestOutput->print("kI: ");
-      TestOutput->println(temp1, 4);
+      TestOutput->println(temp, 4);
       break;
     case 3:
-      temp1 = newPid[axisName::primary]->getD();
-      temp2 = newPid[axisName::secondary]->getD();
-      newPid[axisName::primary]->setD(temp1 += DOT_3);
-      newPid[axisName::secondary]->setD(temp2 += DOT_3);
+      temp = newPid[axisName::primary]->getD();
+      newPid[axisName::primary]->setD(temp += DOT_3);
+      newPid[axisName::secondary]->setD(temp);
       TestOutput->print("kD: ");
-      TestOutput->println(temp1, 4);
+      TestOutput->println(temp, 4);
       break;
     case 4:
-      temp1 = newPid[axisName::primary]->getEF();
-      temp2 = newPid[axisName::secondary]->getEF();
-      newPid[axisName::primary]->setEF(temp1 += 1);
-      newPid[axisName::secondary]->setEF(temp2 += 1);
+      temp = newPid[axisName::primary]->getEF();
+      newPid[axisName::primary]->setEF(temp += 1);
+      newPid[axisName::secondary]->setEF(temp);
       TestOutput->print("eF: ");
-      TestOutput->println(temp1, 4);
+      TestOutput->println(temp, 4);
       break;
     case 5:
-      temp1 = axisTest[axisName::primary]->getPower();
-      temp2 = axisTest[axisName::secondary]->getPower();
-      axisTest[axisName::primary]->setPower(++temp1);
-      axisTest[axisName::secondary]->setPower(++temp2);
+      temp = axisTest[axisName::primary]->getPower();
+      axisTest[axisName::primary]->setPower(++temp);
+      axisTest[axisName::secondary]->setPower(temp);
       TestOutput->print("Throttle = ");
-      TestOutput->println(temp1);
+      TestOutput->println(temp);
       break;
     }     // end of switch
     newPid[axisName::primary]->saveParameters();
@@ -256,46 +255,43 @@ void pid_gui(char key)
     switch (_pidParameter)
     {
     case 1:
-      temp1 = newPid[axisName::primary]->getP();
-      temp2 = newPid[axisName::secondary]->getP();
-      newPid[axisName::primary]->setP(temp1 -= DOT_3);
-      newPid[axisName::secondary]->setP(temp2 -= DOT_3);
+      temp = newPid[axisName::primary]->getP();
+      newPid[axisName::primary]->setP(temp -= DOT_3);
+      newPid[axisName::secondary]->setP(temp);
       TestOutput->print("kP: ");
-      TestOutput->println(temp1, 4);
+      TestOutput->println(temp, 4);
       break;
     case 2:
-      temp1 = newPid[axisName::primary]->getI();
-      temp2 = newPid[axisName::secondary]->getI();
-      newPid[axisName::primary]->setI(temp1 -= DOT_3);
-      newPid[axisName::secondary]->setI(temp2 -= DOT_3);
+      temp = newPid[axisName::primary]->getI();
+      newPid[axisName::primary]->setI(temp -= DOT_3);
+      newPid[axisName::secondary]->setI(temp);
       TestOutput->print("kI: ");
-      TestOutput->println(temp1, 4);
+      TestOutput->println(temp, 4);
       break;
     case 3:
-      temp1 = newPid[axisName::primary]->getD();
-      temp2 = newPid[axisName::secondary]->getD();
-      newPid[axisName::primary]->setD(temp1 -= DOT_3);
-      newPid[axisName::secondary]->setD(temp2 -= DOT_3);
+      temp = newPid[axisName::primary]->getD();
+      newPid[axisName::primary]->setD(temp -= DOT_3);
+      newPid[axisName::secondary]->setD(temp);
       TestOutput->print("kD: ");
-      TestOutput->println(temp1, 4);
+      TestOutput->println(temp, 4);
       break;
     case 4:
-      temp1 = newPid[axisName::primary]->getEF();
-      temp2 = newPid[axisName::secondary]->getEF();
-      newPid[axisName::primary]->setEF(temp1 -= 1);
-      newPid[axisName::secondary]->setEF(temp1 -= 1);
+      temp = newPid[axisName::primary]->getEF();
+      newPid[axisName::primary]->setEF(temp -= 1);
+      newPid[axisName::secondary]->setEF(temp);
       TestOutput->print("eF: ");
-      TestOutput->println(temp1, 4);
+      TestOutput->println(temp, 4);
       break;
     case 5:
-      temp1 = axisTest[axisName::primary]->getPower();
-      temp2 = axisTest[axisName::secondary]->getPower();
-      axisTest[axisName::primary]->setPower(--temp1);
-      axisTest[axisName::secondary]->setPower(--temp1);
+      temp = axisTest[axisName::primary]->getPower();
+      axisTest[axisName::primary]->setPower(--temp);
+      axisTest[axisName::secondary]->setPower(temp);
       TestOutput->print("Throttle = ");
-      TestOutput->println(temp1);
+      TestOutput->println(temp);
       break;
     }
+    newPid[axisName::primary]->saveParameters();
+    newPid[axisName::secondary]->saveParameters();
     break;
 
   case ' ':
@@ -396,8 +392,8 @@ void test_loop()
       break;
     }
   }
-  model.axisData[0].setpoint = model.RC_interface.RX_payload.rcRoll;
-  model.axisData[1].setpoint = model.RC_interface.RX_payload.rcRoll;
+  model.axisData[axisName::primary].setpoint = model.RC_interface.RX_payload.rcRoll;
+  model.axisData[axisName::secondary].setpoint = model.RC_interface.RX_payload.rcRoll;
   axisTest[axisName::primary]->update();
   axisTest[axisName::secondary]->update();
   monitor->update();

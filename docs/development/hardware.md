@@ -19,13 +19,12 @@ Raspberry Pi Pico Entwicklung Bord TYPE-C High-Leistung Mikrocontroller-board RP
 
 ![Bottom](../images/Board_backside_1.png)
 
-## IMU
+## IMU CJMCU-117
 MPU9250/MS5611 CJMCU-117 High Precision 9 Axis 10DOF Attitude Module SPI/IIC Communication
 
 ![IMU](../images/IMU.JPG)
 ![IMU2](../images/IMU_2.JPG)<br  >
 **Attention: Pad NCS and PS must be connected**
-
 
 Chip: MPU-9250<br> 
 Power supply: 3-5v (internal low dropout regulator)<br> 
@@ -139,8 +138,27 @@ Ausgestattet mit integriertem linearen bec oder bec Schalter.<br>
 
 ## Alarm
 **aktiver Summer kontinuierlicher Piepton 12*9,5mm 5V**
-![Buzzer](../images/Buzzer.jpg)
+NEUE HC-05 HC 05 hc-06 HC 06 RF Wireless Bluetooth Transceiver Slave Modul RS232 / TTL zu UART converter und adapter
 
 |Funkt. |Pin |GPIO|
 |-------|----|----|
 | Alarm | 14 | 10 |
+
+## BT Modul
+**HC 06 RF Wireless Bluetooth Transceiver Slave Modul RS232 / TTL zu UART converter und adapter**
+![BT_Modul](../images/BT_HC6_1.png)
+![BT_Modul2](../images/BT_HC6_2.png)
+
+1. Funktioniert mit jedem USB-Bluetooth-Adapter.
+2. Standard-Baudrate: 9600,8,1,n.
+3. Eingebaute Antenne.
+4. Bluetooth-Version: v2.0 + edr
+5. Betriebs spannung: 3.3 ~ 6V
+6. Signal abdeckung: 30ft
+7. Kabellänge: 21,5 cm
+8. Artikel größe: 4,3*1,6*0,7 cm
+9. Stück gewicht: 3g
+10. Mit LED-Anzeige lampe, verwenden Sie 150ma und 3,3 v Regel chip.
+11. Mit "re-seach"-Taste (Ein/Aus/Wake-Fuß dafür, externer mcu outinput "high level" kann Modul steuern, um wieder zu seach)
+12. Kompatibel mit Bluetooth-Master-Modul ". Slave-Modul" oder Master-Slave (Ganzes)-Modul.
+13. Größe: 1,55 cm * 3,98 cm

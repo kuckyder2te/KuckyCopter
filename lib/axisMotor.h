@@ -23,23 +23,11 @@ public:
 		second
 	} motor_t;
 	
-	typedef enum
-	{
-		arming_start = 0,
-		arming_busy,
-		arming_end,
-		disablePID,
-		enablePID,
-		standby,
-		ready,
-		off
-	} state;
-	
 private:
 	Motor *_motor[2];
 	double _roll;
 	bool _invertRoll;
-	state _state, _lastState;
+	
 	uint16_t _lastPower;
 
 public:
@@ -204,27 +192,9 @@ public:
 		}
 	} /*--------------------- end of getMotorPower ----------------------------------------------*/
 
-	boolean isArmed() const
+	virtual boolean isArmed()
 	{
 		LOGGER_VERBOSE("Enter....isArmed");
 		return ((_motor[motor_t::first]->isArmed()) && (_motor[motor_t::second]->isArmed()));
 	} /*---------------------- end of isArmed --------------------------------------------------*/
-
-	boolean isDeactivatePID()
-	{
-		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isDeactivatePID %s ", this->getName().c_str());
-		return (_state == disablePID);
-	} /*--------------------- end of isDeactivatePID -------------------------------------------*/
-
-	boolean isStandby()
-	{
-		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isStandby %s ", this->getName().c_str());
-		return (_state == standby);
-	} /*--------------------- end of isStandby -------------------------------------------------*/
-
-	boolean isReady()
-	{
-		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isReady %s ", this->getName().c_str());
-		return (_state == ready);
-	} /*---------------------- end of isReady ---------------------------------------------------*/
 }; /*.................................. end of axisMotor class ---------------------------------*/

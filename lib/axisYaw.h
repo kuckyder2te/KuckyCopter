@@ -182,22 +182,24 @@ public:
 		LOGGER_NOTICE("Leave  setState");
 	} /*---------------------- end of setState -------------------------------------------------*/
 
-	boolean isArmed()
+	virtual boolean isArmed()
 	{
 		LOGGER_VERBOSE_FMT("State %d ", _state);
 		return (_axisMotor[axisName::primary]->isArmed() && _axisMotor[axisName::secondary]->isArmed());
 	} /*---------------------- end of isArmed --------------------------------------------------*/
 
-	boolean isDeactivatePID()
+	virtual boolean isDeactivatePID()
 	{
-		return ((_state == disablePID)) && (_axisMotor[axisName::primary]->isDeactivatePID()) && (_axisMotor[axisName::secondary]->isDeactivatePID());
-		LOGGER_NOTICE_FMT("Yaw isDeactivatePID %d", _state);
+		bool state = ((_state == disablePID) && _axisMotor[axisName::primary]->isDeactivatePID() && _axisMotor[axisName::secondary]->isDeactivatePID());
+		LOGGER_NOTICE_FMT("Yaw isDeactivatePID %d", state);
+		return (state);
 	} /*---------------------- end of isDeactivatePID ------------------------------------------*/
 
-	boolean isReady()
+	virtual boolean isReady()
 	{
-		LOGGER_NOTICE_FMT("getYawAxisState %d ", _state);
-		return ((_state == ready)) && (_axisMotor[axisName::primary]->isReady()) && (_axisMotor[axisName::secondary]->isReady());
+		bool ready = ((_state == ready)) && (_axisMotor[axisName::primary]->isReady()) && (_axisMotor[axisName::secondary]->isReady());
+		LOGGER_NOTICE_FMT("getYawAxisState %d ", ready);
+		return ready;
 	} /*---------------------- end of isReady --------------------------------------------------*/
 
 }; /* ------------------------ end of AxisYaw Class --------------------------------------------*/
