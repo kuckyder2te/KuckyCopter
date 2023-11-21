@@ -27,6 +27,7 @@ typedef enum
     RADIO,
     RADIO_SENSOR,
     SONIC,
+    BATTERY,
     FLYCONTROL,
     DEFAULT
 } Report_t;

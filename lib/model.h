@@ -1,5 +1,5 @@
 /*  File name: model.h
-    Project name: KuCo_Phantom 1
+    Project name: KuckyCopter 2
     Date: 2022-05-31
     Author: Stephan Scholz / Wilhelm Kuckelsberg
     Description: Global constance

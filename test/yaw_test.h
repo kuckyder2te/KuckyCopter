@@ -1,5 +1,11 @@
 #pragma once
 
+/*  File name : yaw_test.h
+	Project name : KuckyCopter 2
+	Author: Stephan Scholz /  Wilhelm Kuckelsberg
+	Date : 2022-06-17
+	Description : Drohne
+*/
 #include "..\src\config.h"
 #include "..\lib\axisBase.h"
 #include "..\lib\axisMotor.h"
@@ -13,12 +19,8 @@
 #include "..\lib\myLogger.h"
 
 AxisMotor *axisTest[2];
-
 Monitor *monitor;
-// NewPID *newPid_primary;
-// NewPID *newPid_secondary;
 NewPID *newPid[3];
-
 Sensor *sensor;
 Motor *motor;
 

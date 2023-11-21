@@ -42,12 +42,13 @@ public:
 	}
 
 	AxisMotor *setModel(axisData_t *_model)
-	{ // Rückgabe wert ist das eigene Objekt (this)
-	  //_axis_data  wird aus dem Model in die Achse geschrieben
+	{ // Your own object is worth returning (this)
+	  //_axis_data is written to the axis from the model
 		LOGGER_NOTICE("Enter....");
 		_axisData = _model;
 		_state = standby;
-		AxisBase::_sp = &_axisData->setpoint; /// _sp ist ein Pointer, der sich die Adresse des wertes aus &_axisData->setpoint holt
+		AxisBase::_sp = &_axisData->setpoint; 	// _sp is a pointer that gets the address  
+												// of the value from &_axisData->setpoint
 		AxisBase::_fb = _axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
 		LOGGER_NOTICE("....leave");
@@ -87,9 +88,9 @@ public:
 	virtual void begin() override
 	{
 		LOGGER_NOTICE_FMT("Enter %s",this->getName().c_str());
-		LOGGER_NOTICE_FMT("%s", this->getName().c_str()); // Adresse von array of char
+		LOGGER_NOTICE_FMT("%s", this->getName().c_str()); // Address from array of char
 		AxisBase::begin();
-		//..und weitere Configgeschichten
+		//..and other configurations
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of begin ------------------------------------------*/
 

@@ -1,4 +1,10 @@
 #pragma once
+/* File name : flycontroller_test.h
+	 Project name : KuckyCopter 2
+	 Authors: Stephan Scholz /  Wilhelm Kuckelsberg
+	 Date : 2022-06-17
+	 Description : Drohne
+*/
 
 #include "..\src\config.h"
 #include "..\lib\flycontroller.h"

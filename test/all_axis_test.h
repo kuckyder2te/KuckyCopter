@@ -1,6 +1,10 @@
 #pragma once
-
-// #define EEPROM_OFFSET 300
+/* File name : all_axis_test.h
+	 Project name : KuckyCopter 2
+	 Author: Stephan Scholz /  Wilhelm Kuckelsberg
+	 Date : 2022-06-17
+	 Description : Drohne
+*/
 
 #include "..\src\config.h"
 #include "..\lib\axisBase.h"
@@ -15,15 +19,9 @@
 
 #include "..\lib\myLogger.h"
 
-//AxisMotor *axis_primary;
-//AxisMotor *axis[axisName::secondary];
 AxisMotor *axisTest[2];
-
 Monitor *monitor;
-//NewPID *newPid_primary;
-//NewPID *newPid_secondary;
 NewPID *newPid[2];
-
 Sensor *sensor;
 Motor *motor;
 
@@ -95,7 +93,7 @@ void main_gui(char key)
     break;
   case 'I':
     TestOutput->println("Invert Roll");
-    axisTest[axisName::primary]->InvertRoll();  /// ??? nicht für pitch ???
+    axisTest[axisName::primary]->InvertRoll();
     break;
   case 'O':
     TestOutput->println("Stop Motor");
@@ -310,7 +308,7 @@ void pid_gui(char key)
 
 void print_pid_menu()
 {
-  TestOutput->println("----------- Primary Axis Test PID Menu ---------");
+  TestOutput->println("----------- All Axis Test PID Menu ---------");
   TestOutput->println(" P - kP");
   TestOutput->println(" I - kI");
   TestOutput->println(" D - kD");
@@ -330,7 +328,7 @@ void print_pid_menu()
   TestOutput->println(" M for Main menu");
   TestOutput->println(" Re(c)ord on/off");
   TestOutput->println(" ? for this Menu");
-  TestOutput->println("------------------------------------------------");
+  TestOutput->println("--------------------------------------------");
 } /*------------------------- end of print_pid_menu ----------------------------------------------*/
 
 void test_setup()

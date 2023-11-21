@@ -1,4 +1,10 @@
 #pragma once
+/*  File name : radio_test.h
+	Project name : KuckyCopter 2
+	Author: Stephan Scholz /  Wilhelm Kuckelsberg
+	Date : 2022-06-17
+	Description : Drohne
+*/
 
 #include "..\src\config.h"
 #include "..\lib\radio.h"
@@ -38,4 +44,4 @@ void test_loop()
   send_data_to_drohne();
   delay(100);
 }
-/*------------------------ end of radio test progamm -------------------------------------------*/
+/*------------------------ end of radio test progamm --------------------------------------------*/

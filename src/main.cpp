@@ -1,5 +1,5 @@
 /*  File name : main.cpp
-    Project name : KuckyCopter
+    Project name : KuckyCopter v2
     Date : 2022-04-23
 
     Description : Drohne
@@ -121,6 +121,8 @@ void main_loop()
 #include "..\test\yaw_test.h"
 #elif _SONIC
 #include "..\test\sonic_test.h"
+#elif _BATTERY
+#include "..\test\battery_test.h"
 #elif _SENSOR
 #include "..\test\sensor_test.h"
 #elif _RADIO

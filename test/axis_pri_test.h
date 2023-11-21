@@ -1,6 +1,10 @@
 #pragma once
-
-// #define EEPROM_OFFSET 300
+/* File name : axis_pri_test.h
+	 Project name : KuckyCopter 2
+	 Author: Stephan Scholz /  Wilhelm Kuckelsberg
+	 Date : 2022-06-17
+	 Description : Drohne
+*/
 
 #include "..\src\config.h"
 #include "..\lib\axisBase.h"

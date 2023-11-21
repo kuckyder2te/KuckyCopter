@@ -1,4 +1,11 @@
 #pragma once
+/* File name : motor_test.h
+   Project name : KuckyCopter 2
+   Author: Stephan Scholz /  Wilhelm Kuckelsberg
+   Date : 2022-06-17
+   Description : Drohne
+*/
+
 #define LOCAL_DEBUG
 #include "..\lib\myLogger.h"
 
@@ -8,7 +15,6 @@
 
 Motor *motor[4];
 extern HardwareSerial *TestOutput;
-
 
 void test_setup()
 {
@@ -51,7 +57,7 @@ void test_loop()
 
     if (TestOutput->available())
     {
-      char key = TestOutput->read(); // z.B. Key 1 ~ 49  ~ motor[key-'1'] = motor[0]
+      char key = TestOutput->read(); // e.g. Key 1 ~ 49  ~ motor[key-'1'] = motor[0]
       switch (key)
       {
       case '1':
@@ -91,7 +97,6 @@ void test_loop()
     }
     else
     {
-
       for (uint8_t i = 0; i < 4; i++)
         motor[i]->getMotorState();
       LOGGER_NOTICE("------------------------");

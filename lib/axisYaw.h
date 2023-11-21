@@ -1,6 +1,6 @@
 #pragma once
 /*  File name : axisYaw.h
-	Project name : KuCo_Phantom 1
+	Project name : KuckyCopter 2
 	Author: Stephan Scholz /  Wilhelm Kuckelsberg
 	Date : 2022-06-17
 	Description : Drohne
@@ -47,11 +47,12 @@ private:
 
 public:
 	AxisYaw(const String &name) : AxisBase(name)
-	{											 /// Hier war der Fehler, ich muss das Basisobjekt weiterleiten
-		_virtualSetpoint = 0;					 /// SP ist immer 0 da dies der aktuellen Position entspricht die in der Mittelstellung verwendet wird
-		AxisBase::_sp = &_virtualSetpoint;		 // -Zuweisen des Models zu den PID Parametern ueber Zeiger
-		AxisBase::_fb = &_virtualFeedback;		 // -Ist notwendig um AxisBase.Service den PID error fuer beliebige Achsen berechnen z lassen
-		AxisBase::_error = &_axisData->pidError; // -
+	{											 
+		_virtualSetpoint = 0;	// Setpoint is always 0 as this corresponds 
+								// to the current position used in the middle position
+		AxisBase::_sp = &_virtualSetpoint;		 
+		AxisBase::_fb = &_virtualFeedback;		 
+		AxisBase::_error = &_axisData->pidError; 
 
 		_axisMotor[axisName::primary] = NULL;
 		_axisMotor[axisName::secondary] = NULL;

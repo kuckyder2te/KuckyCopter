@@ -1,21 +1,28 @@
 #pragma once
 /*  File name : battery.h
-    Project name : KuCo_Phantom 1
+    Project name : KuckyCopter
     Author: Stephan Scholz / Wilhelm Kuckelsberg
-    Date : 2022-06-13
+    Date : 2022-11-21
     Description : Check battery condition.
 */
 #include <Arduino.h>
 #include <TaskManager.h>
 
 #include <stdio.h>
-#include "pico/stdlib.h"
+// #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
-// #define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "config.h"
+
+/* 12,2V    933
+   11,3V    872
+   10,1V    777
+    9,5V    730
+    8,1V    626
+*/
 
 typedef struct
 {
@@ -39,33 +46,59 @@ public:
     Battery *setModel(batteryData_t *_model)
     {
         LOGGER_VERBOSE("Enter setModel....");
-
         _batteryData = _model;
         LOGGER_VERBOSE("....leave");
         return this;
-
         LOGGER_VERBOSE("....leave");
     }
 
     virtual void begin()
     {
         LOGGER_VERBOSE("Enter begin....");
-            pinMode(LED_PIN_ALERT, OUTPUT);
-            digitalWrite(LED_PIN_ALERT, LOW);
+        pinMode(LED_PIN_ALERT, OUTPUT);
+        digitalWrite(LED_PIN_ALERT, LOW);
         LOGGER_VERBOSE("....leave");
-    }
+    } /*------------------------ end of sonic test programm -------------------------------------------*/
 
     virtual void update() override
     {
+        static uint32_t lastMillis = millis();
+        static bool state;
+
         LOGGER_VERBOSE("Enter update....");
 
-            _batteryData->battery_State = analogRead(PIN_BATTERY);
-         //   uint16_t result = adc_read();
-         //   float conversion_factor = 3.3f / (1 << 12);
-         //   _batteryData->battery_State = result * conversion_factor;
+        _batteryData->battery_State = analogRead(PIN_BATTERY);
 
-        LOGGER_NOTICE_FMT("Battery state = %i", _batteryData->battery_State);
+        // LOGGER_NOTICE_FMT("Battery state = %i", _batteryData->battery_State);
 
+        if (_batteryData->battery_State > 860)
+        {
+            LOGGER_NOTICE_FMT("Battery is full = %i", _batteryData->battery_State);
+            digitalWrite(LED_PIN_ALERT, LOW);
+        }
+
+        else if (_batteryData->battery_State > 780 || _batteryData->battery_State >= 859)
+        {
+            if (millis() - lastMillis > 1000)
+            {
+                LOGGER_NOTICE_FMT("Battery is OK = %i", _batteryData->battery_State);
+                state = !state;
+                digitalWrite(LED_PIN_ALERT, state);
+                lastMillis = millis();
+            }
+        }
+
+        else if (_batteryData->battery_State < 779)
+        {
+            if (millis() - lastMillis > 100)
+            {
+                LOGGER_NOTICE_FMT("Battery is OK = %i", _batteryData->battery_State);
+                state = !state;
+                digitalWrite(LED_PIN_ALERT, state);
+                lastMillis = millis();
+            }
+        }
         LOGGER_VERBOSE("....leave");
-    }
+    } /*------------------------ end of update ---------------------------------------------------*/
+
 }; /*--------------------------------- end of class battery.h -----------------------------------*/

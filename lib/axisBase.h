@@ -1,7 +1,7 @@
 #pragma once
 /*  File name : axisBase.h
-    Project name : KuCo_Phantom 1
-    Authors: Stephan cholz / Wilhelm Kuckelsberg
+    Project name : KuCo version 2
+    Authors: Stephan Scholz / Wilhelm Kuckelsberg
     Date : 2022-06-16
 
     Description :
