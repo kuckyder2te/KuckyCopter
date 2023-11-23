@@ -149,7 +149,7 @@ void base_setup()
   digitalWrite(LED_BUILTIN, HIGH);
 
   pinMode(LED_POSITION, OUTPUT);
-  digitalWrite(LED_POSITION, LOW);
+  digitalWrite(LED_POSITION, HIGH);
 
   DebugOutput->begin(COM_SPEED);
   TestOutput->begin(BT_SPEED);

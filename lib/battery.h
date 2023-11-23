@@ -50,7 +50,7 @@ public:
         LOGGER_VERBOSE("....leave");
         return this;
         LOGGER_VERBOSE("....leave");
-    }
+    } /*------------------------ end of configuration -------------------------------------------*/
 
     virtual void begin()
     {
@@ -58,7 +58,7 @@ public:
         pinMode(LED_PIN_ALERT, OUTPUT);
         digitalWrite(LED_PIN_ALERT, LOW);
         LOGGER_VERBOSE("....leave");
-    } /*------------------------ end of sonic test programm -------------------------------------------*/
+    } /*------------------------ end of begin ---------------------------------------------------*/
 
     virtual void update() override
     {
@@ -75,6 +75,7 @@ public:
         {
             LOGGER_NOTICE_FMT("Battery is full = %i", _batteryData->battery_State);
             digitalWrite(LED_PIN_ALERT, LOW);
+            
         }
 
         else if (_batteryData->battery_State > 780 || _batteryData->battery_State >= 859)
