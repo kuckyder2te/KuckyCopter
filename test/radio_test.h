@@ -36,12 +36,13 @@ void test_setup()
   radio->setModel(&model.RC_interface)->begin();
   monitor = new Monitor("monitor", Report_t::RADIO);
   monitor->setModel(&model)->begin();
-}
+}/*------------------------ end of radio test_setup ---------------------------------------------*/
+
 void test_loop()
 {
   radio->update();
   monitor->update();
   send_data_to_drohne();
   delay(100);
-}
+}/*------------------------ end of radio test_loop ----------------------------------------------*/
 /*------------------------ end of radio test progamm --------------------------------------------*/

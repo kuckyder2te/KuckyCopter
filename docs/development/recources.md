@@ -1,5 +1,14 @@
 # Recources
 
+## UART
+GP8 and GP9 are Serial2 !!
+Current COM4 115200bps
+
+## Degugger
+#define LOCAL_DEBUG = LOGGER ON<br>
+#define LOCAL_DEBUG = LOGGER OFF<br>
+#include "myLogger.h"
+
 ## Propeller rotation order
 ![propeller](../images/Motor_Rotation_order.jpg)
 
@@ -11,10 +20,10 @@
 
 ## Battery state 
 
-[LiPo Beschreibung](https://fpvracing.ch/de/content/21-lipo-batterien)
+[LiPo description](https://fpvracing.ch/de/content/21-lipo-batterien)
 
 |Battery voltage |analog|
-|------|------|
+|----------------|------|
 |12,2V | 933|
 |11,3V | 872|
 |10,1V | 777|

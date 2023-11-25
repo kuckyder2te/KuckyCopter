@@ -95,8 +95,7 @@ public:
                     _model->RC_interface.RX_payload.rcSwi2,
                     _model->RC_interface.RX_payload.rcSwi3,
                     _model->RC_interface.RX_payload.rcAltitudeBaroAdj,
-                    _model->RC_interface.RX_payload.rcAltitudeSonicAdj);
-                    
+                    _model->RC_interface.RX_payload.rcAltitudeSonicAdj);                   
                 break;
             case RADIO_SENSOR:
             TestOutput->println("DROHNE RADIO_SENSOR");
@@ -111,20 +110,19 @@ public:
                     _model->RC_interface.RX_payload.rcSwi3,
                     _model->RC_interface.RX_payload.rcAltitudeBaroAdj,
                     _model->RC_interface.RX_payload.rcAltitudeSonicAdj);
-                TestOutput->println(strBuf);         // auskommentiert wegen leerer Daten
-
+                TestOutput->println(strBuf);         
                 break;
-
             case SONIC:
-            TestOutput->println("SONIC");
-                TestOutput->printf("/*%i,%i*/\r\n",
+//            TestOutput->println("SONIC");
+                sprintf(strBuf,"/*%s,%i,%i*/",
+                    "Sonic distance/cm = ",
                     _model->sonicData.down_distance,
                     _model->sonicData.front_distance);
+                TestOutput->println(strBuf);
                 break;
             case AXIS:
                 break;
-            case ALL_AXIS:
-                
+            case ALL_AXIS:              
                 break;
             default:
                 TestOutput->println("Default");
@@ -132,5 +130,4 @@ public:
             }
         }
     } /*--------------------- end of update -----------------------------------------------------*/
-};
-/* -------------------------- end of monitor class ----------------------------------------------*/
+};/* -------------------------- end of monitor class --------------------------------------------*/

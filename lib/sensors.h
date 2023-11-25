@@ -119,7 +119,7 @@ public:
     virtual void enter() override
     {
         LOGGER_VERBOSE("Enter....");
-        if(micros()-_lastEnter<MIN_SENSOR_DELAY){
+        if(micros()-_lastEnter < MIN_SENSOR_DELAY){
             return;
         }        
         //    LOGGER_NOTICE_FMT("Wire %d", Wire.availableForWrite());
@@ -167,7 +167,6 @@ public:
 
     void display_imu_data()
     {
-
         LOGGER_NOTICE_FMT_CHK(_sensorData->yaw, __sensorData.yaw, "Yaw = %0.2f", _sensorData->yaw);
         LOGGER_NOTICE_FMT_CHK(_sensorData->pitch, __sensorData.pitch, "Pitch = %0.2f", _sensorData->pitch);
         LOGGER_NOTICE_FMT_CHK(_sensorData->roll, __sensorData.yaw, "Roll = %0.2f", _sensorData->roll);

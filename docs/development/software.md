@@ -50,7 +50,14 @@ the primary and/or secondary axis is tested, including<br>
 - IMU sensor<br>
 - PID settings<br>
 
+### radio_test.h
+The radio class is tested.
+
 ### sensor_radio_test.h
 The radio class is tested in combination with the IMU sensor.
+
+### sonic_test.h
+Two sonic sensors are testet. 
+One is directed forward, the other downwards. 
 
 

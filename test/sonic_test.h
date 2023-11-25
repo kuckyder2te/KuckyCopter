@@ -29,16 +29,15 @@ void test_setup()
 {
   LOGGER_VERBOSE("Enter....");
   sonic = new Sonic("sonic");
+  sonic->setModel(&model.sonicData)->begin();
   monitor = new Monitor("monitor", Report_t::SONIC);
-  monitor->setModel(&model);
-  sonic->setModel(&model.sonicData);
-  sonic->begin();
+  monitor->setModel(&model)->begin();
 }
 
 void test_loop()
 {
-  monitor->update();
   sonic->update();
+  monitor->update();
   performance_test(60);
 }
 /*------------------------ end of sonic test programm -------------------------------------------*/

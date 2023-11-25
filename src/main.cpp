@@ -42,7 +42,6 @@ model_t model;
 HardwareSerial *TestOutput = &Serial2;
 HardwareSerial *DebugOutput = &Serial;
 
-
 #ifdef _PID_ADJUST
 PID_adjust *_pid_adjust;
 #endif

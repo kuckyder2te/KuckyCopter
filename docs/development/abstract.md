@@ -1,15 +1,15 @@
 # Abstract
-The KuckyCopter is my first great Project.<br>
-Idee:<br>
-The goal almost 5 years ago was to build a completely homemade drone. The individual elements such as software, chassis and electronics should be developed in-house.<br> 
-Taret:<br>
-An RC controlled drohne who can hold a position in all 3 directions.An RC controlled drohne who can hold a position in all 3 directions. 
+    The KuckyCopter is my first great Project.<br>
+    Idee:<br>
+    The goal almost 5 years ago was to build a completely homemade drone. The individual elements such as software, chassis and electronics should be developed in-house.<br> 
+    Taret:<br>
+    An RC controlled drohne who can hold a position in all 3 directions.An RC controlled drohne who can hold a position in all 3 directions. 
 
 ## Used software
-    Codng: VSCode
+    Coding: VSCode
     Circut: KiCad
     Platine: FlatCam
-    Connetion to Cyclone: VNC
+    Connection to Cyclone: VNC
     CAD: Freecad
 
 ## Used Devices
@@ -18,4 +18,4 @@ An RC controlled drohne who can hold a position in all 3 directions.An RC contro
     Homemade thermal transfer laminator
 
 # Authors
-Kucky and Scholli
+    Kucky and Scholli

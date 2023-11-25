@@ -13,7 +13,7 @@
 #include "..\lib\model.h"
 #include "..\lib\newPID.h"
 #include "..\lib\sensors.h"
-#include "..\lib\def.h"
+//#include "..\lib\def.h"
 
 AxisMotor *axis;
 Monitor *monitor;

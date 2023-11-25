@@ -12,7 +12,7 @@
 // #define LOCAL_DEBUG
 #include "myLogger.h"
 
-#include "def.h"
+//#include "def.h"
 
 #define YAW_SENSIBILITY 5
 #define YAW_FINE_TUNING 0.1
