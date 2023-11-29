@@ -18,7 +18,6 @@
 #include "..\lib\putty_out.h"
 #include "dictionary.h"
 #include "..\lib\model.h"
-//#include "..\lib\def.h"
 
 #ifdef _PID_ADJUST
 

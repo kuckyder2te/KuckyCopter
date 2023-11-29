@@ -6,7 +6,7 @@
    Description : Drohne
 */
 
-#include "..\src\config.h"
+#include "..\src\def.h"
 #include "..\lib\axisBase.h"
 #include "..\lib\axisMotor.h"
 #include "..\lib\monitor.h"

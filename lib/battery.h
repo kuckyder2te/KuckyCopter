@@ -15,7 +15,7 @@
 #define LOCAL_DEBUG
 #include "myLogger.h"
 
-#include "config.h"
+#include "def.h"
 
 /* 12,2V    933
    11,3V    872

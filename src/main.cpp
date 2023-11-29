@@ -18,7 +18,7 @@
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
 #include "EEPROM.h"
-#include "config.h"
+#include "def.h"
 
 #include "..\lib\sensors.h"
 #include "..\lib\sonics.h"

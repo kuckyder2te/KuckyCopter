@@ -9,7 +9,7 @@
 #define LOCAL_DEBUG
 #include "..\lib\myLogger.h"
 
-#include "..\src\config.h"
+#include "..\src\def.h"
 #include "..\lib\axisBase.h"
 #include "..\lib\axisMotor.h"
 

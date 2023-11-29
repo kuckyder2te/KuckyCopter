@@ -28,7 +28,7 @@
 #define LOCAL_DEBUG
 #include "myLogger.h"
 
-#include "config.h"
+#include "def.h"
 
 #ifdef _RADIO
     #define ACK_PACKAGE_MAX_COUNT 10000

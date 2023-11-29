@@ -16,8 +16,7 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
-#include "config.h"
-//#include "..\lib\def.h"
+#include "def.h"
 
 #define LOCAL_DEBUG
 #include "myLogger.h"

@@ -19,7 +19,6 @@
 #include "myLogger.h"
 
 #include "EEPROM.h"
-//#include "..\lib\def.h"
 
 #ifndef EEPROM_OFFSET
 	#define EEPROM_OFFSET 0

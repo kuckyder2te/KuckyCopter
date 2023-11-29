@@ -6,7 +6,7 @@
 	Description : Drohne
 */
 
-#include "..\src\config.h"
+#include "..\src\def.h"
 #include "..\lib\newPID.h"
 #include "..\lib\monitor.h"
 #include "..\lib\model.h"

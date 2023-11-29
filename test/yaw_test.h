@@ -6,7 +6,7 @@
 	Date : 2022-06-17
 	Description : Drohne
 */
-#include "..\src\config.h"
+#include "..\src\def.h"
 #include "..\lib\axisBase.h"
 #include "..\lib\axisMotor.h"
 #include "..\lib\axisYaw.h"
