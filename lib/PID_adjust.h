@@ -18,7 +18,7 @@
 #include "..\lib\putty_out.h"
 #include "dictionary.h"
 #include "..\lib\model.h"
-#include "..\lib\def.h"
+//#include "..\lib\def.h"
 
 #ifdef _PID_ADJUST
 
@@ -56,7 +56,7 @@ private:
 		axis_pri = 1,
 		axis_sec = 2,
 		axis_yaw = 3
-	} itemAxis_Number_t; // Basis Nummer der Achse
+	} itemAxis_Number_t; // Base number of the axis
 
 	typedef enum
 	{
@@ -64,7 +64,7 @@ private:
 		offset_I = 20,
 		offset_D = 30,
 		offset_EF = 40
-	} itemCoefficient_t; // zu addierende Zahl zur Basis
+	} itemCoefficient_t; // number to be added to the base 
 
 	typedef enum // Pid_typ Primary P to YAW ef
 	{
@@ -80,9 +80,10 @@ private:
 		pri_ef = 41,
 		sec_ef = 42,
 		yaw_ef = 43
-	} pidTyp_t; // itemAxis_Number_t + itemCoefficient_t eergibt den "pidTyp" für die Funktion select()
-
-	float pri_kP_value = 0.0; // Werte nur für die Menüsteuerung
+	} pidTyp_t; /* itemAxis_Number_t + itemCoefficient_t returns 
+				   the "pidType" for the select() function
+				*/
+	float pri_kP_value = 0.0; //Start values for menu control
 	float pri_kI_value = 0.0;
 	float pri_kD_value = 0.0;
 	float pri_EF_value = 0.0;
@@ -120,8 +121,8 @@ public:
 
 	virtual ~PID_adjust() {}
 
-	PID_adjust *setModel(model_t *model) // const damit nur gelesen werden kann
-	{									 // Rückgabe wert ist das eigene Objekt (this)
+	PID_adjust *setModel(model_t *model) 
+
 		LOGGER_VERBOSE("Enter....");
 		_model = model;
 		// _model->interface.isconnect = true;		// darf nicht funktionieren da const und nur gelesen werden soll
@@ -703,5 +704,4 @@ public:
 	} /*----------------------------- end of setDecimalPlaces ----------------------------------*/
 
 }; /*------------------------- end of PID_adjust class -----------------------------------------*/
-
 #endif

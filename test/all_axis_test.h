@@ -1,9 +1,9 @@
 #pragma once
 /* File name : all_axis_test.h
-	 Project name : KuckyCopter 2
-	 Author: Stephan Scholz /  Wilhelm Kuckelsberg
-	 Date : 2022-06-17
-	 Description : Drohne
+   Project name : KuckyCopter 2
+   Author: Stephan Scholz /  Wilhelm Kuckelsberg
+   Date : 2022-06-17
+   Description : Drohne
 */
 
 #include "..\src\config.h"
@@ -13,10 +13,9 @@
 #include "..\lib\model.h"
 #include "..\lib\newPID.h"
 #include "..\lib\sensors.h"
-#include "..\lib\def.h"
+// #include "..\lib\def.h"
 
 #define LOCAL_DEBUG
-
 #include "..\lib\myLogger.h"
 
 AxisMotor *axisTest[2];
@@ -75,7 +74,7 @@ void main_gui(char key)
   case 'G':
     TestOutput->println(motor->getResultingPower());
     break;
-    
+
   case '+':
     power++;
     TestOutput->print("Power: ");
@@ -166,19 +165,23 @@ void pid_gui(char key)
     newPid[axisName::secondary]->initPID();
     break;
   case 'O':
-    TestOutput->print("Throttle is selected. Power= ");TestOutput->print(axisTest[axisName::primary]->getPower());
+    TestOutput->print("Throttle is selected. Power= ");
+    TestOutput->print(axisTest[axisName::primary]->getPower());
     _pidParameter = 5;
-    break;  
+    break;
   case 'P':
-    TestOutput->print("Parameter P is selected. P= ");TestOutput->print(newPid[axisName::primary]->getP());
+    TestOutput->print("Parameter P is selected. P= ");
+    TestOutput->print(newPid[axisName::primary]->getP());
     _pidParameter = 1;
     break;
   case 'I':
-    TestOutput->println("Parameter I is selected. I= ");TestOutput->print(newPid[axisName::primary]->getI());
+    TestOutput->println("Parameter I is selected. I= ");
+    TestOutput->print(newPid[axisName::primary]->getI());
     _pidParameter = 2;
     break;
   case 'D':
-    TestOutput->println("Parameter D is selected. D= ");TestOutput->print(newPid[axisName::primary]->getD());
+    TestOutput->println("Parameter D is selected. D= ");
+    TestOutput->print(newPid[axisName::primary]->getD());
     _pidParameter = 3;
     break;
   case 'F':
@@ -211,7 +214,7 @@ void pid_gui(char key)
     {
     case 1:
       temp = newPid[axisName::primary]->getP();
-      newPid[axisName::primary]->setP(temp += DOT_3); 
+      newPid[axisName::primary]->setP(temp += DOT_3);
       newPid[axisName::secondary]->setP(temp);
       TestOutput->print("kP: ");
       TestOutput->println(temp, 4);
@@ -244,7 +247,7 @@ void pid_gui(char key)
       TestOutput->print("Throttle = ");
       TestOutput->println(temp);
       break;
-    }     // end of switch
+    } // end of switch
     newPid[axisName::primary]->saveParameters();
     newPid[axisName::secondary]->saveParameters();
     break;
@@ -343,7 +346,7 @@ void test_setup()
   model.axisData[axisName::primary].feedback = &model.sensorData.roll; // must be before setModel because of feedback Pointer
   model.axisData[axisName::primary].rcX = &model.RC_interface.RX_payload.rcRoll;
   model.axisData[axisName::primary].rcY = &model.RC_interface.RX_payload.rcPitch;
-  model.axisData[axisName::secondary].feedback = &model.sensorData.roll; // must be before setModel because of feedback Pointer
+  model.axisData[axisName::secondary].feedback = &model.sensorData.roll;
   model.axisData[axisName::secondary].rcX = &model.RC_interface.RX_payload.rcRoll;
   model.axisData[axisName::secondary].rcY = &model.RC_interface.RX_payload.rcPitch;
   axisTest[axisName::primary]->setModel(&model.axisData[axisName::primary])->begin();
@@ -360,22 +363,23 @@ void test_setup()
 
 void test_loop()
 {
-  //TestOutput->println("loop");
+  // TestOutput->println("loop");
   unsigned long _lastLooptime = micros();
   static unsigned long _lastMillis = millis();
-  if(recorded&&(millis()-_lastMillis>100)){
-    _lastMillis = millis();    
+  if (recorded && (millis() - _lastMillis > 100))
+  {
+    _lastMillis = millis();
     TestOutput->printf("/*%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i*/\r\n",
-                    model.axisData[axisName::primary].power,
-                    axisTest[axisName::primary]->getMotorPower(false),
-                    axisTest[axisName::primary]->getMotorPower(true),
-                    model.sensorData.roll,
-                    model.axisData[axisName::primary].pidError,
-                    newPid[axisName::primary]->getP(),
-                    newPid[axisName::primary]->getI(),
-                    newPid[axisName::primary]->getD(),
-                    model.axisData[axisName::primary].setpoint,
-                    model.looptime);
+                       model.axisData[axisName::primary].power,
+                       axisTest[axisName::primary]->getMotorPower(false),
+                       axisTest[axisName::primary]->getMotorPower(true), // ???
+                       model.sensorData.roll,
+                       model.axisData[axisName::primary].pidError,
+                       newPid[axisName::primary]->getP(),
+                       newPid[axisName::primary]->getI(),
+                       newPid[axisName::primary]->getD(),
+                       model.axisData[axisName::primary].setpoint,
+                       model.looptime);
   }
   if (TestOutput->available())
   {
@@ -396,6 +400,6 @@ void test_loop()
   axisTest[axisName::secondary]->update();
   monitor->update();
   sensor->enter();
-  model.looptime = micros()-_lastLooptime;
+  model.looptime = micros() - _lastLooptime;
 }
-/*------------------------ end of axis pri test programm ----------------------------------------*/
+/*------------------------ end of all_axis_test class -------------------------------------------*/

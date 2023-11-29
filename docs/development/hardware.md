@@ -135,6 +135,8 @@ Equipped with integrated linear bec or bec switch.<br>
     Measuring temperature range: -55°C to +125°C.
     Accuracy: ±0.5°C (from -10°C to +85°C)
 
+    Wiring: Pullup resistor between 5V and signal.
+
 |Funkt. |Pin |GPIO|Color|
 |-------|----|----|-----|
 |Temp.  | 9  | 6  |
