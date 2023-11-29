@@ -130,11 +130,17 @@ Equipped with integrated linear bec or bec switch.<br>
 **DS18B20 temperature sensor**
 ![Dallas](../images/Dallas.jpg)
 
+    Supply Voltage: 3.0V to 5.5V DC.
+    Current consumption: 4mA max.
+    Measuring temperature range: -55°C to +125°C.
+    Accuracy: ±0.5°C (from -10°C to +85°C)
+
 |Funkt. |Pin |GPIO|Color|
 |-------|----|----|-----|
 |Temp.  | 9  | 6  |
 
 The core functionality of the DS18B20 is its direct-to- digital temperature sensor. The resolution of the tempera- ture sensor is user-configurable to 9, 10, 11, or 12 bits, corresponding to increments of 0.5°C, 0.25°C, 0.125°C, and 0.0625°C, respectively. The default resolution at power-up is 12-bit.
+
 
 ## Battery alert
 **active buzzer continuous beep 12*9,5mm 5V**
