@@ -134,6 +134,8 @@ Equipped with integrated linear bec or bec switch.<br>
 |-------|----|----|-----|
 |Temp.  | 9  | 6  |
 
+The core functionality of the DS18B20 is its direct-to- digital temperature sensor. The resolution of the tempera- ture sensor is user-configurable to 9, 10, 11, or 12 bits, corresponding to increments of 0.5°C, 0.25°C, 0.125°C, and 0.0625°C, respectively. The default resolution at power-up is 12-bit.
+
 ## Battery alert
 **active buzzer continuous beep 12*9,5mm 5V**
 NEUE HC-05 HC 05 hc-06 HC 06 RF Wireless Bluetooth Transceiver Slave Modul RS232 / TTL zu UART converter und adapter
