@@ -15,7 +15,7 @@
 #include "..\lib\model.h"
 #include "..\lib\sensors.h"
 
-#define LOCAL_LOGGER
+#define LOCAL_DEBUG
 #include "..\lib\myLogger.h"
 
 AxisMotor *axisTest[2];
@@ -28,8 +28,8 @@ extern HardwareSerial *TestOutput;
 extern model_t model;
 
 AxisYaw *axisyaw;
-double rotationSpeed;  ///< Speed which the copter should turn
-int16_t horz_Position; ///< Current YAW Position from Gyro
+//double rotationSpeed;  ///< Speed which the copter should turn
+//int16_t horz_Position; ///< Current YAW Position from Gyro
 
 void main_gui(char key);
 void print_main_menu();
@@ -49,8 +49,8 @@ void test_setup()
     axisyaw = new AxisYaw("Yaw");
     model.yaw.axisData[axisName::primary] = &model.axisData[axisName::primary];
     model.yaw.axisData[axisName::secondary] = &model.axisData[axisName::secondary];
-    model.yaw.horz_Position = &horz_Position;
-    model.yaw.rotationSpeed = &rotationSpeed;
+    //model.yaw.horz_Position = &horz_Position;
+    //model.yaw.rotationSpeed = &rotationSpeed;
     axisyaw->setModel(&model.yawData, &model.yaw)
         ->setAxisOrdered(axisTest[axisName::primary])
         ->setAxisOrdered(axisTest[axisName::secondary]);
@@ -74,8 +74,6 @@ void test_setup()
 
 void test_loop()
 {
-    unsigned long _lastLooptime = micros();
-
     axisTest[axisName::primary]->update();
     axisTest[axisName::secondary]->update();
     axisyaw->update();
@@ -86,13 +84,15 @@ void test_loop()
         char key = TestOutput->read();
         main_gui(key);
     }
-
-    model.looptime = micros() - _lastLooptime;
+    // LOGGER_NOTICE_FMT("Motor Powers: %d, %d, %d, %d",(uint16_t)axisTest[axisName::primary]->getMotorPower(false),
+    //                                                 (uint16_t)axisTest[axisName::primary]->getMotorPower(true),
+    //                                                 (uint16_t)axisTest[axisName::secondary]->getMotorPower(false),
+    //                                                 (uint16_t)axisTest[axisName::secondary]->getMotorPower(true));
 }
 
 void print_main_menu()
 {
-    TestOutput->println("----------- Primary Axis Test setup menu -------");
+    TestOutput->println("----------- YAW Test setup menu -------");
     TestOutput->println("A for arming");
     TestOutput->println("S for current State");
     TestOutput->println("Key (+) or (-) increment or decrement Power.");
@@ -134,16 +134,16 @@ void main_gui(char key)
         power++;
         TestOutput->print("Power: ");
         TestOutput->println(power);
-        axisTest[axisName::primary]->setPower(power);
-        axisTest[axisName::secondary]->setPower(power);
+        model.axisData[axisName::yaw].power = power;
+        //model.yaw.rotationSpeed = power;
         break;
     case '-':
         if (power > 0)
             power--;
         TestOutput->print("Power: ");
         TestOutput->println(power);
-        axisTest[axisName::primary]->setPower(power);
-        axisTest[axisName::secondary]->setPower(power);
+        model.axisData[axisName::yaw].power = power;
+        //model.yaw.rotationSpeed = power;
         break;
     case 'I':
         TestOutput->println("Invert Roll");

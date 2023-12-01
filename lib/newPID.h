@@ -15,7 +15,7 @@
 
 #include <FastPID.h>
 
-//#define LOCAL_DEBUG		// enable = debug this class  /  disable no debug
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "EEPROM.h"
@@ -29,7 +29,7 @@ typedef struct
 	float pidCoefficient[4]; // 16 bytes
 	uint8_t output_bits;	 // 2			""
 	bool output_signed;		 // 1   		""
-	bool modified;			 // 1   muss gesetzt werden wenn die Parameter manuell geändert wurden
+	bool modified;			 // 1   must be set if the parameters were changed manually
 } pidData_t;
 
 static pidData_t initPid = {{1.0f, 0.0f, 0.0f, 50.0f}, 8, false, false};
@@ -163,6 +163,14 @@ public:
 
 	LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of activatePID ------------------------------------*/
+	
+	// Methode Overlayed for real disable of PID execution
+	int16_t step(int16_t sp, int16_t fb){
+		if(_isEnabled){
+			return FastPID::step(sp, fb);
+		}
+		return 0;
+	}
 
 	void setP(float p)
 	{
@@ -231,15 +239,15 @@ public:
 		{
 			enablePID();
 		}
-
 	LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of setEF -------------------------------------------*/
 
 	float getExecutionTime()
+	///< Convert frequency to millis
 	{
-	//	LOGGER_NOTICE_FMT("PID getExecutionTime %.3f", (1 / _pidData.pidCoefficient[pidCoefficient::eF]) * 1000);
+		LOGGER_NOTICE_FMT("PID getExecutionTime %.3f", (1 / _pidData.pidCoefficient[pidCoefficient::eF]) * 1000);
 		return ((1.0 / (float)_pidData.pidCoefficient[pidCoefficient::eF]) * 1000);
-		///< Convert frequency to millis
+
 	} /*-------------------------------- end of getExecutionTime -------------------------------*/
 
 	float getP() const

@@ -9,7 +9,7 @@
 #include "AxisBase.h"
 #include "AxisMotor.h"
 
-// #define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #define YAW_SENSIBILITY 5
@@ -17,8 +17,8 @@
 
 typedef struct
 {
-	double *rotationSpeed;	///< Speed which the copter should turn
-	int16_t *horz_Position; ///< Current YAW Position from Gyro
+	double rotationSpeed;	///< Speed which the copter should turn
+	int16_t horz_Position; ///< Current YAW Position from Gyro
 	AxisMotor::axisData_t *axisData[2];
 } yaw_t;
 
@@ -58,8 +58,6 @@ public:
 		_lastCompass = 0;
 	};
 
-	virtual ~AxisYaw(){};
-
 	AxisYaw *setModel(axisData_t *_model, yaw_t *yaw)
 	{
 		LOGGER_VERBOSE("Enter....");
@@ -94,7 +92,7 @@ public:
 	virtual void begin()
 	{
 		AxisBase::begin();
-		digitalWrite(PIN_ESC_ON, LOW);
+		digitalWrite(PIN_ESC_ON, HIGH);
 	} /*------------------------------- end of virtual begin -----------------------------------*/
 
 	virtual void update()
@@ -136,7 +134,7 @@ public:
 			/* Enables the YawAxis PID controller and initiates activation for the motor axes. */
 			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter enablePID State %d", _state);
 			_newPID->enablePID();
-			*_yaw->horz_Position = 0;
+			_yaw->horz_Position = 0;
 			_axisMotor[axisName::primary]->setState(AxisMotor::enablePID);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::enablePID);
 			_lastCompass = *_axisData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
@@ -152,17 +150,17 @@ public:
 			// _axisData->power = 10;		// Test
 			// *_yaw->rotationSpeed = 100; // Test
 
-			if ((*_yaw->rotationSpeed > YAW_SENSIBILITY) || (*_yaw->rotationSpeed < (-YAW_SENSIBILITY)))
+			if ((_yaw->rotationSpeed > YAW_SENSIBILITY) || (_yaw->rotationSpeed < (-YAW_SENSIBILITY)))
 			{ ///< YAW Joystick is not moved....
-				_yaw->axisData[0]->power = _axisData->power - *_yaw->rotationSpeed * YAW_FINE_TUNING;
-				_yaw->axisData[1]->power = _axisData->power + *_yaw->rotationSpeed * YAW_FINE_TUNING;
-				_axisMotor[axisName::primary]->setPower(_axisData->power - *_yaw->rotationSpeed * YAW_FINE_TUNING);
-				_axisMotor[axisName::secondary]->setPower(_axisData->power + *_yaw->rotationSpeed * YAW_FINE_TUNING);
-				*_yaw->horz_Position = 0;
+				_yaw->axisData[0]->power = _axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING;
+				_yaw->axisData[1]->power = _axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING;
+				_axisMotor[axisName::primary]->setPower(_axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING);
+				_axisMotor[axisName::secondary]->setPower(_axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING);
+				_yaw->horz_Position = 0;
 			}
 			else
 			{											 ///< YAW  PID controller is active  .... Yaw joystick is in middle position
-				_virtualFeedback = *_yaw->horz_Position; /// *_fb = into the PID controller
+				_virtualFeedback = _yaw->horz_Position; /// *_fb = into the PID controller
 				_yaw->axisData[0]->power = _axisData->power - _axisData->pidError;
 				_yaw->axisData[1]->power = _axisData->power + _axisData->pidError;
 				_axisMotor[axisName::primary]->setPower(_axisData->power - _axisData->pidError); // yawError comes from the PID controller.

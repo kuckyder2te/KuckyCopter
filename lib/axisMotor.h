@@ -90,7 +90,7 @@ public:
 		LOGGER_NOTICE_FMT("Enter %s",this->getName().c_str());
 		LOGGER_NOTICE_FMT("%s", this->getName().c_str()); // Address from array of char
 		AxisBase::begin();
-		//..and other configurations
+				//..and other configurations
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of begin ------------------------------------------*/
 
@@ -133,12 +133,12 @@ public:
 			 * Look at module AxisYaw */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"deactivate PID %s ", this->getName().c_str());
 			AxisBase::_newPID->disablePID();
-			break;
+						break;
 		case enablePID:
 			/* Activate the PID controller from the MotorAxis with the current coefficients. */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"activate PID %s ", this->getName().c_str());
 			AxisBase::_newPID->enablePID();
-			_state = ready;
+						_state = ready;
 			break;
 		case standby:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"standby %s ", this->getName().c_str());
@@ -146,7 +146,6 @@ public:
 			_motor[motor_t::second]->setMotorState(Motor::stop);
 			break;
 		case ready:
-			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"ready %s ", this->getName().c_str());
 			_motor[motor_t::first]->setMotorState(Motor::rotating);
 			_motor[motor_t::second]->setMotorState(Motor::rotating);
 
@@ -156,7 +155,8 @@ public:
 
 			_motor[motor_t::first]->setPower(_axisData->power - _axisData->pidError);
 			_motor[motor_t::second]->setPower(_axisData->power + _axisData->pidError);
-			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"AxisMotor SP:%d, Power:%d, Error:%d", _axisData->setpoint, _axisData->power, _axisData->pidError);
+			
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"ready %s, AxisMotor SP:%d, Power:%d, Error:%d", this->getName().c_str(), _axisData->setpoint, _axisData->power, _axisData->pidError);
 			break;
 		case off:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"off %s ", this->getName().c_str());
@@ -169,7 +169,7 @@ public:
 
 	void setState(state state)
 	{
-		_state = state;
+				_state = state;
 	} /*--------------------- end of setState --------------------------------------------------*/
 
 	void setPower(int16_t _power)

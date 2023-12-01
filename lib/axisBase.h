@@ -41,7 +41,7 @@ public:
 	} state;
 
 private:
-    static uint8_t _instanceCounter; ///< static entfernt ??
+    static uint8_t _instanceCounter;
 
 protected:
     NewPID *_newPID;
@@ -54,7 +54,7 @@ protected:
     state _state, _lastState;
 
 public:
-    /// @brief Defindet the base axis
+    /// @brief Defines the base axis
     /// @param name Task name
     AxisBase(const String &name) : Task::Base(name)
     {
@@ -103,23 +103,20 @@ public:
     virtual void update() override
     {
         LOGGER_VERBOSE("Enter....");
-
         /* _sp Position of the joysticks.
            _fb Position of the drohne.  */
 
         if (millis() - _lastMillis >= _newPID->getExecutionTime())
         {              
             int16_t err = _newPID->step(*_sp, *_fb);                        
-            //*_error = _newPID->step(*_sp, *_fb); ///< Calculate PID error
             *_error = err;
             _lastMillis = millis();
         }
-
         LOGGER_VERBOSE("....leave");
     } /*----------------------------------- end of update -------------------------------------*/
     int16_t getPidError(){
         return *_error;
-    }
+    } /*--------------------- end of getPidError ------------------------------------------------*/
 
     virtual boolean isStandby()
 	{
