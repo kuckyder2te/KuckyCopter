@@ -200,6 +200,7 @@ void setup()
 
 void loop()
 {
+  unsigned long _lastLooptime = micros();
 #ifdef _MAIN
   // digitalWrite(LED_BUILTIN, LOW);  // only for debug
   main_loop();
@@ -207,4 +208,5 @@ void loop()
 #else
   test_loop();
 #endif
+  model.looptime = micros()-_lastLooptime;
 } /*------------------------ end of standard setup and loop -------------------------------------*/
