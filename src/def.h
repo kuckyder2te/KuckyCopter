@@ -47,9 +47,9 @@ typedef enum
 #define PIN_ECHO_FRONT    2  // PIN for sonic front sensor
 #define PIN_TRIGGER_FRONT 3
 #define NUMBER_OF_SLAVES  1  // Number of possible slave sonic sensors
-#define DHTTYPE DHT22
+//#define DHTTYPE DHT22
 #define MAX_DISTANCE    200  // max distance range 2 to 400cm
-#define PIN_DHT           6  // PIN for the DHT or Dallas temperature sensor
+#define PIN_18B20         6  // PIN for the Dallas temperature sensor
 
 typedef enum
 {

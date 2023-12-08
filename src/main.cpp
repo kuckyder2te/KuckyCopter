@@ -14,7 +14,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HardwareSerial.h>
-#include <Adafruit_Sensor.h>
+//#include <Adafruit_Sensor.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
 #include "EEPROM.h"

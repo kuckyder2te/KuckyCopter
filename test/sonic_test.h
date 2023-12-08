@@ -10,6 +10,7 @@
 #include "..\lib\sonics.h"
 #include "..\lib\monitor.h"
 #include "..\lib\model.h"
+#include "..\lib\pico-onewire\one_wire.h"
 
 extern model_t model;
 

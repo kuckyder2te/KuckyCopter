@@ -55,7 +55,7 @@ typedef struct __attribute__((__packed__))
     int8_t pitch;
     int8_t roll;
     uint16_t altitude; // MS5611
-    float temperature;
+    float temperature;  // intern temperature
     float pressure;
     uint16_t distance_down; // US Sensor
     uint16_t distance_front;
@@ -111,7 +111,7 @@ public:
 
         if (!_radio->begin())
         {
-            LOGGER_FATAL("radio hardware is not responding!!");
+            LOGGER_FATAL("Radio hardware is not responding!!");
             while (1)
             {
             }

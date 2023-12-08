@@ -30,3 +30,8 @@ Current COM4 115200bps
 | 9,5V | 730|
 | 8,1V | 626|
 
+## OneWire Library
+ The oneWire library must be exchanged for the one_wire library. Modified timings so that it works when used on the Pi Pico.<br>
+ look here:
+ [Link](https://github.com/adamboardman/pico-onewire/tree/main)
+
