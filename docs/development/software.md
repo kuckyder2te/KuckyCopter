@@ -8,7 +8,14 @@ https://youtu.be/JBvnB0279-Q?si=LplhdbVDn-7sKslk
 |---------------|------|------|-------|
 |Primary axis   | 0,14 | 0,18 |	0,102 |
 |Secondarx axis | 0,14 | 0,18 | 0,102 |
-|Yaw	        | 0,01 |  0	  |	 0    | 
+|Yaw	        | 0,01 |  0	  |	 0    |
+
+## New experimental PID coefficients (2023-11-30)
+|     Axis      |  P   |  I	  |	 D    |
+|---------------|------|------|-------|
+|Primary axis   | 0,10 | 0,15 |	0,08  |
+|Secondarx axis | 0,10 | 0,15 | 0,08  |
+|Yaw	        | ???  |  ?	  |	 ?    |
 
 ## PID adjust
 

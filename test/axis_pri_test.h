@@ -318,18 +318,18 @@ void test_loop()
   //TestOutput->println("loop");
   static unsigned long _lastMillis = millis();
   if(recorded&&(millis()-_lastMillis>100)){
-    _lastMillis = millis();    
-    TestOutput->printf("/*%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i*/\r\n",
-                    model.axisData[axisName::primary].power,
-                    axis->getMotorPower(false),
-                    axis->getMotorPower(true),
-                    model.sensorData.roll,
-                    model.axisData[axisName::primary].pidError,
-                    newPid->getP(),
-                    newPid->getI(),
-                    newPid->getD(),
-                    model.axisData[axisName::primary].setpoint,
-                    model.looptime);
+  _lastMillis = millis();    
+  TestOutput->printf("/*%i,%i,%i,%i,%i,%.2f,%.2f,%.2f,%i,%i*/\r\n",
+  model.axisData[axisName::primary].power,
+  axis->getMotorPower(false),
+  axis->getMotorPower(true),
+  model.sensorData.roll,
+  model.axisData[axisName::primary].pidError,
+  newPid->getP(),
+  newPid->getI(),
+  newPid->getD(),
+  model.axisData[axisName::primary].setpoint,
+  model.looptime);
   }
   if (TestOutput->available())
   {

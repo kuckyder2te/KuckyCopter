@@ -114,10 +114,11 @@ public:
                 break;
             case SONIC:
 //            TestOutput->println("SONIC");
-                sprintf(strBuf,"/*%s,%i,%i*/",
+                sprintf(strBuf,"/*%i,%i,%.2f*/",
                     "Sonic distance/cm = ",
                     _model->sonicData.down_distance,
-                    _model->sonicData.front_distance);
+                    _model->sonicData.front_distance,
+                    _model->sonicData.temperature);
                 TestOutput->println(strBuf);
                 break;
             case AXIS:

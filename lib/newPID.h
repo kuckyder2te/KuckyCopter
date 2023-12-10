@@ -32,7 +32,7 @@ typedef struct
 	bool modified;			 // 1   must be set if the parameters were changed manually
 } pidData_t;
 
-static pidData_t initPid = {{1.0f, 0.0f, 0.0f, 50.0f}, 8, false, false};
+static pidData_t initPid = {{0.10f, 0.15f, 0.08f, 50.0f}, 8, false, false};
 
 class NewPID : public FastPID
 {

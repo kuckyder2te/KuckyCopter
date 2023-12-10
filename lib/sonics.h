@@ -36,7 +36,7 @@
 
 typedef struct
 {
-    uint16_t temperature; // Internal (outdoor) temperature
+    float temperature; // Internal (outdoor) temperature
     uint16_t down_distance;
     uint16_t front_distance;
 } sonicData_t;
@@ -83,9 +83,6 @@ public:
     {
         LOGGER_VERBOSE("Enter....");
 
-        //_one_wire = new One_wire(PIN_18B20);
-        //_one_wire->init();
-
         sonic->beginAsync();
         for (int i = 0; i < sonic->getNumberOfSensors(); i++)
         {
@@ -93,7 +90,6 @@ public:
             {
                 LOGGER_FATAL_FMT("Sensor, %i: *FAILED Interrupt!", i);
                 LOGGER_FATAL(String(i).c_str());
-                // Serial.println(i);
             }
         }
         sonic->startAsync(200000);
@@ -111,12 +107,12 @@ public:
             sonic->startAsync(200000);
         }
 
-        //_one_wire->single_device_read_rom(address);
+        _one_wire->single_device_read_rom(address);
         // printf("Device Address: %02x%02x%02x%02x%02x%02x%02x%02x\n", address.rom[0], address.rom[1], address.rom[2], address.rom[3], address.rom[4], address.rom[5], address.rom[6], address.rom[7]);
-        // _one_wire->convert_temperature(address, true, false);
-        // Serial.println(_one_wire->temperature(address),4);
+        _one_wire->convert_temperature(address, true, false);
+        Serial.println(_one_wire->temperature(address),4);
         // printf("Temperature: %3.1foC\n", _one_wire->temperature(address));
-        // sleep_ms(1000);
+        //sleep_ms(1000);
 
         _sonicData->temperature = _one_wire->temperature(address);
 
@@ -133,7 +129,5 @@ public:
         {
             maxDistanceDurationMicroSec = min(maxDistanceDurationMicroSec, maxTimeoutMicroSec);
         }
-
-        
     }
-}; /*----------------------------------- end of sonic.h class --------------------------------*/
+}; /*----------------------------------- end of sonic.h class -----------------------------------*/
