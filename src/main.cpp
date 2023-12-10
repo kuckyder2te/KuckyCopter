@@ -17,6 +17,7 @@
 //#include <Adafruit_Sensor.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
+#include <SPI.h>
 #include "EEPROM.h"
 #include "def.h"
 
@@ -76,7 +77,7 @@ void main_setup()
   Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2);
   Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);
 
-  //  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
+  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
 
 #ifdef SERIAL_STUDIO
   Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(0.1);

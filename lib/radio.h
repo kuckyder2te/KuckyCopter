@@ -23,6 +23,7 @@
 
 #include <Arduino.h>
 #include <TaskManager.h>
+//#include <SPI.h>
 #include <RF24.h>
 
 #define LOCAL_DEBUG
@@ -78,6 +79,7 @@ class Radio : public Task::Base
 
 protected:
     RF24 *_radio;
+    
     RC_interface_t *RC_interface;
     TX_payload_t debugTX_payload;   //Displays only values that differ from the previous value
     RX_payload_t debugRX_payload;
@@ -107,9 +109,10 @@ public:
         LOGGER_VERBOSE("Enter....");
         pinMode(LED_RADIO, OUTPUT);
         digitalWrite(LED_RADIO, LOW);
+        SPI.begin();
         _radio = new RF24(PIN_RADIO_CE, PIN_RADIO_CSN);
 
-        if (!_radio->begin())
+        if (!_radio->begin(&SPI))
         {
             LOGGER_FATAL("Radio hardware is not responding!!");
             while (1)
@@ -131,7 +134,7 @@ public:
         if (_radio->available())
         {
             LOGGER_NOTICE("radio available");
-            digitalWrite(LED_RADIO, LOW);
+            digitalWrite(LED_RADIO, HIGH);
             _radio->read(&RC_interface->RX_payload, sizeof(RX_payload_t));
             received_data_from_RC();
 
