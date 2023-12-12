@@ -22,8 +22,6 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HC_SR04.h>
-// #include <Adafruit_Sensor.h>
-//#include "..\lib\pico-onewire\pico_pi_mocks.h"
 #include "./pico-onewire/one_wire.h"
 
 #include "def.h"
@@ -31,12 +29,8 @@
 #define LOCAL_DEBUG
 #include "myLogger.h"
 
-//One_wire one_wire(PIN_18B20);
-// rom_address_t address{};
-
 typedef struct
 {
-    float temperature; // Internal (outdoor) temperature
     uint16_t down_distance;
     uint16_t front_distance;
 } sonicData_t;
@@ -47,8 +41,6 @@ private:
     HC_SR04_BASE *slave;
     HC_SR04_BASE *sonic;
     HC_SR04_BASE *slaves[NUMBER_OF_SLAVES];
-    rom_address_t address{};
-    One_wire *_one_wire;
 
     unsigned short maxDistanceCm;
     unsigned long maxTimeoutMicroSec;
@@ -66,9 +58,6 @@ public:
         slaves[0] = slave;
         // Master sensor with echo and trigger pin
         sonic = new HC_SR04<PIN_ECHO_DOWN>(PIN_TRIGGER_DOWN, slaves, NUMBER_OF_SLAVES);
-
-        _one_wire = new One_wire(PIN_18B20);
-        _one_wire->init();
     }
 
     Sonic *setModel(sonicData_t *_model)
@@ -106,16 +95,6 @@ public:
             _sonicData->front_distance = sonic->getDist_cm(sonicName::down);
             sonic->startAsync(200000);
         }
-
-        _one_wire->single_device_read_rom(address);
-        // printf("Device Address: %02x%02x%02x%02x%02x%02x%02x%02x\n", address.rom[0], address.rom[1], address.rom[2], address.rom[3], address.rom[4], address.rom[5], address.rom[6], address.rom[7]);
-        _one_wire->convert_temperature(address, true, false);
-        Serial.println(_one_wire->temperature(address),4);
-        // printf("Temperature: %3.1foC\n", _one_wire->temperature(address));
-        //sleep_ms(1000);
-
-        _sonicData->temperature = _one_wire->temperature(address);
-
         LOGGER_VERBOSE("....leave");
     } /*--------------------- end of update -----------------------------------------------------*/
 

@@ -1,6 +1,6 @@
 #pragma once
-/*  File name :
-    Project name : KuCo_Phantom 1
+/*  File name : monitor.h
+    Project name : KuCo_Phantom 2
     Author: Stephan Scholz / Wilhelm Kuckelsberg
     Date : 2022-
 
@@ -113,12 +113,12 @@ public:
                 TestOutput->println(strBuf);         
                 break;
             case SONIC:
-//            TestOutput->println("SONIC");
+            TestOutput->println("SONIC");
                 sprintf(strBuf,"/*%i,%i,%.2f*/",
                     "Sonic distance/cm = ",
                     _model->sonicData.down_distance,
                     _model->sonicData.front_distance,
-                    _model->sonicData.temperature);
+                    _model->temperatureData.temperature);
                 TestOutput->println(strBuf);
                 break;
             case AXIS:

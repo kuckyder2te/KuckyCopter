@@ -17,12 +17,13 @@
 //#include <Adafruit_Sensor.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
-#include <SPI.h>
+//#include <SPI.h>
 #include "EEPROM.h"
 #include "def.h"
 
 #include "..\lib\sensors.h"
 #include "..\lib\sonics.h"
+#include "..\lib\temperature.h"
 #include "..\lib\radio.h"
 #include "..\lib\battery.h"
 #include "..\lib\axisBase.h"
@@ -44,7 +45,7 @@ HardwareSerial *TestOutput = &Serial2;
 HardwareSerial *DebugOutput = &Serial;
 
 #ifdef _PID_ADJUST
-PID_adjust *_pid_adjust;
+  PID_adjust *_pid_adjust;
 #endif
 
 void base_setup();
@@ -72,10 +73,11 @@ void main_setup()
   Tasks.add<FlyController>("flycontroller")
       ->init(&model) // bekommt das komplette Model, Master of Desaster!!
       ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
-      ->startFps(100);
+      ->startFps(2);
   Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(10); // Übergabe des models in das objekt Sensor
-  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(2);
-  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(1);
+  //Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(0.1);
+  //Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(0.1);
+  Tasks.add<Temperature>("temperature")->setModel(&model.temperatureData)->startFps(1);
 
   Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
 
@@ -138,7 +140,7 @@ void main_loop()
 
 void base_setup()
 {
-  delay(5000);
+  delay(1000);
   pinMode(PIN_ESC_ON, OUTPUT);
   digitalWrite(PIN_ESC_ON, HIGH); // MainPower für ESC´s ausgeschaltet,
                                   // will sagen, BC547 schaltet nicht durch, da die Basis HIGH ist
@@ -169,18 +171,16 @@ void base_setup()
   model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
   model.yaw.axisData[1] = &model.axisData[1];
 
-  DebugOutput->println("********************************");
-  DebugOutput->println("*       KuCo Phantom 1         *");
-  DebugOutput->println("*                              *");
-  DebugOutput->print("*     ");
-  DebugOutput->print(__DATE__);
-  DebugOutput->print(" ");
-  DebugOutput->print(__TIME__);
-  DebugOutput->println("     *");
-  DebugOutput->print("*    EEPROM PID Address   "); /*DebugOutput->print(PID_EEPROM_ADRRESS);*/
-  DebugOutput->println("     *");
-  DebugOutput->println("********************************");
-  DebugOutput->flush();
+  TestOutput->println("********************************");
+  TestOutput->println("*       Kucky Copter 2         *");
+  TestOutput->println("*                              *");
+  TestOutput->print("*     ");
+  TestOutput->print(__DATE__);
+  TestOutput->print(" ");
+  TestOutput->print(__TIME__);
+  TestOutput->println("     *");
+  TestOutput->println("********************************");
+  TestOutput->flush();
   Wire.begin();
 
   EEPROM.begin(512);
@@ -203,9 +203,9 @@ void loop()
 {
   unsigned long _lastLooptime = micros();
 #ifdef _MAIN
-  // digitalWrite(LED_BUILTIN, LOW);  // only for debug
+  digitalWrite(LED_BUILTIN, LOW);  // only for debug
   main_loop();
-//  digitalWrite(LED_BUILTIN, HIGH);
+  digitalWrite(LED_BUILTIN, HIGH);
 #else
   test_loop();
 #endif

@@ -82,17 +82,17 @@ private:
 	} pidTyp_t; /* itemAxis_Number_t + itemCoefficient_t returns 
 				   the "pidType" for the select() function
 				*/
-	float pri_kP_value = 0.0; //Start values for menu control
+	float pri_kP_value = PID_P_MIN; //Start values for menu control
 	float pri_kI_value = 0.0;
 	float pri_kD_value = 0.0;
 	float pri_EF_value = 0.0;
 
-	float sec_kP_value = 0.0;
+	float sec_kP_value = PID_P_MIN;
 	float sec_kI_value = 0.0;
 	float sec_kD_value = 0.0;
 	float sec_EF_value = 0.0;
 
-	float yaw_kP_value = 0.0;
+	float yaw_kP_value = PID_P_MIN;
 	float yaw_kI_value = 0.0;
 	float yaw_kD_value = 0.0;
 	float yaw_EF_value = 0.0;

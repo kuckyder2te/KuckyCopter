@@ -133,7 +133,7 @@ public:
 			 * Look at module AxisYaw */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"deactivate PID %s ", this->getName().c_str());
 			AxisBase::_newPID->disablePID();
-						break;
+			break;
 		case enablePID:
 			/* Activate the PID controller from the MotorAxis with the current coefficients. */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"activate PID %s ", this->getName().c_str());

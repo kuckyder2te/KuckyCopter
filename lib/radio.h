@@ -26,7 +26,7 @@
 //#include <SPI.h>
 #include <RF24.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "def.h"
@@ -134,7 +134,7 @@ public:
         if (_radio->available())
         {
             LOGGER_NOTICE("radio available");
-            digitalWrite(LED_RADIO, HIGH);
+            digitalWrite(LED_RADIO, LOW);
             _radio->read(&RC_interface->RX_payload, sizeof(RX_payload_t));
             received_data_from_RC();
 
@@ -162,6 +162,7 @@ public:
 
     void received_data_from_RC()
     {
+       // Serial.println(RC_interface->RX_payload.rcThrottle)
         LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcThrottle, debugRX_payload.rcThrottle, "Received Thottle = %i", RC_interface->RX_payload.rcThrottle);
         LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcYaw, debugRX_payload.rcYaw, "Received Yaw = %i", RC_interface->RX_payload.rcYaw);
         LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcPitch, debugRX_payload.rcPitch, "Received Pitch = %i", RC_interface->RX_payload.rcPitch);

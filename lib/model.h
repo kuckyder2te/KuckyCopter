@@ -8,6 +8,7 @@
 
 #include "sensors.h"
 #include "sonics.h"
+#include "temperature.h"
 #include "radio.h"
 #include "performance.h"
 #include "axisYaw.h"
@@ -19,6 +20,7 @@ typedef struct
 {
     sensorData_t sensorData; // Data from imu and baro
     sonicData_t sonicData;
+    temperatureData_t temperatureData;
     RC_interface_t RC_interface;
     AxisBase::axisData_t axisData[2];
     AxisBase::axisData_t yawData;

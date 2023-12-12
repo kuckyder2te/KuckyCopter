@@ -124,7 +124,6 @@ public:
 		return (_state == standby);
 	} /*--------------------- end of isStandby -------------------------------------------------*/
     
-
 	virtual boolean isDeactivatePID()
 	{
 		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isDeactivatePID %s ", this->getName().c_str());
