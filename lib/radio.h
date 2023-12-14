@@ -1,7 +1,7 @@
 #pragma once
 /*  File name : radio.h
-    Project: Phantom 1
-    Autor: Stephan Scholz / Wilhelm Kuckelsberg
+    Project: KuckyCopter 2
+    Autors: Stephan Scholz / Wilhelm Kuckelsberg
     Date: 2022-05-31 (2021.05.24)
     Description: Kommunikation zwischen Drohne und RC
 
@@ -26,7 +26,7 @@
 //#include <SPI.h>
 #include <RF24.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "def.h"
@@ -42,7 +42,7 @@ typedef struct __attribute__((__packed__))
     int16_t rcYaw;
     int8_t rcPitch;
     int8_t rcRoll;
-    int16_t rcThrottle;          //!< Get the positions of the rc joysticks
+    int16_t rcThrottle;          // !< Get the positions of the rc joysticks
     uint16_t rcAltitudeSonicAdj; // Value is set via RC potentiometer 0 - 200cm
     uint16_t rcAltitudeBaroAdj;  // Value is set via RC potentiometer 0 - 10m
     bool rcSwi1;                 // Switches to programming mode, not active
@@ -139,17 +139,16 @@ public:
             received_data_from_RC();
 
             _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t));
-            transmit_data_to_RC();
+        //    transmit_data_to_RC();
 
             _lostAckPackageCount = 0;
             RC_interface->isconnect = true;
-
             digitalWrite(LED_RADIO, HIGH);
         }
         else
         {
             LOGGER_NOTICE("Transmission fault or time out");
-            digitalWrite(LED_RADIO, LOW);
+         //   digitalWrite(LED_RADIO, LOW);
             _lostAckPackageCount++;
             if (_lostAckPackageCount > ACK_PACKAGE_MAX_COUNT)
             {
@@ -162,16 +161,16 @@ public:
 
     void received_data_from_RC()
     {
-       // Serial.println(RC_interface->RX_payload.rcThrottle)
-        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcThrottle, debugRX_payload.rcThrottle, "Received Thottle = %i", RC_interface->RX_payload.rcThrottle);
-        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcYaw, debugRX_payload.rcYaw, "Received Yaw = %i", RC_interface->RX_payload.rcYaw);
-        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcPitch, debugRX_payload.rcPitch, "Received Pitch = %i", RC_interface->RX_payload.rcPitch);
-        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcRoll, debugRX_payload.rcRoll, "Received Roll = %i", RC_interface->RX_payload.rcRoll);
-        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi1, debugRX_payload.rcSwi1, "Received Swi1 = %i", RC_interface->RX_payload.rcSwi1); // Switch noch nicht aktiv
-        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi2, debugRX_payload.rcSwi2, "Received Swi2 = %i", RC_interface->RX_payload.rcSwi2);
-        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi3, debugRX_payload.rcSwi3, "Received Swi3 = %i", RC_interface->RX_payload.rcSwi3);
-        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcAltitudeBaroAdj, debugRX_payload.rcAltitudeBaroAdj, "Received max Alt. = %i", RC_interface->RX_payload.rcAltitudeBaroAdj);
-        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcAltitudeSonicAdj, debugRX_payload.rcAltitudeSonicAdj, "Received max from ground = %i", RC_interface->RX_payload.rcAltitudeSonicAdj);
+         Serial.println(RC_interface->RX_payload.rcThrottle);
+        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcThrottle, debugRX_payload.rcThrottle, "Received Thottle = %i", RC_interface->RX_payload.rcThrottle);
+        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcYaw, debugRX_payload.rcYaw, "Received Yaw = %i", RC_interface->RX_payload.rcYaw);
+        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcPitch, debugRX_payload.rcPitch, "Received Pitch = %i", RC_interface->RX_payload.rcPitch);
+        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcRoll, debugRX_payload.rcRoll, "Received Roll = %i", RC_interface->RX_payload.rcRoll);
+        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi1, debugRX_payload.rcSwi1, "Received Swi1 = %i", RC_interface->RX_payload.rcSwi1); // Switch noch nicht aktiv
+        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi2, debugRX_payload.rcSwi2, "Received Swi2 = %i", RC_interface->RX_payload.rcSwi2);
+        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi3, debugRX_payload.rcSwi3, "Received Swi3 = %i", RC_interface->RX_payload.rcSwi3);
+        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcAltitudeBaroAdj, debugRX_payload.rcAltitudeBaroAdj, "Received max Alt. = %i", RC_interface->RX_payload.rcAltitudeBaroAdj);
+        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcAltitudeSonicAdj, debugRX_payload.rcAltitudeSonicAdj, "Received max from ground = %i", RC_interface->RX_payload.rcAltitudeSonicAdj);
     } // ------------------- end of received_data_from_RC ---------------------------------------*/
 
     void transmit_data_to_RC()

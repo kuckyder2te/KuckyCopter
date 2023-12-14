@@ -1,7 +1,7 @@
 #pragma once
 /*  File name :
-    Project name : KuCo_Phantom 1
-    Author: Stephan Scholz / Wilhelm Kuckelsberg
+    Project name : KuckyCopter 2
+    Authors: Stephan Scholz / Wilhelm Kuckelsberg
     Date : 2022-06-19
 
     Description : Drohne
@@ -17,7 +17,6 @@
 #include "sonics.h"
 #include "model.h"
 
-#define PIN_LED_STATE 7
 // #define POWER_LIFT_UP 60 ///< The KuckyCopter will start, if throttle > 60
 #define POWER_LIFT_UP 10 /// Test Value
 #define DOWN_TIME 2000   ///< Time to turn off the engines (in Microseconds).
@@ -61,14 +60,11 @@ public:
     {
     }
 
-    virtual ~FlyController() {}
-
     FlyController *init(model_t *model)
     { 
         LOGGER_VERBOSE("Enter....");
         _model = model;
         flyState = arming_begin;
-
         LOGGER_VERBOSE("....leave");
         return this;
     }
@@ -102,7 +98,7 @@ public:
             if (_axisYaw->isArmed())
             {
                 flyState = disablePID;
-                LOGGER_NOTICE("arming busy is fineshed");
+                LOGGER_NOTICE("arming is fineshed");
             }
             break;
 
@@ -127,7 +123,7 @@ public:
             }
             else
             {
-                //    _model->yawData.power = 0;
+                _model->yawData.power = 0;
                 flyState = standby;
                 LOGGER_NOTICE_CHK(flyState, Debug_flyState, "standby is held");
             }

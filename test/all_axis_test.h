@@ -13,7 +13,6 @@
 #include "..\lib\model.h"
 #include "..\lib\newPID.h"
 #include "..\lib\sensors.h"
-// #include "..\lib\def.h"
 
 #define LOCAL_DEBUG
 #include "..\lib\myLogger.h"

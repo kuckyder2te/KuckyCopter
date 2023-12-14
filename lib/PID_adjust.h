@@ -120,7 +120,7 @@ public:
 
 	virtual ~PID_adjust() {}
 
-	PID_adjust *setModel(model_t *model) 
+	PID_adjust *setModel(model_t *model) {
 
 		LOGGER_VERBOSE("Enter....");
 		_model = model;

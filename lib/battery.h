@@ -74,8 +74,7 @@ public:
         if (_batteryData->battery_State > 860)
         {
             LOGGER_NOTICE_FMT("Battery is full = %i", _batteryData->battery_State);
-            digitalWrite(LED_PIN_ALERT, LOW);
-            
+            digitalWrite(LED_PIN_ALERT, LOW);           
         }
 
         else if (_batteryData->battery_State > 780 || _batteryData->battery_State >= 859)

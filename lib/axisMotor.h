@@ -1,7 +1,7 @@
 #pragma once
 /*  File name : axisMotor.h
-	Project name : KuCo_Phantom 1
-	Author: Stephan cholz / Wilhelm Kuckelsberg
+	Project name : KuckyCopter 2
+	Authors: Stephan Scholz / Wilhelm Kuckelsberg
 	Date : 2022-06-13
 	Description : Drohne
 */
@@ -11,7 +11,7 @@
 #include "axisBase.h"
 #include "motor.h"
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 class AxisMotor : public AxisBase
@@ -146,6 +146,7 @@ public:
 			_motor[motor_t::second]->setMotorState(Motor::stop);
 			break;
 		case ready:
+			//Serial.println(_axisData->power);
 			_motor[motor_t::first]->setMotorState(Motor::rotating);
 			_motor[motor_t::second]->setMotorState(Motor::rotating);
 
@@ -153,8 +154,8 @@ public:
 
 			_axisData->setpoint = (_roll + (*_axisData->rcY));
 
-			_motor[motor_t::first]->setPower(_axisData->power - _axisData->pidError);
-			_motor[motor_t::second]->setPower(_axisData->power + _axisData->pidError);
+			// _motor[motor_t::first]->setPower(_axisData->power - _axisData->pidError);
+			// _motor[motor_t::second]->setPower(_axisData->power + _axisData->pidError);
 			
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"ready %s, AxisMotor SP:%d, Power:%d, Error:%d", this->getName().c_str(), _axisData->setpoint, _axisData->power, _axisData->pidError);
 			break;

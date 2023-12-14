@@ -39,7 +39,6 @@
 #include "..\lib\monitor.h"
 
 model_t model;
-//UART Serial2(PIN_BT_TX, PIN_BT_RX);
 
 HardwareSerial *TestOutput = &Serial2;
 HardwareSerial *DebugOutput = &Serial;
@@ -71,14 +70,13 @@ void main_setup()
       ->setAxisOrdered(reinterpret_cast<AxisMotor *>(Tasks["axismotor_b"].get()))
       ->startFps(AXIS_FPS);
   Tasks.add<FlyController>("flycontroller")
-      ->init(&model) // bekommt das komplette Model, Master of Desaster!!
+      ->init(&model) // He gets the complete model.
       ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
-      ->startFps(2);
-  Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(10); // Übergabe des models in das objekt Sensor
-  //Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(0.1);
-  //Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(0.1);
-  Tasks.add<Temperature>("temperature")->setModel(&model.temperatureData)->startFps(1);
-
+      ->startFps(10);
+  Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(10);
+  Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(10);
+//  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(0.1);
+  Tasks.add<Temperature>("temperature")->setModel(&model.temperatureData)->startFps(0.01); //One measurement every 100 seconds
   Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
 
 #ifdef SERIAL_STUDIO

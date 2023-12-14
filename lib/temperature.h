@@ -60,14 +60,17 @@ public:
         LOGGER_VERBOSE("Enter....");
 
         _one_wire->single_device_read_rom(address);
-        // printf("Device Address: %02x%02x%02x%02x%02x%02x%02x%02x\n", address.rom[0], address.rom[1], address.rom[2], address.rom[3], address.rom[4], address.rom[5], address.rom[6], address.rom[7]);
+        // printf("Device Address: %02x%02x%02x%02x%02x%02x%02x%02x\n", address.rom[0], address.rom[1], address.rom[2], 
+        //                                                              address.rom[3], address.rom[4], address.rom[5], 
+        //                                                              address.rom[6], address.rom[7]);
         _one_wire->convert_temperature(address, true, false);
         //Serial.println(_one_wire->temperature(address),4);
         // printf("Temperature: %3.1foC\n", _one_wire->temperature(address));
-         sleep_ms(1000); // was soll ???
+         sleep_ms(1000); // was soll das ???
 
         float temp = _one_wire->temperature(address);
-        Serial.println(temp,4);
+        LOGGER_NOTICE_FMT("Temperatur = %.2f", temp);
+        //Serial.println(temp,4);
         _temperatureData->temperature = temp;
 
         LOGGER_VERBOSE("....leave");

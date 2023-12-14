@@ -22,7 +22,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HC_SR04.h>
-#include "./pico-onewire/one_wire.h"
+//#include "./pico-onewire/one_wire.h"
 
 #include "def.h"
 

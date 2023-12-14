@@ -12,7 +12,7 @@
 #define COM_SPEED 115200
 #define BT_SPEED  115200
 
-#define PIN_LED_STATE  0    // mainloop is running <orange>
+#define PIN_LED_STATE  0    // flycontroller  is running <orange>
 #define PIN_BATTERY   26    // Analog PIN for battery measurement
 #define LED_PIN_ALERT 10    // PIN for acoustic and visual battery alert <red>
 #define LED_POSITION   7    // PIN for the green and red position LED´s
@@ -47,7 +47,6 @@ typedef enum
 #define PIN_ECHO_FRONT    2  // PIN for sonic front sensor
 #define PIN_TRIGGER_FRONT 3
 #define NUMBER_OF_SLAVES  1  // Number of possible slave sonic sensors
-//#define DHTTYPE DHT22
 #define MAX_DISTANCE    200  // max distance range 2 to 400cm
 #define PIN_18B20         6  // PIN for the Dallas temperature sensor
 

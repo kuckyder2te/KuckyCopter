@@ -1,6 +1,6 @@
 #pragma once
 /*  File name : axisBase.h
-    Project name : KuCo version 2
+    Project name : KuckyCopter 2
     Authors: Stephan Scholz / Wilhelm Kuckelsberg
     Date : 2022-06-16
 
@@ -122,19 +122,20 @@ public:
 	{
 		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isStandby %s ", this->getName().c_str());
 		return (_state == standby);
-	} /*--------------------- end of isStandby -------------------------------------------------*/
+	} /*--------------------- end of isStandby --------------------------------------------------*/
     
 	virtual boolean isDeactivatePID()
 	{
 		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isDeactivatePID %s ", this->getName().c_str());
 		return (_state == disablePID);
-	} /*--------------------- end of isDeactivatePID -------------------------------------------*/
+	} /*--------------------- end of isDeactivatePID --------------------------------------------*/
 
 	virtual boolean isReady()
 	{
 		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isReady %s ", this->getName().c_str());
 		return (_state == ready);
 	} /*---------------------- end of isReady ---------------------------------------------------*/
-};    /*----------------------------------- end of axisBase class -----------------------------*/
+};    /*----------------------------------- end of axisBase class -------------------------------*/
 
-uint8_t AxisBase::_instanceCounter = 0; // https://stackoverflow.com/questions/5391973/undefined-reference-to-static-const-int
+uint8_t AxisBase::_instanceCounter = 0; 
+// https://stackoverflow.com/questions/5391973/undefined-reference-to-static-const-int

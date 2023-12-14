@@ -1,7 +1,7 @@
 #pragma once
 /*  File name : axisYaw.h
 	Project name : KuckyCopter 2
-	Author: Stephan Scholz /  Wilhelm Kuckelsberg
+	Authors: Stephan Scholz /  Wilhelm Kuckelsberg
 	Date : 2022-06-17
 	Description : Drohne
 */
@@ -104,7 +104,7 @@ public:
 		switch (_state)
 		{
 		case arming_start:
-			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter arming_start State %d", _state);
+			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter arming start %d", _state);
 			_axisMotor[axisName::primary]->setState(AxisMotor::state::arming_start);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::state::arming_start);
 			_state = arming_finished;
@@ -112,10 +112,10 @@ public:
 			break;
 
 		case arming_finished:
-			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter arming_finished State %d", _state);
+			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter arming finished %d", _state);
 			if (_axisMotor[axisName::primary]->isArmed() && _axisMotor[axisName::secondary]->isArmed())
 			{
-				LOGGER_NOTICE("All Motors armed");
+				LOGGER_NOTICE("All motors armed");
 				_state = ready;
 			}
 			LOGGER_VERBOSE("....leave");
@@ -152,51 +152,52 @@ public:
 
 			if ((_yaw->rotationSpeed > YAW_SENSIBILITY) || (_yaw->rotationSpeed < (-YAW_SENSIBILITY)))
 			{ ///< YAW Joystick is not moved....
-				_yaw->axisData[0]->power = _axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING;
-				_yaw->axisData[1]->power = _axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING;
-				_axisMotor[axisName::primary]->setPower(_axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING);
-				_axisMotor[axisName::secondary]->setPower(_axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING);
+				// _yaw->axisData[axisName::primary]->power = _axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING;
+				// _yaw->axisData[axisName::secondary]->power = _axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING;
+				// _axisMotor[axisName::primary]->setPower(_axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING);
+				// _axisMotor[axisName::secondary]->setPower(_axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING);
 				_yaw->horz_Position = 0;
 			}
 			else
 			{											 ///< YAW  PID controller is active  .... Yaw joystick is in middle position
 				_virtualFeedback = _yaw->horz_Position; /// *_fb = into the PID controller
-				_yaw->axisData[0]->power = _axisData->power - _axisData->pidError;
-				_yaw->axisData[1]->power = _axisData->power + _axisData->pidError;
-				_axisMotor[axisName::primary]->setPower(_axisData->power - _axisData->pidError); // yawError comes from the PID controller.
-				_axisMotor[axisName::secondary]->setPower(_axisData->power + _axisData->pidError);
+				// _yaw->axisData[axisName::primary]->power = _axisData->power - _axisData->pidError;
+				// _yaw->axisData[axisName::secondary]->power = _axisData->power + _axisData->pidError;
+				// _axisMotor[axisName::primary]->setPower(_axisData->power - _axisData->pidError); // yawError comes from the PID controller.
+				// _axisMotor[axisName::secondary]->setPower(_axisData->power + _axisData->pidError);
 			}
 			LOGGER_VERBOSE("....leave");
 			break;
 		default:;
 		} /* end of switch */
-	}	  /*--------------------- end of virtual service -------------------------------------------*/
+	}/*--------------------- end of virtual service ---------------------------------------------*/
 
 	void setState(state_e state)
 	{
 		LOGGER_NOTICE_FMT("set YawAxis State = %d", _state);
 		_state = state;
 		LOGGER_NOTICE("Leave  setState");
-	} /*---------------------- end of setState -------------------------------------------------*/
+	} /*---------------------- end of setState --------------------------------------------------*/
 
 	virtual boolean isArmed()
 	{
 		LOGGER_VERBOSE_FMT("State %d ", _state);
 		return (_axisMotor[axisName::primary]->isArmed() && _axisMotor[axisName::secondary]->isArmed());
-	} /*---------------------- end of isArmed --------------------------------------------------*/
+	} /*---------------------- end of isArmed ---------------------------------------------------*/
 
 	virtual boolean isDeactivatePID()
 	{
-		bool state = ((_state == disablePID) && _axisMotor[axisName::primary]->isDeactivatePID() && _axisMotor[axisName::secondary]->isDeactivatePID());
+		bool state = ((_state == disablePID) && _axisMotor[axisName::primary]->isDeactivatePID() 
+						&& _axisMotor[axisName::secondary]->isDeactivatePID());
 		LOGGER_NOTICE_FMT("Yaw isDeactivatePID %d", state);
 		return (state);
-	} /*---------------------- end of isDeactivatePID ------------------------------------------*/
+	} /*---------------------- end of isDeactivatePID -------------------------------------------*/
 
 	virtual boolean isReady()
 	{
 		bool ready = ((_state == ready)) && (_axisMotor[axisName::primary]->isReady()) && (_axisMotor[axisName::secondary]->isReady());
 		LOGGER_NOTICE_FMT("getYawAxisState %d ", ready);
 		return ready;
-	} /*---------------------- end of isReady --------------------------------------------------*/
+	} /*---------------------- end of isReady ---------------------------------------------------*/
 
-}; /* ------------------------ end of AxisYaw Class --------------------------------------------*/
+}; /* ------------------------ end of axisYaw Class ---------------------------------------------*/

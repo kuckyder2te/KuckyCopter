@@ -68,9 +68,8 @@ public:
             _lastMillis = millis();
 
             switch (_report)
-            {
+            { 
             case MOTOR:
-
                 break;
             case SENSOR:
                 TestOutput->println("SENSOR");

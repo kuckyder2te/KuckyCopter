@@ -1,7 +1,7 @@
 #pragma once
 /*  File name : pid_test.h
 	Project name : KuckyCopter 2
-	Author: Stephan Scholz /  Wilhelm Kuckelsberg
+	Authors: Stephan Scholz /  Wilhelm Kuckelsberg
 	Date : 2022-06-17
 	Description : Drohne
 */
