@@ -166,8 +166,8 @@ void base_setup()
 #endif
 
   LOGGER_NOTICE("Program will initialized");
-  model.yaw.axisData[0] = &model.axisData[0]; // axisData wird mit yawData.axisData verknüpft
-  model.yaw.axisData[1] = &model.axisData[1];
+  model.yaw.axisData[axisName::primary] = &model.axisData[axisName::primary]; // axisData wird mit yawData.axisData verknüpft
+  model.yaw.axisData[axisName::secondary] = &model.axisData[axisName::secondary];
 
   TestOutput->println("********************************");
   TestOutput->println("*       Kucky Copter 2         *");
