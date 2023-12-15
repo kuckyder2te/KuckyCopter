@@ -38,7 +38,6 @@
 */
 
 
-
 class Motor
 {
 private:
@@ -62,7 +61,7 @@ public:
 protected:
 	uint8_t _pin;
 	RP2040_PWM *_motor;
-	uint32_t resultingPower, _resultingPower,_lastResultingPower;
+	uint32_t resultingPower, _resultingPower, _lastResultingPower;
 	int16_t _power,_lastPower,_maxPower;
 	motorstate_e _motorState,_lastMotorState;
 
@@ -112,12 +111,12 @@ public:
 			break;
 		case power_on:
 			delay(20);
-			digitalWrite(PIN_ESC_ON, LOW);	// ESC´s einschalten der PIN wird 4 mal auf LOW gesetzt
+			digitalWrite(PIN_ESC_ON, LOW);	// ESC´s switch on (BC547)
 			_motorState = busy;
 			_lastMillis = millis();
 			break;
 		case power_off:
-			digitalWrite(PIN_ESC_ON, HIGH);	// ESC´s ausschalten
+			digitalWrite(PIN_ESC_ON, HIGH);	// ESC´s turn off (BC547)
 			_isArmed = false;
 			break;
 		case busy:
@@ -125,6 +124,7 @@ public:
 			if(millis() - _lastMillis > 2000){
 				_motorState = finished;
 				resultingPower = DUTYCYCLE_MIN;
+			//	LOGGER_NOTICE_FMT_CHK(resultingPower,_resultingPower,"busy - resultingPower %i", resultingPower);
 				_lastMillis = millis();
 			}
 			break;
@@ -136,12 +136,14 @@ public:
 				_motorState = stop;
 			}
 			resultingPower = DUTYCYCLE_MIN;
+			//LOGGER_NOTICE_FMT_CHK(resultingPower,_resultingPower,"finished - resultingPower %i", _resultingPower);
 			break;
 
 		case stop:
 			LOGGER_NOTICE_CHK(_motorState,_lastMotorState,"Motor off");
 			_power = 0;
 			resultingPower = DUTYCYCLE_MIN;
+			//LOGGER_NOTICE_FMT_CHK(resultingPower,_resultingPower,"stop - resultingPower %i", _resultingPower);
 			break;
 
 		case rotating:
@@ -152,6 +154,7 @@ public:
 				resultingPower = map(BASE_MOTOR_POWER, 0, 100, DUTYCYCLE_MIN, DUTYCYCLE_MAX);
 			}
 			LOGGER_NOTICE_FMT_CHK(resultingPower, _resultingPower, "RC Throttle %d ResultingPower %d", _power, resultingPower);
+			LOGGER_NOTICE_FMT_CHK(resultingPower,_resultingPower,"rotating - resultingPower %i", resultingPower);
 			break;
 		}
 		if(_lastResultingPower!=resultingPower){
