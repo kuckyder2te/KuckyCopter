@@ -116,15 +116,15 @@ public:
         {
             LOGGER_FATAL("Radio hardware is not responding!!");
             while (1)
-            {
-            }
+            {}
         }
-        _radio->setPALevel(RF24_PA_LOW); // RF24_PA_MAX is default.
-        _radio->enableDynamicPayloads(); // ACK payloads are dynamically sized
+        _radio->setPALevel(RF24_PA_LOW);        // RF24_PA_MAX is default.
+        _radio->enableDynamicPayloads();        // ACK payloads are dynamically sized
         _radio->enableAckPayload();
-        _radio->openWritingPipe(pipe_TX);                                            // always uses pipe 0
-        _radio->openReadingPipe(1, pipe_RX);                                         // using pipe 1
-        _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t)); // load the first response into the FIFO
+        _radio->openWritingPipe(pipe_TX);       // always uses pipe 0
+        _radio->openReadingPipe(1, pipe_RX);    // using pipe 1
+        // load the first response into the FIFO
+        _radio->writeAckPayload(1, &RC_interface->TX_payload, sizeof(TX_payload_t)); 
         _radio->startListening();
         LOGGER_VERBOSE("...leave");
     } /*----------------------------- end of begin ----------------------------------------------*/
@@ -161,16 +161,15 @@ public:
 
     void received_data_from_RC()
     {
-         Serial.println(RC_interface->RX_payload.rcThrottle);
-        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcThrottle, debugRX_payload.rcThrottle, "Received Thottle = %i", RC_interface->RX_payload.rcThrottle);
-        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcYaw, debugRX_payload.rcYaw, "Received Yaw = %i", RC_interface->RX_payload.rcYaw);
-        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcPitch, debugRX_payload.rcPitch, "Received Pitch = %i", RC_interface->RX_payload.rcPitch);
-        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcRoll, debugRX_payload.rcRoll, "Received Roll = %i", RC_interface->RX_payload.rcRoll);
-        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi1, debugRX_payload.rcSwi1, "Received Swi1 = %i", RC_interface->RX_payload.rcSwi1); // Switch noch nicht aktiv
-        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi2, debugRX_payload.rcSwi2, "Received Swi2 = %i", RC_interface->RX_payload.rcSwi2);
-        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi3, debugRX_payload.rcSwi3, "Received Swi3 = %i", RC_interface->RX_payload.rcSwi3);
-        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcAltitudeBaroAdj, debugRX_payload.rcAltitudeBaroAdj, "Received max Alt. = %i", RC_interface->RX_payload.rcAltitudeBaroAdj);
-        // LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcAltitudeSonicAdj, debugRX_payload.rcAltitudeSonicAdj, "Received max from ground = %i", RC_interface->RX_payload.rcAltitudeSonicAdj);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcThrottle, debugRX_payload.rcThrottle, "Received Thottle = %i", RC_interface->RX_payload.rcThrottle);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcYaw, debugRX_payload.rcYaw, "Received Yaw = %i", RC_interface->RX_payload.rcYaw);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcPitch, debugRX_payload.rcPitch, "Received Pitch = %i", RC_interface->RX_payload.rcPitch);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcRoll, debugRX_payload.rcRoll, "Received Roll = %i", RC_interface->RX_payload.rcRoll);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi1, debugRX_payload.rcSwi1, "Received Swi1 = %i", RC_interface->RX_payload.rcSwi1); // Switch noch nicht aktiv
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi2, debugRX_payload.rcSwi2, "Received Swi2 = %i", RC_interface->RX_payload.rcSwi2);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcSwi3, debugRX_payload.rcSwi3, "Received Swi3 = %i", RC_interface->RX_payload.rcSwi3);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcAltitudeBaroAdj, debugRX_payload.rcAltitudeBaroAdj, "Received max Alt. = %i", RC_interface->RX_payload.rcAltitudeBaroAdj);
+        LOGGER_NOTICE_FMT_CHK(RC_interface->RX_payload.rcAltitudeSonicAdj, debugRX_payload.rcAltitudeSonicAdj, "Received max from ground = %i", RC_interface->RX_payload.rcAltitudeSonicAdj);
     } // ------------------- end of received_data_from_RC ---------------------------------------*/
 
     void transmit_data_to_RC()

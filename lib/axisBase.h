@@ -132,7 +132,7 @@ public:
 
 	virtual boolean isReady()
 	{
-		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter....isReady %s ", this->getName().c_str());
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"axisbase....isReady %s ", this->getName().c_str());
 		return (_state == ready);
 	} /*---------------------- end of isReady ---------------------------------------------------*/
 };    /*----------------------------------- end of axisBase class -------------------------------*/

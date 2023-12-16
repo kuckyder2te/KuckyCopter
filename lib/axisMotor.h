@@ -27,7 +27,6 @@ private:
 	Motor *_motor[2];
 	double _roll;
 	bool _invertRoll;
-	
 	uint16_t _lastPower;
 
 public:
@@ -146,7 +145,6 @@ public:
 			_motor[motor_t::second]->setMotorState(Motor::stop);
 			break;
 		case ready:
-			//Serial.println(_axisData->power);
 			_motor[motor_t::first]->setMotorState(Motor::rotating);
 			_motor[motor_t::second]->setMotorState(Motor::rotating);
 
@@ -154,8 +152,8 @@ public:
 
 			_axisData->setpoint = (_roll + (*_axisData->rcY));
 
-			// _motor[motor_t::first]->setPower(_axisData->power - _axisData->pidError);
-			// _motor[motor_t::second]->setPower(_axisData->power + _axisData->pidError);
+			_motor[motor_t::first]->setPower(_axisData->power - _axisData->pidError);
+			_motor[motor_t::second]->setPower(_axisData->power + _axisData->pidError);
 			
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"ready %s, AxisMotor SP:%d, Power:%d, Error:%d", this->getName().c_str(), _axisData->setpoint, _axisData->power, _axisData->pidError);
 			break;
@@ -170,7 +168,8 @@ public:
 
 	void setState(state state)
 	{
-				_state = state;
+		_state = state;
+		LOGGER_NOTICE_FMT("axisMotor state %i", _state);
 	} /*--------------------- end of setState --------------------------------------------------*/
 
 	void setPower(int16_t _power)

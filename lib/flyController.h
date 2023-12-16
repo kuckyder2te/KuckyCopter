@@ -4,7 +4,7 @@
     Authors: Stephan Scholz / Wilhelm Kuckelsberg
     Date : 2022-06-19
 
-    Description : Drohne
+    Description : Flight controls.
 */
 
 #include <Arduino.h>
@@ -17,29 +17,27 @@
 #include "sonics.h"
 #include "model.h"
 
-// #define POWER_LIFT_UP 60 ///< The KuckyCopter will start, if throttle > 60
-#define POWER_LIFT_UP 10 /// Test Value
-#define DOWN_TIME 2000   ///< Time to turn off the engines (in Microseconds).
-#define PID_ACTIVE_AT 9  ///< PID aktiviert ab einer Höhe von 9cm
+#define POWER_LIFT_UP 2 ///< Test Value
+#define DOWN_TIME 2000  ///< Time to turn off the engines (in Microseconds).
+#define PID_ACTIVE_AT 9 ///< PID aktiviert ab einer Höhe von 9cm
 
 class FlyController : public Task::Base
 {
-public:
 private:
     AxisYaw *_axisYaw;
     model_t *_model;
 
     typedef enum
     {
-        arming_begin = 0,   ///< When the Kuckycopter is first turned on, the arming starts.
-        arming_busy,        ///< ist das nötig?
-        disablePID,
-        standby,            ///< All motors on POWER_MIN
-        prestart,           ///< All motors on standby and ready to fly. (POWER_MIN)
-        takeoff,            ///< The Quadrocopter takes off.
-        set_pid,            ///< Fly without PID-Output = 0
-        fly,                ///< Normal fly mode
-        ground              ///< Kuckycopter stand on the ground
+        arming_begin = 0, ///< When the Kuckycopter is first turned on, the arming starts.
+        arming_busy,      ///< Arming is in progress
+        disablePID,       ///< disable the PID controlle
+        standby,          ///< All motors on POWER_MIN
+        prestart,         ///< All motors on standby and ready to fly. (POWER_MIN)
+        takeoff,          ///< The Quadrocopter takes off.
+        set_pid,          ///< Fly without PID-Output = 0
+        fly,              ///< Normal fly mode
+        ground            ///< Kuckycopter stand on the ground
     } flyState_e;
     flyState_e flyState, Debug_flyState;
 
@@ -52,7 +50,7 @@ private:
         _model->RC_interface.TX_payload.pressure = _model->sensorData.pressure;
         _model->RC_interface.TX_payload.temperature = _model->sensorData.temperature_baro;
         _model->RC_interface.TX_payload.distance_down = _model->sonicData.down_distance;
-    }
+    } /*------------------------------- end of updateModel --------------------------------------*/
 
 public:
     FlyController(const String &name)
@@ -61,7 +59,7 @@ public:
     }
 
     FlyController *init(model_t *model)
-    { 
+    {
         LOGGER_VERBOSE("Enter....");
         _model = model;
         flyState = arming_begin;
@@ -75,16 +73,15 @@ public:
         return this;
     }
 
-    virtual void begin() override // Wird nach dem Erzeugen das Tasks automatisch aufgerufen. _model ist hier noch nicht bekannt
+    virtual void begin() override // _model is not yet known here
     {
-    }
+    } /*------------------------------- end of begin --------------------------------------------*/
 
     virtual void update() override
     {
         static uint16_t downTime = 0;
         switch (flyState)
         {
-
         case arming_begin:
             /* This is only setting, for the first start from the airplane.
              * Main Power ON/OFF or option-switch. */
@@ -113,9 +110,6 @@ public:
         case standby:
             LOGGER_VERBOSE("standby");
             /* Make sure the throttle lever is set to 0 and RC is connected. */
-            // _model->RC_interface.isconnect = true;           // Just to test if Flycontroller is running.
-            // _model->RC_interface.RX_payload.rcThrottle = 1;   //          ""
-
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_MIN))
             {
                 flyState = prestart;
@@ -166,9 +160,7 @@ public:
         case set_pid:
             /* If everything is checked, the PID controller is activated. */
             LOGGER_VERBOSE("set pid");
-            _model->RC_interface.isconnect = true; // Just to test if Flycontroller is running.
             _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
-            _model->RC_interface.RX_payload.rcThrottle = 65; // Just to test if Flycontroller is running. Debug
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_LIFT_UP))
             {
                 _axisYaw->setState(AxisYaw::enablePID);
@@ -184,15 +176,17 @@ public:
             break;
 
         case fly:
-            /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT, 
+            /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT,
             the status is set to ground. */
             LOGGER_VERBOSE("fly");
-            //_model->sonicData.down_distance = 10;          // Just to test if Flycontroller is running.
+            _model->sonicData.down_distance = 10;
 
-            _model->RC_interface.RX_payload.rcThrottle = 100;
+            LOGGER_NOTICE_FMT("fly %i ", _model->RC_interface.RX_payload.rcThrottle);
+
+            if (_model->RC_interface.RX_payload.rcThrottle < 0)
+                _model->RC_interface.RX_payload.rcThrottle = 1;
 
             _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
-            //_model->yawData.throttle = 50;                  // Just to test if Flycontroller is running.
 
             if ((_model->yawData.power <= POWER_LIFT_UP) || (_model->sonicData.down_distance < PID_ACTIVE_AT))
             {
@@ -229,5 +223,5 @@ public:
 
         } /* end of switch flyState */
         updateModel();
-    } /*------------------------------- end of update ------------------------------------------*/
-};/*---------------------------------- end of flyController ------------------------------------*/
+    } /*------------------------------- end of update -------------------------------------------*/
+};    /*---------------------------------- end of flyController ---------------------------------*/

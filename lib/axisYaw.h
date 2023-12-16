@@ -99,7 +99,7 @@ public:
 	{
 		AxisBase::update();
 
-		LOGGER_VERBOSE("Update axisYaw");
+		LOGGER_NOTICE("Update axisYaw");
 
 		switch (_state)
 		{
@@ -123,7 +123,7 @@ public:
 
 		case disablePID:
 			/* Disables the YawAxis PID controller and initiates deactivation for the motor axes. */
-			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter disablePID State %d", _state);
+			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter disablePID state %d", _state);
 			_newPID->disablePID();
 			_axisMotor[axisName::primary]->setState(AxisMotor::disablePID);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::disablePID);
@@ -132,7 +132,7 @@ public:
 
 		case enablePID:
 			/* Enables the YawAxis PID controller and initiates activation for the motor axes. */
-			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter enablePID State %d", _state);
+			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter enablePID state %d", _state);
 			_newPID->enablePID();
 			_yaw->horz_Position = 0;
 			_axisMotor[axisName::primary]->setState(AxisMotor::enablePID);
@@ -142,8 +142,8 @@ public:
 			break;
 
 		case ready:
-			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter ready State %d", _state);
-
+			//LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter ready state %d", _state);
+			LOGGER_NOTICE_FMT("Enter ready state %d", _state);
 			_axisMotor[axisName::primary]->setState(AxisMotor::ready);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::ready);
 
@@ -154,8 +154,8 @@ public:
 			{ ///< YAW Joystick is not moved....
 				// _yaw->axisData[axisName::primary]->power = _axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING;
 				// _yaw->axisData[axisName::secondary]->power = _axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING;
-				// _axisMotor[axisName::primary]->setPower(_axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING);
-				// _axisMotor[axisName::secondary]->setPower(_axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING);
+				_axisMotor[axisName::primary]->setPower(_axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING);
+				_axisMotor[axisName::secondary]->setPower(_axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING);
 				_yaw->horz_Position = 0;
 			}
 			else
@@ -163,8 +163,8 @@ public:
 				_virtualFeedback = _yaw->horz_Position; /// *_fb = into the PID controller
 				// _yaw->axisData[axisName::primary]->power = _axisData->power - _axisData->pidError;
 				// _yaw->axisData[axisName::secondary]->power = _axisData->power + _axisData->pidError;
-				// _axisMotor[axisName::primary]->setPower(_axisData->power - _axisData->pidError); // yawError comes from the PID controller.
-				// _axisMotor[axisName::secondary]->setPower(_axisData->power + _axisData->pidError);
+				_axisMotor[axisName::primary]->setPower(_axisData->power - _axisData->pidError); // yawError comes from the PID controller.
+				_axisMotor[axisName::secondary]->setPower(_axisData->power + _axisData->pidError);
 			}
 			LOGGER_VERBOSE("....leave");
 			break;
@@ -174,9 +174,9 @@ public:
 
 	void setState(state_e state)
 	{
-		LOGGER_NOTICE_FMT("set YawAxis State = %d", _state);
+		LOGGER_NOTICE_FMT("set axisYaw state = %d", _state);
 		_state = state;
-		LOGGER_NOTICE("Leave  setState");
+		LOGGER_NOTICE("...leave  setState");
 	} /*---------------------- end of setState --------------------------------------------------*/
 
 	virtual boolean isArmed()
@@ -195,7 +195,11 @@ public:
 
 	virtual boolean isReady()
 	{
-		bool ready = ((_state == ready)) && (_axisMotor[axisName::primary]->isReady()) && (_axisMotor[axisName::secondary]->isReady());
+		LOGGER_NOTICE_FMT("axisYaw is ready state %d", _state);
+		LOGGER_NOTICE_FMT("axisMotor isReady pri state %d", (_axisMotor[axisName::primary]->isReady()));
+		LOGGER_NOTICE_FMT("axisMotor isReady sec state %d", (_axisMotor[axisName::secondary]->isReady()));
+		//bool ready = ((_state == ready)) && (_axisMotor[axisName::primary]->isReady()) && (_axisMotor[axisName::secondary]->isReady());
+		bool ready = ((_axisMotor[axisName::primary]->isReady()) && (_axisMotor[axisName::secondary]->isReady()));
 		LOGGER_NOTICE_FMT("getYawAxisState %d ", ready);
 		return ready;
 	} /*---------------------- end of isReady ---------------------------------------------------*/

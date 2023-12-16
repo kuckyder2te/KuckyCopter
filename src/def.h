@@ -30,14 +30,14 @@ typedef enum
     yaw
 } axisName;
 
-#define PIN_MOTOR_FL 11 // ESC PIN´s
-#define PIN_MOTOR_FR 12
-#define PIN_MOTOR_BL 14
-#define PIN_MOTOR_BR 13
-#define POWER_MIN     0
-#define POWER_MAX   100
-#define BASE_MOTOR_POWER 0 //< 5% minimal throttle in fly mode for preventing stop of the motors
-#define PIN_ESC_ON 15
+#define PIN_MOTOR_FL     11 // ESC PIN´s
+#define PIN_MOTOR_FR     12
+#define PIN_MOTOR_BL     14
+#define PIN_MOTOR_BR     13
+#define POWER_MIN         0
+#define POWER_MAX       100
+#define BASE_MOTOR_POWER  0 //< 5% minimal throttle in fly mode for preventing stop of the motors
+#define PIN_ESC_ON       15
 #define DUTYCYCLE_MIN 40000     // ~ 1000 micro seconds
 #define DUTYCYCLE_MAX 80000     // ~ 2000      ""
 
@@ -67,9 +67,9 @@ typedef enum
 
 #define AXIS_FPS 100        // Frame rate taskmanager Axis
 
-#define PID_OUTPUT_BITS 16
+#define PID_OUTPUT_BITS     16
 #define PID_OUTPUT_SIGNED true
-#define PID_P_MIN 0.00390626 ///< The parameter P domain is [0.00390625 to 255] inclusive.
+#define PID_P_MIN            0.00390626 ///< The parameter P domain is [0.00390625 to 255] inclusive.
 // #define PID_EEPROM_ADRRESS 50
 
 /* Radio*/
