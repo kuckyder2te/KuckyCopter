@@ -17,9 +17,9 @@ public:
 	const char *c_axis_yaw_select = "YAW axis is select";
 	const char *c_axis_ef_select  = "Exe.Frequency is select";
 
-	const char *c_ef_primary =    "Exec. frequency primary  =  ";
-	const char *c_ef_secondary =  "Exec. frequency secondary = ";
-	const char *c_ef_yaw_ =       "Exec. frequency yaw    =    ";
+	const char *c_ef_primary =   "Value pri. =";
+	const char *c_ef_secondary = "Value sec. =";
+	const char *c_ef_yawZ =       "Value yaw  =";  // das große 'Z' ist nur eine schnelle Lösung
 
 	const char *c_p_coeff =  "Coefficient P = ";
 	const char *c_i_coeff =  "Coefficient I = ";

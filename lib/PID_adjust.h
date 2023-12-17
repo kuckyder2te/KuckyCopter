@@ -194,7 +194,12 @@ public:
 				_putty_out->yellow();
 				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 15, COL_SELECT + 5, _dict->c_whitespace);
+			
 				_putty_out->print(ROW_SELECT + 15, COL_SELECT + 5, _dict->c_axis_ef_select);
+				_putty_out->print(ROW_SELECT + 16 , COL_SELECT + 10, _dict->c_ef_primary);
+				_putty_out->print(ROW_SELECT + 17 , COL_SELECT + 10, _dict->c_ef_secondary);
+				_putty_out->print(ROW_SELECT + 18 , COL_SELECT + 10, _dict->c_ef_yawZ);	
+
 //x				_putty_out->print(ROW_STATE, COL_STATE, " 'E' is not implemented");
 				break;
 
