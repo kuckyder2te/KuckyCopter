@@ -148,19 +148,20 @@ public:
 			i++;
 		}
 		return this;
-	} /* -------------------- end of PID_adjust *addPID -------------------------------*/
+	} /* -------------------- end of PID_adjust *addPID -----------------------------------------*/
 
 	virtual void begin() override
 	{
 		LOGGER_VERBOSE("Enter....");
 		_dict = new (Dictionary);
+	//	display_Menu();
 	//	displayPIDcoefficients();
 		LOGGER_VERBOSE("....leave");
-	} /* -------------------- end of begin -----------------------------------------------------*/
+	} /* -------------------- end of begin ------------------------------------------------------*/
 
 	virtual void update() override
 	{
-		LOGGER_VERBOSE("Enter....");
+		LOGGER_NOTICE("Enter....");
 
 		if (_serial->available() > 0) 
 		{
@@ -172,29 +173,38 @@ public:
 				_putty_out->yellow();
 				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);		///< Clears the string "Illegal button was pressed"
 				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
-				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_pri_select);		///< Print the selected axis
+				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_axis_pri_select);		///< Print the selected axis
 				break;
 			case 'Y':
 				setItemAxis(itemAxis_Number_t::axis_sec);
 				_putty_out->yellow();
 				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 5, COL_SELECT + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 5, COL_SELECT + 5, _dict->c_sec_select);
+				_putty_out->print(ROW_SELECT + 5, COL_SELECT + 5, _dict->c_axis_sec_select);
 				break;
 			case 'Z':
 				setItemAxis(itemAxis_Number_t::axis_yaw);
 				_putty_out->yellow();
 				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 10, COL_SELECT + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 10, COL_SELECT + 5, _dict->c_yaw_select);
+				_putty_out->print(ROW_SELECT + 10, COL_SELECT + 5, _dict->c_axis_yaw_select);
 				break;
+			case 'E':
+				setItemCoefficient(itemCoefficient_t::offset_EF);
+				_putty_out->yellow();
+				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				_putty_out->clearPart(ROW_SELECT + 15, COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 15, COL_SELECT + 5, _dict->c_axis_ef_select);
+//x				_putty_out->print(ROW_STATE, COL_STATE, " 'E' is not implemented");
+				break;
+
 
 			case 'P': ///< Choose the PID parameter
 				setItemCoefficient(itemCoefficient_t::offset_P);
 				_putty_out->yellow();
 				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_p_select); ///< Print the selected coefficient
+				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_p_coeff); ///< Print the selected coefficient
 				break;
 
 			case 'I':
@@ -202,7 +212,7 @@ public:
 				_putty_out->yellow();
 				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_i_select);
+				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_i_coeff);
 				break;
 
 			case 'D':
@@ -210,13 +220,9 @@ public:
 				_putty_out->yellow();
 				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
 				_putty_out->clearPart(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_d_select);
+				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_d_coeff);
 				break;
 
-			case 'E':
-				_putty_out->red();
-				_putty_out->print(ROW_STATE, COL_STATE, " 'E' is not implemented");
-				break;
 
 				// case axisName::primary:
 				// // setItemExecFreq(41);
@@ -664,15 +670,15 @@ public:
 		_putty_out->print(ROW_OUTPUT + 14, COL_OUTPUT, _dict->c_yaw_d);
 		_putty_out->print(ROW_OUTPUT + 14, COL_OUTPUT_VALUE, 3, _namedPID[axisName::yaw]._pid->getD());
 
-		// _putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT, _dict->c_ef_pri);
-		// _putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 1, _namedPID[axisName::primary]._pid->getEF());
+		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT, _dict->c_ef_pri);
+		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 1, _namedPID[axisName::primary]._pid->getEF());
 
-		// _putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT, _dict->c_ef_sec);
-		// _putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 1, _namedPID[axisName::secondary]._pid->getEF());
+		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT, _dict->c_ef_sec);
+		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 1, _namedPID[axisName::secondary]._pid->getEF());
 
-		// _putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT, _dict->c_ef_yaw);
-		// _putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 1, _namedPID[axisName::yaw]._pid->getEF());
-	} /*--------------------- end of displayPIDcoefficients ---------------------------*/
+		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT, _dict->c_ef_yaw);
+		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 1, _namedPID[axisName::yaw]._pid->getEF());
+	} /*--------------------- end of displayPIDcoefficients -------------------------------------*/
 
 	bool checkValue(float a) // It should be ensured that no negative values are passed.
 	{
@@ -680,7 +686,7 @@ public:
 			return true;
 		else
 			return false;
-	} /*----------------------------- end of checkValue ----------------------------------------*/
+	} /*----------------------------- end of checkValue -----------------------------------------*/
 
 	void setDecimalPlaces(uint8_t dot)
 	{
@@ -700,7 +706,7 @@ public:
 			break;
 		} // end of switch
 		LOGGER_NOTICE_FMT("New Factor = %f", _newAddOn);
-	} /*----------------------------- end of setDecimalPlaces ----------------------------------*/
+	} /*----------------------------- end of setDecimalPlaces -----------------------------------*/
 
-}; /*------------------------- end of PID_adjust class -----------------------------------------*/
+}; /*------------------------- end of PID_adjust class ------------------------------------------*/
 #endif

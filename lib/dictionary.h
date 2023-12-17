@@ -12,16 +12,19 @@ class Dictionary {
 
 public:
 
-    const char *c_pri_select = "Primary axis is select"; ///< Strings for menu and informations
-	const char *c_sec_select = "Secondary axis is select";
-	const char *c_yaw_select = "YAW axis is select";
+    const char *c_axis_pri_select = "Primary axis is select"; 	// choose the axis and Exe. frequency
+	const char *c_axis_sec_select = "Secondary axis is select";
+	const char *c_axis_yaw_select = "YAW axis is select";
+	const char *c_axis_ef_select  = "Exe.Frequency is select";
+
 	const char *c_ef_primary =    "Exec. frequency primary  =  ";
 	const char *c_ef_secondary =  "Exec. frequency secondary = ";
 	const char *c_ef_yaw_ =       "Exec. frequency yaw    =    ";
 
-	const char *c_p_select = "Coefficient P = ";
-	const char *c_i_select = "Coefficient I = ";
-	const char *c_d_select = "Coefficient D = ";
+	const char *c_p_coeff =  "Coefficient P = ";
+	const char *c_i_coeff =  "Coefficient I = ";
+	const char *c_d_coeff =  "Coefficient D = ";
+	const char *c_ef_value = "Coefficient eF = ";
 
 	const char *c_accuracy =   "Accuracy = 1.0  ";
 	const char *c_accuracy01 =   "Accuracy = 0.1  ";
