@@ -583,7 +583,7 @@ public:
 		_putty_out->clear();
 		_putty_out->clear();
 		_putty_out->gray();
-		_putty_out->print(ROW_MENU, COL_MENU, "-----------Menu for PID configuration (BT)-----------");
+		_putty_out->print(ROW_MENU, COL_MENU,     "-------- Online configurater for KuckyCopter (BT) --------");
 		_putty_out->yellow();
 		_putty_out->print(ROW_MENU + 2, COL_MENU, "(X) choose the primary");
 		_putty_out->print(ROW_MENU + 3, COL_MENU, "(Y)           secondary");
@@ -602,7 +602,7 @@ public:
 		_putty_out->print(ROW_MENU + 16, COL_MENU, "(N) set the maximal near field altitude");
 		_putty_out->print(ROW_MENU + 17, COL_MENU, "(M) display the menu");
 		_putty_out->gray();
-		_putty_out->print(ROW_MENU + 19, COL_MENU, "-----------------------------------------------------");
+		_putty_out->print(ROW_MENU + 19, COL_MENU, "---------------------------------------------------------");
 	
 		_putty_out->cyan();
 		_putty_out->print(ROW_MENU + 7, COL_MENU+47, 3, _newAddOn);
@@ -614,45 +614,45 @@ public:
 
 	void displayPIDcoefficients()
 	{
-		_putty_out->blue();
-		_putty_out->print(ROW_OUTPUT, COL_OUTPUT, "Coefficients from EEPROM");
+		 _putty_out->blue();
+		 _putty_out->print(ROW_MENU+21, COL_MENU+32, "..in EEPROM");
 
 		_putty_out->gray();
-		_putty_out->print(ROW_OUTPUT + 2, COL_OUTPUT, _dict->c_primary_p);
-		_putty_out->print(ROW_OUTPUT + 2, COL_OUTPUT_VALUE, 3, _namedPID[axisName::primary]._pid->getP());
+//		_putty_out->print(ROW_OUTPUT + 2, COL_OUTPUT, _dict->c_primary_p);
+		_putty_out->print(ROW_MENU + 22, COL_MENU+36, 3, _namedPID[axisName::primary]._pid->getP());
 
-		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, _dict->c_primary_i);
-		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT_VALUE, 3, _namedPID[axisName::primary]._pid->getI());
+//		_putty_out->print(ROW_OUTPUT + 3, COL_OUTPUT, _dict->c_primary_i);
+		_putty_out->print(ROW_MENU + 23, COL_MENU+36, 3, _namedPID[axisName::primary]._pid->getI());
 
-		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT, _dict->c_primary_d);
-		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT_VALUE, 3, _namedPID[axisName::primary]._pid->getD());
+//		_putty_out->print(ROW_OUTPUT + 4, COL_OUTPUT, _dict->c_primary_d);
+		_putty_out->print(ROW_MENU + 24, COL_MENU+36, 3, _namedPID[axisName::primary]._pid->getD());
 
-		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT, _dict->c_secondary_p);
-		_putty_out->print(ROW_OUTPUT + 7, COL_OUTPUT_VALUE, 3, _namedPID[axisName::secondary]._pid->getP());
+//		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT, _dict->c_ef_pri);
+		_putty_out->print(ROW_MENU + 25, COL_MENU+36, 3, _namedPID[axisName::primary]._pid->getEF());
 
-		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT, _dict->c_secondary_i);
-		_putty_out->print(ROW_OUTPUT + 8, COL_OUTPUT_VALUE, 3, _namedPID[axisName::secondary]._pid->getI());
+//		_putty_out->print(ROW_MENU + 7, COL_OUTPUT, _dict->c_secondary_p);
+		_putty_out->print(ROW_MENU + 27, COL_MENU+36, 3, _namedPID[axisName::secondary]._pid->getP());
 
-		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT, _dict->c_secondary_d);
-		_putty_out->print(ROW_OUTPUT + 9, COL_OUTPUT_VALUE, 3, _namedPID[axisName::secondary]._pid->getD());
+//		_putty_out->print(ROW_MENU + 8, COL_OUTPUT, _dict->c_secondary_i);
+		_putty_out->print(ROW_MENU + 28, COL_MENU+36, 3, _namedPID[axisName::secondary]._pid->getI());
 
-		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT, _dict->c_yaw_p);
-		_putty_out->print(ROW_OUTPUT + 12, COL_OUTPUT_VALUE, 3, _namedPID[axisName::yaw]._pid->getP()); //  hier stimmt was nicht mit der Ausgabe
+//		_putty_out->print(ROW_MENU + 9, COL_OUTPUT, _dict->c_secondary_d);
+		_putty_out->print(ROW_MENU + 29, COL_MENU+36, 3, _namedPID[axisName::secondary]._pid->getD());
 
-		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT, _dict->c_yaw_i);
-		_putty_out->print(ROW_OUTPUT + 13, COL_OUTPUT_VALUE, 3, _namedPID[axisName::yaw]._pid->getI());
+//		_putty_out->print(ROW_MENU + 16, COL_OUTPUT, _dict->c_ef_sec);
+		_putty_out->print(ROW_MENU + 30, COL_MENU+36, 3, _namedPID[axisName::secondary]._pid->getEF());
 
-		_putty_out->print(ROW_OUTPUT + 14, COL_OUTPUT, _dict->c_yaw_d);
-		_putty_out->print(ROW_OUTPUT + 14, COL_OUTPUT_VALUE, 3, _namedPID[axisName::yaw]._pid->getD());
+//		_putty_out->print(ROW_MENU + 12, COL_OUTPUT, _dict->c_yaw_p);
+		_putty_out->print(ROW_MENU + 32, COL_MENU+36, 3, _namedPID[axisName::yaw]._pid->getP()); //  hier stimmt was nicht mit der Ausgabe ??
 
-		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT, _dict->c_ef_pri);
-		_putty_out->print(ROW_OUTPUT + 15, COL_OUTPUT_VALUE, 1, _namedPID[axisName::primary]._pid->getEF());
+//		_putty_out->print(ROW_MENU + 13, COL_OUTPUT, _dict->c_yaw_i);
+		_putty_out->print(ROW_MENU + 33, COL_MENU+36, 3, _namedPID[axisName::yaw]._pid->getI());
 
-		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT, _dict->c_ef_sec);
-		_putty_out->print(ROW_OUTPUT + 16, COL_OUTPUT_VALUE, 1, _namedPID[axisName::secondary]._pid->getEF());
+//		_putty_out->print(ROW_MENU + 14, COL_OUTPUT, _dict->c_yaw_d);
+		_putty_out->print(ROW_MENU + 34, COL_MENU+36, 3, _namedPID[axisName::yaw]._pid->getD());
 
-		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT, _dict->c_ef_yaw);
-		_putty_out->print(ROW_OUTPUT + 17, COL_OUTPUT_VALUE, 1, _namedPID[axisName::yaw]._pid->getEF());
+//		_putty_out->print(ROW_MENU + 17, COL_OUTPUT, _dict->c_ef_yaw);
+		_putty_out->print(ROW_MENU + 35, COL_MENU+36, 1, _namedPID[axisName::yaw]._pid->getEF());
 	} /*--------------------- end of displayPIDcoefficients -------------------------------------*/
 
 	bool checkValue(float a) // It should be ensured that no negative values are passed.
