@@ -228,30 +228,6 @@ public:
 				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_d_coeff);
 				break;
 
-
-				// case axisName::primary:
-				// // setItemExecFreq(41);
-				// 	_putty_out->clearPart(ROW_SELECT + 15, COL_SELECT + 5, _dict->c_whitespace);
-				// 	_putty_out->print(ROW_SELECT + 15, COL_SELECT + 5, _dict->c_ef_primary);
-				// 	break;
-				// case axisName::secondary:
-				// //	setItemExecFreq(42);
-				// 	_putty_out->clearPart(ROW_SELECT + 16, COL_SELECT + 5, _dict->c_whitespace);
-				// 	_putty_out->print(ROW_SELECT + 16, COL_SELECT + 5, _dict->c_ef_secondary);
-				// 	break;
-				// case axisName::yaw:
-				// //	setItemExecFreq(43);
-				// 	_putty_out->clearPart(ROW_SELECT + 17, COL_SELECT + 5, _dict->c_whitespace);
-				// 	_putty_out->print(ROW_SELECT + 17, COL_SELECT + 5, _dict->c_ef_yaw_);
-				// 	break;
-				// case 3:
-				// 	count = -1;
-				// 	break;
-				// }
-				// _putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
-				// count++;
-				// break;
-
 			case '+':
 				_putty_out->yellow();
 				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
@@ -398,11 +374,6 @@ public:
 		LOGGER_NOTICE_FMT("itemAxis = %d", _itemAxis);
 	} /*----------------------------- end of setItemAxis ---------------------------------------*/
 
-	// void setItemExecFreq(uint8_t itemExFr)
-	// {
-	// 	_itemCoefficient = itemExFr;
-	// } /*----------------------------- end of setItemExecFreq -----------------------------------*/
-
 	void setItemCoefficient(uint8_t itemCoefficient)
 	{
 		/* Selects the coefficient, according to the keyboard input.
@@ -468,7 +439,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("X Axis kP = %f", pri_kP_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_SELECT + 1, COL_SELECT + 26, _dotPlaces, pri_kP_value);
+				_putty_out->print(ROW_MENU + 25, COL_SELECT + 26, _dotPlaces, pri_kP_value);
 				_namedPID[axisName::primary]._pid->setP(pri_kP_value);
 				displayPIDcoefficients();
 			}
@@ -479,7 +450,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("X Axis kI = %f", pri_kI_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_SELECT + 2, COL_SELECT + 26, _dotPlaces, pri_kI_value);
+				_putty_out->print(ROW_MENU + 26, COL_SELECT + 26, _dotPlaces, pri_kI_value);
 				_namedPID[axisName::primary]._pid->setI(pri_kI_value);
 				displayPIDcoefficients();
 			}
@@ -490,7 +461,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("X Axis kD = %f", pri_kD_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_SELECT + 3, COL_SELECT + 26, _dotPlaces, pri_kD_value);
+				_putty_out->print(ROW_MENU + 27, COL_SELECT + 26, _dotPlaces, pri_kD_value);
 				_namedPID[axisName::primary]._pid->setD(pri_kD_value);
 				displayPIDcoefficients();
 			}
@@ -502,7 +473,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Y Axis kP = %f", sec_kP_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kP_value);
+				_putty_out->print(ROW_MENU + 25 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kP_value);
 				_namedPID[axisName::secondary]._pid->setP(sec_kP_value);
 				displayPIDcoefficients();
 			}
@@ -514,7 +485,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Y Axis kI = %f", sec_kI_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kI_value);
+				_putty_out->print(ROW_MENU + 26 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kI_value);
 				_namedPID[axisName::secondary]._pid->setI(sec_kI_value);
 				displayPIDcoefficients();
 			}
@@ -526,7 +497,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Y Axis kD = %f", sec_kD_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kD_value);
+				_putty_out->print(ROW_MENU + 27 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, sec_kD_value);
 				_namedPID[axisName::secondary]._pid->setD(sec_kD_value);
 				displayPIDcoefficients();
 			}
@@ -538,7 +509,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Z Axis kP = %f", yaw_kP_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kP_value);
+				_putty_out->print(ROW_MENU + 25 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kP_value);
 				_namedPID[axisName::yaw]._pid->setP(yaw_kP_value);
 				displayPIDcoefficients();
 			}
@@ -550,7 +521,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Z Axis kI = %f", yaw_kI_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kI_value);
+				_putty_out->print(ROW_MENU + 26 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kI_value);
 				_namedPID[axisName::yaw]._pid->setI(yaw_kI_value);
 				displayPIDcoefficients();
 			}
@@ -562,47 +533,47 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Z Axis kD = %f", yaw_kD_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kD_value);
+				_putty_out->print(ROW_MENU + 27 + ((_itemAxis - 1) * 5), COL_SELECT + 26, _dotPlaces, yaw_kD_value);
 				_namedPID[axisName::yaw]._pid->setD(yaw_kD_value);
 				displayPIDcoefficients();
 			}
 			break;
 
-		// case pidTyp_t::pri_ef:
-		// 	pri_EF_value += _addOn;
-		// 	if (checkValue(pri_EF_value))
-		// 	{
-		// 		LOGGER_WARNING_FMT("X Axis eF = %f", pri_EF_value);
-		// 		_putty_out->cyan();
-		// 		_putty_out->print(ROW_SELECT + 15, COL_SELECT + 33, _dotPlaces, pri_EF_value);
-		// 		_namedPID[axisName::primary]._pid->setEF(pri_EF_value);
-		// 		displayPIDcoefficients();
-		// 	}
-		// 	break;
+		case pidTyp_t::pri_ef:
+			pri_EF_value += _addOn;
+			if (checkValue(pri_EF_value))
+			{
+				LOGGER_WARNING_FMT("X Axis eF = %f", pri_EF_value);
+				_putty_out->cyan();
+				_putty_out->print(ROW_SELECT + 15, COL_SELECT + 33, _dotPlaces, pri_EF_value);
+				_namedPID[axisName::primary]._pid->setEF(pri_EF_value);
+				displayPIDcoefficients();
+			}
+			break;
 
-		// case pidTyp_t::sec_ef:
-		// 	sec_EF_value += _addOn;
-		// 	if (checkValue(sec_EF_value))
-		// 	{
-		// 		LOGGER_WARNING_FMT("Y Axis eF = %f", sec_EF_value);
-		// 		_putty_out->cyan();
-		// 		_putty_out->print(ROW_SELECT + 16, COL_SELECT + 33, _dotPlaces, sec_EF_value);
-		// 		_namedPID[axisName::secondary]._pid->setEF(sec_EF_value);
-		// 		displayPIDcoefficients();
-		// 	}
-		// 	break;
+		case pidTyp_t::sec_ef:
+			sec_EF_value += _addOn;
+			if (checkValue(sec_EF_value))
+			{
+				LOGGER_WARNING_FMT("Y Axis eF = %f", sec_EF_value);
+				_putty_out->cyan();
+				_putty_out->print(ROW_SELECT + 16, COL_SELECT + 33, _dotPlaces, sec_EF_value);
+				_namedPID[axisName::secondary]._pid->setEF(sec_EF_value);
+				displayPIDcoefficients();
+			}
+			break;
 
-		// case pidTyp_t::yaw_ef:
-		// 	yaw_EF_value += _addOn;
-		// 	if (checkValue(yaw_EF_value))
-		// 	{
-		// 		LOGGER_WARNING_FMT("Z Axis eF = %f", yaw_EF_value);
-		// 		_putty_out->cyan();
-		// 		_putty_out->print(ROW_SELECT + 17, COL_SELECT + 33, _dotPlaces, yaw_EF_value);
-		// 		_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
-		// 		displayPIDcoefficients();
-		// 	}
-		// 	break;
+		case pidTyp_t::yaw_ef:
+			yaw_EF_value += _addOn;
+			if (checkValue(yaw_EF_value))
+			{
+				LOGGER_WARNING_FMT("Z Axis eF = %f", yaw_EF_value);
+				_putty_out->cyan();
+				_putty_out->print(ROW_SELECT + 17, COL_SELECT + 33, _dotPlaces, yaw_EF_value);
+				_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
+				displayPIDcoefficients();
+			}
+			break;
 		} /* end of switch */
 	}	  /*----------------------------- end of select ----------------------------------------*/
 
@@ -632,10 +603,9 @@ public:
 		_putty_out->print(ROW_MENU + 17, COL_MENU, "(M) display the menu");
 		_putty_out->gray();
 		_putty_out->print(ROW_MENU + 19, COL_MENU, "-----------------------------------------------------");
-		_putty_out->yellow();
-		_putty_out->print(ROW_OUTPUT, COL_MENU, "Accuracy = ");
+	
 		_putty_out->cyan();
-		_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
+		_putty_out->print(ROW_MENU + 7, COL_MENU+47, 3, _newAddOn);
 		_putty_out->gray();
 		_putty_out->print(ROW_STATE, COL_MENU, "State message : ");
 
