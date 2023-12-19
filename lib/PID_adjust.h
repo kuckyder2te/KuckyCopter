@@ -172,55 +172,54 @@ public:
 				setItemAxis(itemAxis_Number_t::axis_pri);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
-				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_axis_pri_select);		///< Print the selected axis
+				_putty_out->clearPart(ROW_MENU+21, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
+				_putty_out->print(ROW_MENU+21, COL_SELECT + 5, _dict->c_axis_pri_select);		///< Print the selected axis
 				break;
 			case 'Y':
 				setItemAxis(itemAxis_Number_t::axis_sec);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_SELECT + 5, COL_SELECT + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 5, COL_SELECT + 5, _dict->c_axis_sec_select);
+				_putty_out->clearPart(ROW_MENU+26, COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+26, COL_SELECT + 5, _dict->c_axis_sec_select);
 				break;
 			case 'Z':
 				setItemAxis(itemAxis_Number_t::axis_yaw);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_SELECT + 10, COL_SELECT + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 10, COL_SELECT + 5, _dict->c_axis_yaw_select);
+				_putty_out->clearPart(ROW_MENU+31, COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+31, COL_SELECT + 5, _dict->c_axis_yaw_select);
 				break;
 
 			case 'P': ///< Choose the PID parameter
 				setItemCoefficient(itemCoefficient_t::offset_P);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_p_coeff); ///< Print the selected coefficient
+				_putty_out->clearPart(ROW_MENU+22 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+22 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_p_coeff); ///< Print the selected coefficient
 				break;
 
 			case 'I':
 				setItemCoefficient(itemCoefficient_t::offset_I);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_i_coeff);
+				_putty_out->clearPart(ROW_MENU+23 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+23 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_i_coeff);
 				break;
 
 			case 'D':
 				setItemCoefficient(itemCoefficient_t::offset_D);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_d_coeff);
+				_putty_out->clearPart(ROW_MENU+24 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+24 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_d_coeff);
 				break;
 
 				case 'E':
 				setItemCoefficient(itemCoefficient_t::offset_EF);
 				_putty_out->yellow();
 				clearStateLine();
-//				Serial.print(_itemAxis);Serial.print(" ");Serial.println(itemCoefficient_t::offset_EF);
-				_putty_out->clearPart(ROW_SELECT + 4 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_SELECT + 4 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_ef_coeff);
+				_putty_out->clearPart(ROW_MENU+25 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+25 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_ef_coeff);
 				break;
 
 
