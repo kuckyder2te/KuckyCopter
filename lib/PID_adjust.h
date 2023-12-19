@@ -171,43 +171,29 @@ public:
 			case 'X': ///< Choose the axes
 				setItemAxis(itemAxis_Number_t::axis_pri);
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);		///< Clears the string "Illegal button was pressed"
+				clearStateLine();
 				_putty_out->clearPart(ROW_SELECT, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
 				_putty_out->print(ROW_SELECT, COL_SELECT + 5, _dict->c_axis_pri_select);		///< Print the selected axis
 				break;
 			case 'Y':
 				setItemAxis(itemAxis_Number_t::axis_sec);
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				_putty_out->clearPart(ROW_SELECT + 5, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + 5, COL_SELECT + 5, _dict->c_axis_sec_select);
 				break;
 			case 'Z':
 				setItemAxis(itemAxis_Number_t::axis_yaw);
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				_putty_out->clearPart(ROW_SELECT + 10, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + 10, COL_SELECT + 5, _dict->c_axis_yaw_select);
 				break;
-			case 'E':
-				setItemCoefficient(itemCoefficient_t::offset_EF);
-				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
-				_putty_out->clearPart(ROW_SELECT + 15, COL_SELECT + 5, _dict->c_whitespace);
-			
-				_putty_out->print(ROW_SELECT + 15, COL_SELECT + 5, _dict->c_axis_ef_select);
-				_putty_out->print(ROW_SELECT + 16 , COL_SELECT + 10, _dict->c_ef_primary);
-				_putty_out->print(ROW_SELECT + 17 , COL_SELECT + 10, _dict->c_ef_secondary);
-				_putty_out->print(ROW_SELECT + 18 , COL_SELECT + 10, _dict->c_ef_yawZ);	
-
-//x				_putty_out->print(ROW_STATE, COL_STATE, " 'E' is not implemented");
-				break;
-
 
 			case 'P': ///< Choose the PID parameter
 				setItemCoefficient(itemCoefficient_t::offset_P);
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				_putty_out->clearPart(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + 1 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_p_coeff); ///< Print the selected coefficient
 				break;
@@ -215,7 +201,7 @@ public:
 			case 'I':
 				setItemCoefficient(itemCoefficient_t::offset_I);
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				_putty_out->clearPart(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + 2 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_i_coeff);
 				break;
@@ -223,27 +209,37 @@ public:
 			case 'D':
 				setItemCoefficient(itemCoefficient_t::offset_D);
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				_putty_out->clearPart(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
 				_putty_out->print(ROW_SELECT + 3 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_d_coeff);
 				break;
 
+				case 'E':
+				setItemCoefficient(itemCoefficient_t::offset_EF);
+				_putty_out->yellow();
+				clearStateLine();
+//				Serial.print(_itemAxis);Serial.print(" ");Serial.println(itemCoefficient_t::offset_EF);
+				_putty_out->clearPart(ROW_SELECT + 4 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 4 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_ef_coeff);
+				break;
+
+
 			case '+':
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				coefficient_Up(); ///< Coefficient increment
 				break;
 
 			case '-':
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				coefficient_Down(); ///< Coefficient decrement
 				break;
 
 			case '0': ///< Choose the decimal places  0 to 0,001
 				setDecimalPlaces(0);
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				_putty_out->clearPart(ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
 				_putty_out->cyan();
 				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
@@ -252,7 +248,7 @@ public:
 			case '1':
 				setDecimalPlaces(1);
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
 				_putty_out->cyan();
 				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
@@ -261,7 +257,7 @@ public:
 			case '2':
 				setDecimalPlaces(2);
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
 				_putty_out->cyan();
 				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
@@ -270,7 +266,7 @@ public:
 			case '3':
 				setDecimalPlaces(3);
 				_putty_out->yellow();
-				_putty_out->print(ROW_STATE, COL_STATE, _dict->c_whitespace);
+				clearStateLine();
 				_putty_out->clearPart(ROW_STATE + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
 				_putty_out->cyan();
 				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
@@ -363,7 +359,11 @@ public:
 		} /* end of _serial.available */
 		LOGGER_VERBOSE("....leave");
 	} /* -------------------- end of update ----------------------------------------------------*/
-
+	
+	void clearStateLine(){
+		_putty_out->print(ROW_MENU+46, COL_STATE, _dict->c_whitespace);
+	} /* -------------------- end of clearStateLine ----------------------------------------------------*/
+	/* Clears the string "Illegal button was pressed" */
 	void setItemAxis(uint8_t itemAxis)
 	{
 		/* Selects the axis, according to the keyboard input.
@@ -455,6 +455,7 @@ public:
 				displayPIDcoefficients();
 			}
 			break;
+
 		case pidTyp_t::pri_D:
 			pri_kD_value += _addOn;
 			if (checkValue(pri_kD_value))
@@ -463,6 +464,18 @@ public:
 				_putty_out->cyan();
 				_putty_out->print(ROW_MENU + 27, COL_SELECT + 26, _dotPlaces, pri_kD_value);
 				_namedPID[axisName::primary]._pid->setD(pri_kD_value);
+				displayPIDcoefficients();
+			}
+			break;
+
+		case pidTyp_t::pri_ef:
+			pri_EF_value += _addOn;
+			if (checkValue(pri_EF_value))
+			{
+				LOGGER_WARNING_FMT("X Axis eF = %f", pri_EF_value);
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 28, COL_SELECT + 26, _dotPlaces, pri_EF_value);
+				_namedPID[axisName::primary]._pid->setEF(pri_EF_value);
 				displayPIDcoefficients();
 			}
 			break;
@@ -539,17 +552,7 @@ public:
 			}
 			break;
 
-		case pidTyp_t::pri_ef:
-			pri_EF_value += _addOn;
-			if (checkValue(pri_EF_value))
-			{
-				LOGGER_WARNING_FMT("X Axis eF = %f", pri_EF_value);
-				_putty_out->cyan();
-				_putty_out->print(ROW_SELECT + 15, COL_SELECT + 33, _dotPlaces, pri_EF_value);
-				_namedPID[axisName::primary]._pid->setEF(pri_EF_value);
-				displayPIDcoefficients();
-			}
-			break;
+
 
 		case pidTyp_t::sec_ef:
 			sec_EF_value += _addOn;
