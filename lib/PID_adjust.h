@@ -277,6 +277,19 @@ public:
 				_putty_out->print(ROW_MENU + 7, COL_MENU+47, 3, _newAddOn);
 				break;
 
+			case 'S': ///< Saved all coefficients into the EEPROM
+
+				for(uint8_t i = 0; i < 3; i++){
+					_namedPID[i]._pid->saveParameters();
+				}
+				
+				_putty_out->red();
+				_putty_out->print(ROW_MENU+9, COL_MENU+47, "Done");
+				_putty_out->print(ROW_MENU+10 , COL_MENU+47, "    ");
+//				_putty_out->yellow();
+				displayPIDcoefficients();
+				break;
+
 			case 'R': ///< Reads all coefficients from the EEPROM
 
 				for(uint8_t i = 0; i < 3; i++){
@@ -284,8 +297,9 @@ public:
 				}
 
 				_putty_out->red();
-				_putty_out->print(ROW_STATE, COL_STATE, "Data has been loaded");
-				_putty_out->yellow();
+				_putty_out->print(ROW_MENU+10 , COL_MENU+47, "Done");
+				_putty_out->print(ROW_MENU+9, COL_MENU+47, "    ");
+//				_putty_out->yellow();
 				displayPIDcoefficients();
 				break;
 
@@ -573,28 +587,30 @@ public:
 
 	void display_Menu()
 	{
+		static uint8_t row_add = -1;
 		LOGGER_VERBOSE("Enter....");
 		_putty_out->clear();
 		_putty_out->clear();
 		_putty_out->gray();
-		_putty_out->print(ROW_MENU, COL_MENU,     "-------- Online configurater for KuckyCopter (BT) --------");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU,     "-------- Online configurater for KuckyCopter (BT) --------");
 		_putty_out->yellow();
-		_putty_out->print(ROW_MENU + 2, COL_MENU, "(X) choose the primary");
-		_putty_out->print(ROW_MENU + 3, COL_MENU, "(Y)           secondary");
-		_putty_out->print(ROW_MENU + 4, COL_MENU, "(Z)            YAW axis");
-		_putty_out->print(ROW_MENU + 5, COL_MENU, " P, I or D select the coefficient)");
-		_putty_out->print(ROW_MENU + 6, COL_MENU, "(E) choose the execution frequency (toogle)");
-		_putty_out->print(ROW_MENU + 7, COL_MENU, "(0),(1),(2)or(3)select the accurarcy");
-		_putty_out->print(ROW_MENU + 8, COL_MENU, "(+) increment according to the value");
-		_putty_out->print(ROW_MENU + 9, COL_MENU, "(-) decrement      ''");
-		_putty_out->print(ROW_MENU + 10, COL_MENU, "(S) saves all coefficient into the EEPROM");
-		_putty_out->print(ROW_MENU + 11, COL_MENU, "(R) reads all coefficients from the EEPROM");
-		_putty_out->print(ROW_MENU + 12, COL_MENU, "(C) Copies the primary values to the secondary axis");
-		_putty_out->print(ROW_MENU + 13, COL_MENU, "(A) all values are set to 0 in the EEPROM.");
-		_putty_out->print(ROW_MENU + 14, COL_MENU, "(G) get factory defaults");
-		_putty_out->print(ROW_MENU + 15, COL_MENU, "(H) set the maximal altitude");
-		_putty_out->print(ROW_MENU + 16, COL_MENU, "(N) set the maximal near field altitude");
-		_putty_out->print(ROW_MENU + 17, COL_MENU, "(M) display the menu");
+		_putty_out->print(ROW_MENU + (row_add+=2), COL_MENU, "(X) choose the primary");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(Y)           secondary");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(Z)            YAW axis");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, " P, I, D or E select the coefficient)");
+	//	_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(E) choose the execution frequency (toogle)");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(0),(1),(2),(3) or (5) select the accurarcy");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(+) increment according to the value");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(-) decrement      ''");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(S) saves all coefficient into the EEPROM");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(R) reads all coefficients from the EEPROM");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(C) Copies the primary values to the secondary axis");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(A) all values are set to 0 in the EEPROM.");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(G) get factory defaults");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(H) set the maximal altitude");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(N) set the maximal near field altitude");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(F) set the maximal distance to horizontal object.");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(M) display the menu");
 		_putty_out->gray();
 		_putty_out->print(ROW_MENU + 19, COL_MENU, "---------------------------------------------------------");
 	
