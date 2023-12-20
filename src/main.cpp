@@ -32,6 +32,7 @@
 #include "..\lib\flyController.h"
 #include "..\lib\performance.h"
 #include "..\lib\PID_adjust.h"
+#include "..\lib\pos_LED.h"
 
 #define LOCAL_DEBUG
 
@@ -77,7 +78,8 @@ void main_setup()
   Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(10);
 //  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(0.1);
   Tasks.add<Temperature>("temperature")->setModel(&model.temperatureData)->startFps(0.01); //One measurement every 100 seconds
-  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
+ Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
+ Tasks.add<POS_LED>("postion-led")->startFps(1);
 
 #ifdef SERIAL_STUDIO
   Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(0.1);

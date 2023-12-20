@@ -17,9 +17,10 @@ Current COM4 115200bps
 
 ## Position LEDs
 ![Position_LED](../images/Back-Steuerbord.jpg)
+1 second ON<br>
+9 seconds OFF<br>
 
 ## Battery state 
-
 [LiPo description](https://fpvracing.ch/de/content/21-lipo-batterien)
 
 |Battery voltage |analog|

@@ -136,6 +136,8 @@ public:
 			strcat(space, cc);
 		}
 
+		//Serial.print("space ");Serial.print(space);Serial.print(" len ");Serial.println(len);
+
 	//	lastLen = len;
 
 		_serial.print(space);

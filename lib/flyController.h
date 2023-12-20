@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "radio.h"
@@ -161,17 +161,18 @@ public:
             /* If everything is checked, the PID controller is activated. */
             LOGGER_VERBOSE("set pid");
             _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
+            
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_LIFT_UP))
             {
                 _axisYaw->setState(AxisYaw::enablePID);
                 _model->yaw.horz_Position = 0; ///< Reset YAW Position before lift off
                 flyState = fly;
-                LOGGER_NOTICE("set pid is fineshed");
+                LOGGER_NOTICE("PID setting is fineshed");
             }
             else
             {
                 flyState = set_pid;
-                LOGGER_NOTICE("set pid is held");
+                LOGGER_NOTICE("PID setting is idle");
             }
             break;
 
@@ -180,7 +181,7 @@ public:
             the status is set to ground. */
             LOGGER_VERBOSE("fly");
             _model->sonicData.down_distance = 10;
-
+            //_model->RC_interface.RX_payload.rcThrottle = 0;
             LOGGER_NOTICE_FMT("fly %i ", _model->RC_interface.RX_payload.rcThrottle);
 
             if (_model->RC_interface.RX_payload.rcThrottle < 0)

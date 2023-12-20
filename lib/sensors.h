@@ -20,8 +20,9 @@ Höhe 55m von Strasse zum Dach + ca. 6m
 #include <MPU9250.h>
 #include <MS5611.h>
 
-//s#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
+
 #define MIN_SENSOR_DELAY 1000
 typedef struct
 {

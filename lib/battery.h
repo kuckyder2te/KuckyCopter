@@ -12,7 +12,7 @@
 // #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "def.h"
