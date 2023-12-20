@@ -22,20 +22,13 @@ public:
 
     virtual void update() override {
 
-        static uint8_t count = 0;
+    static uint8_t count = 0;
      //   Serial2.println("LED_POS");
-        if(count = 0)
-        {
+        digitalWrite(LED_POSITION, LOW);
+        count++;
+        if(count >= 4){
             digitalWrite(LED_POSITION, HIGH);
-            count++;
-        }
-        else if (count > 0)
-        {
-            count++;
-            digitalWrite(LED_POSITION, LOW);
-
-            if(count > 9)
-                count = 0;
+        count = 0;
         }
     }
 }; /*----------------------------- end of pos_LED.h class ---------------------------------------*/
