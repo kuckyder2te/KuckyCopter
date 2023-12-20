@@ -214,14 +214,13 @@ public:
 				_putty_out->print(ROW_MENU+24 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_d_coeff);
 				break;
 
-				case 'E':
+			case 'E':
 				setItemCoefficient(itemCoefficient_t::offset_EF);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+25 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_whitespace);
 				_putty_out->print(ROW_MENU+25 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_ef_coeff);
 				break;
-
 
 			case '+':
 				_putty_out->yellow();
@@ -237,50 +236,45 @@ public:
 
 			case '0': ///< Choose the decimal places  0 to 0,001
 				setDecimalPlaces(0);
-				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
+//				_putty_out->clearPart(ROW_ACCURAY + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
 				_putty_out->cyan();
-				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
+				_putty_out->print(ROW_MENU + 7, COL_MENU+47, 3, _newAddOn);
 				break;
 
 			case '1':
 				setDecimalPlaces(1);
-				_putty_out->yellow();
+			//	_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
+//				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
 				_putty_out->cyan();
-				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
+				_putty_out->print(ROW_MENU + 7, COL_MENU+47, 3, _newAddOn);
 				break;
 
 			case '2':
 				setDecimalPlaces(2);
-				_putty_out->yellow();
+			//	_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
+//				_putty_out->clearPart(ROW_SELECT + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
 				_putty_out->cyan();
-				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
+				_putty_out->print(ROW_MENU + 7, COL_MENU+47, 3, _newAddOn);
 				break;
 
 			case '3':
 				setDecimalPlaces(3);
-				_putty_out->yellow();
+			//	_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_STATE + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
+			//	_putty_out->clearPart(ROW_STATE + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
 				_putty_out->cyan();
-				_putty_out->print(ROW_OUTPUT, COL_MENU+11, 3, _newAddOn);
+				_putty_out->print(ROW_MENU + 7, COL_MENU+47, 3, _newAddOn);
 				break;
-
-			case 'S': ///< Saved all coefficients into the EEPROM
-
-				for(uint8_t i = 0; i < 3; i++){
-					_namedPID[i]._pid->saveParameters();
-				}
-				
-				_putty_out->red();
-				_putty_out->print(ROW_STATE, COL_STATE, "PID data was backed up");
-				_putty_out->yellow();
-				displayPIDcoefficients();
+			case '5':
+				setDecimalPlaces(5);
+			//	_putty_out->yellow();
+				clearStateLine();
+			//	_putty_out->clearPart(ROW_STATE + ROW_ACCURAY, COL_SELECT, _dict->c_whitespace);
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 7, COL_MENU+47, 3, _newAddOn);
 				break;
 
 			case 'R': ///< Reads all coefficients from the EEPROM
@@ -678,6 +672,9 @@ public:
 			break;
 		case 3:
 			_newAddOn = 0.001;
+			break;
+		case 5:
+			_newAddOn = 5;
 			break;
 		} // end of switch
 		LOGGER_NOTICE_FMT("New Factor = %f", _newAddOn);
