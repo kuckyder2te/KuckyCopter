@@ -17,6 +17,7 @@ Höhe 55m von Strasse zum Dach + ca. 6m
 
 #include <Arduino.h>
 #include <TaskManager.h>
+#include <Wire.h>
 #include <MPU9250.h>
 #include <MS5611.h>
 
@@ -69,7 +70,7 @@ public:
     virtual void begin() override
     {
         LOGGER_VERBOSE("Enter....");
-        //Wire.setClock(200000);
+        Wire.setClock(400000);              // For 3k3 pullup resistors
         Wire.begin();
         LOGGER_NOTICE("MPU9250 initialized");
 

@@ -152,9 +152,11 @@ public:
 
 			_axisData->setpoint = (_roll + (*_axisData->rcY));
 
+			// _motor[motor_t::first]->setPower(0);		// temp_debug
+			// _motor[motor_t::second]->setPower(0);
 			_motor[motor_t::first]->setPower(_axisData->power - _axisData->pidError);
 			_motor[motor_t::second]->setPower(_axisData->power + _axisData->pidError);
-			
+				
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"ready %s, AxisMotor SP:%d, Power:%d, Error:%d", this->getName().c_str(), _axisData->setpoint, _axisData->power, _axisData->pidError);
 			break;
 		case off:

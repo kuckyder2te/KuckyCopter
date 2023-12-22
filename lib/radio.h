@@ -26,7 +26,7 @@
 //#include <SPI.h>
 #include <RF24.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "def.h"
@@ -68,14 +68,36 @@ typedef struct
     TX_payload_t TX_payload; // Do not change position !!!!! Must be the first entry
     RX_payload_t RX_payload;
     bool isconnect;
+    bool isInitialized;
 } RC_interface_t;
 
 class Radio : public Task::Base
 {
+public:
+typedef enum{
+    INIT,                // only the first time to prevent init while flying after isConnected = false 
+    READY,               // Preparing the ON state
+    ON
+}state_t;
+
+typedef enum{
+    throttle_max = 1,
+    throttle_min = 2,
+    pitch_max = 4,
+    pitch_min = 8,
+    yaw_max = 16,
+    yaw_min = 32,
+    roll_max = 64,
+    roll_min = 128
+}init_flag_t;
+
+private:
     const uint64_t pipe_TX = 0xF0F0F0E1L;
     const uint64_t pipe_RX = 0xF0F0F0D2L;
     unsigned long _lastReceivedPacket;
     uint16_t _lostAckPackageCount;
+    state_t _state;
+    uint8_t _initFlags;
 
 protected:
     RF24 *_radio;
@@ -91,6 +113,8 @@ public:
         : Task::Base(name)
     {
         _lostAckPackageCount = 0;
+        _state = INIT;
+        _initFlags = 0;
     }
     /// @brief
     /// @param _model
@@ -100,6 +124,7 @@ public:
         LOGGER_VERBOSE("Enter....");
         RC_interface = _model;
         RC_interface->isconnect = false;
+        RC_interface->isInitialized = false;
         LOGGER_VERBOSE("....leave");
         return this;
     } /*----------------------------- end of setModel ------------------------------------------*/
@@ -131,10 +156,45 @@ public:
 
     virtual void update() override
     {
+        switch (_state)
+        {
+        case INIT:
+            if(RC_interface->RX_payload.rcThrottle>=100)
+                _initFlags|=throttle_max;                   //  _initFlags = _initFlags | 1;
+            if(RC_interface->RX_payload.rcThrottle<=-100)
+                _initFlags|=throttle_min;                   //  _initFlags = _initFlags | 2;
+            if(RC_interface->RX_payload.rcPitch>=15)
+                _initFlags|=pitch_max;                      //  _initFlags = _initFlags | 4;
+            if(RC_interface->RX_payload.rcPitch<=-15)
+                _initFlags|=pitch_min;
+
+            LOGGER_NOTICE_FMT("Flags: %i",_initFlags);
+
+
+
+            if(_initFlags == 255){
+                int16_t res = RC_interface->RX_payload.rcThrottle +
+                   RC_interface->RX_payload.rcPitch +
+                   RC_interface->RX_payload.rcRoll +
+                   RC_interface->RX_payload.rcYaw;
+                LOGGER_NOTICE_FMT("Must be 0 -> %d",res);
+                if(res == 0){
+                    _state = READY;
+                }
+            }
+            break;
+        case READY:
+            RC_interface->isInitialized = true;
+            _state = ON;
+            break;
+        default:
+            break;
+        }
+
         if (_radio->available())
         {
             LOGGER_NOTICE("radio available");
-            digitalWrite(LED_RADIO, LOW);
+            digitalWrite(LED_RADIO, HIGH);
             _radio->read(&RC_interface->RX_payload, sizeof(RX_payload_t));
             received_data_from_RC();
 
@@ -143,7 +203,7 @@ public:
 
             _lostAckPackageCount = 0;
             RC_interface->isconnect = true;
-            digitalWrite(LED_RADIO, HIGH);
+            digitalWrite(LED_RADIO, LOW);
         }
         else
         {

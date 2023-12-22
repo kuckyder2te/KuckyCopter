@@ -145,7 +145,9 @@ public:
 
 	void clear() {
 	/* Clears the whole screen. */
+
 		_serial.print("\e[2J");
+		_serial.print("\e[0;0H");
 	} /*-------------------------- end of clear ---------------------------------------*/
 
 	void red(){

@@ -12,7 +12,7 @@
 #define COM_SPEED 115200
 #define BT_SPEED  115200
 
-#define PIN_LED_STATE  0    // flycontroller  is running <orange>
+#define PIN_LED_STATE  1    // flycontroller  is running <orange>
 #define PIN_BATTERY   26    // Analog PIN for battery measurement
 #define LED_PIN_ALERT 10    // PIN for acoustic and visual battery alert <red>
 #define LED_POSITION   7    // PIN for the green and red position LED´s
@@ -75,4 +75,4 @@ typedef enum
 /* Radio*/
 #define PIN_RADIO_CE  20
 #define PIN_RADIO_CSN 17
-#define LED_RADIO      1    //blue
+#define LED_RADIO      0    //blue

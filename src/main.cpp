@@ -74,12 +74,14 @@ void main_setup()
       ->init(&model) // He gets the complete model.
       ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
       ->startFps(10);
+#ifndef _WITHOUT_SENSORS
   Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(10);
+#endif
   Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(10);
 //  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(0.1);
   Tasks.add<Temperature>("temperature")->setModel(&model.temperatureData)->startFps(0.01); //One measurement every 100 seconds
- Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
- Tasks.add<POS_LED>("postion-led")->startFps(1);
+  Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
+  Tasks.add<POS_LED>("postion-led")->startFps(1);
 
 #ifdef SERIAL_STUDIO
   Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(0.1);
@@ -106,7 +108,9 @@ void main_loop()
   LOGGER_VERBOSE("loop has begun");
   digitalWrite(LED_BUILTIN, HIGH);
   Tasks.update();
+#ifndef _WITHOUT_SENSORS
   Tasks["sensor"]->enter();
+#endif
   LOGGER_VERBOSE("Loop completed successfully");
   digitalWrite(LED_BUILTIN, LOW);
 }
@@ -159,7 +163,7 @@ void base_setup()
   TestOutput->println("BT COM OK ");
   TestOutput->print(__DATE__);
   TestOutput->print(" ");
-  TestOutput->println(__TIME__);
+  TestOutput->println(__TIME__);  
 
 #ifdef _DEBUG_
   Logger::setOutputFunction(&localLogger);

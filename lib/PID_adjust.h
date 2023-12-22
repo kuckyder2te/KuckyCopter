@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include <HardwareSerial.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "..\lib\myLogger.h"
 
 #include "..\lib\putty_out.h"
@@ -56,6 +56,7 @@ private:
 		axis_sec = 2,
 		axis_yaw = 3
 	} itemAxis_Number_t; // Base number of the axis
+
 
 	typedef enum
 	{
@@ -105,7 +106,7 @@ private:
 
 	model_t *_model;
 	HardwareSerial *_serial;
-	namedPid_t _namedPID[PID_NUM + 1]; // Refactoring zu einer dynamischen Liste mit CPP Templates (Stephan)
+	namedPid_t _namedPID[PID_NUM]; // Refactoring zu einer dynamischen Liste mit CPP Templates (Stephan)
 	//namedPid_t *_namedPid;
 	PUTTY_out *_putty_out;
 	Dictionary *_dict;
@@ -138,15 +139,14 @@ public:
 
 	PID_adjust *addPID(NewPID *pid, String name)
 	{
+		LOGGER_NOTICE("Enter ...");
 		_namedPID[_pidCount]._pid = pid;
 		_namedPID[_pidCount]._name = name;
-		_pidCount++;
-		uint8_t i = 0;
-		while (_namedPID[i]._pid != nullptr)
-		{
-			LOGGER_NOTICE_FMT("PID: %s initialized! %d", _namedPID[i]._name.c_str(), _pidCount);
-			i++;
+		for(uint8_t i = 0;i<_pidCount+1;i++){
+			LOGGER_NOTICE_FMT("PID: %s initialized! %d", _namedPID[i]._name.c_str(), i+1);
 		}
+		_pidCount++;
+		LOGGER_NOTICE("... leave");
 		return this;
 	} /* -------------------- end of PID_adjust *addPID -----------------------------------------*/
 
@@ -278,7 +278,6 @@ public:
 				break;
 
 			case 'S': ///< Saved all coefficients into the EEPROM
-
 				for(uint8_t i = 0; i < 3; i++){
 					_namedPID[i]._pid->saveParameters();
 				}
@@ -286,12 +285,10 @@ public:
 				_putty_out->red();
 				_putty_out->print(ROW_MENU+9, COL_MENU+47, "Done");
 				_putty_out->print(ROW_MENU+10 , COL_MENU+47, "    ");
-//				_putty_out->yellow();
 				displayPIDcoefficients();
 				break;
 
 			case 'R': ///< Reads all coefficients from the EEPROM
-
 				for(uint8_t i = 0; i < 3; i++){
 					_namedPID[i]._pid->loadParameters();
 				}
@@ -299,7 +296,6 @@ public:
 				_putty_out->red();
 				_putty_out->print(ROW_MENU+10 , COL_MENU+47, "Done");
 				_putty_out->print(ROW_MENU+9, COL_MENU+47, "    ");
-//				_putty_out->yellow();
 				displayPIDcoefficients();
 				break;
 
@@ -347,13 +343,24 @@ public:
 				break;
 
 			case 'H':
-				_putty_out->red();
-				_putty_out->print(ROW_STATE, COL_STATE, " Altitude is not implemented");
+				_putty_out->yellow();
+				_putty_out->print(ROW_MENU + 38, COL_MENU + 10, "max. altitude via baro      m");
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 38, COL_MENU + 33, "1000");
 				break;
 
 			case 'N':
-				_putty_out->red();
-				_putty_out->print(ROW_STATE, COL_STATE, "Near ground is not implemented");
+				_putty_out->yellow();
+				_putty_out->print(ROW_MENU + 40, COL_MENU + 10, "max. altitude via down sonic     cm");
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 40, COL_MENU + 39, "400");				
+				break;
+
+			case 'F':
+				_putty_out->yellow();
+				_putty_out->print(ROW_MENU + 42, COL_MENU + 10, "max. distance to horizontal object     cm");
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 42, COL_MENU + 45, "400");
 				break;
 
 			default:
@@ -451,6 +458,7 @@ public:
 				displayPIDcoefficients();
 			}
 			break;
+
 		case pidTyp_t::pri_I:
 			pri_kI_value += _addOn;
 			if (checkValue(pri_kI_value))
@@ -523,7 +531,7 @@ public:
 			}
 			break;
 
-			case pidTyp_t::sec_ef:
+		case pidTyp_t::sec_ef:
 			sec_EF_value += _addOn;
 			if (checkValue(sec_EF_value))
 			{
@@ -590,15 +598,13 @@ public:
 		static uint8_t row_add = -1;
 		LOGGER_VERBOSE("Enter....");
 		_putty_out->clear();
-		_putty_out->clear();
 		_putty_out->gray();
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU,     "-------- Online configurater for KuckyCopter (BT) --------");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "-------- Online configurater for KuckyCopter (BT) --------");
 		_putty_out->yellow();
 		_putty_out->print(ROW_MENU + (row_add+=2), COL_MENU, "(X) choose the primary");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(Y)           secondary");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(Z)            YAW axis");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, " P, I, D or E select the coefficient)");
-	//	_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(E) choose the execution frequency (toogle)");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(0),(1),(2),(3) or (5) select the accurarcy");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(+) increment according to the value");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(-) decrement      ''");
@@ -612,12 +618,13 @@ public:
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(F) set the maximal distance to horizontal object.");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(M) display the menu");
 		_putty_out->gray();
-		_putty_out->print(ROW_MENU + 19, COL_MENU, "---------------------------------------------------------");
+		_putty_out->print(ROW_MENU + (row_add+=2), COL_MENU, "---------------------------------------------------------");
 	
 		_putty_out->cyan();
 		_putty_out->print(ROW_MENU + 7, COL_MENU+47, 3, _newAddOn);
 		_putty_out->gray();
 		_putty_out->print(ROW_STATE, COL_MENU, "State message : ");
+		clearStateLine();
 
 		LOGGER_VERBOSE("....leave");
 	} /*-------------------------- end of display_Menu -----------------------------------------*/

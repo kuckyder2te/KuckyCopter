@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "radio.h"
@@ -110,7 +110,7 @@ public:
         case standby:
             LOGGER_VERBOSE("standby");
             /* Make sure the throttle lever is set to 0 and RC is connected. */
-            if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_MIN))
+            if (_model->RC_interface.isInitialized &&_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_MIN))
             {
                 flyState = prestart;
                 LOGGER_NOTICE_CHK(flyState, Debug_flyState, "standby is fineshed");
