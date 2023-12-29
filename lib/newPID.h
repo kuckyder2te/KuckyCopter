@@ -15,7 +15,7 @@
 
 #include <FastPID.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "EEPROM.h"
@@ -167,6 +167,7 @@ public:
 	
 	// Methode Overlayed for real disable of PID execution
 	int16_t step(int16_t sp, int16_t fb){
+		//LOGGER_NOTICE("Enter");
 		if(_isEnabled){
 			return FastPID::step(sp, fb);
 		}
@@ -290,6 +291,13 @@ public:
 
 	LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of getEF ------------------------------------------*/
+	void printPidValues(){
+		LOGGER_NOTICE_FMT("Axis: %s ", _ParentName.c_str());
+		getP();
+		getI();
+		getD();
+		getEF();
+	}
 
 }; /*--------------------------- end of newPID class -------------------------------------------*/
 

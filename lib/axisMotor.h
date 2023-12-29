@@ -27,7 +27,7 @@ private:
 	Motor *_motor[2];
 	double _roll;
 	bool _invertRoll;
-	uint16_t _lastPower;
+	int16_t _lastPower;
 
 public:
 	AxisMotor(const String &name) : AxisBase(name)
@@ -48,7 +48,7 @@ public:
 		_state = standby;
 		AxisBase::_sp = &_axisData->setpoint; 	// _sp is a pointer that gets the address  
 												// of the value from &_axisData->setpoint
-		AxisBase::_fb = _axisData->feedback;
+		AxisBase::_fb = &_axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
 		LOGGER_NOTICE("....leave");
 		return this;
@@ -95,7 +95,7 @@ public:
 
 	virtual void update() override
 	{
-		LOGGER_VERBOSE("Enter....");
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"State Changed -> %d",_state);
 		AxisBase::update();
 
 		LOGGER_VERBOSE_FMT("Update %s ", this->getName().c_str());
@@ -171,7 +171,7 @@ public:
 	void setState(state state)
 	{
 		_state = state;
-		LOGGER_NOTICE_FMT("axisMotor state %i", _state);
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"axisMotor state %i", _state);
 	} /*--------------------- end of setState --------------------------------------------------*/
 
 	void setPower(int16_t _power)

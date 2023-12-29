@@ -71,6 +71,7 @@ public:
     {
         LOGGER_VERBOSE("Enter....");
         Wire.setClock(400000);              // For 3k3 pullup resistors
+        //Wire.setWireTimeout(3000, true); //timeout value in uSec  https://github.com/jrowberg/i2cdevlib/issues/519#issuecomment-752023021
         Wire.begin();
         LOGGER_NOTICE("MPU9250 initialized");
 

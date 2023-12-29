@@ -42,7 +42,7 @@
 model_t model;
 
 HardwareSerial *TestOutput = &Serial2;
-HardwareSerial *DebugOutput = &Serial;
+HardwareSerial *DebugOutput = &Serial1;
 
 #ifdef _PID_ADJUST
   PID_adjust *_pid_adjust;
@@ -72,7 +72,7 @@ void main_setup()
       ->startFps(AXIS_FPS);
   Tasks.add<FlyController>("flycontroller")
       ->init(&model) // He gets the complete model.
-      ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
+      ->setYawAxis(reinterpret_cast<AxisYaw*>(Tasks["axisyaw"].get()))
       ->startFps(10);
 #ifndef _WITHOUT_SENSORS
   Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(10);
@@ -148,8 +148,11 @@ void base_setup()
   pinMode(PIN_ESC_ON, OUTPUT);
   digitalWrite(PIN_ESC_ON, HIGH); // MainPower für ESC´s ausgeschaltet,
                                   // will sagen, BC547 schaltet nicht durch, da die Basis HIGH ist
-  pinMode(PIN_LED_STATE, OUTPUT);
-  digitalWrite(PIN_LED_STATE, LOW);
+  
+  #ifndef _SERIAL1
+    pinMode(PIN_LED_STATE, OUTPUT);       // temp_debug Serial1
+    digitalWrite(PIN_LED_STATE, LOW);
+  #endif
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
@@ -207,9 +210,9 @@ void loop()
 {
   unsigned long _lastLooptime = micros();
 #ifdef _MAIN
-  digitalWrite(LED_BUILTIN, LOW);  // only for debug
-  main_loop();
-  digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(LED_BUILTIN, LOW);  // only for temp_debug
+    main_loop();
+    digitalWrite(LED_BUILTIN, HIGH);
 #else
   test_loop();
 #endif

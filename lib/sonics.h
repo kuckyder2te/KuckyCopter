@@ -91,8 +91,9 @@ public:
         LOGGER_VERBOSE("Enter....");
         if (sonic->isFinished())
         {
-            _sonicData->down_distance = sonic->getDist_cm(sonicName::front);
-            _sonicData->front_distance = sonic->getDist_cm(sonicName::down);
+            _sonicData->down_distance = sonic->getDist_cm(sonicName::down);
+            _sonicData->front_distance = sonic->getDist_cm(sonicName::front);
+            LOGGER_NOTICE_FMT_CHK(_sonicData->down_distance,__sonicData.down_distance,"Down = %d cm / Front = %d cm",_sonicData->down_distance,_sonicData->front_distance);
             sonic->startAsync(200000);
         }
         LOGGER_VERBOSE("....leave");

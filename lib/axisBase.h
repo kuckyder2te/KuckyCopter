@@ -23,7 +23,7 @@ public:
         uint16_t power; /// power from YAW Axis
         int16_t pidError;
         int16_t setpoint;  ///< Memory for detuning the physical axis.
-        int16_t *feedback; ///< Current value from the IMU
+        int16_t feedback; ///< Current value from the IMU
         int8_t *rcX;       ///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
         int8_t *rcY;       ///< virtual axis. Corresponds to the PITCH axis.
     } axisData_t;
@@ -110,6 +110,13 @@ public:
         {              
             int16_t err = _newPID->step(*_sp, *_fb);                        
             *_error = err;
+            Serial2.print(eepromAddress);
+            Serial2.print(" - sp: ");
+            Serial2.print(*_sp);       //temp_debug
+            Serial2.print("- fb: ");
+            Serial2.print(*_fb);       //temp_debug
+            Serial2.print("- err: ");
+            Serial2.println(*_error);       //temp_debug
             _lastMillis = millis();
         }
         LOGGER_VERBOSE("....leave");

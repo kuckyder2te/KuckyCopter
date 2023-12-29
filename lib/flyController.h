@@ -17,7 +17,7 @@
 #include "sonics.h"
 #include "model.h"
 
-#define POWER_LIFT_UP 2 ///< Test Value
+#define POWER_LIFT_UP 25 ///< Test Value
 #define DOWN_TIME 2000  ///< Time to turn off the engines (in Microseconds).
 #define PID_ACTIVE_AT 9 ///< PID aktiviert ab einer Höhe von 9cm
 
@@ -73,6 +73,22 @@ public:
         return this;
     }
 
+    void printPidErrors(){
+        LOGGER_NOTICE_FMT("YAW Error: %d",_model->yawData.pidError);
+        LOGGER_NOTICE_FMT("Primary Axis Error: %d",_model->axisData[axisName::primary].pidError);
+        LOGGER_NOTICE_FMT("Primary Axis SetPoint: %d",_model->axisData[axisName::primary].setpoint);
+        LOGGER_NOTICE_FMT("Primary Axis Feedback: %d",_model->axisData[axisName::primary].feedback);
+        LOGGER_NOTICE_FMT("Secondary Axis Error: %d",_model->axisData[axisName::secondary].pidError);
+        LOGGER_NOTICE_FMT("Secondary Axis SetPoint: %d",_model->axisData[axisName::secondary].setpoint);
+        LOGGER_NOTICE_FMT("Secondary Axis Feedback: %d",_model->axisData[axisName::secondary].feedback);
+    }
+
+    void resetYawPosition(){
+        static int32_t debug_yaw;
+        LOGGER_NOTICE_FMT_CHK((int32_t)_model->sensorData.yaw,debug_yaw,"Set YAW Position to %d",(int32_t)_model->sensorData.yaw);
+        _model->yawData.setpoint = _model->sensorData.yaw;
+    }
+
     virtual void begin() override // _model is not yet known here
     {
     } /*------------------------------- end of begin --------------------------------------------*/
@@ -85,7 +101,7 @@ public:
         case arming_begin:
             /* This is only setting, for the first start from the airplane.
              * Main Power ON/OFF or option-switch. */
-            LOGGER_NOTICE("arming begin");
+            LOGGER_NOTICE("arming begin -> arming_busy");
             _axisYaw->setState(AxisYaw::state_e::arming_start);
             flyState = arming_busy;
             break;
@@ -95,7 +111,10 @@ public:
             if (_axisYaw->isArmed())
             {
                 flyState = disablePID;
-                LOGGER_NOTICE("arming is fineshed");
+                LOGGER_NOTICE("arming is finished -> disablePID");
+                if(!_model->RC_interface.TX_payload.isInitialized){
+                    LOGGER_NOTICE("************** Please init RC!! **************");
+                }
             }
             break;
 
@@ -104,21 +123,21 @@ public:
             LOGGER_VERBOSE("disablePID");
             _axisYaw->setState(AxisYaw::state_e::disablePID);
             flyState = standby;
-            LOGGER_NOTICE("disable PID is finished");
+            LOGGER_NOTICE("disable PID is finished -> standby");
             break;
 
         case standby:
             LOGGER_VERBOSE("standby");
             /* Make sure the throttle lever is set to 0 and RC is connected. */
-            if (_model->RC_interface.isInitialized &&_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_MIN))
+            if (_model->RC_interface.TX_payload.isInitialized &&_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_MIN))
             {
                 flyState = prestart;
-                LOGGER_NOTICE_CHK(flyState, Debug_flyState, "standby is fineshed");
+                LOGGER_NOTICE_CHK(flyState, Debug_flyState, "standby is finished -> prestart");
             }
             else
             {
                 _model->yawData.power = 0;
-                flyState = standby;
+                //flyState = standby;
                 LOGGER_NOTICE_CHK(flyState, Debug_flyState, "standby is held");
             }
             break;
@@ -130,11 +149,11 @@ public:
             if (_axisYaw->isReady())
             {
                 flyState = takeoff;
-                LOGGER_NOTICE("prestart is fineshed");
+                LOGGER_NOTICE("prestart is finished -> takeoff");
             }
             else
             {
-                flyState = prestart;
+                //flyState = prestart;
                 LOGGER_NOTICE("prestart is held");
             }
             break;
@@ -148,12 +167,12 @@ public:
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle < POWER_LIFT_UP))
             {
                 flyState = set_pid;
-                LOGGER_NOTICE("take off is fineshed");
+                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"take off is finished -> set_pid");
             }
             else
             {
-                flyState = takeoff;
-                LOGGER_NOTICE("take off is held");
+                //flyState = takeoff;
+                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"take off is held");
             }
             break;
 
@@ -161,18 +180,22 @@ public:
             /* If everything is checked, the PID controller is activated. */
             LOGGER_VERBOSE("set pid");
             _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
+            resetYawPosition();
             
-            if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_LIFT_UP))
+            if(_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_LIFT_UP))
             {
                 _axisYaw->setState(AxisYaw::enablePID);
                 _model->yaw.horz_Position = 0; ///< Reset YAW Position before lift off
+                resetYawPosition();
+                //printPidErrors();           // Got no execution time
                 flyState = fly;
-                LOGGER_NOTICE("PID setting is fineshed");
+                
+                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"PID setting is finished -> fly");
             }
             else
             {
-                flyState = set_pid;
-                LOGGER_NOTICE("PID setting is idle");
+                //flyState = set_pid;
+                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"PID setting is idle");
             }
             break;
 
@@ -180,42 +203,45 @@ public:
             /* If the power is less than POWER_LIFT_UP and the altitude is less than PID_ACTIVE_AT,
             the status is set to ground. */
             LOGGER_VERBOSE("fly");
-            _model->sonicData.down_distance = 10;
-            //_model->RC_interface.RX_payload.rcThrottle = 0;
-            LOGGER_NOTICE_FMT("fly %i ", _model->RC_interface.RX_payload.rcThrottle);
+            //_model->sonicData.down_distance = 10;   // temp_debug
+            //_model->RC_interface.RX_payload.rcThrottle = 0;   // temp_debug
+            static int16_t debug_Throttle;
+            LOGGER_NOTICE_FMT_CHK(_model->RC_interface.RX_payload.rcThrottle,debug_Throttle,"fly %i ", _model->RC_interface.RX_payload.rcThrottle);
 
-            if (_model->RC_interface.RX_payload.rcThrottle < 0)
-                _model->RC_interface.RX_payload.rcThrottle = 1;
+            if (_model->RC_interface.RX_payload.rcThrottle < 0)         // ignore negative values
+                _model->RC_interface.RX_payload.rcThrottle = 0;
 
             _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
 
-            if ((_model->yawData.power <= POWER_LIFT_UP) || (_model->sonicData.down_distance < PID_ACTIVE_AT))
+            if ((_model->yawData.power <= POWER_LIFT_UP)) // || (_model->sonicData.down_distance < PID_ACTIVE_AT))
             {
                 flyState = ground;
-                LOGGER_NOTICE("fly is fineshed");
+                resetYawPosition();
+                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"fly is finished -> ground");
             }
             else
             {
                 _axisYaw->setState(AxisYaw::ready);
                 downTime = millis(); ///< save the time for state ground
-                LOGGER_NOTICE("fly is held");
+                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"fly is held");
             }
             break;
 
         case ground:
             /* If the quadrocopter is on the ground for more than DOWN_TIME, disable the engines. */
             LOGGER_VERBOSE("ground");
-            if (millis() - downTime >= DOWN_TIME)
+            if (millis() - downTime <= DOWN_TIME)
             {
                 flyState = fly;
-                LOGGER_NOTICE("Flystate is activ");
+                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"Flystate is activ -> fly");
             }
             else
             {
                 flyState = disablePID;
                 _model->yawData.power = 0;
-                LOGGER_NOTICE("Drone is on the ground.");
+                LOGGER_NOTICE_CHK(flyState,Debug_flyState,"Drohne is on the ground -> disablePID");
             }
+            printPidErrors();
             break;
 
         default:

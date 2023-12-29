@@ -52,8 +52,8 @@ typedef enum
 
 typedef enum
 {
-    front = 0,
-    down
+    down = 0,
+    front    
 } sonicName;
 
 /* PID */

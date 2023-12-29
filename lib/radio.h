@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 /*  File name : radio.h
     Project: KuckyCopter 2
     Autors: Stephan Scholz / Wilhelm Kuckelsberg
@@ -26,7 +26,7 @@
 //#include <SPI.h>
 #include <RF24.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "def.h"
@@ -61,6 +61,7 @@ typedef struct __attribute__((__packed__))
     uint16_t distance_down; // US Sensor
     uint16_t distance_front;
     uint16_t battery; // State of the battery
+    bool isInitialized;
 } TX_payload_t;       // Transmit data to RC
 
 typedef struct
@@ -68,7 +69,6 @@ typedef struct
     TX_payload_t TX_payload; // Do not change position !!!!! Must be the first entry
     RX_payload_t RX_payload;
     bool isconnect;
-    bool isInitialized;
 } RC_interface_t;
 
 class Radio : public Task::Base
@@ -123,7 +123,7 @@ public:
         LOGGER_VERBOSE("Enter....");
         _RC_interface = _model;
         _RC_interface->isconnect = false;
-        _RC_interface->isInitialized = false;
+        _RC_interface->TX_payload.isInitialized = false;
         LOGGER_VERBOSE("....leave");
         return this;
     } /*----------------------------- end of setModel ------------------------------------------*/
@@ -131,8 +131,11 @@ public:
     virtual void begin() override
     {
         LOGGER_VERBOSE("Enter....");
-        pinMode(LED_RADIO, OUTPUT);
-        digitalWrite(LED_RADIO, LOW);
+        #ifndef _SERIAL1
+            pinMode(LED_RADIO, OUTPUT);         // temp_debug Serial1
+            digitalWrite(LED_RADIO, LOW);
+        #endif
+
         SPI.begin();
         _radio = new RF24(PIN_RADIO_CE, PIN_RADIO_CSN);
 
@@ -174,23 +177,21 @@ public:
                 _initFlags|=roll_max;
             if(_RC_interface->RX_payload.rcPitch<=-15)
                 _initFlags|=roll_min;                
-
-            LOGGER_NOTICE_FMT("Flags: %i",_initFlags);
-
             if(_initFlags == 255){
+                static int16_t debug_res;
                 int16_t res = _RC_interface->RX_payload.rcThrottle +
                    _RC_interface->RX_payload.rcPitch +
                    _RC_interface->RX_payload.rcRoll +
                    _RC_interface->RX_payload.rcYaw;
-                LOGGER_NOTICE_FMT("Must be 0 -> %d",res);
-                if(res >= -6 && res >= 6){
+                LOGGER_NOTICE_FMT_CHK(res,debug_res,"Must be 0 -> %d",res);
+                if((res >= -6) && (res <= 6)){
                     _state = ready;
                 }
             }
             break;
         case ready:
             LOGGER_NOTICE("Ready");
-            _RC_interface->isInitialized = true;
+            _RC_interface->TX_payload.isInitialized = true;
             _state = on;
             break;
         default:
@@ -199,8 +200,10 @@ public:
 
         if (_radio->available())
         {
-            LOGGER_NOTICE("radio available");
-            digitalWrite(LED_RADIO, HIGH);
+            //LOGGER_NOTICE("radio available");
+            #ifndef _SERIAL1                    // temp_debug
+                digitalWrite(LED_RADIO, HIGH);
+            #endif
             _radio->read(&_RC_interface->RX_payload, sizeof(RX_payload_t));
             // received_data_from_RC();
 
@@ -209,7 +212,9 @@ public:
 
             _lostAckPackageCount = 0;
             _RC_interface->isconnect = true;
-            digitalWrite(LED_RADIO, LOW);
+            #ifndef _SERIAL1
+                digitalWrite(LED_RADIO, LOW);   //temp_debug
+            #endif
         }
         else
         {

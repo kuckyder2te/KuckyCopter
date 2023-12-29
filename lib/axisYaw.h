@@ -99,7 +99,7 @@ public:
 	{
 		AxisBase::update();
 
-		LOGGER_NOTICE("Update axisYaw");
+		LOGGER_VERBOSE("Update axisYaw");
 
 		switch (_state)
 		{
@@ -137,13 +137,13 @@ public:
 			_yaw->horz_Position = 0;
 			_axisMotor[axisName::primary]->setState(AxisMotor::enablePID);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::enablePID);
-			_lastCompass = *_axisData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
+			_lastCompass = _axisData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
 			LOGGER_VERBOSE("....leave");
 			break;
 
 		case ready:
 			//LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter ready state %d", _state);
-			LOGGER_NOTICE_FMT("Enter ready state %d", _state);
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter ready state %d", _state);
 			_axisMotor[axisName::primary]->setState(AxisMotor::ready);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::ready);
 
@@ -174,9 +174,9 @@ public:
 
 	void setState(state_e state)
 	{
-		LOGGER_NOTICE_FMT("set axisYaw state = %d", _state);
+		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"set axisYaw state = %d", _state);
 		_state = state;
-		LOGGER_NOTICE("...leave  setState");
+		LOGGER_VERBOSE("...leave");
 	} /*---------------------- end of setState --------------------------------------------------*/
 
 	virtual boolean isArmed()
@@ -187,9 +187,10 @@ public:
 
 	virtual boolean isDeactivatePID()
 	{
+		static bool debug_state;
 		bool state = ((_state == disablePID) && _axisMotor[axisName::primary]->isDeactivatePID() 
 						&& _axisMotor[axisName::secondary]->isDeactivatePID());
-		LOGGER_NOTICE_FMT("Yaw isDeactivatePID %d", state);
+		LOGGER_NOTICE_FMT_CHK(state,debug_state,"Yaw isDeactivatePID %d", state);
 		return (state);
 	} /*---------------------- end of isDeactivatePID -------------------------------------------*/
 
