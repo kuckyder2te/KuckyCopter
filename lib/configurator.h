@@ -54,8 +54,9 @@ private:
 	{
 		axis_pri = 1,
 		axis_sec = 2,
-		axis_yaw = 3
-	} itemAxis_Number_t; // Base number of the axis
+		axis_yaw = 3,
+		heights = 4,
+	} level1_t; // Base number of the axis
 
 
 	typedef enum
@@ -64,7 +65,7 @@ private:
 		offset_I = 20,
 		offset_D = 30,
 		offset_EF = 40
-	} itemCoefficient_t; // number to be added to the base 
+	} level2_t; // number to be added to the base 
 
 	typedef enum // Pid_typ Primary P to YAW ef
 	{
@@ -80,7 +81,7 @@ private:
 		pri_ef = 41,
 		sec_ef = 42,
 		yaw_ef = 43
-	} pidTyp_t; /* itemAxis_Number_t + itemCoefficient_t returns 
+	} pidTyp_t; /* level1_t + level2_t returns 
 				   the "pidType" for the select() function
 				*/
 	float pri_kP_value = PID_P_MIN; //Start values for menu control
@@ -169,21 +170,21 @@ public:
 			switch (toupper(key))
 			{
 			case 'X': ///< Choose the axes
-				setItemAxis(itemAxis_Number_t::axis_pri);
+				setItemAxis(level1_t::axis_pri);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+21, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
 				_putty_out->print(ROW_MENU+21, COL_SELECT + 5, _dict->c_axis_pri_select);		///< Print the selected axis
 				break;
 			case 'Y':
-				setItemAxis(itemAxis_Number_t::axis_sec);
+				setItemAxis(level1_t::axis_sec);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+26, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_MENU+26, COL_SELECT + 5, _dict->c_axis_sec_select);
 				break;
 			case 'Z':
-				setItemAxis(itemAxis_Number_t::axis_yaw);
+				setItemAxis(level1_t::axis_yaw);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+31, COL_SELECT + 5, _dict->c_whitespace);
@@ -191,7 +192,7 @@ public:
 				break;
 
 			case 'P': ///< Choose the PID parameter
-				setItemCoefficient(itemCoefficient_t::offset_P);
+				setItemCoefficient(level2_t::offset_P);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+22 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
@@ -199,7 +200,7 @@ public:
 				break;
 
 			case 'I':
-				setItemCoefficient(itemCoefficient_t::offset_I);
+				setItemCoefficient(level2_t::offset_I);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+23 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
@@ -207,7 +208,7 @@ public:
 				break;
 
 			case 'D':
-				setItemCoefficient(itemCoefficient_t::offset_D);
+				setItemCoefficient(level2_t::offset_D);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+24 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
@@ -215,7 +216,7 @@ public:
 				break;
 
 			case 'E':
-				setItemCoefficient(itemCoefficient_t::offset_EF);
+				setItemCoefficient(level2_t::offset_EF);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+25 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_whitespace);
