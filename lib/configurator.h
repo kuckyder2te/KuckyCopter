@@ -340,8 +340,10 @@ public:
 			case 'C': ///< Copies the primary values to the secondary axis
 				_putty_out->red();
 				_putty_out->print(ROW_STATE, COL_STATE, " 'C' is not implemented");
-			//	_namedPID[axisName::secondary]._pid->setP(_namedPID[axisName::primary]._pid->getP);
-
+				_namedPID[axisName::secondary]._pid->setP(_namedPID[axisName::primary]._pid->getP());
+				_namedPID[axisName::secondary]._pid->setI(_namedPID[axisName::primary]._pid->getI());
+				_namedPID[axisName::secondary]._pid->setD(_namedPID[axisName::primary]._pid->getD());
+				_namedPID[axisName::secondary]._pid->setEF(_namedPID[axisName::primary]._pid->getEF());
 				_putty_out->yellow();	
 				displayPIDcoefficients();
 				break;
