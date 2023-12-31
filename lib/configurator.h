@@ -175,7 +175,7 @@ public:
 			switch (toupper(key))
 			{
 			case 'X': ///< Choose the axes
-				setItemAxis(level1_t::axis_pri);
+				set_level1(level1_t::axis_pri);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+21, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
@@ -183,7 +183,7 @@ public:
 				break;
 
 			case 'Y':
-				setItemAxis(level1_t::axis_sec);
+				set_level1(level1_t::axis_sec);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+26, COL_SELECT + 5, _dict->c_whitespace);
@@ -191,7 +191,7 @@ public:
 				break;
 
 			case 'Z':
-				setItemAxis(level1_t::axis_yaw);
+				set_level1(level1_t::axis_yaw);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+31, COL_SELECT + 5, _dict->c_whitespace);
@@ -199,7 +199,7 @@ public:
 				break;
 
 			case 'H':
-				setItemAxis(level1_t::axis_yaw);
+				set_level1(level1_t::axis_yaw);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+37, COL_SELECT + 5, _dict->c_whitespace);
@@ -207,7 +207,7 @@ public:
 				break;
 
 			case 'P': ///< Choose the PID parameter
-				setItemCoefficient(level2_t::offset_P);
+				set_level2(level2_t::offset_P);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+22 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
@@ -215,7 +215,7 @@ public:
 				break;
 
 			case 'I':
-				setItemCoefficient(level2_t::offset_I);
+				set_level2(level2_t::offset_I);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+23 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
@@ -223,7 +223,7 @@ public:
 				break;
 
 			case 'D':
-				setItemCoefficient(level2_t::offset_D);
+				set_level2(level2_t::offset_D);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+24 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
@@ -231,7 +231,7 @@ public:
 				break;
 
 			case 'E':
-				setItemCoefficient(level2_t::offset_EF);
+				set_level2(level2_t::offset_EF);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+25 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_whitespace);
@@ -398,7 +398,7 @@ public:
 		_putty_out->print(ROW_MENU+46, COL_STATE, _dict->c_whitespace);
 	} /* -------------------- end of clearStateLine ----------------------------------------------------*/
 	/* Clears the string "Illegal button was pressed" */
-	void setItemAxis(uint8_t itemAxis)
+	void set_level1(uint8_t itemAxis)
 	{
 		/* Selects the axis, according to the keyboard input.
 		 * Key X = primary axis (1)
@@ -406,9 +406,9 @@ public:
 		 * Key Z = primary axis (*3)	 */
 		_itemAxis = itemAxis;
 		LOGGER_NOTICE_FMT("itemAxis = %d", _itemAxis);
-	} /*----------------------------- end of setItemAxis ---------------------------------------*/
+	} /*----------------------------- end of set_level1 ---------------------------------------*/
 
-	void setItemCoefficient(uint8_t itemCoefficient)
+	void set_level2(uint8_t itemCoefficient)
 	{
 		/* Selects the coefficient, according to the keyboard input.
 		 * Key P = coefficient P (10)
@@ -417,7 +417,7 @@ public:
 		 * Key E = ExecutingFrequency (40)	 */
 		_itemCoefficient = itemCoefficient;
 		LOGGER_NOTICE_FMT("itemCoefficient = %d", _itemCoefficient);
-	} /*----------------------------- end of setItemCoefficient --------------------------------*/
+	} /*----------------------------- end of set_level2 --------------------------------*/
 
 	/* Set the "PID Type",
 	 * e.g _itemAxis = 1 and _itemCoefficient = 20 ~ _pidType 21
@@ -439,9 +439,9 @@ public:
 		if (_pidType >= 40)
 		{ ///< Executingfrequency only
 			if (up)
-				_addOn = 1;
+				_addOn = 5;
 			else
-				_addOn = -1;
+				_addOn = -5;
 		}
 		return _pidType;
 	} /*----------------------------- end of getPidType ----------------------------------------*/
