@@ -58,7 +58,6 @@ private:
 		heights = 4,
 	} level1_t; // Base number of the axis
 
-
 	typedef enum
 	{
 		offset_P = 10,
@@ -323,13 +322,13 @@ public:
 				break;
 
 			case 'G': ///< get factory default
-				_namedPID[axisName::primary]._pid->setP(0.14);
-				_namedPID[axisName::primary]._pid->setI(0.18);
-				_namedPID[axisName::primary]._pid->setD(0.102);
+				_namedPID[axisName::primary]._pid->setP(0.1);
+				_namedPID[axisName::primary]._pid->setI(0.15);
+				_namedPID[axisName::primary]._pid->setD(0.08);
 				_namedPID[axisName::primary]._pid->setEF(50);
-				_namedPID[axisName::secondary]._pid->setP(0.14);
-				_namedPID[axisName::secondary]._pid->setI(0.18);
-				_namedPID[axisName::secondary]._pid->setD(0.102);
+				_namedPID[axisName::secondary]._pid->setP(0.1);
+				_namedPID[axisName::secondary]._pid->setI(0.15);
+				_namedPID[axisName::secondary]._pid->setD(0.08);
 				_namedPID[axisName::secondary]._pid->setEF(50);
 				_namedPID[axisName::yaw]._pid->setP(0.01);
 				_namedPID[axisName::yaw]._pid->setI(0);
@@ -341,10 +340,14 @@ public:
 			case 'C': ///< Copies the primary values to the secondary axis
 				_putty_out->red();
 				_putty_out->print(ROW_STATE, COL_STATE, " 'C' is not implemented");
+			//	_namedPID[axisName::secondary]._pid->setP(_namedPID[axisName::primary]._pid->getP);
+
 				_putty_out->yellow();	
+				displayPIDcoefficients();
 				break;
 
 			case 'M':
+			//	_putty_out->clear();	// clear screen
 				display_Menu();
 				displayPIDcoefficients();
 				break;
@@ -602,7 +605,7 @@ public:
 
 	void display_Menu()
 	{
-		static uint8_t row_add = -1;
+		uint8_t row_add = -1;
 		LOGGER_VERBOSE("Enter....");
 		_putty_out->clear();
 		_putty_out->gray();
