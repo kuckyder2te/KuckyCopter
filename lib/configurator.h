@@ -181,6 +181,7 @@ public:
 				_putty_out->clearPart(ROW_MENU+21, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
 				_putty_out->print(ROW_MENU+21, COL_SELECT + 5, _dict->c_axis_pri_select);		///< Print the selected axis
 				break;
+
 			case 'Y':
 				setItemAxis(level1_t::axis_sec);
 				_putty_out->yellow();
@@ -188,12 +189,21 @@ public:
 				_putty_out->clearPart(ROW_MENU+26, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_MENU+26, COL_SELECT + 5, _dict->c_axis_sec_select);
 				break;
+
 			case 'Z':
 				setItemAxis(level1_t::axis_yaw);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+31, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_MENU+31, COL_SELECT + 5, _dict->c_axis_yaw_select);
+				break;
+
+			case 'H':
+				setItemAxis(level1_t::axis_yaw);
+				_putty_out->yellow();
+				clearStateLine();
+				_putty_out->clearPart(ROW_MENU+37, COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+37, COL_SELECT + 5, "max. heights");
 				break;
 
 			case 'P': ///< Choose the PID parameter
@@ -226,6 +236,27 @@ public:
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+25 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_whitespace);
 				_putty_out->print(ROW_MENU+25 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_ef_coeff);
+				break;
+
+			case 'A':
+				_putty_out->yellow();
+				_putty_out->print(ROW_MENU + 38, COL_MENU + 10, "altitude           m");
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 38, COL_MENU + 24, "1000");
+				break;
+
+			case 'O':
+				_putty_out->yellow();
+				_putty_out->print(ROW_MENU + 39, COL_MENU + 10, "down ground        cm");
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 39, COL_MENU + 25, "400");				
+				break;
+
+			case 'F':
+				_putty_out->yellow();
+				_putty_out->print(ROW_MENU + 40, COL_MENU + 10, "distance hori.     cm");
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 40, COL_MENU + 25, "400");
 				break;
 
 			case '+':
@@ -305,7 +336,7 @@ public:
 				displayPIDcoefficients();
 				break;
 
-			case 'A': ///< Set all PID parameters to 0
+			case 'V': ///< Set all PID parameters to 0
 				_namedPID[axisName::primary]._pid->setP(PID_P_MIN);
 				_namedPID[axisName::primary]._pid->setI(0);
 				_namedPID[axisName::primary]._pid->setD(0);
@@ -339,7 +370,6 @@ public:
 
 			case 'C': ///< Copies the primary values to the secondary axis
 				_putty_out->red();
-				_putty_out->print(ROW_STATE, COL_STATE, " 'C' is not implemented");
 				_namedPID[axisName::secondary]._pid->setP(_namedPID[axisName::primary]._pid->getP());
 				_namedPID[axisName::secondary]._pid->setI(_namedPID[axisName::primary]._pid->getI());
 				_namedPID[axisName::secondary]._pid->setD(_namedPID[axisName::primary]._pid->getD());
@@ -349,30 +379,8 @@ public:
 				break;
 
 			case 'M':
-			//	_putty_out->clear();	// clear screen
 				display_Menu();
 				displayPIDcoefficients();
-				break;
-
-			case 'H':
-				_putty_out->yellow();
-				_putty_out->print(ROW_MENU + 38, COL_MENU + 10, "max. altitude via baro      m");
-				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 38, COL_MENU + 33, "1000");
-				break;
-
-			case 'N':
-				_putty_out->yellow();
-				_putty_out->print(ROW_MENU + 40, COL_MENU + 10, "max. altitude via down sonic     cm");
-				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 40, COL_MENU + 39, "400");				
-				break;
-
-			case 'F':
-				_putty_out->yellow();
-				_putty_out->print(ROW_MENU + 42, COL_MENU + 10, "max. distance to horizontal object     cm");
-				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 42, COL_MENU + 45, "400");
 				break;
 
 			default:
@@ -615,19 +623,21 @@ public:
 		_putty_out->yellow();
 		_putty_out->print(ROW_MENU + (row_add+=2), COL_MENU, "(X) choose the primary");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(Y)           secondary");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(Z)            YAW axis");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, " P, I, D or E select the coefficient)");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(Z)            YAW axis");	
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, " P, I, D or E select the coefficient");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(H) choose the max. heights");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(A),(O) or (F) select the values");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(0),(1),(2),(3) or (5) select the accurarcy");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(+) increment according to the value");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(-) decrement      ''");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(S) saves all coefficient into the EEPROM");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(R) reads all coefficients from the EEPROM");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(C) Copies the primary values to the secondary axis");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(A) all values are set to 0 in the EEPROM.");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(V) all values are set to 0 in the EEPROM.");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(G) get factory defaults");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(H) set the maximal altitude");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(N) set the maximal near field altitude");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(F) set the maximal distance to horizontal object.");
+		// _putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(H) set the maximal altitude");
+		// _putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(N) set the maximal near field altitude");
+		// _putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(F) set the maximal distance to horizontal object.");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(M) display the menu");
 		_putty_out->gray();
 		_putty_out->print(ROW_MENU + (row_add+=2), COL_MENU, "---------------------------------------------------------");
