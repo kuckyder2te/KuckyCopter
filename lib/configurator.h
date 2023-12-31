@@ -72,15 +72,21 @@ private:
 		pri_P = 11,
 		pri_I = 21,
 		pri_D = 31,
+		pri_EF = 41,
+
 		sec_P = 12,
 		sec_I = 22,
 		sec_D = 32,
+		sec_EF = 42,
+
 		yaw_P = 13,
 		yaw_I = 23,
 		yaw_D = 33,
-		pri_ef = 41,
-		sec_ef = 42,
-		yaw_ef = 43
+		yaw_EF = 43,
+
+		altitude = 14,
+		us_down = 24,
+		us_front = 34,
 	} pidTyp_t; /* level1_t + level2_t returns 
 				   the "pidType" for the select() function
 				*/
@@ -484,7 +490,7 @@ public:
 			}
 			break;
 
-		case pidTyp_t::pri_ef:
+		case pidTyp_t::pri_EF:
 			pri_EF_value += _addOn;
 			if (checkValue(pri_EF_value))
 			{
@@ -532,7 +538,7 @@ public:
 			}
 			break;
 
-		case pidTyp_t::sec_ef:
+		case pidTyp_t::sec_EF:
 			sec_EF_value += _addOn;
 			if (checkValue(sec_EF_value))
 			{
@@ -580,7 +586,7 @@ public:
 			}
 			break;
 
-		case pidTyp_t::yaw_ef:
+		case pidTyp_t::yaw_EF:
 			yaw_EF_value += _addOn;
 			if (checkValue(yaw_EF_value))
 			{
