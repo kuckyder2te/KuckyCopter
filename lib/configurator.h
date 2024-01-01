@@ -83,9 +83,9 @@ private:
 		yaw_D = 33,
 		yaw_EF = 43,
 
-		altitude = 14,
-		us_down = 24,
-		us_front = 34,
+		altitude = 51,
+		us_down = 52,
+		us_front = 53,
 	} pidTyp_t; /* level1_t + level2_t returns 
 				   the "pidType" for the select() function
 				*/
@@ -635,9 +635,8 @@ public:
 			}
 			break;
 
-		case 51:
+		case pidTyp_t::altitude:
 			alt_value += _addOn;
-			LOGGER_WARNING_FMT("alt_value = %i", alt_value);
 			if (checkValue(alt_value))
 			{
 				LOGGER_WARNING_FMT("Altitude = %i", alt_value);
@@ -648,7 +647,7 @@ public:
 			break;
 
 	
-		case 52:
+		case pidTyp_t::us_down:
 			us_down_value += _addOn;
 			if (checkValue(us_down_value))
 			{
@@ -659,11 +658,11 @@ public:
 			}
 			break;
 		
-		case 53:
+		case pidTyp_t::us_front:
 			us_front_value += _addOn;
 			if (checkValue(us_front_value))
 			{
-				LOGGER_WARNING_FMT("US front = %f", alt_value);
+				LOGGER_WARNING_FMT("US front = %f", us_front_value);
 				_putty_out->cyan();
 				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 30, 0, us_front_value);
 				displayPIDcoefficients();
@@ -695,9 +694,6 @@ public:
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(C) Copies the primary values to the secondary axis");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(V) all values are set to 0 in the EEPROM.");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(G) get factory defaults");
-		// _putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(H) set the maximal altitude");
-		// _putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(N) set the maximal near field altitude");
-		// _putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(F) set the maximal distance to horizontal object.");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(M) display the menu");
 		_putty_out->gray();
 		_putty_out->print(ROW_MENU + (row_add+=2), COL_MENU, "---------------------------------------------------------");
