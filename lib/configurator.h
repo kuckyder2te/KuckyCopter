@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include <HardwareSerial.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "..\lib\myLogger.h"
 
 #include "..\lib\putty_out.h"
@@ -103,6 +103,10 @@ private:
 	float yaw_kI_value = 0.0;
 	float yaw_kD_value = 0.0;
 	float yaw_EF_value = 0.0;
+
+	uint16_t alt_value = 0;
+	uint16_t us_down_value = 0;
+	uint16_t us_front_value = 0;
 
 	typedef struct
 	{
@@ -199,7 +203,7 @@ public:
 				break;
 
 			case 'H':
-				set_level1(level1_t::axis_yaw);
+				set_level1(level1_t::heights);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+37, COL_SELECT + 5, _dict->c_whitespace);
@@ -239,6 +243,7 @@ public:
 				break;
 
 			case 'A':
+				set_level2(10);
 				_putty_out->yellow();
 				_putty_out->print(ROW_MENU + 38, COL_MENU + 10, "altitude           m");
 				_putty_out->cyan();
@@ -246,6 +251,7 @@ public:
 				break;
 
 			case 'O':
+				set_level2(20);
 				_putty_out->yellow();
 				_putty_out->print(ROW_MENU + 39, COL_MENU + 10, "down ground        cm");
 				_putty_out->cyan();
@@ -253,6 +259,7 @@ public:
 				break;
 
 			case 'F':
+				set_level2(30);
 				_putty_out->yellow();
 				_putty_out->print(ROW_MENU + 40, COL_MENU + 10, "distance hori.     cm");
 				_putty_out->cyan();
@@ -405,7 +412,7 @@ public:
 		 * Key Y = primary axis (2)
 		 * Key Z = primary axis (*3)	 */
 		level1 = itemAxis;
-		LOGGER_NOTICE_FMT("itemAxis = %d", level1);
+		LOGGER_NOTICE_FMT("Level 1 = %d", level1);
 	} /*----------------------------- end of set_level1 ---------------------------------------*/
 
 	void set_level2(uint8_t itemCoefficient)
@@ -416,7 +423,7 @@ public:
 		 * Key D = coefficient D (30)
 		 * Key E = ExecutingFrequency (40)	 */
 		level2 = itemCoefficient;
-		LOGGER_NOTICE_FMT("itemCoefficient = %d", level2);
+		LOGGER_NOTICE_FMT("Level 2 = %d", level2);
 	} /*----------------------------- end of set_level2 --------------------------------*/
 
 	/* Set the "PID Type",
@@ -424,10 +431,19 @@ public:
 	 * Will say, it select the parameter for secondary axis and coefficient 'i'
 	 */
 	uint8_t getPidType(bool up)
-	{ /// const deleted
-
+	{ 
 		_pidType = level1 + level2;
-		//	LOGGER_NOTICE_FMT("PID Type = %d", _pidType);
+		LOGGER_NOTICE_FMT("PID Type Input = %d", _pidType);	
+
+		if(_pidType == 14){
+			_pidType = 51;
+		}
+		if(_pidType == 24){
+			_pidType = 52;
+		}
+		if(_pidType == 34){
+			_pidType = 53;
+		}
 
 		if (_pidType < 40)
 		{ ///< P, I and D
@@ -443,6 +459,7 @@ public:
 			else
 				_addOn = -5;
 		}
+		LOGGER_NOTICE_FMT("PID Type = %d", _pidType);
 		return _pidType;
 	} /*----------------------------- end of getPidType ----------------------------------------*/
 
@@ -610,6 +627,45 @@ public:
 				displayPIDcoefficients();
 			}
 			break;
+
+		case pidTyp_t::altitude:
+			alt_value += _addOn;
+			if (checkValue(alt_value))
+			{
+				LOGGER_WARNING_FMT("Altitude = %f", alt_value);
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, yaw_EF_value);
+			//	_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
+				displayPIDcoefficients();
+			}
+			break;
+
+	
+		case pidTyp_t::us_down:
+			us_down_value += _addOn;
+			if (checkValue(us_down_value))
+			{
+				LOGGER_WARNING_FMT("US down = %f", us_down_value);
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, us_down_value);
+			//	_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
+				displayPIDcoefficients();
+			}
+			break;
+
+			
+		case pidTyp_t::us_front:
+			us_front_value += _addOn;
+			if (checkValue(us_front_value))
+			{
+				LOGGER_WARNING_FMT("US front = %f", alt_value);
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, us_front_value);
+			//	_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
+				displayPIDcoefficients();
+			}
+			break;		
+
 		} /* end of switch */
 	}	  /*----------------------------- end of select ----------------------------------------*/
 
