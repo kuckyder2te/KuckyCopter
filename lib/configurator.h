@@ -436,7 +436,7 @@ public:
 			else
 				_addOn = _newAddOn * -1;
 		}
-		if (_pidType >= 40)
+		if ((_pidType >= 40) && (_pidType < 44))
 		{ ///< Executingfrequency only
 			if (up)
 				_addOn = 5;
