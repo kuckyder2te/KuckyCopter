@@ -247,7 +247,7 @@ public:
 				_putty_out->yellow();
 				_putty_out->print(ROW_MENU + 38, COL_MENU + 10, "altitude           m");
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 38, COL_MENU + 24, "1000");
+				//_putty_out->print(ROW_MENU + 38, COL_MENU + 24, "1000");
 				break;
 
 			case 'O':
@@ -255,7 +255,7 @@ public:
 				_putty_out->yellow();
 				_putty_out->print(ROW_MENU + 39, COL_MENU + 10, "down ground        cm");
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 39, COL_MENU + 25, "400");				
+				//_putty_out->print(ROW_MENU + 39, COL_MENU + 25, "400");				
 				break;
 
 			case 'F':
@@ -263,7 +263,7 @@ public:
 				_putty_out->yellow();
 				_putty_out->print(ROW_MENU + 40, COL_MENU + 10, "distance hori.     cm");
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 40, COL_MENU + 25, "400");
+				//_putty_out->print(ROW_MENU + 40, COL_MENU + 25, "400");
 				break;
 
 			case '+':
@@ -459,6 +459,13 @@ public:
 			else
 				_addOn = -5;
 		}
+
+		if(_pidType > 50){
+			if (up)
+				_addOn = 10;
+			else
+				_addOn = -10;	
+		}
 		LOGGER_NOTICE_FMT("PID Type = %d", _pidType);
 		return _pidType;
 	} /*----------------------------- end of getPidType ----------------------------------------*/
@@ -628,40 +635,37 @@ public:
 			}
 			break;
 
-		case pidTyp_t::altitude:
+		case 51:
 			alt_value += _addOn;
+			LOGGER_WARNING_FMT("alt_value = %i", alt_value);
 			if (checkValue(alt_value))
 			{
-				LOGGER_WARNING_FMT("Altitude = %f", alt_value);
+				LOGGER_WARNING_FMT("Altitude = %i", alt_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, yaw_EF_value);
-			//	_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
+				_putty_out->print(ROW_MENU + 23 + ((level1 - 1) * 5), COL_SELECT + 30, 0, alt_value);
 				displayPIDcoefficients();
 			}
 			break;
 
 	
-		case pidTyp_t::us_down:
+		case 52:
 			us_down_value += _addOn;
 			if (checkValue(us_down_value))
 			{
 				LOGGER_WARNING_FMT("US down = %f", us_down_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, us_down_value);
-			//	_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
+				_putty_out->print(ROW_MENU + 24 + ((level1 - 1) * 5), COL_SELECT + 30, 0, us_down_value);
 				displayPIDcoefficients();
 			}
 			break;
-
-			
-		case pidTyp_t::us_front:
+		
+		case 53:
 			us_front_value += _addOn;
 			if (checkValue(us_front_value))
 			{
 				LOGGER_WARNING_FMT("US front = %f", alt_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, us_front_value);
-			//	_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
+				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 30, 0, us_front_value);
 				displayPIDcoefficients();
 			}
 			break;		
