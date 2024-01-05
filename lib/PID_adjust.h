@@ -595,7 +595,7 @@ public:
 
 	void display_Menu()
 	{
-		static uint8_t row_add = -1;
+		uint8_t row_add = -1;
 		LOGGER_VERBOSE("Enter....");
 		_putty_out->clear();
 		_putty_out->gray();

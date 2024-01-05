@@ -129,7 +129,7 @@ public:
         case standby:
             LOGGER_VERBOSE("standby");
             /* Make sure the throttle lever is set to 0 and RC is connected. */
-            if (_model->RC_interface.TX_payload.isInitialized &&_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_MIN))
+            if (_model->RC_interface.TX_payload.isInitialized &&_model->RC_interface.isconnect && (getThrottle() >= POWER_MIN))
             {
                 flyState = prestart;
                 LOGGER_NOTICE_CHK(flyState, Debug_flyState, "standby is finished -> prestart");
@@ -137,7 +137,7 @@ public:
             else
             {
                 _model->yawData.power = 0;
-                //flyState = standby;
+                flyState = standby;
                 LOGGER_NOTICE_CHK(flyState, Debug_flyState, "standby is held");
             }
             break;
@@ -153,7 +153,7 @@ public:
             }
             else
             {
-                //flyState = prestart;
+                flyState = prestart;
                 LOGGER_NOTICE("prestart is held");
             }
             break;
@@ -162,7 +162,8 @@ public:
             LOGGER_VERBOSE("take off");
             /* Throttle greater than POWER_LIFT_UP and RC is connected, go to the next state. */
             //_radio->RC_interface->isconnect = true;           // Just to test if Flycontroller is running.
-            _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
+            
+            _model->yawData.power = getThrottle();
             //_radio->RC_interface->RX_payload.rcThrottle = 1;  // Just to test if Flycontroller is running.
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle < POWER_LIFT_UP))
             {
@@ -171,7 +172,7 @@ public:
             }
             else
             {
-                //flyState = takeoff;
+                flyState = takeoff;
                 LOGGER_NOTICE_CHK(flyState,Debug_flyState,"take off is held");
             }
             break;
@@ -179,22 +180,21 @@ public:
         case set_pid:
             /* If everything is checked, the PID controller is activated. */
             LOGGER_VERBOSE("set pid");
-            _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
+            _model->yawData.power = getThrottle();
             resetYawPosition();
             
-            if(_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle >= POWER_LIFT_UP))
+            if(_model->RC_interface.isconnect && (_model->yawData.power > POWER_LIFT_UP))
             {
                 _axisYaw->setState(AxisYaw::enablePID);
                 _model->yaw.horz_Position = 0; ///< Reset YAW Position before lift off
                 resetYawPosition();
-                //printPidErrors();           // Got no execution time
+                printPidErrors();           // Got no execution time
                 flyState = fly;
-                
                 LOGGER_NOTICE_CHK(flyState,Debug_flyState,"PID setting is finished -> fly");
             }
             else
             {
-                //flyState = set_pid;
+                flyState = set_pid;
                 LOGGER_NOTICE_CHK(flyState,Debug_flyState,"PID setting is idle");
             }
             break;
@@ -205,15 +205,10 @@ public:
             LOGGER_VERBOSE("fly");
             //_model->sonicData.down_distance = 10;   // temp_debug
             //_model->RC_interface.RX_payload.rcThrottle = 0;   // temp_debug
-            static int16_t debug_Throttle;
-            LOGGER_NOTICE_FMT_CHK(_model->RC_interface.RX_payload.rcThrottle,debug_Throttle,"fly %i ", _model->RC_interface.RX_payload.rcThrottle);
+            
+            _model->yawData.power = getThrottle();
 
-            if (_model->RC_interface.RX_payload.rcThrottle < 0)         // ignore negative values
-                _model->RC_interface.RX_payload.rcThrottle = 0;
-
-            _model->yawData.power = _model->RC_interface.RX_payload.rcThrottle;
-
-            if ((_model->yawData.power <= POWER_LIFT_UP)) // || (_model->sonicData.down_distance < PID_ACTIVE_AT))
+            if ((_model->yawData.power < POWER_LIFT_UP) && (_model->sonicData.down_distance < PID_ACTIVE_AT))
             {
                 flyState = ground;
                 resetYawPosition();
@@ -238,6 +233,7 @@ public:
             else
             {
                 flyState = disablePID;
+                _model->RC_interface.TX_payload.isInitialized = false;
                 _model->yawData.power = 0;
                 LOGGER_NOTICE_CHK(flyState,Debug_flyState,"Drohne is on the ground -> disablePID");
             }
@@ -251,4 +247,12 @@ public:
         } /* end of switch flyState */
         updateModel();
     } /*------------------------------- end of update -------------------------------------------*/
+    int16_t getThrottle(){
+            int16_t throttle;
+            throttle = _model->RC_interface.RX_payload.rcThrottle;
+            if(throttle<POWER_MIN){
+                throttle = POWER_MIN;
+            }
+            return throttle;
+        }
 };    /*---------------------------------- end of flyController ---------------------------------*/

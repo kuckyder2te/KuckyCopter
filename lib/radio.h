@@ -26,7 +26,7 @@
 //#include <SPI.h>
 #include <RF24.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "def.h"
@@ -76,6 +76,7 @@ class Radio : public Task::Base
 public:
 typedef enum{
     init,                // only the first time to prevent init while flying after isConnected = false 
+    commit,               // Motors will start turning
     ready,               // Preparing the on state
     on
 }state_t;
@@ -185,14 +186,28 @@ public:
                    _RC_interface->RX_payload.rcYaw;
                 LOGGER_NOTICE_FMT_CHK(res,debug_res,"Must be 0 -> %d",res);
                 if((res >= -6) && (res <= 6)){
-                    _state = ready;
+                    _state = commit;
+                    LOGGER_NOTICE("-> commit");
                 }
+            }
+            break;
+        case commit:
+            if(_RC_interface->RX_payload.rcThrottle<=-80){
+                _state = ready;
+                LOGGER_NOTICE("-> ready");
             }
             break;
         case ready:
             LOGGER_NOTICE("Ready");
             _RC_interface->TX_payload.isInitialized = true;
             _state = on;
+            LOGGER_NOTICE("-> on");
+            break;
+        case on:
+            if(_RC_interface->TX_payload.isInitialized == false){
+                _state = commit;
+                LOGGER_NOTICE("-> commit");
+            }
             break;
         default:
             break;
@@ -205,7 +220,7 @@ public:
                 digitalWrite(LED_RADIO, HIGH);
             #endif
             _radio->read(&_RC_interface->RX_payload, sizeof(RX_payload_t));
-            // received_data_from_RC();
+            received_data_from_RC();
 
             _radio->writeAckPayload(1, &_RC_interface->TX_payload, sizeof(TX_payload_t));
             // transmit_data_to_RC();
@@ -218,7 +233,7 @@ public:
         }
         else
         {
-            LOGGER_NOTICE("Transmission fault or time out");
+            LOGGER_WARNING("Transmission fault or time out");
             _lostAckPackageCount++;
             if (_lostAckPackageCount > ACK_PACKAGE_MAX_COUNT)
             {
@@ -233,22 +248,22 @@ public:
     {
         LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcThrottle, _debugRX_payload.rcThrottle, 
                                 "Received Thottle = %i", _RC_interface->RX_payload.rcThrottle);
-        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcYaw, _debugRX_payload.rcYaw, 
-                                "Received Yaw = %i", _RC_interface->RX_payload.rcYaw);
-        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcPitch, _debugRX_payload.rcPitch, 
-                                "Received Pitch = %i", _RC_interface->RX_payload.rcPitch);
-        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcRoll, _debugRX_payload.rcRoll, 
-                                "Received Roll = %i", _RC_interface->RX_payload.rcRoll);
-        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcSwi1, _debugRX_payload.rcSwi1, 
-                                "Received Swi1 = %i", _RC_interface->RX_payload.rcSwi1); // Switch noch nicht aktiv
-        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcSwi2, _debugRX_payload.rcSwi2, 
-                                "Received Swi2 = %i", _RC_interface->RX_payload.rcSwi2);
-        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcSwi3, _debugRX_payload.rcSwi3, 
-                                "Received Swi3 = %i", _RC_interface->RX_payload.rcSwi3);
-        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcAltitudeBaroAdj, _debugRX_payload.rcAltitudeBaroAdj, 
-                                "Received max Alt. = %i", _RC_interface->RX_payload.rcAltitudeBaroAdj);
-        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcAltitudeSonicAdj, _debugRX_payload.rcAltitudeSonicAdj, 
-                                "Received max from ground = %i", _RC_interface->RX_payload.rcAltitudeSonicAdj);
+        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcYaw, _debugRX_payload.rcYaw, 
+        //                         "Received Yaw = %i", _RC_interface->RX_payload.rcYaw);
+        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcPitch, _debugRX_payload.rcPitch, 
+        //                         "Received Pitch = %i", _RC_interface->RX_payload.rcPitch);
+        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcRoll, _debugRX_payload.rcRoll, 
+        //                         "Received Roll = %i", _RC_interface->RX_payload.rcRoll);
+        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcSwi1, _debugRX_payload.rcSwi1, 
+        //                         "Received Swi1 = %i", _RC_interface->RX_payload.rcSwi1); // Switch noch nicht aktiv
+        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcSwi2, _debugRX_payload.rcSwi2, 
+        //                         "Received Swi2 = %i", _RC_interface->RX_payload.rcSwi2);
+        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcSwi3, _debugRX_payload.rcSwi3, 
+        //                         "Received Swi3 = %i", _RC_interface->RX_payload.rcSwi3);
+        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcAltitudeBaroAdj, _debugRX_payload.rcAltitudeBaroAdj, 
+        //                         "Received max Alt. = %i", _RC_interface->RX_payload.rcAltitudeBaroAdj);
+        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcAltitudeSonicAdj, _debugRX_payload.rcAltitudeSonicAdj, 
+        //                         "Received max from ground = %i", _RC_interface->RX_payload.rcAltitudeSonicAdj);
     } // ------------------- end of received_data_from_RC ---------------------------------------*/
 
     void transmit_data_to_RC()

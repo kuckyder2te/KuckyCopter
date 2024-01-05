@@ -34,7 +34,7 @@ typedef enum
 #define PIN_MOTOR_FR     12
 #define PIN_MOTOR_BL     14
 #define PIN_MOTOR_BR     13
-#define POWER_MIN         0
+#define POWER_MIN        10
 #define POWER_MAX       100
 #define BASE_MOTOR_POWER  0 //< 5% minimal throttle in fly mode for preventing stop of the motors
 #define PIN_ESC_ON       15
