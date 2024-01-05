@@ -31,7 +31,7 @@
 #include "..\lib\axisYaw.h"
 #include "..\lib\flyController.h"
 #include "..\lib\performance.h"
-#include "..\lib\PID_adjust.h"
+#include "..\lib\configurator.h"
 #include "..\lib\pos_LED.h"
 
 #define LOCAL_DEBUG

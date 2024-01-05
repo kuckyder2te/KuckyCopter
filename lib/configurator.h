@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include <HardwareSerial.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "..\lib\myLogger.h"
 
 #include "..\lib\putty_out.h"
@@ -42,8 +42,8 @@ class PID_adjust : public Task::Base
 {
 private:
 	uint8_t _pidCount;
-	uint8_t _itemAxis;
-	uint8_t _itemCoefficient;
+	uint8_t level1;
+	uint8_t level2;
 	uint8_t _pidType;
 	uint8_t _dotPlaces = 3;	 ///< Decimal places.
 	float _newAddOn = 0.01; ///< Multiplication factor for the PID coefficients, default setting.
@@ -54,9 +54,9 @@ private:
 	{
 		axis_pri = 1,
 		axis_sec = 2,
-		axis_yaw = 3
-	} itemAxis_Number_t; // Base number of the axis
-
+		axis_yaw = 3,
+		heights = 4,
+	} level1_t; // Base number of the axis
 
 	typedef enum
 	{
@@ -64,23 +64,29 @@ private:
 		offset_I = 20,
 		offset_D = 30,
 		offset_EF = 40
-	} itemCoefficient_t; // number to be added to the base 
+	} level2_t; // number to be added to the base 
 
 	typedef enum // Pid_typ Primary P to YAW ef
 	{
 		pri_P = 11,
 		pri_I = 21,
 		pri_D = 31,
+		pri_EF = 41,
+
 		sec_P = 12,
 		sec_I = 22,
 		sec_D = 32,
+		sec_EF = 42,
+
 		yaw_P = 13,
 		yaw_I = 23,
 		yaw_D = 33,
-		pri_ef = 41,
-		sec_ef = 42,
-		yaw_ef = 43
-	} pidTyp_t; /* itemAxis_Number_t + itemCoefficient_t returns 
+		yaw_EF = 43,
+
+		altitude = 51,
+		us_down = 52,
+		us_front = 53,
+	} pidTyp_t; /* level1_t + level2_t returns 
 				   the "pidType" for the select() function
 				*/
 	float pri_kP_value = PID_P_MIN; //Start values for menu control
@@ -97,6 +103,10 @@ private:
 	float yaw_kI_value = 0.0;
 	float yaw_kD_value = 0.0;
 	float yaw_EF_value = 0.0;
+
+	uint16_t alt_value = 0;
+	uint16_t us_down_value = 0;
+	uint16_t us_front_value = 0;
 
 	typedef struct
 	{
@@ -169,57 +179,91 @@ public:
 			switch (toupper(key))
 			{
 			case 'X': ///< Choose the axes
-				setItemAxis(itemAxis_Number_t::axis_pri);
+				set_level1(level1_t::axis_pri);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+21, COL_SELECT + 5, _dict->c_whitespace); ///< Clears the current line
 				_putty_out->print(ROW_MENU+21, COL_SELECT + 5, _dict->c_axis_pri_select);		///< Print the selected axis
 				break;
+
 			case 'Y':
-				setItemAxis(itemAxis_Number_t::axis_sec);
+				set_level1(level1_t::axis_sec);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+26, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_MENU+26, COL_SELECT + 5, _dict->c_axis_sec_select);
 				break;
+
 			case 'Z':
-				setItemAxis(itemAxis_Number_t::axis_yaw);
+				set_level1(level1_t::axis_yaw);
 				_putty_out->yellow();
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU+31, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_MENU+31, COL_SELECT + 5, _dict->c_axis_yaw_select);
 				break;
 
-			case 'P': ///< Choose the PID parameter
-				setItemCoefficient(itemCoefficient_t::offset_P);
+			case 'H':
+				set_level1(level1_t::heights);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU+22 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_MENU+22 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_p_coeff); ///< Print the selected coefficient
+				_putty_out->clearPart(ROW_MENU+37, COL_SELECT + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+37, COL_SELECT + 5, "max. heights");
+				break;
+
+			case 'P': ///< Choose the PID parameter
+				set_level2(level2_t::offset_P);
+				_putty_out->yellow();
+				clearStateLine();
+				_putty_out->clearPart(ROW_MENU+22 + ((level1 - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+22 + ((level1 - 1) * 5), COL_SELECT + 10, _dict->c_p_coeff); ///< Print the selected coefficient
 				break;
 
 			case 'I':
-				setItemCoefficient(itemCoefficient_t::offset_I);
+				set_level2(level2_t::offset_I);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU+23 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_MENU+23 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_i_coeff);
+				_putty_out->clearPart(ROW_MENU+23 + ((level1 - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+23 + ((level1 - 1) * 5), COL_SELECT + 10, _dict->c_i_coeff);
 				break;
 
 			case 'D':
-				setItemCoefficient(itemCoefficient_t::offset_D);
+				set_level2(level2_t::offset_D);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU+24 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_MENU+24 + ((_itemAxis - 1) * 5), COL_SELECT + 10, _dict->c_d_coeff);
+				_putty_out->clearPart(ROW_MENU+24 + ((level1 - 1) * 5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+24 + ((level1 - 1) * 5), COL_SELECT + 10, _dict->c_d_coeff);
 				break;
 
 			case 'E':
-				setItemCoefficient(itemCoefficient_t::offset_EF);
+				set_level2(level2_t::offset_EF);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU+25 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_whitespace);
-				_putty_out->print(ROW_MENU+25 + ((_itemAxis -1 ) * 5), COL_SELECT + 10, _dict->c_ef_coeff);
+				_putty_out->clearPart(ROW_MENU+25 + ((level1 -1 ) * 5), COL_SELECT + 10, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU+25 + ((level1 -1 ) * 5), COL_SELECT + 10, _dict->c_ef_coeff);
+				break;
+
+			case 'A':
+				set_level2(10);
+				_putty_out->yellow();
+				_putty_out->print(ROW_MENU + 38, COL_MENU + 10, "altitude           m");
+				_putty_out->cyan();
+				//_putty_out->print(ROW_MENU + 38, COL_MENU + 24, "1000");
+				break;
+
+			case 'O':
+				set_level2(20);
+				_putty_out->yellow();
+				_putty_out->print(ROW_MENU + 39, COL_MENU + 10, "down ground        cm");
+				_putty_out->cyan();
+				//_putty_out->print(ROW_MENU + 39, COL_MENU + 25, "400");				
+				break;
+
+			case 'F':
+				set_level2(30);
+				_putty_out->yellow();
+				_putty_out->print(ROW_MENU + 40, COL_MENU + 10, "distance hori.     cm");
+				_putty_out->cyan();
+				//_putty_out->print(ROW_MENU + 40, COL_MENU + 25, "400");
 				break;
 
 			case '+':
@@ -299,7 +343,7 @@ public:
 				displayPIDcoefficients();
 				break;
 
-			case 'A': ///< Set all PID parameters to 0
+			case 'V': ///< Set all PID parameters to 0
 				_namedPID[axisName::primary]._pid->setP(PID_P_MIN);
 				_namedPID[axisName::primary]._pid->setI(0);
 				_namedPID[axisName::primary]._pid->setD(0);
@@ -316,13 +360,13 @@ public:
 				break;
 
 			case 'G': ///< get factory default
-				_namedPID[axisName::primary]._pid->setP(0.14);
-				_namedPID[axisName::primary]._pid->setI(0.18);
-				_namedPID[axisName::primary]._pid->setD(0.102);
+				_namedPID[axisName::primary]._pid->setP(0.1);
+				_namedPID[axisName::primary]._pid->setI(0.15);
+				_namedPID[axisName::primary]._pid->setD(0.08);
 				_namedPID[axisName::primary]._pid->setEF(50);
-				_namedPID[axisName::secondary]._pid->setP(0.14);
-				_namedPID[axisName::secondary]._pid->setI(0.18);
-				_namedPID[axisName::secondary]._pid->setD(0.102);
+				_namedPID[axisName::secondary]._pid->setP(0.1);
+				_namedPID[axisName::secondary]._pid->setI(0.15);
+				_namedPID[axisName::secondary]._pid->setD(0.08);
 				_namedPID[axisName::secondary]._pid->setEF(50);
 				_namedPID[axisName::yaw]._pid->setP(0.01);
 				_namedPID[axisName::yaw]._pid->setI(0);
@@ -333,34 +377,17 @@ public:
 
 			case 'C': ///< Copies the primary values to the secondary axis
 				_putty_out->red();
-				_putty_out->print(ROW_STATE, COL_STATE, " 'C' is not implemented");
+				_namedPID[axisName::secondary]._pid->setP(_namedPID[axisName::primary]._pid->getP());
+				_namedPID[axisName::secondary]._pid->setI(_namedPID[axisName::primary]._pid->getI());
+				_namedPID[axisName::secondary]._pid->setD(_namedPID[axisName::primary]._pid->getD());
+				_namedPID[axisName::secondary]._pid->setEF(_namedPID[axisName::primary]._pid->getEF());
 				_putty_out->yellow();	
+				displayPIDcoefficients();
 				break;
 
 			case 'M':
 				display_Menu();
 				displayPIDcoefficients();
-				break;
-
-			case 'H':
-				_putty_out->yellow();
-				_putty_out->print(ROW_MENU + 38, COL_MENU + 10, "max. altitude via baro      m");
-				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 38, COL_MENU + 33, "1000");
-				break;
-
-			case 'N':
-				_putty_out->yellow();
-				_putty_out->print(ROW_MENU + 40, COL_MENU + 10, "max. altitude via down sonic     cm");
-				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 40, COL_MENU + 39, "400");				
-				break;
-
-			case 'F':
-				_putty_out->yellow();
-				_putty_out->print(ROW_MENU + 42, COL_MENU + 10, "max. distance to horizontal object     cm");
-				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 42, COL_MENU + 45, "400");
 				break;
 
 			default:
@@ -378,36 +405,45 @@ public:
 		_putty_out->print(ROW_MENU+46, COL_STATE, _dict->c_whitespace);
 	} /* -------------------- end of clearStateLine ----------------------------------------------------*/
 	/* Clears the string "Illegal button was pressed" */
-	void setItemAxis(uint8_t itemAxis)
+	void set_level1(uint8_t itemAxis)
 	{
 		/* Selects the axis, according to the keyboard input.
 		 * Key X = primary axis (1)
 		 * Key Y = primary axis (2)
 		 * Key Z = primary axis (*3)	 */
-		_itemAxis = itemAxis;
-		LOGGER_NOTICE_FMT("itemAxis = %d", _itemAxis);
-	} /*----------------------------- end of setItemAxis ---------------------------------------*/
+		level1 = itemAxis;
+		LOGGER_NOTICE_FMT("Level 1 = %d", level1);
+	} /*----------------------------- end of set_level1 ---------------------------------------*/
 
-	void setItemCoefficient(uint8_t itemCoefficient)
+	void set_level2(uint8_t itemCoefficient)
 	{
 		/* Selects the coefficient, according to the keyboard input.
 		 * Key P = coefficient P (10)
 		 * Key I = coefficient I (20)
 		 * Key D = coefficient D (30)
 		 * Key E = ExecutingFrequency (40)	 */
-		_itemCoefficient = itemCoefficient;
-		LOGGER_NOTICE_FMT("itemCoefficient = %d", _itemCoefficient);
-	} /*----------------------------- end of setItemCoefficient --------------------------------*/
+		level2 = itemCoefficient;
+		LOGGER_NOTICE_FMT("Level 2 = %d", level2);
+	} /*----------------------------- end of set_level2 --------------------------------*/
 
 	/* Set the "PID Type",
-	 * e.g _itemAxis = 1 and _itemCoefficient = 20 ~ _pidType 21
+	 * e.g level1 = 1 and level2 = 20 ~ _pidType 21
 	 * Will say, it select the parameter for secondary axis and coefficient 'i'
 	 */
 	uint8_t getPidType(bool up)
-	{ /// const deleted
+	{ 
+		_pidType = level1 + level2;
+		LOGGER_NOTICE_FMT("PID Type Input = %d", _pidType);	
 
-		_pidType = _itemAxis + _itemCoefficient;
-		//	LOGGER_NOTICE_FMT("PID Type = %d", _pidType);
+		if(_pidType == 14){
+			_pidType = 51;
+		}
+		if(_pidType == 24){
+			_pidType = 52;
+		}
+		if(_pidType == 34){
+			_pidType = 53;
+		}
 
 		if (_pidType < 40)
 		{ ///< P, I and D
@@ -416,13 +452,21 @@ public:
 			else
 				_addOn = _newAddOn * -1;
 		}
-		if (_pidType >= 40)
+		if ((_pidType >= 40) && (_pidType < 44))
 		{ ///< Executingfrequency only
 			if (up)
-				_addOn = 1;
+				_addOn = 5;
 			else
-				_addOn = -1;
+				_addOn = -5;
 		}
+
+		if(_pidType > 50){
+			if (up)
+				_addOn = 10;
+			else
+				_addOn = -10;	
+		}
+		LOGGER_NOTICE_FMT("PID Type = %d", _pidType);
 		return _pidType;
 	} /*----------------------------- end of getPidType ----------------------------------------*/
 
@@ -483,7 +527,7 @@ public:
 			}
 			break;
 
-		case pidTyp_t::pri_ef:
+		case pidTyp_t::pri_EF:
 			pri_EF_value += _addOn;
 			if (checkValue(pri_EF_value))
 			{
@@ -501,7 +545,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Y Axis kP = %f", sec_kP_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 22 + ((_itemAxis - 1) * 5), COL_SELECT + 27, _dotPlaces, sec_kP_value);
+				_putty_out->print(ROW_MENU + 22 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, sec_kP_value);
 				_namedPID[axisName::secondary]._pid->setP(sec_kP_value);
 				displayPIDcoefficients();
 			}
@@ -513,7 +557,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Y Axis kI = %f", sec_kI_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 23 + ((_itemAxis - 1) * 5), COL_SELECT + 27, _dotPlaces, sec_kI_value);
+				_putty_out->print(ROW_MENU + 23 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, sec_kI_value);
 				_namedPID[axisName::secondary]._pid->setI(sec_kI_value);
 				displayPIDcoefficients();
 			}
@@ -525,19 +569,19 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Y Axis kD = %f", sec_kD_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 24 + ((_itemAxis - 1) * 5), COL_SELECT + 27, _dotPlaces, sec_kD_value);
+				_putty_out->print(ROW_MENU + 24 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, sec_kD_value);
 				_namedPID[axisName::secondary]._pid->setD(sec_kD_value);
 				displayPIDcoefficients();
 			}
 			break;
 
-		case pidTyp_t::sec_ef:
+		case pidTyp_t::sec_EF:
 			sec_EF_value += _addOn;
 			if (checkValue(sec_EF_value))
 			{
 				LOGGER_WARNING_FMT("Y Axis eF = %f", sec_EF_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 25 + ((_itemAxis - 1) * 5), COL_SELECT + 27, _dotPlaces, sec_EF_value);
+				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, sec_EF_value);
 				_namedPID[axisName::secondary]._pid->setEF(sec_EF_value);
 				displayPIDcoefficients();
 			}
@@ -549,7 +593,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Z Axis kP = %f", yaw_kP_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 22 + ((_itemAxis - 1) * 5), COL_SELECT + 27, _dotPlaces, yaw_kP_value);
+				_putty_out->print(ROW_MENU + 22 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, yaw_kP_value);
 				_namedPID[axisName::yaw]._pid->setP(yaw_kP_value);
 				displayPIDcoefficients();
 			}
@@ -561,7 +605,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Z Axis kI = %f", yaw_kI_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 23 + ((_itemAxis - 1) * 5), COL_SELECT + 27, _dotPlaces, yaw_kI_value);
+				_putty_out->print(ROW_MENU + 23 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, yaw_kI_value);
 				_namedPID[axisName::yaw]._pid->setI(yaw_kI_value);
 				displayPIDcoefficients();
 			}
@@ -573,23 +617,58 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Z Axis kD = %f", yaw_kD_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 24 + ((_itemAxis - 1) * 5), COL_SELECT + 27, _dotPlaces, yaw_kD_value);
+				_putty_out->print(ROW_MENU + 24 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, yaw_kD_value);
 				_namedPID[axisName::yaw]._pid->setD(yaw_kD_value);
 				displayPIDcoefficients();
 			}
 			break;
 
-		case pidTyp_t::yaw_ef:
+		case pidTyp_t::yaw_EF:
 			yaw_EF_value += _addOn;
 			if (checkValue(yaw_EF_value))
 			{
 				LOGGER_WARNING_FMT("Z Axis eF = %f", yaw_EF_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 25 + ((_itemAxis - 1) * 5), COL_SELECT + 27, _dotPlaces, yaw_EF_value);
+				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 27, _dotPlaces, yaw_EF_value);
 				_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
 				displayPIDcoefficients();
 			}
 			break;
+
+		case pidTyp_t::altitude:
+			alt_value += _addOn;
+			if (checkValue(alt_value))
+			{
+				LOGGER_WARNING_FMT("Altitude = %i", alt_value);
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 23 + ((level1 - 1) * 5), COL_SELECT + 30, 0, alt_value);
+				displayPIDcoefficients();
+			}
+			break;
+
+	
+		case pidTyp_t::us_down:
+			us_down_value += _addOn;
+			if (checkValue(us_down_value))
+			{
+				LOGGER_WARNING_FMT("US down = %f", us_down_value);
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 24 + ((level1 - 1) * 5), COL_SELECT + 30, 0, us_down_value);
+				displayPIDcoefficients();
+			}
+			break;
+		
+		case pidTyp_t::us_front:
+			us_front_value += _addOn;
+			if (checkValue(us_front_value))
+			{
+				LOGGER_WARNING_FMT("US front = %f", us_front_value);
+				_putty_out->cyan();
+				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_SELECT + 30, 0, us_front_value);
+				displayPIDcoefficients();
+			}
+			break;		
+
 		} /* end of switch */
 	}	  /*----------------------------- end of select ----------------------------------------*/
 
@@ -603,19 +682,18 @@ public:
 		_putty_out->yellow();
 		_putty_out->print(ROW_MENU + (row_add+=2), COL_MENU, "(X) choose the primary");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(Y)           secondary");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(Z)            YAW axis");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, " P, I, D or E select the coefficient)");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(Z)            YAW axis");	
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, " P, I, D or E select the coefficient");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(H) choose the max. heights");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(A),(O) or (F) select the values");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(0),(1),(2),(3) or (5) select the accurarcy");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(+) increment according to the value");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(-) decrement      ''");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(S) saves all coefficient into the EEPROM");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(R) reads all coefficients from the EEPROM");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(C) Copies the primary values to the secondary axis");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(A) all values are set to 0 in the EEPROM.");
+		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(V) all values are set to 0 in the EEPROM.");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(G) get factory defaults");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(H) set the maximal altitude");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(N) set the maximal near field altitude");
-		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(F) set the maximal distance to horizontal object.");
 		_putty_out->print(ROW_MENU + (row_add+=1), COL_MENU, "(M) display the menu");
 		_putty_out->gray();
 		_putty_out->print(ROW_MENU + (row_add+=2), COL_MENU, "---------------------------------------------------------");
