@@ -23,7 +23,7 @@ public:
         uint16_t power; /// power from YAW Axis
         int16_t pidError;
         int16_t setpoint;  ///< Memory for detuning the physical axis.
-        int16_t feedback; ///< Current value from the IMU
+        int16_t* feedback; ///< Current value from the IMU
         int8_t *rcX;       ///< virtual axis. Corresponds to the ROLL axis.		///  zu int16_t konvertieren
         int8_t *rcY;       ///< virtual axis. Corresponds to the PITCH axis.
     } axisData_t;
@@ -38,7 +38,7 @@ public:
 		standby,
 		ready,
 		off
-	} state;
+	} state_t;
 
 private:
     static uint8_t _instanceCounter;
@@ -51,7 +51,7 @@ protected:
     int16_t *_error;
     uint32_t _lastMillis;
     axisData_t *_axisData;
-    state _state, _lastState;
+    state_t _state, _lastState;
 
 public:
     /// @brief Defines the base axis

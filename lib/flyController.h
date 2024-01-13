@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "radio.h"
@@ -77,10 +77,10 @@ public:
         LOGGER_NOTICE_FMT("YAW Error: %d",_model->yawData.pidError);
         LOGGER_NOTICE_FMT("Primary Axis Error: %d",_model->axisData[axisName::primary].pidError);
         LOGGER_NOTICE_FMT("Primary Axis SetPoint: %d",_model->axisData[axisName::primary].setpoint);
-        LOGGER_NOTICE_FMT("Primary Axis Feedback: %d",_model->axisData[axisName::primary].feedback);
+        LOGGER_NOTICE_FMT("Primary Axis Feedback: %d",*_model->axisData[axisName::primary].feedback);
         LOGGER_NOTICE_FMT("Secondary Axis Error: %d",_model->axisData[axisName::secondary].pidError);
         LOGGER_NOTICE_FMT("Secondary Axis SetPoint: %d",_model->axisData[axisName::secondary].setpoint);
-        LOGGER_NOTICE_FMT("Secondary Axis Feedback: %d",_model->axisData[axisName::secondary].feedback);
+        LOGGER_NOTICE_FMT("Secondary Axis Feedback: %d",*_model->axisData[axisName::secondary].feedback);
     }
 
     void resetYawPosition(){
@@ -137,6 +137,7 @@ public:
             else
             {
                 _model->yawData.power = 0;
+                _axisYaw->setState(AxisYaw::standby);
                 flyState = standby;
                 LOGGER_NOTICE_CHK(flyState, Debug_flyState, "standby is held");
             }
@@ -173,6 +174,7 @@ public:
             else
             {
                 flyState = takeoff;
+                _axisYaw->setState(AxisYaw::standby);
                 LOGGER_NOTICE_CHK(flyState,Debug_flyState,"take off is held");
             }
             break;
@@ -232,7 +234,7 @@ public:
             }
             else
             {
-                flyState = disablePID;
+                flyState = standby;
                 _model->RC_interface.TX_payload.isInitialized = false;
                 _model->yawData.power = 0;
                 LOGGER_NOTICE_CHK(flyState,Debug_flyState,"Drohne is on the ground -> disablePID");

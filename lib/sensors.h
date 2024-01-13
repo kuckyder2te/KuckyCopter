@@ -29,7 +29,7 @@ typedef struct
 {
     int16_t pitch;
     int16_t roll;
-    float yaw;
+    int16_t yaw;
     double compass;
     float pressure;
     float altitude;

@@ -37,10 +37,14 @@
 #define LOCAL_DEBUG
 
 #include "..\lib\myLogger.h"
+#ifdef _MAIN
+#define DISPLAY_DELAY 100
+#endif
 #include "..\lib\monitor.h"
 
 model_t model;
-
+int16_t Test;
+HardwareSerial *MonitorOutput = &Serial;
 HardwareSerial *TestOutput = &Serial2;
 HardwareSerial *DebugOutput = &Serial1;
 
@@ -48,6 +52,7 @@ HardwareSerial *DebugOutput = &Serial1;
   PID_adjust *_pid_adjust;
 #endif
 
+void wireModel();
 void base_setup();
 
 #ifdef _MAIN
@@ -55,12 +60,12 @@ void main_setup()
 {
   LOGGER_VERBOSE("Enter....");
   Tasks.add<AxisMotor>("axismotor_a")
-      ->setModel(&model.axisData[0])
+      ->setModel(&model.axisData[axisName::primary])
       ->initMotorOrdered(PIN_MOTOR_FL)
       ->initMotorOrdered(PIN_MOTOR_BR)
       ->startFps(AXIS_FPS);
   Tasks.add<AxisMotor>("axismotor_b")
-      ->setModel(&model.axisData[1])
+      ->setModel(&model.axisData[axisName::secondary])
       ->initMotorOrdered(PIN_MOTOR_FR)
       ->initMotorOrdered(PIN_MOTOR_BL)
       ->InvertRoll()
@@ -83,8 +88,8 @@ void main_setup()
   Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
   Tasks.add<POS_LED>("postion-led")->startFps(1);
 
-#ifdef SERIAL_STUDIO
-  Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(0.1);
+#ifdef _SERIAL_STUDIO
+  Tasks.add<Monitor>("Monitor")->setModel(&model)->startFps(10);
 #endif
 
 #ifdef _PID_ADJUST
@@ -161,6 +166,7 @@ void base_setup()
   digitalWrite(LED_POSITION, HIGH);
 
   DebugOutput->begin(COM_SPEED);
+  MonitorOutput->begin(COM_SPEED);
   TestOutput->begin(BT_SPEED);
   DebugOutput->println("Serial COM OK");
   TestOutput->println("BT COM OK ");
@@ -175,8 +181,7 @@ void base_setup()
 #endif
 
   LOGGER_NOTICE("Program will initialized");
-  model.yaw.axisData[axisName::primary] = &model.axisData[axisName::primary]; // axisData wird mit yawData.axisData verknüpft
-  model.yaw.axisData[axisName::secondary] = &model.axisData[axisName::secondary];
+  wireModel();
 
   TestOutput->println("********************************");
   TestOutput->println("*       Kucky Copter 2         *");
@@ -196,6 +201,24 @@ void base_setup()
   digitalWrite(LED_BUILTIN, LOW);
 } /*------------------------ end of base setup --------------------------------------------------*/
 
+
+void wireModel(){
+  model.axisData[axisName::primary].feedback = &model.sensorData.roll; // must be before setModel because of feedback Pointer
+  model.axisData[axisName::secondary].feedback = &model.sensorData.pitch;
+  model.yawData.feedback = &model.sensorData.yaw;
+
+  
+  model.axisData[axisName::primary].rcX = &model.RC_interface.RX_payload.rcRoll;
+  model.axisData[axisName::primary].rcY = &model.RC_interface.RX_payload.rcPitch;
+  model.axisData[axisName::secondary].rcX = &model.RC_interface.RX_payload.rcRoll;
+  model.axisData[axisName::secondary].rcY = &model.RC_interface.RX_payload.rcPitch;
+//  model.yaw.rotationSpeed = &model.RC_interface.RX_payload.rcYaw;
+//  model.yaw.axisData[axisName::primary] = &model.axisData[axisName::primary]; // axisData wird mit yawData.axisData verknüpft
+//  model.yaw.axisData[axisName::secondary] = &model.axisData[axisName::secondary];
+  Test = 0;
+  //model.RC_interface.RX_payload.rcYaw = 0;
+  model.yaw.rotationSpeed = &model.RC_interface.RX_payload.rcYaw;
+}
 void setup()
 {
   base_setup();

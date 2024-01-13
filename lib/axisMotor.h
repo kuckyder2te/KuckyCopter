@@ -48,7 +48,7 @@ public:
 		_state = standby;
 		AxisBase::_sp = &_axisData->setpoint; 	// _sp is a pointer that gets the address  
 												// of the value from &_axisData->setpoint
-		AxisBase::_fb = &_axisData->feedback;
+		AxisBase::_fb = _axisData->feedback;
 		AxisBase::_error = &_axisData->pidError;
 		LOGGER_NOTICE("....leave");
 		return this;
@@ -161,6 +161,7 @@ public:
 			break;
 		case off:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"off %s ", this->getName().c_str());
+			_axisData->setpoint = 0;
 			_motor[motor_t::first]->setMotorState(Motor::power_off);
 			_motor[motor_t::second]->setMotorState(Motor::power_off);
 			break;
@@ -168,7 +169,7 @@ public:
 	
 	} /*..................... end of update ----------------------------------------------------*/
 
-	void setState(state state)
+	void setState(state_t state)
 	{
 		_state = state;
 		LOGGER_NOTICE_FMT_CHK(_state,_lastState,"axisMotor state %i", _state);

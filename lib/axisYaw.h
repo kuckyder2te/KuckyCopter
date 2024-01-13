@@ -9,7 +9,7 @@
 #include "AxisBase.h"
 #include "AxisMotor.h"
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #define YAW_SENSIBILITY 5
@@ -17,9 +17,9 @@
 
 typedef struct
 {
-	double rotationSpeed;	///< Speed which the copter should turn
+	int16_t* rotationSpeed;	///< Speed which the copter should turn
 	int16_t horz_Position; ///< Current YAW Position from Gyro
-	AxisMotor::axisData_t *axisData[2];
+//	AxisMotor::axisData_t *axisData[2];
 } yaw_t;
 
 class AxisYaw : public AxisBase
@@ -32,6 +32,7 @@ public:
 		arming_finished,
 		disablePID,
 		enablePID,
+		standby,
 		ready
 	} state_e;
 
@@ -105,8 +106,8 @@ public:
 		{
 		case arming_start:
 			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter arming start %d", _state);
-			_axisMotor[axisName::primary]->setState(AxisMotor::state::arming_start);
-			_axisMotor[axisName::secondary]->setState(AxisMotor::state::arming_start);
+			_axisMotor[axisName::primary]->setState(AxisMotor::state_t::arming_start);
+			_axisMotor[axisName::secondary]->setState(AxisMotor::state_t::arming_start);
 			_state = arming_finished;
 			LOGGER_VERBOSE("....leave arming_start");
 			break;
@@ -116,7 +117,7 @@ public:
 			if (_axisMotor[axisName::primary]->isArmed() && _axisMotor[axisName::secondary]->isArmed())
 			{
 				LOGGER_NOTICE("All motors armed");
-				_state = ready;
+				_state = disablePID;
 			}
 			LOGGER_VERBOSE("....leave");
 			break;
@@ -137,25 +138,29 @@ public:
 			_yaw->horz_Position = 0;
 			_axisMotor[axisName::primary]->setState(AxisMotor::enablePID);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::enablePID);
-			_lastCompass = _axisData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
+			_lastCompass = *_axisData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
 			LOGGER_VERBOSE("....leave");
 			break;
 
+		case standby:
+			_axisMotor[axisName::primary]->setState(AxisMotor::standby);
+			_axisMotor[axisName::secondary]->setState(AxisMotor::standby);
+			break;
 		case ready:
 			//LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter ready state %d", _state);
-			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter ready state %d", _state);
+			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter ready state %d; rotationSpeed = %d", _state,*_yaw->rotationSpeed);
 			_axisMotor[axisName::primary]->setState(AxisMotor::ready);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::ready);
 
 			// _axisData->power = 10;		// Test
 			// *_yaw->rotationSpeed = 100; // Test
 
-			if ((_yaw->rotationSpeed > YAW_SENSIBILITY) || (_yaw->rotationSpeed < (-YAW_SENSIBILITY)))
+			if ((*_yaw->rotationSpeed > YAW_SENSIBILITY) || (*_yaw->rotationSpeed < (-YAW_SENSIBILITY)))
 			{ ///< YAW Joystick is not moved....
 				// _yaw->axisData[axisName::primary]->power = _axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING;
 				// _yaw->axisData[axisName::secondary]->power = _axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING;
-				_axisMotor[axisName::primary]->setPower(_axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING);
-				_axisMotor[axisName::secondary]->setPower(_axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING);
+				_axisMotor[axisName::primary]->setPower(_axisData->power - *_yaw->rotationSpeed * YAW_FINE_TUNING);
+				_axisMotor[axisName::secondary]->setPower(_axisData->power + *_yaw->rotationSpeed * YAW_FINE_TUNING);
 				_yaw->horz_Position = 0;
 			}
 			else

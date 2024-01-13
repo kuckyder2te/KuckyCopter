@@ -37,7 +37,7 @@
     #define  ACK_PACKAGE_MAX_COUNT 10
 #endif
 
-typedef struct __attribute__((__packed__))
+typedef struct// __attribute__((__packed__))
 {
     int16_t rcYaw;
     int8_t rcPitch;
@@ -204,7 +204,7 @@ public:
             LOGGER_NOTICE("-> on");
             break;
         case on:
-            if(_RC_interface->TX_payload.isInitialized == false){
+            if(_RC_interface->TX_payload.isInitialized == false){           // Will be set to false from flycontroller
                 _state = commit;
                 LOGGER_NOTICE("-> commit");
             }
