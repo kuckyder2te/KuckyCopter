@@ -1,0 +1,172 @@
+{
+    "frameEnd": "",
+    "frameStart": "",
+    "groups": [
+        {
+            "datasets": [
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "YAW",
+                    "units": "",
+                    "value": "%1",
+                    "widget": "bar"
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Primary Axis",
+                    "units": "",
+                    "value": "%2",
+                    "widget": "bar"
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Secondary Axis",
+                    "units": "",
+                    "value": "%3",
+                    "widget": "bar"
+                }
+            ],
+            "title": "IMU",
+            "widget": ""
+        },
+        {
+            "datasets": [
+                {
+                    "alarm": 1100,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 1100,
+                    "min": 900,
+                    "title": "Druck",
+                    "units": "",
+                    "value": "%4",
+                    "widget": "gauge"
+                },
+                {
+                    "alarm": 30,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 30,
+                    "min": 15,
+                    "title": "Temperatur",
+                    "units": "",
+                    "value": "%5",
+                    "widget": "bar"
+                }
+            ],
+            "title": "Umgebung",
+            "widget": ""
+        },
+        {
+            "datasets": [
+                {
+                    "alarm": 450,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 100,
+                    "min": 0,
+                    "title": "Ground",
+                    "units": "",
+                    "value": "%6",
+                    "widget": ""
+                }
+            ],
+            "title": "Positon",
+            "widget": ""
+        },
+        {
+            "datasets": [
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Primary-Err",
+                    "units": "",
+                    "value": "%8",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Secondary-Err",
+                    "units": "",
+                    "value": "%9",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "YAW-Err",
+                    "units": "",
+                    "value": "%10",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": true,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Horizont Position",
+                    "units": "",
+                    "value": "%11",
+                    "widget": ""
+                }
+            ],
+            "title": "PID Errors",
+            "widget": ""
+        }
+    ],
+    "separator": "",
+    "title": "KuckyCopter main"
+}

@@ -233,7 +233,7 @@ public:
         }
         else
         {
-            LOGGER_WARNING("Transmission fault or time out");
+            LOGGER_FATAL("Transmission fault or time out");
             _lostAckPackageCount++;
             if (_lostAckPackageCount > ACK_PACKAGE_MAX_COUNT)
             {
@@ -248,12 +248,12 @@ public:
     {
         LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcThrottle, _debugRX_payload.rcThrottle, 
                                 "Received Thottle = %i", _RC_interface->RX_payload.rcThrottle);
-        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcYaw, _debugRX_payload.rcYaw, 
-        //                         "Received Yaw = %i", _RC_interface->RX_payload.rcYaw);
-        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcPitch, _debugRX_payload.rcPitch, 
-        //                         "Received Pitch = %i", _RC_interface->RX_payload.rcPitch);
-        // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcRoll, _debugRX_payload.rcRoll, 
-        //                         "Received Roll = %i", _RC_interface->RX_payload.rcRoll);
+        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcYaw, _debugRX_payload.rcYaw, 
+                                "Received Yaw = %i", _RC_interface->RX_payload.rcYaw);
+        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcPitch, _debugRX_payload.rcPitch, 
+                                "Received Pitch = %i", _RC_interface->RX_payload.rcPitch);
+        LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcRoll, _debugRX_payload.rcRoll, 
+                                "Received Roll = %i", _RC_interface->RX_payload.rcRoll);
         // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcSwi1, _debugRX_payload.rcSwi1, 
         //                         "Received Swi1 = %i", _RC_interface->RX_payload.rcSwi1); // Switch noch nicht aktiv
         // LOGGER_NOTICE_FMT_CHK(_RC_interface->RX_payload.rcSwi2, _debugRX_payload.rcSwi2, 

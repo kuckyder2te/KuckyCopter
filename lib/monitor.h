@@ -12,7 +12,7 @@
 #include <TaskManager.h>
 #include "model.h"
 
-// #define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #ifndef DISPLAY_DELAY
@@ -51,8 +51,6 @@ public:
         _report = report;
         _display_delay = delay;
     }
-
-    virtual ~Monitor() {}
 
     Monitor *setModel(model_t *model)
     {
@@ -126,15 +124,20 @@ public:
             case ALL_AXIS:              
                 break;
             default:
-                MonitorOutput->println("Default");
-                MonitorOutput->printf("/*%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%i*/\r\n",
+                MonitorOutput->println("y.p.r.pr,temp,dis,con,A_err,B_err,Y_err,Hor_pos");
+                MonitorOutput->printf("/*%d,%d,%d,%.2f,%.2f,%d,%d,%d,%d,%d,%d*/\r\n",
                     _model->sensorData.yaw,
                     _model->sensorData.pitch,
                     _model->sensorData.roll,
                     _model->sensorData.pressure,
                     _model->sensorData.temperature_baro,
                     _model->sonicData.down_distance,
-                    _model->RC_interface.isconnect);
+                    _model->RC_interface.isconnect,
+                    _model->axisData[0].pidError,
+                    _model->axisData[1].pidError,
+                    _model->yawData.pidError,
+                    _model->yaw.horz_Position
+                    );
                 break;
             }
         }

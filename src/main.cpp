@@ -14,10 +14,10 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 #include <HardwareSerial.h>
-//#include <Adafruit_Sensor.h>
+// #include <Adafruit_Sensor.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_SPIDevice.h>
-//#include <SPI.h>
+// #include <SPI.h>
 #include "EEPROM.h"
 #include "def.h"
 
@@ -44,12 +44,12 @@
 
 model_t model;
 int16_t Test;
-HardwareSerial *MonitorOutput = &Serial;
-HardwareSerial *TestOutput = &Serial2;
-HardwareSerial *DebugOutput = &Serial1;
+HardwareSerial *MonitorOutput = &Serial; /// USB Pico
+HardwareSerial *TestOutput = &Serial2;   /// Bluetooth Putty
+HardwareSerial *DebugOutput = &Serial1;  /// Bluetooth CoolTerm
 
 #ifdef _PID_ADJUST
-  PID_adjust *_pid_adjust;
+PID_adjust *_pid_adjust;
 #endif
 
 void wireModel();
@@ -77,14 +77,12 @@ void main_setup()
       ->startFps(AXIS_FPS);
   Tasks.add<FlyController>("flycontroller")
       ->init(&model) // He gets the complete model.
-      ->setYawAxis(reinterpret_cast<AxisYaw*>(Tasks["axisyaw"].get()))
+      ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
       ->startFps(10);
-#ifndef _WITHOUT_SENSORS
-  Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(10);
-#endif
+  Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(100);
   Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(10);
-//  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(0.1);
-  Tasks.add<Temperature>("temperature")->setModel(&model.temperatureData)->startFps(0.01); //One measurement every 100 seconds
+  //  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(0.1);
+  Tasks.add<Temperature>("temperature")->setModel(&model.temperatureData)->startFps(0.01); // One measurement every 100 seconds
   Tasks.add<Radio>("radio")->setModel(&model.RC_interface)->startFps(10);
   Tasks.add<POS_LED>("postion-led")->startFps(1);
 
@@ -113,9 +111,6 @@ void main_loop()
   LOGGER_VERBOSE("loop has begun");
   digitalWrite(LED_BUILTIN, HIGH);
   Tasks.update();
-#ifndef _WITHOUT_SENSORS
-  Tasks["sensor"]->enter();
-#endif
   LOGGER_VERBOSE("Loop completed successfully");
   digitalWrite(LED_BUILTIN, LOW);
 }
@@ -153,11 +148,11 @@ void base_setup()
   pinMode(PIN_ESC_ON, OUTPUT);
   digitalWrite(PIN_ESC_ON, HIGH); // MainPower für ESC´s ausgeschaltet,
                                   // will sagen, BC547 schaltet nicht durch, da die Basis HIGH ist
-  
-  #ifndef _SERIAL1
-    pinMode(PIN_LED_STATE, OUTPUT);       // temp_debug Serial1
-    digitalWrite(PIN_LED_STATE, LOW);
-  #endif
+
+#ifndef _SERIAL1
+  pinMode(PIN_LED_STATE, OUTPUT); // temp_debug Serial1
+  digitalWrite(PIN_LED_STATE, LOW);
+#endif
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
@@ -167,12 +162,22 @@ void base_setup()
 
   DebugOutput->begin(COM_SPEED);
   MonitorOutput->begin(COM_SPEED);
-  TestOutput->begin(BT_SPEED);
-  DebugOutput->println("Serial COM OK");
-  TestOutput->println("BT COM OK ");
+  TestOutput->begin(COM_SPEED);
+  DebugOutput->println("Serial COM 14 OK");
+  MonitorOutput->println("Serial 21 COM OK");
+  TestOutput->println("BT COM 4 OK ");
+
   TestOutput->print(__DATE__);
   TestOutput->print(" ");
-  TestOutput->println(__TIME__);  
+  TestOutput->println(__TIME__);
+
+  DebugOutput->print(__DATE__);
+  DebugOutput->print(" ");
+  DebugOutput->println(__TIME__);
+
+  MonitorOutput->print(__DATE__);
+  MonitorOutput->print(" ");
+  MonitorOutput->println(__TIME__);
 
 #ifdef _DEBUG_
   Logger::setOutputFunction(&localLogger);
@@ -201,24 +206,24 @@ void base_setup()
   digitalWrite(LED_BUILTIN, LOW);
 } /*------------------------ end of base setup --------------------------------------------------*/
 
-
-void wireModel(){
+void wireModel()
+{
   model.axisData[axisName::primary].feedback = &model.sensorData.roll; // must be before setModel because of feedback Pointer
   model.axisData[axisName::secondary].feedback = &model.sensorData.pitch;
   model.yawData.feedback = &model.sensorData.yaw;
 
-  
   model.axisData[axisName::primary].rcX = &model.RC_interface.RX_payload.rcRoll;
   model.axisData[axisName::primary].rcY = &model.RC_interface.RX_payload.rcPitch;
   model.axisData[axisName::secondary].rcX = &model.RC_interface.RX_payload.rcRoll;
   model.axisData[axisName::secondary].rcY = &model.RC_interface.RX_payload.rcPitch;
-//  model.yaw.rotationSpeed = &model.RC_interface.RX_payload.rcYaw;
-//  model.yaw.axisData[axisName::primary] = &model.axisData[axisName::primary]; // axisData wird mit yawData.axisData verknüpft
-//  model.yaw.axisData[axisName::secondary] = &model.axisData[axisName::secondary];
+  //  model.yaw.rotationSpeed = &model.RC_interface.RX_payload.rcYaw;
+  //  model.yaw.axisData[axisName::primary] = &model.axisData[axisName::primary]; // axisData wird mit yawData.axisData verknüpft
+  //  model.yaw.axisData[axisName::secondary] = &model.axisData[axisName::secondary];
   Test = 0;
-  //model.RC_interface.RX_payload.rcYaw = 0;
+  // model.RC_interface.RX_payload.rcYaw = 0;
   model.yaw.rotationSpeed = &model.RC_interface.RX_payload.rcYaw;
 }
+
 void setup()
 {
   base_setup();
@@ -233,11 +238,17 @@ void loop()
 {
   unsigned long _lastLooptime = micros();
 #ifdef _MAIN
-    digitalWrite(LED_BUILTIN, LOW);  // only for temp_debug
-    main_loop();
-    digitalWrite(LED_BUILTIN, HIGH);
+  digitalWrite(LED_BUILTIN, LOW); // only for temp_debug
+  main_loop();
+  digitalWrite(LED_BUILTIN, HIGH);
 #else
   test_loop();
 #endif
-  model.looptime = micros()-_lastLooptime;
+  model.looptime = micros() - _lastLooptime;
+  if (model.looptime > model.max_looptime)
+  {
+    model.max_looptime = model.looptime;
+  }
+  //Serial.println(model.max_looptime);
+  //Serial.println(model.looptime);
 } /*------------------------ end of standard setup and loop -------------------------------------*/

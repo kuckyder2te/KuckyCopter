@@ -11,8 +11,10 @@
  *  Decimal degrees = Degrees + (Minutes/60) + (Seconds/3600)
  * 51,.033f; // Declination at Leverkusen, Germany is 51 degrees 1 minutes and  59.9988 seconds on 2022-12-21
  * Breitengrad: 51.048 / Längengrad: 6.9942
-*   Adresse: Sperlingsweg 9, 51373 Leverkusen, Deutschland
-Höhe 55m von Strasse zum Dach + ca. 6m
+ *   Adresse: Sperlingsweg 9, 51373 Leverkusen, Deutschland
+ * Höhe 55m von Strasse zum Dach + ca. 6m
+ *
+ * https://github.com/har-in-air/ESP8266_MPU9250_MS5611_VARIO?tab=readme-ov-file
  */
 
 #include <Arduino.h>
@@ -44,8 +46,7 @@ class Sensor : public Task::Base
 
 private:
     MPU9250Setting setting;
-    uint16_t _updateCounter;
-    unsigned long _lastEnter;
+    uint8_t _updateCounter;
 protected:
     MPU9250 _mpu9250; // Speicherplatz reserviert
     MS5611 _ms5611;
@@ -90,7 +91,7 @@ public:
             while (1)
             {
                 LOGGER_FATAL("MPU connection failed.");
-                delay(5000);
+                delay(10);
             }
         }
         LOGGER_NOTICE("End init MPU9250");
@@ -116,15 +117,6 @@ public:
     virtual void update() override
     {
         LOGGER_VERBOSE("Enter....");
-        LOGGER_VERBOSE("....leave");
-    } /* ------------------ end of update -------------------------------------------------------*/
-
-    virtual void enter() override
-    {
-        LOGGER_VERBOSE("Enter....");
-        if(micros()-_lastEnter < MIN_SENSOR_DELAY){
-            return;
-        }        
         //    LOGGER_NOTICE_FMT("Wire %d", Wire.availableForWrite());
         if (_mpu9250.update())
         {
@@ -138,7 +130,7 @@ public:
 
             LOGGER_VERBOSE("_mpu9250 leave");
         }
-        else
+        if(++_updateCounter%10==0)
         {
             LOGGER_VERBOSE("_ms5611.read");
             _ms5611.read();                                                             // uses default OSR_ULTRA_LOW  (fastest)
@@ -151,9 +143,44 @@ public:
 
             LOGGER_VERBOSE("_ms5611 leave");
         }
-        _lastEnter = micros();
         LOGGER_VERBOSE("....leave");
-    } /*------------------------------- end of enter --------------------------------------------*/
+    } /* ------------------ end of update -------------------------------------------------------*/
+
+    // virtual void enter() override
+    // {
+    //     LOGGER_VERBOSE("Enter....");
+    //     if(micros()-_lastEnter < MIN_SENSOR_DELAY){
+    //         return;
+    //     }        
+    //     //    LOGGER_NOTICE_FMT("Wire %d", Wire.availableForWrite());
+    //     if (_mpu9250.update())
+    //     {
+    //         LOGGER_VERBOSE("_mpu9250.update");
+
+    //         _sensorData->yaw = _mpu9250.getYaw();
+    //         _sensorData->pitch = _mpu9250.getPitch();       
+    //         _sensorData->roll = _mpu9250.getRoll();        
+
+    //         display_imu_data();
+
+    //         LOGGER_VERBOSE("_mpu9250 leave");
+    //     }
+    //     else
+    //     {
+    //         LOGGER_VERBOSE("_ms5611.read");
+    //         _ms5611.read();                                                             // uses default OSR_ULTRA_LOW  (fastest)
+    //     //    _sensorData->seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE); 
+    //         _sensorData->temperature_baro = _ms5611.getTemperature();
+    //         _sensorData->pressure = _ms5611.getPressure();
+    //         _sensorData->altitude = getAltitude(_ms5611.getPressure(), (getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE)));
+
+    //         display_baro_data();
+
+    //         LOGGER_VERBOSE("_ms5611 leave");
+    //     }
+    //     _lastEnter = micros();
+    //     LOGGER_VERBOSE("....leave");
+    // } /*------------------------------- end of enter --------------------------------------------*/
 
     float getAltitude(double press, double seaLevel)
     {

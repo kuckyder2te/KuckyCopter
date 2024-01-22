@@ -11,6 +11,7 @@
 //#define PIN_BT_RX 9
 #define COM_SPEED 115200
 #define BT_SPEED  115200
+#define BT2_SPEED  115200
 
 #define PIN_LED_STATE  1    // flycontroller  is running <orange>
 #define PIN_BATTERY   26    // Analog PIN for battery measurement

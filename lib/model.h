@@ -27,4 +27,5 @@ typedef struct
     yaw_t yaw;
     batteryData_t batteryData;
     uint32_t looptime;
+    uint32_t max_looptime;
 } model_t;
