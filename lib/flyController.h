@@ -255,6 +255,10 @@ public:
             if(throttle<POWER_MIN){
                 throttle = POWER_MIN;
             }
+            if(throttle>POWER_MAX){
+                LOGGER_WARNING_FMT("MAX Power overflow: %d !!!",throttle);
+                throttle = POWER_MAX;
+            }
             return throttle;
         }
 };    /*---------------------------------- end of flyController ---------------------------------*/

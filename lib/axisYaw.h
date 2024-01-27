@@ -9,7 +9,7 @@
 #include "AxisBase.h"
 #include "AxisMotor.h"
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #define YAW_SENSIBILITY 5
@@ -18,7 +18,7 @@
 typedef struct
 {
 	int16_t* rotationSpeed;	///< Speed which the copter should turn
-	int16_t horz_Position; ///< Current YAW Position from Gyro
+	int16_t* horz_Position; ///< Current YAW Position from Gyro
 //	AxisMotor::axisData_t *axisData[2];
 } yaw_t;
 
@@ -49,10 +49,6 @@ public:
 	{											 
 		_virtualSetpoint = 0;	// Setpoint is always 0 as this corresponds 
 								// to the current position used in the middle position
-		AxisBase::_sp = &_virtualSetpoint;		 
-		AxisBase::_fb = &_virtualFeedback;		 
-		AxisBase::_error = &_axisData->pidError; 
-
 		_axisMotor[axisName::primary] = NULL;
 		_axisMotor[axisName::secondary] = NULL;
 		_state = disablePID;
@@ -64,6 +60,9 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		_axisData = _model;
 		_yaw = yaw;
+		AxisBase::_sp = &_virtualSetpoint;		 
+		AxisBase::_fb = &_virtualFeedback;		 
+		AxisBase::_error = &_axisData->pidError; 
 		begin();
 		LOGGER_VERBOSE("....leave");
 		return this;
@@ -135,10 +134,11 @@ public:
 			/* Enables the YawAxis PID controller and initiates activation for the motor axes. */
 			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter enablePID state %d", _state);
 			_newPID->enablePID();
-			_yaw->horz_Position = 0;
+			//_yaw->horz_Position = 0;
+			_virtualFeedback =  *_yaw->horz_Position;							// Set Position to current Position
 			_axisMotor[axisName::primary]->setState(AxisMotor::enablePID);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::enablePID);
-			_lastCompass = *_axisData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
+			//_lastCompass = *_axisData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
 			LOGGER_VERBOSE("....leave");
 			break;
 
@@ -151,23 +151,17 @@ public:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter ready state %d; rotationSpeed = %d", _state,*_yaw->rotationSpeed);
 			_axisMotor[axisName::primary]->setState(AxisMotor::ready);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::ready);
-
-			// _axisData->power = 10;		// Test
-			// *_yaw->rotationSpeed = 100; // Test
-
-			if ((*_yaw->rotationSpeed > YAW_SENSIBILITY) || (*_yaw->rotationSpeed < (-YAW_SENSIBILITY)))
+			if (*_yaw->rotationSpeed != 0)
 			{ ///< YAW Joystick is not moved....
-				// _yaw->axisData[axisName::primary]->power = _axisData->power - _yaw->rotationSpeed * YAW_FINE_TUNING;
-				// _yaw->axisData[axisName::secondary]->power = _axisData->power + _yaw->rotationSpeed * YAW_FINE_TUNING;
-				_axisMotor[axisName::primary]->setPower(_axisData->power - *_yaw->rotationSpeed * YAW_FINE_TUNING);
-				_axisMotor[axisName::secondary]->setPower(_axisData->power + *_yaw->rotationSpeed * YAW_FINE_TUNING);
-				_yaw->horz_Position = 0;
+				
+				_axisMotor[axisName::primary]->setPower(_axisData->power - (*_yaw->rotationSpeed * YAW_FINE_TUNING));
+				_axisMotor[axisName::secondary]->setPower(_axisData->power + (*_yaw->rotationSpeed * YAW_FINE_TUNING));
+				_virtualFeedback = *_yaw->horz_Position; 
 			}
 			else
-			{											 ///< YAW  PID controller is active  .... Yaw joystick is in middle position
-				_virtualFeedback = _yaw->horz_Position; /// *_fb = into the PID controller
-				// _yaw->axisData[axisName::primary]->power = _axisData->power - _axisData->pidError;
-				// _yaw->axisData[axisName::secondary]->power = _axisData->power + _axisData->pidError;
+			{		
+				///< YAW  PID controller is active  .... Yaw joystick is NOT in middle position
+				/// *_fb = into the PID controller
 				_axisMotor[axisName::primary]->setPower(_axisData->power - _axisData->pidError); // yawError comes from the PID controller.
 				_axisMotor[axisName::secondary]->setPower(_axisData->power + _axisData->pidError);
 			}
@@ -210,4 +204,4 @@ public:
 		return ready;
 	} /*---------------------- end of isReady ---------------------------------------------------*/
 
-}; /* ------------------------ end of axisYaw Class ---------------------------------------------*/
+}; /* ------------------------ end of axisYaw class ---------------------------------------------*/

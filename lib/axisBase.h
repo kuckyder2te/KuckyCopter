@@ -110,13 +110,8 @@ public:
         {              
             int16_t err = _newPID->step(*_sp, *_fb);                        
             *_error = err;
-            // Serial2.print(eepromAddress);
-            // Serial2.print(" - sp: ");
-            // Serial2.print(*_sp);       //temp_debug
-            // Serial2.print("- fb: ");
-            // Serial2.print(*_fb);       //temp_debug
-            // Serial2.print("- err: ");
-            // Serial2.println(*_error);       //temp_debug
+            Serial.print(eepromAddress);Serial.print(" - "); Serial.println(*_error);
+            LOGGER_NOTICE_FMT("ADR %i SP = %i FB = %i Err %i", eepromAddress, *_sp, *_fb, *_error);
             _lastMillis = millis();
         }
         LOGGER_VERBOSE("....leave");

@@ -26,7 +26,7 @@
 //#include <SPI.h>
 #include <RF24.h>
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "def.h"
@@ -275,7 +275,7 @@ public:
         LOGGER_NOTICE_FMT_CHK(_RC_interface->TX_payload.roll, _debugTX_payload.roll, 
                                 "Transmit Roll = %i", _RC_interface->TX_payload.roll);
         LOGGER_NOTICE_FMT_CHK(_RC_interface->TX_payload.altitude, _debugTX_payload.altitude, 
-                                "Transmit Altitude = %i", _RC_interface->TX_payload.altitude); // Switch noch nicht aktiv
+                                "Transmit Altitude = %i", _RC_interface->TX_payload.altitude);
         LOGGER_NOTICE_FMT_CHK(_RC_interface->TX_payload.distance_down, _debugTX_payload.distance_down, 
                                 "Transmit Dist. down = %i", _RC_interface->TX_payload.distance_down);
         LOGGER_NOTICE_FMT_CHK(_RC_interface->TX_payload.distance_front, _debugTX_payload.distance_front, 

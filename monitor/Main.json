@@ -93,7 +93,7 @@
                     "graph": true,
                     "led": false,
                     "log": false,
-                    "max": 100,
+                    "max": 150,
                     "min": 0,
                     "title": "Ground",
                     "units": "",
@@ -165,6 +165,40 @@
             ],
             "title": "PID Errors",
             "widget": ""
+        },
+        {
+            "datasets": [
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Primary",
+                    "units": "",
+                    "value": "%12",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "Secondary",
+                    "units": "",
+                    "value": "%13",
+                    "widget": ""
+                }
+            ],
+            "title": "Power",
+            "widget": "multiplot"
         }
     ],
     "separator": "",

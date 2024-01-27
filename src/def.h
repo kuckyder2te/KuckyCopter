@@ -7,8 +7,6 @@
 */
 
 /* Environment */
-//#define PIN_BT_TX 8
-//#define PIN_BT_RX 9
 #define COM_SPEED 115200
 #define BT_SPEED  115200
 #define BT2_SPEED  115200
