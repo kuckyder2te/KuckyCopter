@@ -46,7 +46,7 @@ private:
 	uint8_t level2;
 	uint8_t _pidType;
 	uint8_t _dotPlaces = 3;	 ///< Decimal places.
-	float _newAddOn = 0.01; ///< Multiplication factor for the PID coefficients, default setting.
+	float _newAddOn = 0.1; ///< Multiplication factor for the PID coefficients, default setting.
 	double _addOn;
 	uint8_t _maxPID;
 
@@ -327,8 +327,8 @@ public:
 				}
 				
 				_putty_out->red();
-				_putty_out->print(ROW_MENU+9, COL_MENU+47, "Done");
-				_putty_out->print(ROW_MENU+10 , COL_MENU+47, "    ");
+				_putty_out->print(ROW_MENU+11, COL_MENU+47, "Done");
+				_putty_out->print(ROW_MENU+12 , COL_MENU+47, "    ");
 				displayPIDcoefficients();
 				break;
 
@@ -338,8 +338,8 @@ public:
 				}
 
 				_putty_out->red();
-				_putty_out->print(ROW_MENU+10 , COL_MENU+47, "Done");
-				_putty_out->print(ROW_MENU+9, COL_MENU+47, "    ");
+				_putty_out->print(ROW_MENU+12 , COL_MENU+47, "Done");
+				_putty_out->print(ROW_MENU+11, COL_MENU+47, "    ");
 				displayPIDcoefficients();
 				break;
 
