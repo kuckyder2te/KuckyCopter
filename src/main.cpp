@@ -46,7 +46,7 @@ model_t model;
 int16_t Test;
 HardwareSerial *MonitorOutput = &Serial; /// USB Pico
 HardwareSerial *TestOutput = &Serial2;   /// Bluetooth Putty
-HardwareSerial *DebugOutput = &Serial1;  /// Bluetooth CoolTerm
+HardwareSerial *DebugOutput = &Serial;  /// Bluetooth CoolTerm
 
 #ifdef _PID_ADJUST
 PID_adjust *_pid_adjust;
@@ -163,9 +163,9 @@ void base_setup()
   DebugOutput->begin(COM_SPEED);
   MonitorOutput->begin(COM_SPEED);
   TestOutput->begin(COM_SPEED);
-  DebugOutput->println("Serial COM 14 OK");
-  MonitorOutput->println("Serial 21 COM OK");
-  TestOutput->println("BT COM 4 OK ");
+  DebugOutput->println("Serial1 COM14 OK");
+  MonitorOutput->println("Serial1 COM21 OK");
+  TestOutput->println("BT COM4 OK ");
 
   TestOutput->print(__DATE__);
   TestOutput->print(" ");
@@ -222,6 +222,7 @@ void wireModel()
   Test = 0;
   // model.RC_interface.RX_payload.rcYaw = 0;
   model.yaw.rotationSpeed = &model.RC_interface.RX_payload.rcYaw;
+  model.yaw.horz_Position = &model.sensorData.yaw;
 }
 
 void setup()

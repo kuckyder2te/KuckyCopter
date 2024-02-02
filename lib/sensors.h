@@ -74,7 +74,7 @@ public:
         Wire.setClock(400000);              // For 3k3 pullup resistors
         //Wire.setWireTimeout(3000, true); //timeout value in uSec  https://github.com/jrowberg/i2cdevlib/issues/519#issuecomment-752023021
         Wire.begin();
-        LOGGER_NOTICE("MPU9250 initialized");
+        LOGGER_NOTICE("MPU9250 will be initialized");
 
         setting.accel_fs_sel = ACCEL_FS_SEL::A16G;
         setting.gyro_fs_sel = GYRO_FS_SEL::G2000DPS;
@@ -86,6 +86,13 @@ public:
         setting.accel_dlpf_cfg = ACCEL_DLPF_CFG::DLPF_45HZ;
 
         _mpu9250.setMagneticDeclination(51);
+
+        uint8_t ERR = _mpu9250.get_i2c_error(); // temp_debug
+           if (ERR >= 7) {// to avoid stickbreaker-i2c branch's error code
+            Serial.print("I2C ERROR CODE : ");
+            Serial.println(ERR);
+           }
+
         if (!_mpu9250.setup(0x68))
         {
             while (1)
@@ -130,7 +137,7 @@ public:
 
             LOGGER_VERBOSE("_mpu9250 leave");
         }
-        if(++_updateCounter%10==0)
+        if(++_updateCounter%10==0)  // Only executed every 10 runs.
         {
             LOGGER_VERBOSE("_ms5611.read");
             _ms5611.read();                                                             // uses default OSR_ULTRA_LOW  (fastest)
@@ -145,42 +152,6 @@ public:
         }
         LOGGER_VERBOSE("....leave");
     } /* ------------------ end of update -------------------------------------------------------*/
-
-    // virtual void enter() override
-    // {
-    //     LOGGER_VERBOSE("Enter....");
-    //     if(micros()-_lastEnter < MIN_SENSOR_DELAY){
-    //         return;
-    //     }        
-    //     //    LOGGER_NOTICE_FMT("Wire %d", Wire.availableForWrite());
-    //     if (_mpu9250.update())
-    //     {
-    //         LOGGER_VERBOSE("_mpu9250.update");
-
-    //         _sensorData->yaw = _mpu9250.getYaw();
-    //         _sensorData->pitch = _mpu9250.getPitch();       
-    //         _sensorData->roll = _mpu9250.getRoll();        
-
-    //         display_imu_data();
-
-    //         LOGGER_VERBOSE("_mpu9250 leave");
-    //     }
-    //     else
-    //     {
-    //         LOGGER_VERBOSE("_ms5611.read");
-    //         _ms5611.read();                                                             // uses default OSR_ULTRA_LOW  (fastest)
-    //     //    _sensorData->seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE); 
-    //         _sensorData->temperature_baro = _ms5611.getTemperature();
-    //         _sensorData->pressure = _ms5611.getPressure();
-    //         _sensorData->altitude = getAltitude(_ms5611.getPressure(), (getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE)));
-
-    //         display_baro_data();
-
-    //         LOGGER_VERBOSE("_ms5611 leave");
-    //     }
-    //     _lastEnter = micros();
-    //     LOGGER_VERBOSE("....leave");
-    // } /*------------------------------- end of enter --------------------------------------------*/
 
     float getAltitude(double press, double seaLevel)
     {

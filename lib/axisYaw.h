@@ -157,6 +157,8 @@ public:
 				_axisMotor[axisName::primary]->setPower(_axisData->power - (*_yaw->rotationSpeed * YAW_FINE_TUNING));
 				_axisMotor[axisName::secondary]->setPower(_axisData->power + (*_yaw->rotationSpeed * YAW_FINE_TUNING));
 				_virtualFeedback = *_yaw->horz_Position; 
+				LOGGER_NOTICE_FMT("JS not moved Setpower pri/sec %i %i", (_axisData->power - (*_yaw->rotationSpeed * YAW_FINE_TUNING)), 
+																		 (_axisData->power + (*_yaw->rotationSpeed * YAW_FINE_TUNING)));
 			}
 			else
 			{		
@@ -164,6 +166,7 @@ public:
 				/// *_fb = into the PID controller
 				_axisMotor[axisName::primary]->setPower(_axisData->power - _axisData->pidError); // yawError comes from the PID controller.
 				_axisMotor[axisName::secondary]->setPower(_axisData->power + _axisData->pidError);
+				LOGGER_NOTICE_FMT("JS moved Setpower pri/sec %i %i", (_axisData->power - _axisData->pidError), (_axisData->power + _axisData->pidError));
 			}
 			LOGGER_VERBOSE("....leave");
 			break;

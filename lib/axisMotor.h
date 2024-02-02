@@ -111,7 +111,6 @@ public:
 			_motor[motor_t::second]->setMotorState(Motor::arming);
 			_state = arming_busy;
 			break;
-
 		case arming_busy:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"arming_busy %s ", this->getName().c_str());
 			if((_motor[motor_t::first]->isArmed()) && 
@@ -120,13 +119,11 @@ public:
 					_state = arming_end;
 				}
 			break;
-
 		case arming_end:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"arming end %s ", this->getName().c_str());
 			_motor[motor_t::first]->setMotorState(Motor::stop);
 			_motor[motor_t::second]->setMotorState(Motor::stop);
 			break;
-
 		case disablePID:
 			/* Deactivate the PID controller from the motor axes. Does it have to be that way?
 			 * Look at module AxisYaw */
@@ -177,16 +174,24 @@ public:
 
 	void setPower(int16_t _power)
 	{
-		LOGGER_NOTICE_FMT_CHK(_power,_lastPower,"set AxisMotor %s to Power = %d",this->getName().c_str(), _power);
+		LOGGER_NOTICE_FMT_CHK(_power,_lastPower,"set %s to Power = %d",this->getName().c_str(), _power);
 		if (_power < 0)
+		{
 			_axisData->power = 0;
-		else
+		}
+		else if (_power > POWER_MAX)
+		{
+			_axisData->power = POWER_MAX;
+			LOGGER_WARNING_FMT("Power more the 100 %i",_power);
+		}
+		else {	
 			_axisData->power = _power;
-	} /*--------------------- end of setPower --------------------------------------------------*/
+		}
+	} /*--------------------- end of setPower ---------------------------------------------------*/
 
 	int16_t getPower(){
 		return _axisData->power;
-	} /*--------------------- end of getPower --------------------------------------------------*/
+	} /*--------------------- end of getPower ---------------------------------------------------*/
 
 	uint32_t getMotorPower(bool motor){
 		if(motor==false){
@@ -200,5 +205,5 @@ public:
 	{
 		LOGGER_VERBOSE("Enter....isArmed");
 		return ((_motor[motor_t::first]->isArmed()) && (_motor[motor_t::second]->isArmed()));
-	} /*---------------------- end of isArmed --------------------------------------------------*/
-}; /*.................................. end of axisMotor class ---------------------------------*/
+	} /*---------------------- end of isArmed ---------------------------------------------------*/
+}; /*.................................. end of axisMotor class ----------------------------------*/
