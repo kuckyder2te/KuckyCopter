@@ -65,7 +65,6 @@ public:
         _error = 0;
         _sp = 0;
         _fb = 0;
-        //   loadPIDConfig();
     }
 
     virtual boolean isArmed() = 0;
@@ -110,7 +109,7 @@ public:
         {              
             int16_t err = _newPID->step(*_sp, *_fb);                        
             *_error = err;
-            Serial.print(eepromAddress);Serial.print(" - "); Serial.println(*_error);
+            //Serial.print(eepromAddress);Serial.print(" - "); Serial.println(*_error);
             LOGGER_NOTICE_FMT("ADR %i SP = %i FB = %i Err %i", eepromAddress, *_sp, *_fb, *_error);
             _lastMillis = millis();
         }

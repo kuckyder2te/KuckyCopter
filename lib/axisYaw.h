@@ -19,7 +19,6 @@ typedef struct
 {
 	int16_t* rotationSpeed;	///< Speed which the copter should turn
 	int16_t* horz_Position; ///< Current YAW Position from Gyro
-//	AxisMotor::axisData_t *axisData[2];
 } yaw_t;
 
 class AxisYaw : public AxisBase
@@ -43,12 +42,11 @@ private:
 	int16_t _lastCompass;
 	int16_t _virtualFeedback; ///< The calculated feedback due to the yaw rotation
 	int16_t _virtualSetpoint;
-
+	
 public:
 	AxisYaw(const String &name) : AxisBase(name)
 	{											 
-		_virtualSetpoint = 0;	// Setpoint is always 0 as this corresponds 
-								// to the current position used in the middle position
+		_virtualSetpoint = 0;	
 		_axisMotor[axisName::primary] = NULL;
 		_axisMotor[axisName::secondary] = NULL;
 		_state = disablePID;
@@ -61,7 +59,7 @@ public:
 		_axisData = _model;
 		_yaw = yaw;
 		AxisBase::_sp = &_virtualSetpoint;		 
-		AxisBase::_fb = &_virtualFeedback;		 
+		AxisBase::_fb = _axisData->feedback;		 
 		AxisBase::_error = &_axisData->pidError; 
 		begin();
 		LOGGER_VERBOSE("....leave");
@@ -97,6 +95,7 @@ public:
 
 	virtual void update()
 	{
+		static int16_t debugFeedback;
 		AxisBase::update();
 
 		LOGGER_VERBOSE("Update axisYaw");
@@ -127,6 +126,7 @@ public:
 			_newPID->disablePID();
 			_axisMotor[axisName::primary]->setState(AxisMotor::disablePID);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::disablePID);
+			_virtualSetpoint = *_yaw->horz_Position;
 			LOGGER_VERBOSE("....leave");
 			break;
 
@@ -134,8 +134,8 @@ public:
 			/* Enables the YawAxis PID controller and initiates activation for the motor axes. */
 			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter enablePID state %d", _state);
 			_newPID->enablePID();
-			//_yaw->horz_Position = 0;
-			_virtualFeedback =  *_yaw->horz_Position;							// Set Position to current Position
+			_virtualSetpoint = *_yaw->horz_Position;
+			//LOGGER_NOTICE_FMT_CHK(_virtualFeedback,debugFeedback,"Feedback: %d, Position: %d",_virtualFeedback,*_yaw->horz_Position);
 			_axisMotor[axisName::primary]->setState(AxisMotor::enablePID);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::enablePID);
 			//_lastCompass = *_axisData->feedback; ///< Becomes necessary, so that after the start the Copter does not turn.
@@ -151,22 +151,25 @@ public:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"Enter ready state %d; rotationSpeed = %d", _state,*_yaw->rotationSpeed);
 			_axisMotor[axisName::primary]->setState(AxisMotor::ready);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::ready);
-			if (*_yaw->rotationSpeed != 0)
-			{ ///< YAW Joystick is not moved....
-				
+			LOGGER_VERBOSE_FMT("vSetpoint %d",_virtualSetpoint);
+			if (*_yaw->rotationSpeed != 0)		/// PID follow mode
+			{ ///< YAW Joystick is moved....				
 				_axisMotor[axisName::primary]->setPower(_axisData->power - (*_yaw->rotationSpeed * YAW_FINE_TUNING));
 				_axisMotor[axisName::secondary]->setPower(_axisData->power + (*_yaw->rotationSpeed * YAW_FINE_TUNING));
-				_virtualFeedback = *_yaw->horz_Position; 
-				LOGGER_NOTICE_FMT("JS not moved Setpower pri/sec %i %i", (_axisData->power - (*_yaw->rotationSpeed * YAW_FINE_TUNING)), 
+				_virtualSetpoint = *_yaw->horz_Position;
+				//LOGGER_NOTICE_FMT_CHK(_virtualFeedback,debugFeedback,"Feedback: %d, Position: %d",_virtualFeedback,*_yaw->horz_Position);
+				 
+				LOGGER_VERBOSE_FMT("JS not moved Setpower pri/sec %i %i", (_axisData->power - (*_yaw->rotationSpeed * YAW_FINE_TUNING)), 
 																		 (_axisData->power + (*_yaw->rotationSpeed * YAW_FINE_TUNING)));
 			}
-			else
+			else								/// PID Mode
 			{		
-				///< YAW  PID controller is active  .... Yaw joystick is NOT in middle position
+				///< YAW  PID controller is active  .... Yaw joystick is in middle position
 				/// *_fb = into the PID controller
+				//LOGGER_NOTICE_FMT_CHK(_virtualFeedback,debugFeedback,"Feedback: %d, Position: %d",_virtualFeedback,*_yaw->horz_Position);				
 				_axisMotor[axisName::primary]->setPower(_axisData->power - _axisData->pidError); // yawError comes from the PID controller.
 				_axisMotor[axisName::secondary]->setPower(_axisData->power + _axisData->pidError);
-				LOGGER_NOTICE_FMT("JS moved Setpower pri/sec %i %i", (_axisData->power - _axisData->pidError), (_axisData->power + _axisData->pidError));
+				LOGGER_VERBOSE_FMT("JS moved Setpower pri/sec %i %i", (_axisData->power - _axisData->pidError), (_axisData->power + _axisData->pidError));
 			}
 			LOGGER_VERBOSE("....leave");
 			break;
@@ -201,7 +204,6 @@ public:
 		LOGGER_NOTICE_FMT("axisYaw is ready state %d", _state);
 		LOGGER_NOTICE_FMT("axisMotor isReady pri state %d", (_axisMotor[axisName::primary]->isReady()));
 		LOGGER_NOTICE_FMT("axisMotor isReady sec state %d", (_axisMotor[axisName::secondary]->isReady()));
-		//bool ready = ((_state == ready)) && (_axisMotor[axisName::primary]->isReady()) && (_axisMotor[axisName::secondary]->isReady());
 		bool ready = ((_axisMotor[axisName::primary]->isReady()) && (_axisMotor[axisName::secondary]->isReady()));
 		LOGGER_NOTICE_FMT("getYawAxisState %d ", ready);
 		return ready;

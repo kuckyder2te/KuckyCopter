@@ -89,7 +89,7 @@ public:
                     _model->RC_interface.RX_payload.rcYaw,
                     _model->RC_interface.RX_payload.rcPitch,
                     _model->RC_interface.RX_payload.rcRoll,
-                    _model->RC_interface.RX_payload.rcSwi1, // Switch is not activ
+                    _model->RC_interface.RX_payload.rcSwi1,
                     _model->RC_interface.RX_payload.rcSwi2,
                     _model->RC_interface.RX_payload.rcSwi3,
                     _model->RC_interface.RX_payload.rcAltitudeBaroAdj,
@@ -124,7 +124,7 @@ public:
             case ALL_AXIS:              
                 break;
             default:
-                MonitorOutput->println("y.p.r.pr,temp,dis,con,A_err,B_err,Y_err,Hor_pos");
+                MonitorOutput->println("y.p.r.pr,temp,dis,con,A_err,B_err,Y_err,Hor_pos,A_Pwr,B_Pwr");
                 MonitorOutput->printf("/*%d,%d,%d,%.2f,%.2f,%d,%d,%d,%d,%d,%d,%d,%d*/\r\n",
                     _model->sensorData.yaw,
                     _model->sensorData.pitch,

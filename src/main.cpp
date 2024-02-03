@@ -46,7 +46,7 @@ model_t model;
 int16_t Test;
 HardwareSerial *MonitorOutput = &Serial; /// USB Pico
 HardwareSerial *TestOutput = &Serial2;   /// Bluetooth Putty
-HardwareSerial *DebugOutput = &Serial;  /// Bluetooth CoolTerm
+HardwareSerial *DebugOutput = &Serial1;  /// Bluetooth CoolTerm
 
 #ifdef _PID_ADJUST
 PID_adjust *_pid_adjust;
@@ -216,13 +216,9 @@ void wireModel()
   model.axisData[axisName::primary].rcY = &model.RC_interface.RX_payload.rcPitch;
   model.axisData[axisName::secondary].rcX = &model.RC_interface.RX_payload.rcRoll;
   model.axisData[axisName::secondary].rcY = &model.RC_interface.RX_payload.rcPitch;
-  //  model.yaw.rotationSpeed = &model.RC_interface.RX_payload.rcYaw;
-  //  model.yaw.axisData[axisName::primary] = &model.axisData[axisName::primary]; // axisData wird mit yawData.axisData verknüpft
-  //  model.yaw.axisData[axisName::secondary] = &model.axisData[axisName::secondary];
-  Test = 0;
-  // model.RC_interface.RX_payload.rcYaw = 0;
   model.yaw.rotationSpeed = &model.RC_interface.RX_payload.rcYaw;
   model.yaw.horz_Position = &model.sensorData.yaw;
+
 }
 
 void setup()

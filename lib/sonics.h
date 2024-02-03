@@ -26,7 +26,7 @@
 
 #include "def.h"
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 typedef struct

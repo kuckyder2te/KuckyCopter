@@ -128,13 +128,13 @@ public:
 			/* Deactivate the PID controller from the motor axes. Does it have to be that way?
 			 * Look at module AxisYaw */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"deactivate PID %s ", this->getName().c_str());
-			AxisBase::_newPID->disablePID();
+			_newPID->disablePID();
 			break;
 		case enablePID:
 			/* Activate the PID controller from the MotorAxis with the current coefficients. */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"activate PID %s ", this->getName().c_str());
-			AxisBase::_newPID->enablePID();
-						_state = ready;
+			_newPID->enablePID();
+			_state = ready;
 			break;
 		case standby:
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"standby %s ", this->getName().c_str());

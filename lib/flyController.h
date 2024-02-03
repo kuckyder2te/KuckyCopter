@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <TaskManager.h>
 
-//#define LOCAL_DEBUG
+#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "radio.h"
@@ -81,12 +81,6 @@ public:
         LOGGER_NOTICE_FMT("Secondary Axis Error: %d",_model->axisData[axisName::secondary].pidError);
         LOGGER_NOTICE_FMT("Secondary Axis SetPoint: %d",_model->axisData[axisName::secondary].setpoint);
         LOGGER_NOTICE_FMT("Secondary Axis Feedback: %d",*_model->axisData[axisName::secondary].feedback);
-    }
-
-    void resetYawPosition(){
-        static int32_t debug_yaw;
-        LOGGER_NOTICE_FMT_CHK((int32_t)_model->sensorData.yaw,debug_yaw,"Set YAW Position to %d",(int32_t)_model->sensorData.yaw);
-        _model->yawData.setpoint = _model->sensorData.yaw;
     }
 
     virtual void begin() override // _model is not yet known here
@@ -162,10 +156,10 @@ public:
         case takeoff:
             LOGGER_VERBOSE("take off");
             /* Throttle greater than POWER_LIFT_UP and RC is connected, go to the next state. */
-            //_radio->RC_interface->isconnect = true;           // Just to test if Flycontroller is running.
+            //_radio->RC_interface->isconnect = true;           // Just to test if Flycontroller is running. temp_debug
             
             _model->yawData.power = getThrottle();
-            //_radio->RC_interface->RX_payload.rcThrottle = 1;  // Just to test if Flycontroller is running.
+            //_radio->RC_interface->RX_payload.rcThrottle = 1;  // Just to test if Flycontroller is running.  temp_debug
             if (_model->RC_interface.isconnect && (_model->RC_interface.RX_payload.rcThrottle < POWER_LIFT_UP))
             {
                 flyState = set_pid;
@@ -183,13 +177,10 @@ public:
             /* If everything is checked, the PID controller is activated. */
             LOGGER_VERBOSE("set pid");
             _model->yawData.power = getThrottle();
-            resetYawPosition();
             
             if(_model->RC_interface.isconnect && (_model->yawData.power > POWER_LIFT_UP))
             {
                 _axisYaw->setState(AxisYaw::enablePID);
-                _model->yaw.horz_Position = 0; ///< Reset YAW Position before lift off
-                resetYawPosition();
                 printPidErrors();           // Got no execution time
                 flyState = fly;
                 LOGGER_NOTICE_CHK(flyState,Debug_flyState,"PID setting is finished -> fly");
@@ -213,7 +204,6 @@ public:
             if ((_model->yawData.power < POWER_LIFT_UP) && (_model->sonicData.down_distance < PID_ACTIVE_AT))
             {
                 flyState = ground;
-                resetYawPosition();
                 LOGGER_NOTICE_CHK(flyState,Debug_flyState,"fly is finished -> ground");
             }
             else
@@ -234,7 +224,7 @@ public:
             }
             else
             {
-                flyState = standby;
+                flyState = disablePID;
                 _model->RC_interface.TX_payload.isInitialized = false;
                 _model->yawData.power = 0;
                 LOGGER_NOTICE_CHK(flyState,Debug_flyState,"Drohne is on the ground -> disablePID");

@@ -23,7 +23,7 @@
 #include <MPU9250.h>
 #include <MS5611.h>
 
-//#define LOCAL_DEBUG
+// #define LOCAL_DEBUG
 #include "myLogger.h"
 
 #define MIN_SENSOR_DELAY 1000
@@ -47,11 +47,12 @@ class Sensor : public Task::Base
 private:
     MPU9250Setting setting;
     uint8_t _updateCounter;
+
 protected:
     MPU9250 _mpu9250; // Speicherplatz reserviert
     MS5611 _ms5611;
     sensorData_t *_sensorData;
-    sensorData_t __sensorData;      // for better reading
+    sensorData_t __sensorData; // for better reading
 
 public:
     Sensor(const String &name) : Task::Base(name)
@@ -71,8 +72,8 @@ public:
     virtual void begin() override
     {
         LOGGER_VERBOSE("Enter....");
-        Wire.setClock(400000);              // For 3k3 pullup resistors
-        //Wire.setWireTimeout(3000, true); //timeout value in uSec  https://github.com/jrowberg/i2cdevlib/issues/519#issuecomment-752023021
+        Wire.setClock(400000); // For 3k3 pullup resistors
+        // Wire.setWireTimeout(3000, true); //timeout value in uSec  https://github.com/jrowberg/i2cdevlib/issues/519#issuecomment-752023021
         Wire.begin();
         LOGGER_NOTICE("MPU9250 will be initialized");
 
@@ -88,10 +89,11 @@ public:
         _mpu9250.setMagneticDeclination(51);
 
         uint8_t ERR = _mpu9250.get_i2c_error(); // temp_debug
-           if (ERR >= 7) {// to avoid stickbreaker-i2c branch's error code
+        if (ERR >= 7)
+        { // to avoid stickbreaker-i2c branch's error code
             Serial.print("I2C ERROR CODE : ");
             Serial.println(ERR);
-           }
+        }
 
         if (!_mpu9250.setup(0x68))
         {
@@ -117,7 +119,7 @@ public:
         _ms5611.setOversampling(OSR_STANDARD);
 
         LOGGER_NOTICE_FMT("Oversampling = %i", _ms5611.getOversampling());
-        delay(100 );
+        delay(100);
         LOGGER_VERBOSE("....leave");
     } /* ------------------ end of begin --------------------------------------------------------*/
 
@@ -130,18 +132,18 @@ public:
             LOGGER_VERBOSE("_mpu9250.update");
 
             _sensorData->yaw = _mpu9250.getYaw();
-            _sensorData->pitch = _mpu9250.getPitch();       
-            _sensorData->roll = _mpu9250.getRoll();        
+            _sensorData->pitch = _mpu9250.getPitch();
+            _sensorData->roll = _mpu9250.getRoll();
 
             display_imu_data();
 
             LOGGER_VERBOSE("_mpu9250 leave");
         }
-        if(++_updateCounter%10==0)  // Only executed every 10 runs.
+        if (++_updateCounter % 10 == 0) // Only executed every 10 runs.
         {
             LOGGER_VERBOSE("_ms5611.read");
-            _ms5611.read();                                                             // uses default OSR_ULTRA_LOW  (fastest)
-        //    _sensorData->seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE); 
+            _ms5611.read(); // uses default OSR_ULTRA_LOW  (fastest)
+                            //    _sensorData->seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE);
             _sensorData->temperature_baro = _ms5611.getTemperature();
             _sensorData->pressure = _ms5611.getPressure();
             _sensorData->altitude = getAltitude(_ms5611.getPressure(), (getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE)));
@@ -156,7 +158,7 @@ public:
     float getAltitude(double press, double seaLevel)
     {
         // return (1.0f - pow(press/101325.0f, 0.190295f)) * 4433000.0f;
-         return ((pow((seaLevel / press), 1/5.257) - 1.0) * ( _ms5611.getTemperature() + 273.15)) / 0.0065;
+        return ((pow((seaLevel / press), 1 / 5.257) - 1.0) * (_ms5611.getTemperature() + 273.15)) / 0.0065;
         //  return (44330.0f * (1.0f - pow((double)press / (double)seaLevel, 0.1902949f)));
     } /*------------------------------- end of getAltitude --------------------------------------*/
 

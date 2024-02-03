@@ -15,14 +15,14 @@
 
 #include <FastPID.h>
 
-//#define LOCAL_DEBUG
+// #define LOCAL_DEBUG
 #include "myLogger.h"
 
 #include "EEPROM.h"
 #include "def.h"
 
 #ifndef EEPROM_OFFSET
-	#define EEPROM_OFFSET 0
+#define EEPROM_OFFSET 0
 #endif
 
 typedef struct
@@ -43,7 +43,6 @@ private:
 	bool _isEnabled;
 	String _ParentName;
 	uint16_t _eepromAddress;
-//	float temp;
 
 protected:
 	float RC_SP;
@@ -59,7 +58,8 @@ public:
 		this->setOutputRange(-100, 100);
 		this->setOutputConfig(PID_OUTPUT_BITS, PID_OUTPUT_SIGNED);
 		loadParameters();
-		if (eepromAddress == 0){
+		if (eepromAddress == 0)
+		{
 			LOGGER_NOTICE("Init EEPROM");
 			EEPROM.begin(512);
 		}
@@ -68,16 +68,16 @@ public:
 
 	void saveParameters()
 	{
-	LOGGER_NOTICE("Enter....");
-	
+		LOGGER_NOTICE("Enter....");
+
 		saveParameters(&_pidData);
 
-	LOGGER_NOTICE("....leave");
+		LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of saveParameters ---------------------------------*/
 
 	void saveParameters(pidData_t *data)
 	{
-	LOGGER_NOTICE("Enter....");
+		LOGGER_NOTICE("Enter....");
 
 		LOGGER_NOTICE_FMT("sizeof pidData_t = %i Address = %i", sizeof(pidData_t), _eepromAddress);
 		uint8_t *current = reinterpret_cast<uint8_t *>(data);
@@ -85,7 +85,7 @@ public:
 		for (uint8_t i = 0; i < sizeof(pidData_t); i++)
 		{
 			EEPROM.write(EEPROM_OFFSET + _eepromAddress + i, *(current + i)); // Pointer arethmetic
-			LOGGER_NOTICE_FMT("Address = %i current %i", EEPROM_OFFSET + _eepromAddress, (*(current+i)));
+			LOGGER_NOTICE_FMT("Address = %i current %i", EEPROM_OFFSET + _eepromAddress, (*(current + i)));
 		}
 
 		LOGGER_NOTICE_FMT("_pidData P = %.2f", _pidData.pidCoefficient[pidCoefficient::kP]);
@@ -102,18 +102,18 @@ public:
 			LOGGER_FATAL("ERROR! EEPROM commit failed");
 		}
 
-	LOGGER_NOTICE("....leave");
+		LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of saveParameters ---------------------------------*/
 
 	void loadParameters()
 	{
-	LOGGER_NOTICE("Enter....");
+		LOGGER_NOTICE("Enter....");
 
 		LOGGER_NOTICE_FMT("sizeof pidData_t = %i Address = %i", sizeof(pidData_t), _eepromAddress);
 
 		uint8_t *current = reinterpret_cast<uint8_t *>(&_pidData); // current zeigt auf die gleiche Speicherstelle wie _pidData
 																   // der datentyp _pidData wird in eine uint8 typ geändert
-		
+
 		for (uint8_t i = 0; i < sizeof(pidData_t); i++)
 		{
 			*(current + i) = EEPROM.read((EEPROM_OFFSET + _eepromAddress + i));
@@ -125,56 +125,58 @@ public:
 		LOGGER_NOTICE_FMT("_pidData kD = %.2f", _pidData.pidCoefficient[pidCoefficient::kD]);
 		LOGGER_NOTICE_FMT("_pidData eF = %.2f", _pidData.pidCoefficient[pidCoefficient::eF]);
 
-	LOGGER_NOTICE("....leave");
+		LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of loadParameters ----------------------------------*/
 
-	void initPID(){
+	void initPID()
+	{
 		LOGGER_NOTICE("Enter..");
 		saveParameters(&initPid);
-		//saveParameters();
 		loadParameters();
 		LOGGER_NOTICE(".. leave");
 	} /*-------------------------------- end of initPID -----------------------------------------*/
 
 	void disablePID()
 	{
-	LOGGER_VERBOSE("Enter....");
+		LOGGER_VERBOSE("Enter....");
 
 		LOGGER_NOTICE_FMT("Disabled PID controller %s ", _ParentName.c_str());
-		this->setCoefficients(PID_P_MIN, 0.0, 0.0, 50);
-	 	_isEnabled = false;
 
-	LOGGER_VERBOSE("....leave");	
+		_isEnabled = false;
+
+		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of deactivatePID -----------------------------------*/
 
 	void enablePID()
 	{
-	LOGGER_VERBOSE("Enter....");
+		LOGGER_VERBOSE("Enter....");
 
 		/* This function has 2 tasks.
 		 * 1. The PID parameters are uploaded from the PID adjustment.
 		 * 2. The PID parameters are activated. */
-		this->setCoefficients(_pidData.pidCoefficient[pidCoefficient::kP],
+		this->setCoefficients(_pidData.pidCoefficient[pidCoefficient::kP], // not longer needed because of skiped step function
 							  _pidData.pidCoefficient[pidCoefficient::kI],
 							  _pidData.pidCoefficient[pidCoefficient::kD],
 							  _pidData.pidCoefficient[pidCoefficient::eF]);
 		_isEnabled = true;
 
-	LOGGER_VERBOSE("....leave");
+		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of activatePID -------------------------------------*/
-	
+
 	// Methode Overlayed for real disable of PID execution
-	int16_t step(int16_t sp, int16_t fb){
+	int16_t step(int16_t sp, int16_t fb)
+	{
 		LOGGER_VERBOSE("Enter...");
-		if(_isEnabled){
+		if (_isEnabled)
+		{
 			return FastPID::step(sp, fb);
 		}
 		return 0;
-	}/*-------------------------------- end of step ---------------------------------------------*/
+	} /*-------------------------------- end of step ---------------------------------------------*/
 
 	void setP(float p)
 	{
-	LOGGER_NOTICE("Enter....");
+		LOGGER_NOTICE("Enter....");
 
 		LOGGER_NOTICE_FMT("setP: %f ", p);
 		if (p <= PID_P_MIN)
@@ -191,12 +193,12 @@ public:
 			enablePID();
 		}
 
-	LOGGER_NOTICE("....leave");
+		LOGGER_NOTICE("....leave");
 	} /*-------------------------------- end of setP -------------------------------------------*/
 
 	void setI(float i)
 	{
-	LOGGER_VERBOSE("Enter....");
+		LOGGER_VERBOSE("Enter....");
 
 		LOGGER_NOTICE_FMT("setI: %f", i);
 
@@ -209,12 +211,12 @@ public:
 			enablePID();
 		}
 
-	LOGGER_VERBOSE("....leave");
+		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of setI -------------------------------------------*/
 
 	void setD(float d)
 	{
-	LOGGER_VERBOSE("Enter....");
+		LOGGER_VERBOSE("Enter....");
 
 		_pidData.pidCoefficient[pidCoefficient::kD] = d;
 
@@ -225,12 +227,12 @@ public:
 			enablePID();
 		}
 
-	LOGGER_VERBOSE("....leave");
+		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of setD -------------------------------------------*/
 
 	void setEF(float ef)
 	{
-	LOGGER_VERBOSE("Enter....");
+		LOGGER_VERBOSE("Enter....");
 		_pidData.pidCoefficient[pidCoefficient::eF] = ef;
 
 		LOGGER_NOTICE_FMT("PID Coeff EF: %.3f", _pidData.pidCoefficient[pidCoefficient::eF]);
@@ -239,7 +241,7 @@ public:
 		{
 			enablePID();
 		}
-	LOGGER_VERBOSE("....leave");
+		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of setEF -------------------------------------------*/
 
 	float getExecutionTime()
@@ -253,52 +255,48 @@ public:
 
 	float getP() const
 	{
-	LOGGER_VERBOSE("Enter....");
+		LOGGER_VERBOSE("Enter....");
 
 		LOGGER_NOTICE_FMT("PID Coeff P: %.3f", _pidData.pidCoefficient[pidCoefficient::kP]);
 		return _pidData.pidCoefficient[pidCoefficient::kP];
 
-	LOGGER_VERBOSE("....leave");
+		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getP -------------------------------------------*/
 
 	float getI() const
 	{
-	LOGGER_VERBOSE("Enter....");
+		LOGGER_VERBOSE("Enter....");
 
 		LOGGER_NOTICE_FMT("PID Coeff I: %.3f", _pidData.pidCoefficient[pidCoefficient::kI]);
 		return _pidData.pidCoefficient[pidCoefficient::kI];
 
-	LOGGER_VERBOSE("....leave");
+		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getI -------------------------------------------*/
 
 	float getD() const
 	{
-	LOGGER_VERBOSE("Enter....");
+		LOGGER_VERBOSE("Enter....");
 
 		LOGGER_NOTICE_FMT("PID Coeff D: %.3f", _pidData.pidCoefficient[pidCoefficient::kD]);
 		return _pidData.pidCoefficient[pidCoefficient::kD];
 
-	LOGGER_VERBOSE("....leave");
+		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getD -------------------------------------------*/
 
 	float getEF() const
 	{
-	LOGGER_VERBOSE("Enter....");
+		LOGGER_VERBOSE("Enter....");
 
 		LOGGER_NOTICE_FMT("PID Coeff EF: %i", _pidData.pidCoefficient[pidCoefficient::eF]);
 		return _pidData.pidCoefficient[pidCoefficient::eF];
 
-	LOGGER_VERBOSE("....leave");
+		LOGGER_VERBOSE("....leave");
 	} /*-------------------------------- end of getEF ------------------------------------------*/
-	
-	void printPidValues(){
-		LOGGER_NOTICE_FMT("Axis: %s P: %.3f I: %.3f D: %.3f EF: %.1f", _ParentName.c_str(), 
-															getP(), getI(), getD(), getEF());
-		// getP();
-		// getI();
-		// getD();
-		// getEF();
+
+	void printPidValues()
+	{
+		LOGGER_NOTICE_FMT("Axis: %s P: %.3f I: %.3f D: %.3f EF: %.1f", _ParentName.c_str(),
+						  getP(), getI(), getD(), getEF());
 	}
 
 }; /*--------------------------- end of newPID class -------------------------------------------*/
-
