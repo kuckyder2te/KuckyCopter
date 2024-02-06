@@ -1,7 +1,7 @@
 
 /*  File name : dictionary.h
-	Project name : KuCo_Phantom 1
-	Author: Stephan Scholz / Wilhelm Kuckelsberg
+	Project name : KuCo_Phantom 2
+	Author: Wilhelm Kuckelsberg
 	Date : 2022-07-18
 	Description : Constants for PID_adjust
 				  
@@ -49,4 +49,9 @@ public:
 	const char *c_ef_pri = "Exec. freq. Pri  = ";
 	const char *c_ef_sec = "            Sec. = ";
 	const char *c_ef_yaw = "            YAW  = ";
+
+	const char *c_current = "current";
+
+	const char *c_date = __DATE__;
+	const char *c_time = __TIME__;
 };
