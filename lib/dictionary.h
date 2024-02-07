@@ -50,7 +50,7 @@ public:
 	const char *c_ef_sec = "            Sec. = ";
 	const char *c_ef_yaw = "            YAW  = ";
 
-	const char *c_current = "current";
+	const char *c_current = "<-current";
 
 	const char *c_date = __DATE__;
 	const char *c_time = __TIME__;

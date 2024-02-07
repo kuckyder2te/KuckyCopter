@@ -50,6 +50,8 @@ private:
 	double _addOn;
 	uint8_t _maxPID;
 
+	uint8_t XP;
+
 	typedef enum
 	{
 		axis_pri = 1,
@@ -82,10 +84,6 @@ private:
 		yaw_I = 23,
 		yaw_D = 33,
 		yaw_EF = 43,
-
-		altitude = 51,
-		us_down = 52,
-		us_front = 53,
 	} pidTyp_t;						/* level1_t + level2_t returns
 									   the "pidType" for the select() function
 									*/
@@ -104,7 +102,6 @@ private:
 	float yaw_kD_value = 0.0;
 	float yaw_EF_value = 0.0;
 
-
 	typedef struct
 	{
 		NewPID *_pid;
@@ -114,7 +111,6 @@ private:
 	model_t *_model;
 	HardwareSerial *_serial;
 	namedPid_t _namedPID[PID_NUM]; // Refactoring zu einer dynamischen Liste mit CPP Templates (Stephan)
-	// namedPid_t *_namedPid;
 	PUTTY_out *_putty_out;
 	Dictionary *_dict;
 
@@ -133,7 +129,6 @@ public:
 
 		LOGGER_VERBOSE("Enter....");
 		_model = model;
-
 		LOGGER_VERBOSE("....leave");
 		return this;
 	} /* -------------------- end of PID_adjust *setModel -----------------------------*/
@@ -163,15 +158,12 @@ public:
 	{
 		LOGGER_VERBOSE("Enter....");
 		_dict = new (Dictionary);
-		//	display_Menu();
-		//	displayPIDcoefficients();
 		LOGGER_VERBOSE("....leave");
 	} /* -------------------- end of begin ------------------------------------------------------*/
 
 	virtual void update() override
 	{
-		uint8_t temp1, temp2;
-		uint8_t XP;
+		//	uint8_t temp1, temp2;
 		LOGGER_VERBOSE("Enter....");
 
 		if (_serial->available() > 0)
@@ -185,6 +177,7 @@ public:
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU + 21, COL_SELECT + 5, _dict->c_whitespace);	///< Clears the current line
 				_putty_out->print(ROW_MENU + 21, COL_SELECT + 5, _dict->c_axis_pri_select); ///< Print the selected axis
+				LOGGER_NOTICE_FMT("Level 1 =  %i", level1);
 				break;
 
 			case 'Y':
@@ -193,6 +186,7 @@ public:
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU + 26, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_MENU + 26, COL_SELECT + 5, _dict->c_axis_sec_select);
+				LOGGER_NOTICE_FMT("Level 1 =  %i", level1);
 				break;
 
 			case 'Z':
@@ -201,10 +195,12 @@ public:
 				clearStateLine();
 				_putty_out->clearPart(ROW_MENU + 31, COL_SELECT + 5, _dict->c_whitespace);
 				_putty_out->print(ROW_MENU + 31, COL_SELECT + 5, _dict->c_axis_yaw_select);
+				LOGGER_NOTICE_FMT("Level 1 =  %i", level1);
 				break;
 
 			case 'P': ///< Choose the PID parameter
-				XP = (getLevel1()) + (getLevel2());
+				set_level2(level2_t::offset_P);
+				XP = level1 + level2;
 				LOGGER_NOTICE_FMT("Option %i", XP);
 
 				switch (XP)
@@ -217,15 +213,17 @@ public:
 					break;
 				case sec_P:
 					_putty_out->red();
-					_putty_out->print(ROW_MENU + 27, COL_MENU + 22, 3, _namedPID[axisName::secondary]._pid->getI());
+					_putty_out->print(ROW_MENU + 27, COL_MENU + 22, 3, _namedPID[axisName::secondary]._pid->getP());
 					_putty_out->print(ROW_MENU + 27, COL_MENU + 28, _dict->c_current);
 					clear_current_eeprom(27);
+
 					break;
 				case yaw_P:
 					_putty_out->red();
 					_putty_out->print(ROW_MENU + 32, COL_MENU + 22, 3, _namedPID[axisName::yaw]._pid->getP());
-					_putty_out->print(ROW_MENU + 27, COL_MENU + 28, _dict->c_current);
+					_putty_out->print(ROW_MENU + 32, COL_MENU + 28, _dict->c_current);
 					clear_current_eeprom(32);
+
 					break;
 				}
 
@@ -236,8 +234,8 @@ public:
 				break;
 
 			case 'I':
-				XP = (getLevel1()) + (getLevel2());
-				//			XP = temp1 + temp2;
+				set_level2(level2_t::offset_I);
+				XP = level1 + level2;
 
 				LOGGER_NOTICE_FMT("Option %i", XP);
 
@@ -271,8 +269,7 @@ public:
 
 			case 'D':
 				set_level2(level2_t::offset_D);
-				XP = (getLevel1()) + (getLevel2());
-				//			XP = temp1 + temp2;
+				XP = level1 + level2;
 				LOGGER_FATAL_FMT("Option %i", XP);
 
 				switch (XP)
@@ -304,8 +301,7 @@ public:
 
 			case 'E':
 				set_level2(level2_t::offset_EF);
-				XP = (getLevel1()) + (getLevel2());
-				//			XP = temp1 + temp2;
+				XP = level1 + level2;
 				LOGGER_FATAL_FMT("Option %i", XP);
 
 				switch (XP)
@@ -357,7 +353,6 @@ public:
 
 			case '1':
 				setDecimalPlaces(1);
-				//	_putty_out->yellow();
 				clearStateLine();
 				_putty_out->cyan();
 				_putty_out->print(ROW_MENU + 7, COL_MENU + 47, 3, _newAddOn);
@@ -365,7 +360,6 @@ public:
 
 			case '2':
 				setDecimalPlaces(2);
-				//	_putty_out->yellow();
 				clearStateLine();
 				_putty_out->cyan();
 				_putty_out->print(ROW_MENU + 7, COL_MENU + 47, 3, _newAddOn);
@@ -373,14 +367,12 @@ public:
 
 			case '3':
 				setDecimalPlaces(3);
-				//	_putty_out->yellow();
 				clearStateLine();
 				_putty_out->cyan();
 				_putty_out->print(ROW_MENU + 7, COL_MENU + 47, 3, _newAddOn);
 				break;
 			case '5':
 				setDecimalPlaces(5);
-				//	_putty_out->yellow();
 				clearStateLine();
 				_putty_out->cyan();
 				_putty_out->print(ROW_MENU + 7, COL_MENU + 47, 3, _newAddOn);
@@ -455,7 +447,7 @@ public:
 			{
 				_putty_out->red();
 				_putty_out->print(ROW_STATE - 1, COL_STATE, "Illegal button");
-				_putty_out->print(ROW_STATE, COL_STATE, "was pressed"); // temp_debug 'w' is not display
+				_putty_out->print(ROW_STATE, COL_STATE, "was pressed");
 				_putty_out->yellow();
 			}
 			} /* end of switch(key) */
@@ -463,19 +455,20 @@ public:
 		LOGGER_VERBOSE("....leave");
 	} /* -------------------- end of update -----------------------------------------------------*/
 
+	/* Clears the current PID coefficent" */
+	void clear_current_eeprom(uint8_t x)
+	{
+		uint32_t lastMillis = millis();
+		delay(1000);
+		_putty_out->print(ROW_MENU + x, COL_MENU + 28, "         "); // 9 spaces
+		LOGGER_NOTICE_FMT("clear current line =  %i", x);
+	} /* -------------------- end of clear_current_eeprom ---------------------------------------*/
+
 	/* Clears the string "Illegal button was pressed" */
 	void clearStateLine()
 	{
 		_putty_out->print(ROW_MENU + 46, COL_STATE, _dict->c_whitespace);
 	} /* -------------------- end of clearStateLine ---------------------------------------------*/
-
-	void clear_current_eeprom(uint8_t x)
-	{
-		uint32_t lastMillis = millis();
-		delay(2000);
-		_putty_out->print(ROW_MENU + x, COL_MENU + 28, "         "); // 9 spaces
-
-	} /* -------------------- end of clear_current_eeprom ---------------------------------------*/
 
 	void set_level1(uint8_t itemAxis)
 	{
@@ -487,16 +480,6 @@ public:
 		LOGGER_NOTICE_FMT("Level 1 = %d", level1);
 	} /*----------------------------- end of set_level1 -----------------------------------------*/
 
-	uint8_t getLevel1()
-	{
-		return level1;
-	} /*----------------------------- end of get_level1 -----------------------------------------*/
-
-	uint8_t getLevel2()
-	{
-		return level2;
-	} /*----------------------------- end of get_level2 -----------------------------------------*/
-
 	void set_level2(uint8_t itemCoefficient)
 	{
 		/* Selects the coefficient, according to the keyboard input.
@@ -506,7 +489,7 @@ public:
 		 * Key E = ExecutingFrequency (40)	 */
 		level2 = itemCoefficient;
 		LOGGER_NOTICE_FMT("Level 2 = %d", level2);
-	} /*----------------------------- end of set_level2 -----------------------------------------*/
+	} /*----------------------------- end of set_level2 ----------------------------------------*/
 
 	/* Set the "PID Type",
 	 * e.g level1 = 1 and level2 = 20 ~ _pidType 21
@@ -517,18 +500,18 @@ public:
 		_pidType = level1 + level2;
 		LOGGER_NOTICE_FMT("PID Type Input = %d", _pidType);
 
-		if (_pidType == 14)
-		{
-			_pidType = 51;
-		}
-		if (_pidType == 24)
-		{
-			_pidType = 52;
-		}
-		if (_pidType == 34)
-		{
-			_pidType = 53;
-		}
+		// if (_pidType == 14)
+		// {
+		// 	_pidType = 51;
+		// }
+		// if (_pidType == 24)
+		// {
+		// 	_pidType = 52;
+		// }
+		// if (_pidType == 34)
+		// {
+		// 	_pidType = 53;
+		// }
 
 		if (_pidType < 40)
 		{ ///< P, I and D
@@ -701,8 +684,9 @@ public:
 				_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
 			}
 			break;
+
 		} /* end of switch */
-	}	  /*----------------------------- end of select ----------------------------------------*/
+	} /*----------------------------- end of select ---------------------------------------------*/
 
 	void display_Menu()
 	{
@@ -710,7 +694,7 @@ public:
 		LOGGER_VERBOSE("Enter....");
 		_putty_out->clear();
 		_putty_out->gray();
-		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, "------ Online PID configurater for KuckyCopter (BT) ------");
+		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, "------ Online PID configurater for KuckyCopter (BT) -----");
 		_putty_out->yellow();
 		_putty_out->print(ROW_MENU + (row_add += 2), COL_MENU, "(X) choose the primary");
 		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, "(Y)           secondary");
@@ -732,12 +716,11 @@ public:
 		_putty_out->print(ROW_MENU + 7, COL_MENU + 47, 3, _newAddOn);
 		_putty_out->gray();
 		_putty_out->print(ROW_STATE - 1, COL_MENU, "State message : ");
-		_putty_out->print(ROW_STATE - 1, COL_MENU + 32, "Last");
-		_putty_out->print(ROW_STATE, COL_MENU + 32, "compile");
+		_putty_out->print(ROW_STATE - 1, COL_MENU + 45, "Last compile ");
 
 		_putty_out->cyan();
-		_putty_out->print(ROW_STATE - 1, COL_MENU + 40, _dict->c_date);
-		_putty_out->print(ROW_STATE, COL_MENU + 40, _dict->c_time);
+		_putty_out->print(ROW_STATE - 1, COL_MENU + 50, _dict->c_date);
+		_putty_out->print(ROW_STATE, COL_MENU + 50, _dict->c_time);
 		clearStateLine();
 
 		LOGGER_VERBOSE("....leave");
