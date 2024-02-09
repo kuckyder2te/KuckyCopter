@@ -1,9 +1,8 @@
-/*  File name : PID_Calbration.h
-	Project name : KuCo_Phantom 1
-	Author: Stephan Scholz / Wilhelm Kuckelsberg
+/*  File name : configurator.h
+	Project name : KuckyCopter 2
+	Author: Wilhelm Kuckelsberg
 	Date : 2022-07-02
-	Description : Einstellen de PID Regler via Bluetooth
-				  und die maximalen Flughöhen
+	Description : Einstellen der PID Regler via Bluetooth
 */
 
 #pragma once
@@ -25,6 +24,7 @@
 
 #define ROW_MENU 3 ///< First position for the main menue
 #define COL_MENU 10
+#define ROW_SELECT 24
 #define ROW_STATE ROW_MENU + 46 // Position for state message
 #define COL_STATE COL_MENU + 16
 
@@ -32,8 +32,8 @@ class PID_adjust : public Task::Base
 {
 private:
 	uint8_t _pidCount;
-	uint8_t level1;
-	uint8_t level2;
+	uint8_t _axis_select;
+	uint8_t _coeff_select;
 	uint8_t _pidType;
 	uint8_t _dotPlaces = 3; ///< Decimal places.
 	float _newAddOn = 0.1;	///< Multiplication factor for the PID coefficients, default setting.
@@ -47,6 +47,8 @@ private:
 		axis_sec = 2,
 		axis_yaw = 3,
 	} level1_t; // Base number of the axis
+
+
 
 	typedef enum
 	{
@@ -151,6 +153,7 @@ public:
 
 	virtual void update() override
 	{
+		uint8_t row_add = -1;
 		LOGGER_VERBOSE("Enter....");
 
 		if (_serial->available() > 0)
@@ -159,43 +162,48 @@ public:
 			switch (toupper(key))
 			{
 			case 'X': ///< Choose the axes
-				set_level1(level1_t::axis_pri);
+				set_axis(level1_t::axis_pri);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU + 21, COL_MENU, _dict->c_whitespace);	///< Clears the current line
-				_putty_out->print(ROW_MENU + 21, COL_MENU, _dict->c_axis_pri_select); ///< Print the selected axis
-				LOGGER_NOTICE_FMT("Level 1 =  %i", level1);
+				_putty_out->clearPart(ROW_SELECT, COL_MENU, _dict->c_whitespace);	///< Clears the current line
+				_putty_out->print(ROW_SELECT, COL_MENU, _dict->c_axis_pri_select); ///< Print the selected axis
+				LOGGER_NOTICE_FMT("Axis no =  %i", _axis_select);
 				break;
 
 			case 'Y':
-				set_level1(level1_t::axis_sec);
+				set_axis(level1_t::axis_sec);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU + 26, COL_MENU, _dict->c_whitespace);
-				_putty_out->print(ROW_MENU + 26, COL_MENU, _dict->c_axis_sec_select);
-				LOGGER_NOTICE_FMT("Level 1 =  %i", level1);
+				_putty_out->clearPart(ROW_SELECT + 5, COL_MENU, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 5, COL_MENU, _dict->c_axis_sec_select);
+				LOGGER_NOTICE_FMT("Axis no =  %i", _axis_select);
 				break;
 
 			case 'Z':
-				set_level1(level1_t::axis_yaw);
+				set_axis(level1_t::axis_yaw);
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU + 31, COL_MENU, _dict->c_whitespace);
-				_putty_out->print(ROW_MENU + 31, COL_MENU, _dict->c_axis_yaw_select);
-				LOGGER_NOTICE_FMT("Level 1 =  %i", level1);
+				_putty_out->clearPart(ROW_SELECT + 10, COL_MENU, _dict->c_whitespace);
+				_putty_out->print(ROW_SELECT + 10, COL_MENU, _dict->c_axis_yaw_select);
+				LOGGER_NOTICE_FMT("Axis no = %i", _axis_select);
 				break;
 
 			case 'P': ///< Choose the PID parameter
-				set_level2(level2_t::offset_P);
-				_option = level1 + level2;
-				LOGGER_NOTICE_FMT("Option %i", _option);
+				set_coeff(level2_t::offset_P);
+				if(_axis_select == 0){
+					print_message();
+					return;
+				}
+
+				_option = _axis_select + _coeff_select;
+				LOGGER_NOTICE_FMT("Coeff No = %i", _option);
 
 				switch (_option)
 				{
 				case pri_P:
 					_putty_out->red();
-					_putty_out->print(ROW_MENU + 22, COL_MENU + 22, 3, _namedPID[axisName::primary]._pid->getP());
-					_putty_out->print(ROW_MENU + 22, COL_MENU + 28, _dict->c_current);
+					_putty_out->print(ROW_SELECT + 1, COL_MENU + 22, 3, _namedPID[axisName::primary]._pid->getP());
+					_putty_out->print(ROW_SELECT + 1, COL_MENU + 28, _dict->c_current);
 					clear_current_eeprom(22);
 					break;
 				case sec_P:
@@ -216,15 +224,20 @@ public:
 
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU + 22 + ((level1 - 1) * 5), COL_MENU + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_MENU + 22 + ((level1 - 1) * 5), COL_MENU + 5, _dict->c_p_coeff); ///< Print the selected coefficient
+				_putty_out->clearPart(ROW_MENU + 22 + ((_axis_select - 1) * 5), COL_MENU + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU + 22 + ((_axis_select - 1) * 5), COL_MENU + 5, _dict->c_p_coeff); ///< Print the selected coefficient
 				break;
 
 			case 'I':
-				set_level2(level2_t::offset_I);
-				_option = level1 + level2;
+				set_coeff(level2_t::offset_I);
+				if(_axis_select == 0){
+					print_message();
+					return;
+				}
 
-				LOGGER_NOTICE_FMT("Option %i", _option);
+				_option = _axis_select + _coeff_select;
+
+				LOGGER_NOTICE_FMT("Coeff No = %i", _option);
 
 				switch (_option)
 				{
@@ -250,14 +263,19 @@ public:
 
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU + 23 + ((level1 - 1) * 5), COL_MENU + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_MENU + 23 + ((level1 - 1) * 5), COL_MENU + 5, _dict->c_i_coeff);
+				_putty_out->clearPart(ROW_MENU + 23 + ((_axis_select - 1) * 5), COL_MENU + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU + 23 + ((_axis_select - 1) * 5), COL_MENU + 5, _dict->c_i_coeff);
 				break;
 
 			case 'D':
-				set_level2(level2_t::offset_D);
-				_option = level1 + level2;
-				LOGGER_FATAL_FMT("Option %i", _option);
+				set_coeff(level2_t::offset_D);
+				if(_axis_select == 0){
+					print_message();
+					return;
+				}
+
+				_option = _axis_select + _coeff_select;
+				LOGGER_FATAL_FMT("Coeff No = %i", _option);
 
 				switch (_option)
 				{
@@ -282,14 +300,19 @@ public:
 				}
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU + 24 + ((level1 - 1) * 5), COL_MENU + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_MENU + 24 + ((level1 - 1) * 5), COL_MENU + 5, _dict->c_d_coeff);
+				_putty_out->clearPart(ROW_MENU + 24 + ((_axis_select - 1) * 5), COL_MENU + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU + 24 + ((_axis_select - 1) * 5), COL_MENU + 5, _dict->c_d_coeff);
 				break;
 
 			case 'E':
-				set_level2(level2_t::offset_EF);
-				_option = level1 + level2;
-				LOGGER_FATAL_FMT("Option %i", _option);
+				set_coeff(level2_t::offset_EF);
+				if(_axis_select == 0){
+					print_message();
+					return;
+				}
+
+				_option = _axis_select + _coeff_select;
+				LOGGER_FATAL_FMT("Coeff No = %i", _option);
 
 				switch (_option)
 				{
@@ -315,8 +338,8 @@ public:
 
 				_putty_out->yellow();
 				clearStateLine();
-				_putty_out->clearPart(ROW_MENU + 25 + ((level1 - 1) * 5), COL_MENU + 5, _dict->c_whitespace);
-				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_MENU + 5, _dict->c_ef_coeff);
+				_putty_out->clearPart(ROW_MENU + 25 + ((_axis_select - 1) * 5), COL_MENU + 5, _dict->c_whitespace);
+				_putty_out->print(ROW_MENU + 25 + ((_axis_select - 1) * 5), COL_MENU + 5, _dict->c_ef_coeff);
 				break;
 
 			case '+':
@@ -428,13 +451,14 @@ public:
 
 			case 'M':
 				display_Menu();
+				_axis_select = 0;
 				break;
 
 			default:
 			{
 				_putty_out->red();
 				_putty_out->print(ROW_STATE - 1, COL_STATE, "Illegal button");
-				_putty_out->print(ROW_STATE, COL_STATE, "was pressed");
+				_putty_out->print(ROW_STATE, COL_STATE, "was pressed  ");
 				_putty_out->yellow();
 			}
 			} /* end of switch(key) */
@@ -442,13 +466,24 @@ public:
 		LOGGER_VERBOSE("....leave");
 	} /* -------------------- end of update -----------------------------------------------------*/
 
+	void print_message(){
+		_putty_out->red();
+		_putty_out->print(ROW_STATE - 1, COL_STATE, "Chosse the");
+		_putty_out->print(ROW_STATE, COL_STATE, "axis at first");
+		_putty_out->yellow();		
+	} /* -------------------- end of print_message ----------------------------------------------*/
+
 	/* Clears the current PID coefficent" */
 	void clear_current_eeprom(uint8_t x)
 	{
-		uint32_t lastMillis = millis();
+		static uint32_t lastMillis = millis();
 		delay(1000);
-		_putty_out->print(ROW_MENU + x, COL_MENU + 28, "         "); // 9 spaces
-		LOGGER_NOTICE_FMT("clear current line =  %i", x);
+//		if(millis() - lastMillis > 1000){
+			_putty_out->print(ROW_MENU + x, COL_MENU + 28, "         "); // 9 spaces
+//			lastMillis = millis();
+//			LOGGER_NOTICE_FMT("clear current line =  %i", x);	
+//		}
+	
 	} /* -------------------- end of clear_current_eeprom ---------------------------------------*/
 
 	/* Clears the string "Illegal button was pressed" */
@@ -457,34 +492,34 @@ public:
 		_putty_out->print(ROW_MENU + 46, COL_STATE, _dict->c_whitespace);
 	} /* -------------------- end of clearStateLine ---------------------------------------------*/
 
-	void set_level1(uint8_t itemAxis)
+	void set_axis(uint8_t itemAxis)
 	{
 		/* Selects the axis, according to the keyboard input.
 		 * Key X = primary axis (1)
 		 * Key Y = primary axis (2)
 		 * Key Z = primary axis (*3)	 */
-		level1 = itemAxis;
-		LOGGER_NOTICE_FMT("Level 1 = %d", level1);
-	} /*----------------------------- end of set_level1 -----------------------------------------*/
+		_axis_select = itemAxis;
+		LOGGER_NOTICE_FMT("Axis No = %d", _axis_select);
+	} /*----------------------------- end of set_axis -----------------------------------------*/
 
-	void set_level2(uint8_t itemCoefficient)
+	void set_coeff(uint8_t itemCoefficient)
 	{
 		/* Selects the coefficient, according to the keyboard input.
 		 * Key P = coefficient P (10)
 		 * Key I = coefficient I (20)
 		 * Key D = coefficient D (30)
 		 * Key E = ExecutingFrequency (40)	 */
-		level2 = itemCoefficient;
-		LOGGER_NOTICE_FMT("Level 2 = %d", level2);
-	} /*----------------------------- end of set_level2 ----------------------------------------*/
+		_coeff_select = itemCoefficient;
+		LOGGER_NOTICE_FMT("Coeff No = %d", _coeff_select);
+	} /*----------------------------- end of set_coeff ----------------------------------------*/
 
 	/* Set the "PID Type",
-	 * e.g level1 = 1 and level2 = 20 ~ _pidType 21
+	 * e.g _axis_select = 1 and _coeff_select = 20 ~ _pidType 21
 	 * Will say, it select the parameter for secondary axis and coefficient 'i'
 	 */
 	uint8_t getPidType(bool up)
 	{
-		_pidType = level1 + level2;
+		_pidType = _axis_select + _coeff_select;
 		LOGGER_NOTICE_FMT("PID Type Input = %d", _pidType);
 
 		if (_pidType < 40)
@@ -577,7 +612,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Y Axis kP = %f", sec_kP_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 22 + ((level1 - 1) * 5), COL_MENU + 22, _dotPlaces, sec_kP_value);
+				_putty_out->print(ROW_MENU + 22 + ((_axis_select - 1) * 5), COL_MENU + 22, _dotPlaces, sec_kP_value);
 				_namedPID[axisName::secondary]._pid->setP(sec_kP_value);
 			}
 			break;
@@ -588,7 +623,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Y Axis kI = %f", sec_kI_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 23 + ((level1 - 1) * 5), COL_MENU + 22, _dotPlaces, sec_kI_value);
+				_putty_out->print(ROW_MENU + 23 + ((_axis_select - 1) * 5), COL_MENU + 22, _dotPlaces, sec_kI_value);
 				_namedPID[axisName::secondary]._pid->setI(sec_kI_value);
 			}
 			break;
@@ -599,7 +634,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Y Axis kD = %f", sec_kD_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 24 + ((level1 - 1) * 5), COL_MENU + 22, _dotPlaces, sec_kD_value);
+				_putty_out->print(ROW_MENU + 24 + ((_axis_select - 1) * 5), COL_MENU + 22, _dotPlaces, sec_kD_value);
 				_namedPID[axisName::secondary]._pid->setD(sec_kD_value);
 			}
 			break;
@@ -610,7 +645,7 @@ public:
 			{
 				LOGGER_WARNING_FMT("Y Axis eF = %f", sec_EF_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_MENU + 22, _dotPlaces, sec_EF_value);
+				_putty_out->print(ROW_MENU + 25 + ((_axis_select - 1) * 5), COL_MENU + 22, _dotPlaces, sec_EF_value);
 				_namedPID[axisName::secondary]._pid->setEF(sec_EF_value);
 			}
 			break;
@@ -621,7 +656,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Z Axis kP = %f", yaw_kP_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 22 + ((level1 - 1) * 5), COL_MENU + 22, _dotPlaces, yaw_kP_value);
+				_putty_out->print(ROW_MENU + 22 + ((_axis_select - 1) * 5), COL_MENU + 22, _dotPlaces, yaw_kP_value);
 				_namedPID[axisName::yaw]._pid->setP(yaw_kP_value);
 			}
 			break;
@@ -632,7 +667,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Z Axis kI = %f", yaw_kI_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 23 + ((level1 - 1) * 5), COL_MENU + 22, _dotPlaces, yaw_kI_value);
+				_putty_out->print(ROW_MENU + 23 + ((_axis_select - 1) * 5), COL_MENU + 22, _dotPlaces, yaw_kI_value);
 				_namedPID[axisName::yaw]._pid->setI(yaw_kI_value);
 			}
 			break;
@@ -643,7 +678,7 @@ public:
 			{
 				LOGGER_NOTICE_FMT("Z Axis kD = %f", yaw_kD_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 24 + ((level1 - 1) * 5), COL_MENU + 22, _dotPlaces, yaw_kD_value);
+				_putty_out->print(ROW_MENU + 24 + ((_axis_select - 1) * 5), COL_MENU + 22, _dotPlaces, yaw_kD_value);
 				_namedPID[axisName::yaw]._pid->setD(yaw_kD_value);
 			}
 			break;
@@ -654,7 +689,7 @@ public:
 			{
 				LOGGER_WARNING_FMT("Z Axis eF = %f", yaw_EF_value);
 				_putty_out->cyan();
-				_putty_out->print(ROW_MENU + 25 + ((level1 - 1) * 5), COL_MENU + 22, _dotPlaces, yaw_EF_value);
+				_putty_out->print(ROW_MENU + 25 + ((_axis_select - 1) * 5), COL_MENU + 22, _dotPlaces, yaw_EF_value);
 				_namedPID[axisName::yaw]._pid->setEF(yaw_EF_value);
 			}
 			break;
@@ -688,13 +723,20 @@ public:
 
 		_putty_out->cyan();
 		_putty_out->print(ROW_MENU + 7, COL_MENU + 47, 3, _newAddOn);
+
 		_putty_out->gray();
 		_putty_out->print(ROW_STATE - 1, COL_MENU, "State message : ");
-		_putty_out->print(ROW_STATE - 1, COL_MENU + 45, "Last compile ");
+		_putty_out->print(ROW_STATE - 1, COL_MENU + 32, "Last");
+		_putty_out->print(ROW_STATE, COL_MENU + 32, "compile");
 
 		_putty_out->cyan();
-		_putty_out->print(ROW_STATE - 1, COL_MENU + 50, _dict->c_date);
-		_putty_out->print(ROW_STATE, COL_MENU + 50, _dict->c_time);
+		_putty_out->print(ROW_STATE - 1, COL_MENU + 40, _dict->c_date);
+		_putty_out->print(ROW_STATE, COL_MENU + 40, _dict->c_time);
+
+		_putty_out->cyan();
+		_putty_out->print(ROW_STATE - 1, COL_MENU + 55, "Current");
+		_putty_out->print(ROW_STATE, COL_MENU + 55, "COM 4 on BT");
+
 		clearStateLine();
 
 		LOGGER_VERBOSE("....leave");

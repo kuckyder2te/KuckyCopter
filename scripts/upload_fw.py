@@ -1,3 +1,7 @@
+# https://community.platformio.org/t/raspberry-pi-pico-upload-problem/22809/4
+
+
+
 import os, sys
 from platform import system
 
