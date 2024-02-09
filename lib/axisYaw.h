@@ -9,7 +9,7 @@
 #include "AxisBase.h"
 #include "AxisMotor.h"
 
-#define LOCAL_DEBUG
+//#define LOCAL_DEBUG
 #include "myLogger.h"
 
 #define YAW_SENSIBILITY 5
@@ -42,6 +42,8 @@ private:
 	int16_t _lastCompass;
 	int16_t _virtualFeedback; ///< The calculated feedback due to the yaw rotation
 	int16_t _virtualSetpoint;
+	int16_t _spOffset;
+	int16_t _lastYaw;
 	
 public:
 	AxisYaw(const String &name) : AxisBase(name)
@@ -51,6 +53,7 @@ public:
 		_axisMotor[axisName::secondary] = NULL;
 		_state = disablePID;
 		_lastCompass = 0;
+		_spOffset = 0;
 	};
 
 	AxisYaw *setModel(axisData_t *_model, yaw_t *yaw)
@@ -96,6 +99,23 @@ public:
 	virtual void update()
 	{
 		static int16_t debugFeedback;
+		int16_t delta;
+		if(*_axisData->feedback>=_lastYaw){
+			delta = *_axisData->feedback -_lastYaw;
+		}else{
+			delta = _lastYaw - *_axisData->feedback;
+		}
+		if(abs(delta)>300){
+			if(delta<0){
+				//_spOffset = -180;
+			}else{
+				//_spOffset = 0;
+			}
+		}
+		// Serial.print("fb ");Serial.print(*_axisData->feedback);
+		// Serial.print("\toffset ");Serial.print(_spOffset);
+		// Serial.print("\tdelta  ");Serial.println(delta);
+
 		AxisBase::update();
 
 		LOGGER_VERBOSE("Update axisYaw");
@@ -126,7 +146,7 @@ public:
 			_newPID->disablePID();
 			_axisMotor[axisName::primary]->setState(AxisMotor::disablePID);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::disablePID);
-			_virtualSetpoint = *_yaw->horz_Position;
+			_virtualSetpoint = *_yaw->horz_Position + _spOffset;
 			LOGGER_VERBOSE("....leave");
 			break;
 
@@ -134,7 +154,7 @@ public:
 			/* Enables the YawAxis PID controller and initiates activation for the motor axes. */
 			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter enablePID state %d", _state);
 			_newPID->enablePID();
-			_virtualSetpoint = *_yaw->horz_Position;
+			_virtualSetpoint = *_yaw->horz_Position+ _spOffset;
 			//LOGGER_NOTICE_FMT_CHK(_virtualFeedback,debugFeedback,"Feedback: %d, Position: %d",_virtualFeedback,*_yaw->horz_Position);
 			_axisMotor[axisName::primary]->setState(AxisMotor::enablePID);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::enablePID);
@@ -156,7 +176,7 @@ public:
 			{ ///< YAW Joystick is moved....				
 				_axisMotor[axisName::primary]->setPower(_axisData->power - (*_yaw->rotationSpeed * YAW_FINE_TUNING));
 				_axisMotor[axisName::secondary]->setPower(_axisData->power + (*_yaw->rotationSpeed * YAW_FINE_TUNING));
-				_virtualSetpoint = *_yaw->horz_Position;
+				_virtualSetpoint = *_yaw->horz_Position+ _spOffset;
 				//LOGGER_NOTICE_FMT_CHK(_virtualFeedback,debugFeedback,"Feedback: %d, Position: %d",_virtualFeedback,*_yaw->horz_Position);
 				 
 				LOGGER_VERBOSE_FMT("JS not moved Setpower pri/sec %i %i", (_axisData->power - (*_yaw->rotationSpeed * YAW_FINE_TUNING)), 
@@ -175,6 +195,7 @@ public:
 			break;
 		default:;
 		} /* end of switch */
+		_lastYaw = *_axisData->feedback;
 	}/*--------------------- end of virtual service ---------------------------------------------*/
 
 	void setState(state_e state)
