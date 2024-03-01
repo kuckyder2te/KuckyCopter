@@ -46,7 +46,7 @@ model_t model;
 int16_t Test;
 HardwareSerial *MonitorOutput = &Serial; /// USB Pico
 HardwareSerial *TestOutput = &Serial2;   /// Bluetooth Putty
-HardwareSerial *DebugOutput = &Serial1;  /// Bluetooth CoolTerm
+HardwareSerial *DebugOutput = &Serial;  /// Bluetooth CoolTerm
 
 #ifdef _PID_ADJUST
 PID_adjust *_pid_adjust;
@@ -145,6 +145,7 @@ void main_loop()
 void base_setup()
 {
   delay(1000);
+  model.emergencyStop = false;
   pinMode(PIN_ESC_ON, OUTPUT);
   digitalWrite(PIN_ESC_ON, HIGH); // MainPower für ESC´s ausgeschaltet,
                                   // will sagen, BC547 schaltet nicht durch, da die Basis HIGH ist

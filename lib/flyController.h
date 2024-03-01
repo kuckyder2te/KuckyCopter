@@ -90,6 +90,13 @@ public:
     virtual void update() override
     {
         static uint16_t downTime = 0;
+        if(_model->emergencyStop){
+            LOGGER_NOTICE("!!!!!! Emergeny Stop !!!!!");
+            flyState = disablePID;
+            _model->RC_interface.TX_payload.isInitialized = false;
+            _model->yawData.power = 0;
+            _model->emergencyStop = false;
+        }
         switch (flyState)
         {
         case arming_begin:

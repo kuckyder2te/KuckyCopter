@@ -428,7 +428,9 @@ public:
 				display_Menu();
 				_axis_select = 0;
 				break;
-
+			case ' ':
+				_model->emergencyStop = true;
+				break;
 			default:
 			{
 				_putty_out->print(ROW_STATE - 1, COL_STATE, RED, "Illegal button");

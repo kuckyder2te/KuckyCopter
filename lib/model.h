@@ -28,4 +28,5 @@ typedef struct
     batteryData_t batteryData;
     uint32_t looptime;
     uint32_t max_looptime;
+    bool emergencyStop;
 } model_t;
