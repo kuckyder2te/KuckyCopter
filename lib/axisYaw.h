@@ -153,6 +153,7 @@ public:
 		case enablePID:
 			/* Enables the YawAxis PID controller and initiates activation for the motor axes. */
 			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter enablePID state %d", _state);
+			_newPID->clear();
 			_newPID->enablePID();
 			_virtualSetpoint = *_yaw->horz_Position+ _spOffset;
 			//LOGGER_NOTICE_FMT_CHK(_virtualFeedback,debugFeedback,"Feedback: %d, Position: %d",_virtualFeedback,*_yaw->horz_Position);

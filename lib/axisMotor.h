@@ -133,6 +133,7 @@ public:
 		case enablePID:
 			/* Activate the PID controller from the MotorAxis with the current coefficients. */
 			LOGGER_NOTICE_FMT_CHK(_state,_lastState,"activate PID %s ", this->getName().c_str());
+			_newPID->clear();
 			_newPID->enablePID();
 			_state = ready;
 			break;
