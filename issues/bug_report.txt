@@ -1,0 +1,4 @@
+Datei: configurator.h
+bei der Eingabe von  (+) bei option X EF wird die Eingabe ausserhalb des Bereichs angezeigt
+bei der Eingabe Yaw axis wird (P) nicht sofort angezeigt.
+void print_PID_values() wird nicht verwendet, warum?
