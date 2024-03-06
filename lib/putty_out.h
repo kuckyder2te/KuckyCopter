@@ -157,9 +157,8 @@ public:
 		_serial.print("\e[K"); // clear screen ESC[K	clear to end of line
 	} /*-------------------------- end of clearLine -----------------------------------*/
 
-	void setCursor(){ // dies funktioniert nicht
-
-
+	void setCursorOff(){ 
+		_serial.print("\e[?25l");
 	} /*-------------------------- end of setCursor -----------------------------------*/
 
 	/* Deletes the line according to the number of characters.
@@ -188,7 +187,7 @@ public:
 	void clear()/* Clears the whole screen. */
 	{
 		_serial.print("\e[2J");
-		_serial.print("\e[0;0H");
+	//	_serial.print("\e[0;0H");
 	} /*-------------------------- end of clear ---------------------------------------*/
 
 	void red()
