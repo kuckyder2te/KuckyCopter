@@ -1,6 +1,6 @@
 #pragma once
 /*  File name: sensors.h
- *	Project name: KuCo_Phantom 1
+ *	Project name: KuckyCopter 2
  *  Date: 2022-05-28
  *  Author: Stephan Scholz / Wilhelm Kuckelsberg
  *  Description: Lage und Höhen Position
@@ -32,6 +32,7 @@ typedef struct
     int16_t pitch;
     int16_t roll;
     int16_t yaw;
+    int16_t virtual_yaw;
     double compass;
     float pressure;
     float altitude;
@@ -47,6 +48,7 @@ class Sensor : public Task::Base
 private:
     MPU9250Setting setting;
     uint8_t _updateCounter;
+    int16_t _lastYaw;
 
 protected:
     MPU9250 _mpu9250; // Speicherplatz reserviert
@@ -130,11 +132,22 @@ public:
         if (_mpu9250.update())
         {
             LOGGER_VERBOSE("_mpu9250.update");
-
             _sensorData->yaw = _mpu9250.getYaw();
             _sensorData->pitch = _mpu9250.getPitch();
             _sensorData->roll = _mpu9250.getRoll();
-
+            int16_t deltaYaw = _sensorData->yaw - _lastYaw;
+            if(abs(deltaYaw)>=100){
+                if(_lastYaw<0){
+                    deltaYaw += 180;
+                }else if(_lastYaw>0) {
+                    deltaYaw -= 180;
+                }else{                      // _lastYaw == 0 case
+                    deltaYaw -= _sensorData->yaw + 180;
+                }
+            }else{
+                _sensorData->virtual_yaw += deltaYaw;
+            }
+            _lastYaw = _sensorData->yaw;
             display_imu_data();
 
             LOGGER_VERBOSE("_mpu9250 leave");

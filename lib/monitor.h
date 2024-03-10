@@ -124,8 +124,8 @@ public:
             case ALL_AXIS:              
                 break;
             default:
-                MonitorOutput->println("y.p.r.pr,temp,dis,con,A_err,B_err,Y_err,Hor_pos,A_Pwr,B_Pwr");
-                MonitorOutput->printf("/*%d,%d,%d,%.2f,%.2f,%d,%d,%d,%d,%d,%d,%d,%d*/\r\n",
+                MonitorOutput->println("y.p.r.pr,temp,dis,con,A_err,B_err,Y_err,Hor_pos,A_Pwr,B_Pwr,V_Yaw");
+                MonitorOutput->printf("/*%d,%d,%d,%.2f,%.2f,%d,%d,%d,%d,%d,%d,%d,%d,%d*/\r\n",
                     _model->sensorData.yaw,
                     _model->sensorData.pitch,
                     _model->sensorData.roll,
@@ -138,7 +138,8 @@ public:
                     _model->yawData.pidError,
                     *_model->yaw.horz_Position,
                     _model->axisData[0].power,
-                    _model->axisData[1].power
+                    _model->axisData[1].power,
+                    _model->yaw.virtual_yaw
                     );
                 break;
             }

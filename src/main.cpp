@@ -45,8 +45,8 @@
 model_t model;
 int16_t Test;
 HardwareSerial *MonitorOutput = &Serial; /// USB Pico
-HardwareSerial *TestOutput = &Serial2;   /// Bluetooth Putty
-HardwareSerial *DebugOutput = &Serial;  /// Bluetooth CoolTerm
+HardwareSerial *TestOutput = &Serial2;   /// Bluetooth Putty for PID adjust
+HardwareSerial *DebugOutput = &Serial1;  /// Bluetooth CoolTerm for debuging
 
 #ifdef _PID_ADJUST
 PID_adjust *_pid_adjust;
@@ -164,8 +164,8 @@ void base_setup()
   DebugOutput->begin(COM_SPEED);
   MonitorOutput->begin(COM_SPEED);
   TestOutput->begin(COM_SPEED);
-  DebugOutput->println("Serial1 COM14 OK");
-  MonitorOutput->println("Serial1 COM21 OK");
+  DebugOutput->println("Serial-1 COM10 OK");
+  MonitorOutput->println("Serial-1 COM21 OK");
   TestOutput->println("BT COM4 OK ");
 
   TestOutput->print(__DATE__);
@@ -189,16 +189,16 @@ void base_setup()
   LOGGER_NOTICE("Program will initialized");
   wireModel();
 
-  TestOutput->println("********************************");
-  TestOutput->println("*       Kucky Copter 2         *");
-  TestOutput->println("*                              *");
-  TestOutput->print("*     ");
-  TestOutput->print(__DATE__);
-  TestOutput->print(" ");
-  TestOutput->print(__TIME__);
-  TestOutput->println("     *");
-  TestOutput->println("********************************");
-  TestOutput->flush();
+  // TestOutput->println("********************************");
+  // TestOutput->println("*       Kucky Copter 2         *");
+  // TestOutput->println("*                              *");
+  // TestOutput->print("*     ");
+  // TestOutput->print(__DATE__);
+  // TestOutput->print(" ");
+  // TestOutput->print(__TIME__);
+  // TestOutput->println("     *");
+  // TestOutput->println("********************************");
+  // TestOutput->flush();
   Wire.begin();
 
   EEPROM.begin(512);
@@ -213,13 +213,14 @@ void wireModel()
   model.axisData[axisName::secondary].feedback = &model.sensorData.pitch;
   model.yawData.feedback = &model.sensorData.yaw;
 
+
   model.axisData[axisName::primary].rcX = &model.RC_interface.RX_payload.rcRoll;
   model.axisData[axisName::primary].rcY = &model.RC_interface.RX_payload.rcPitch;
   model.axisData[axisName::secondary].rcX = &model.RC_interface.RX_payload.rcRoll;
   model.axisData[axisName::secondary].rcY = &model.RC_interface.RX_payload.rcPitch;
   model.yaw.rotationSpeed = &model.RC_interface.RX_payload.rcYaw;
   model.yaw.horz_Position = &model.sensorData.yaw;
-
+  model.yaw.virtual_yaw = &model.sensorData.virtual_yaw;
 }
 
 void setup()
@@ -247,6 +248,6 @@ void loop()
   {
     model.max_looptime = model.looptime;
   }
-  //Serial.println(model.max_looptime);
-  //Serial.println(model.looptime);
+  // Serial.println(model.max_looptime);
+  // Serial.println(model.looptime);
 } /*------------------------ end of standard setup and loop -------------------------------------*/

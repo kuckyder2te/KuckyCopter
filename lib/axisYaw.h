@@ -19,6 +19,7 @@ typedef struct
 {
 	int16_t* rotationSpeed;	///< Speed which the copter should turn
 	int16_t* horz_Position; ///< Current YAW Position from Gyro
+	int16_t* virtual_yaw;	///< should be set to 0 if yaw is PIDenable=true
 } yaw_t;
 
 class AxisYaw : public AxisBase
@@ -48,7 +49,7 @@ private:
 public:
 	AxisYaw(const String &name) : AxisBase(name)
 	{											 
-		_virtualSetpoint = 0;	
+		_virtualSetpoint = 0;						///< must be fix on 0 because _yaw->virtual_yaw = 0 if PIDenable=true
 		_axisMotor[axisName::primary] = NULL;
 		_axisMotor[axisName::secondary] = NULL;
 		_state = disablePID;
@@ -153,9 +154,10 @@ public:
 		case enablePID:
 			/* Enables the YawAxis PID controller and initiates activation for the motor axes. */
 			LOGGER_NOTICE_FMT_CHK(_state, _lastState, "Enter enablePID state %d", _state);
+			_yaw->virtual_yaw = 0;				// delta must be calculated between _virtualSetpoint=0 and _yaw->virtual_yaw
 			_newPID->clear();
 			_newPID->enablePID();
-			_virtualSetpoint = *_yaw->horz_Position+ _spOffset;
+			//_virtualSetpoint = *_yaw->horz_Position+ _spOffset;
 			//LOGGER_NOTICE_FMT_CHK(_virtualFeedback,debugFeedback,"Feedback: %d, Position: %d",_virtualFeedback,*_yaw->horz_Position);
 			_axisMotor[axisName::primary]->setState(AxisMotor::enablePID);
 			_axisMotor[axisName::secondary]->setState(AxisMotor::enablePID);
