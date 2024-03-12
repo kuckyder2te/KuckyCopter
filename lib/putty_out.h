@@ -75,15 +75,15 @@ public:
 	void print(uint8_t r, uint8_t c, uint8_t color, const char t[])
 	{
 		/* Prints a array of char at position r and c with color */
-		_serial.print("\e[1m");	// set boldmode ?
-		_serial.print("\e["); 	// escape symbol
-		_serial.print(r);	  	// column
+		_serial.print("\e[1m"); // set boldmode ?
+		_serial.print("\e[");	// escape symbol
+		_serial.print(r);		// column
 		_serial.print(";");
-		_serial.print(c); 		// row
+		_serial.print(c); // row
 		_serial.print("f");
 		setColor(color);
-		_serial.print(t); 		// text		
-	} /*-------------------------- end of print characters ----------------------------*/
+		_serial.print(t); // text
+	}					  /*-------------------------- end of print characters ----------------------------*/
 
 	void print(uint8_t r, uint8_t c, uint8_t color, uint8_t dot, double d)
 	{
@@ -95,9 +95,9 @@ public:
 		_serial.print(c);
 		_serial.print("f");
 		setColor(color);
-		_serial.print(d, dot);	
-		_serial.print("\e[0m");		// double value
-	} /*-------------------------- end of print double variables ----------------------*/
+		_serial.print(d, dot);
+		_serial.print("\e[0m"); // double value
+	}							/*-------------------------- end of print double variables ----------------------*/
 
 	void print(uint8_t r, uint8_t c, uint8_t color, int16_t i16)
 	{
@@ -114,7 +114,7 @@ public:
 	} /*-------------------------- end of print uint16_t integer variables ------------*/
 
 	void print(uint8_t r, uint8_t c, uint8_t color, uint32_t ui32)
-	{		/* Prints a integer type at position r and c. */
+	{ /* Prints a integer type at position r and c. */
 		_serial.print("\e[1m");
 		_serial.print("\e[");
 		_serial.print(r);
@@ -127,7 +127,7 @@ public:
 	} /*-------------------------- end of print uint16_t integer variables ------------*/
 
 	void print(uint8_t r, uint8_t c, uint8_t color, uint16_t ui16)
-	{		/* Prints a integer type at position r and c. */
+	{ /* Prints a integer type at position r and c. */
 		_serial.print("\e[1m");
 		_serial.print("\e[");
 		_serial.print(r);
@@ -140,7 +140,7 @@ public:
 	} /*-------------------------- end of print uint16_t integer variables ------------*/
 
 	void print(uint8_t r, uint8_t c, uint8_t color, uint8_t ui8)
-	{		/* Prints a integer type at position r and c. */
+	{ /* Prints a integer type at position r and c. */
 		_serial.print("\e[1m");
 		_serial.print("\e[");
 		_serial.print(r);
@@ -153,11 +153,31 @@ public:
 	} /*-------------------------- end of print uint8_t integer variables -------------*/
 
 	void clearLine()
-	{		/* Deletes the completely current line. */
-		_serial.print("\e[K"); // clear screen ESC[K	clear to end of line
+	{ /* Deletes the completely current line. */
+		_serial.print("\e[2K"); 
 	} /*-------------------------- end of clearLine -----------------------------------*/
 
-	void setCursorOff(){ 
+	void clearLineBefore()
+	{ /* Deletes the completely current line. */
+		_serial.print("\e[1K"); 
+	} /*-------------------------- end of clearLine -----------------------------------*/
+	
+	void clearLineAfter()
+	{ /* Deletes the completely current line. */
+		_serial.print("\e[K"); 
+	} /*-------------------------- end of clearLine -----------------------------------*/
+	
+	void setCursor(uint8_t x, uint8_t y)
+	{
+		_serial.write("\e[");
+		_serial.print(x);
+		_serial.print(';');
+		_serial.print(y);
+		_serial.write('H');
+	} /*-------------------------- end of setCursor -----------------------------------*/
+
+	void setCursorOff()
+	{
 		_serial.print("\e[?25l");
 	} /*-------------------------- end of setCursor -----------------------------------*/
 
@@ -171,23 +191,23 @@ public:
 
 		len = strlen(t);
 
-			_serial.print("\e[");
-			_serial.print(r);
-			_serial.print(";");
-			_serial.print(c);
-			_serial.print("f");
+		_serial.print("\e[");
+		_serial.print(r);
+		_serial.print(";");
+		_serial.print(c);
+		_serial.print("f");
 
-			for (uint8_t i = 0; i <= len; i++)
-			{
-				strcat(space, cc);
-			}
+		for (uint8_t i = 0; i <= len; i++)
+		{
+			strcat(space, cc);
+		}
 		_serial.print(space);
 	} /*-------------------------- end of clearPart -----------------------------------*/
 
-	void clear()/* Clears the whole screen. */
+	void clear() /* Clears the whole screen. */
 	{
 		_serial.print("\e[2J");
-	//	_serial.print("\e[0;0H");
+		//	_serial.print("\e[0;0H");
 	} /*-------------------------- end of clear ---------------------------------------*/
 
 	void red()
@@ -232,7 +252,7 @@ public:
 		_serial.print("\e[36m");
 	} //-------------------------- end of cyan ----------------------------------------*/
 
-		void black()
+	void black()
 	{
 		/* Print characters black */
 		_serial.print("\e[30m");
