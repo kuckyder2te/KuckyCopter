@@ -42,13 +42,31 @@ typedef struct
 
 #define HOME_ALTITUDE 61
 
+const uint8_t EEPROM_SIZE = 1 + sizeof(float) * 3 * 4;
+
 class Sensor : public Task::Base
 {
+
+    enum EEP_ADDR
+    {
+        EEP_CALIB_FLAG = 0x64,
+        EEP_ACC_BIAS = 0x65,
+        EEP_GYRO_BIAS = 0x71,
+        EEP_MAG_BIAS = 0x7D,
+        EEP_MAG_SCALE = 0x89
+    };
 
 private:
     MPU9250Setting setting;
     uint8_t _updateCounter;
     int16_t _lastYaw;
+
+public:
+    bool imuCalibration;
+    float acc_bias_x, acc_bias_y, acc_bias_z;
+    float gyro_bias_x, gyro_bias_y, gyro_bias_z;
+    float mag_bias_x, mag_bias_y, mag_bias_z;
+    float mag_scale_x, mag_scale_Y, mag_scale_z;
 
 protected:
     MPU9250 _mpu9250; // Speicherplatz reserviert
@@ -129,44 +147,93 @@ public:
     {
         LOGGER_VERBOSE("Enter....");
         //    LOGGER_NOTICE_FMT("Wire %d", Wire.availableForWrite());
-        if (_mpu9250.update())
+        if (!imuCalibration)
         {
-            LOGGER_VERBOSE("_mpu9250.update");
-            _sensorData->yaw = _mpu9250.getYaw();
-            _sensorData->pitch = _mpu9250.getPitch();
-            _sensorData->roll = _mpu9250.getRoll();
-            int16_t deltaYaw = _sensorData->yaw - _lastYaw;
-            if(abs(deltaYaw)>=100){
-                if(_lastYaw<0){
-                    deltaYaw += 180;
-                }else if(_lastYaw>0) {
-                    deltaYaw -= 180;
-                }else{                      // _lastYaw == 0 case
-                    deltaYaw -= _sensorData->yaw + 180;
+ //           Serial1.println("IMU calibration is false");
+
+            if (_mpu9250.update())
+            {
+                LOGGER_VERBOSE("_mpu9250.update");
+                _sensorData->yaw = _mpu9250.getYaw();
+                _sensorData->pitch = _mpu9250.getPitch();
+                _sensorData->roll = _mpu9250.getRoll();
+                int16_t deltaYaw = _sensorData->yaw - _lastYaw;
+                if (abs(deltaYaw) >= 100)
+                {
+                    if (_lastYaw < 0)
+                    {
+                        deltaYaw += 180;
+                    }
+                    else if (_lastYaw > 0)
+                    {
+                        deltaYaw -= 180;
+                    }
+                    else
+                    { // _lastYaw == 0 case
+                        deltaYaw -= _sensorData->yaw + 180;
+                    }
                 }
-            }else{
-                _sensorData->virtual_yaw += deltaYaw;
+                else
+                {
+                    _sensorData->virtual_yaw += deltaYaw;
+                }
+                _lastYaw = _sensorData->yaw;
+                display_imu_data();
+
+                LOGGER_VERBOSE("_mpu9250 leave");
             }
-            _lastYaw = _sensorData->yaw;
-            display_imu_data();
+            if (++_updateCounter % 10 == 0) // Only executed every 10 runs.
+            {
+                LOGGER_VERBOSE("_ms5611.read");
+                _ms5611.read(); // uses default OSR_ULTRA_LOW  (fastest)
+                                //    _sensorData->seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE);
+                _sensorData->temperature_baro = _ms5611.getTemperature();
+                _sensorData->pressure = _ms5611.getPressure();
+                _sensorData->altitude = getAltitude(_ms5611.getPressure(), (getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE)));
 
-            LOGGER_VERBOSE("_mpu9250 leave");
+                display_baro_data();
+
+                LOGGER_VERBOSE("_ms5611 leave");
+            }
         }
-        if (++_updateCounter % 10 == 0) // Only executed every 10 runs.
+        else
         {
-            LOGGER_VERBOSE("_ms5611.read");
-            _ms5611.read(); // uses default OSR_ULTRA_LOW  (fastest)
-                            //    _sensorData->seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE);
-            _sensorData->temperature_baro = _ms5611.getTemperature();
-            _sensorData->pressure = _ms5611.getPressure();
-            _sensorData->altitude = getAltitude(_ms5611.getPressure(), (getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE)));
+            Serial1.println("IMU calibration is true");
+            
+            delay(5000);
 
-            display_baro_data();
+            // calibrate anytime you want to
+            Serial1.println("Accel Gyro calibration will start in 5sec.");
+            Serial1.println("Please leave the device still on the flat plane.");
+            _mpu9250.verbose(true);
+            delay(5000);
+            _mpu9250.calibrateAccelGyro();
 
-            LOGGER_VERBOSE("_ms5611 leave");
+            Serial1.println("Mag calibration will start in 5sec.");
+            Serial1.println("Please Wave device in a figure eight until done.");
+            delay(5000);
+            _mpu9250.calibrateMag();
+
+            printCalibration();
+            _mpu9250.verbose(false);
+
+            // save to eeprom
+            saveCalibration();
+
+            // load from eeprom
+            loadCalibration();
+
+            setCalibration(false);
+
+
         }
         LOGGER_VERBOSE("....leave");
     } /* ------------------ end of update -------------------------------------------------------*/
+
+    MPU9250 *getIMU()
+    {
+        return &_mpu9250;
+    } /* ------------------ end of getIMU -------------------------------------------------------*/
 
     float getAltitude(double press, double seaLevel)
     {
@@ -195,5 +262,190 @@ public:
         LOGGER_NOTICE_FMT_CHK(_sensorData->pressure, __sensorData.pressure, "Pressure = %0.2f", _sensorData->pressure);
         LOGGER_NOTICE_FMT_CHK(_sensorData->temperature_baro, __sensorData.temperature_baro, "Temperature_baro = %0.2f", _sensorData->temperature_baro);
     } /*-------------------------------- end of display_baro_data -------------------------------*/
+
+    void setCalibration(bool x)
+    {
+        imuCalibration = x;
+    } /*-------------------------------- setCalibration -----------------------------------------*/
+
+    void writeByte(int address, byte value)
+    {
+        EEPROM.put(address, value);
+    } /*-------------------------------- end of writeByte ---------------------------------- -----*/
+
+    void writeFloat(int address, float value)
+    {
+        EEPROM.put(address, value);
+    } /*-------------------------------- end of writeFloat --------------------------------------*/
+
+    byte readByte(int address)
+    {
+        byte valueIn = 0;
+        EEPROM.get(address, valueIn);
+        return valueIn;
+    } /*-------------------------------- end of readByte ---------------------------------------*/
+
+    float readFloat(int address)
+    {
+        float valueIn = 0;
+        EEPROM.get(address, valueIn);
+    //    Serial1.print("Value = ");Serial1.println(valueIn);
+        return valueIn;
+    } /*-------------------------------- end of readFloat ---------------------------------------*/
+
+    void clearCalibration()
+    {
+        writeByte(EEP_CALIB_FLAG, 0);
+    } /*-------------------------------- end of clearCalibration --------------------------------*/
+
+    bool isCalibrated()
+    {
+        return (readByte(EEP_CALIB_FLAG) == 0x01);
+    } /*-------------------------------- end of isCalibrated ------------------------------------*/
+
+    void saveCalibration()
+    {
+        Serial1.println("Write calibrated parameters to EEPROM");
+        writeByte(EEP_CALIB_FLAG, 1);
+        writeFloat(EEP_ACC_BIAS + 0, _mpu9250.getAccBias(0));
+        writeFloat(EEP_ACC_BIAS + 4, _mpu9250.getAccBias(1));
+        writeFloat(EEP_ACC_BIAS + 8, _mpu9250.getAccBias(2));
+        writeFloat(EEP_GYRO_BIAS + 0, _mpu9250.getGyroBias(0));
+        writeFloat(EEP_GYRO_BIAS + 4, _mpu9250.getGyroBias(1));
+        writeFloat(EEP_GYRO_BIAS + 8, _mpu9250.getGyroBias(2));
+        writeFloat(EEP_MAG_BIAS + 0, _mpu9250.getMagBias(0));
+        writeFloat(EEP_MAG_BIAS + 4, _mpu9250.getMagBias(1));
+        writeFloat(EEP_MAG_BIAS + 8, _mpu9250.getMagBias(2));
+        writeFloat(EEP_MAG_SCALE + 0, _mpu9250.getMagScale(0));
+        writeFloat(EEP_MAG_SCALE + 4, _mpu9250.getMagScale(1));
+        writeFloat(EEP_MAG_SCALE + 8, _mpu9250.getMagScale(2));
+
+#if defined(ESP_PLATFORM) || defined(ESP8266)
+        EEPROM.commit();
+#endif
+    } /*-------------------------------- end of saveCalibration ---------------------------------*/
+
+    void loadCalibration()
+    {
+        Serial1.println("Load calibrated parameters from EEPROM");
+        if (isCalibrated())
+        {
+            Serial1.println("calibrated? : YES");
+            Serial1.println("load calibrated values");
+            _mpu9250.setAccBias(
+                readFloat(EEP_ACC_BIAS + 0),
+                readFloat(EEP_ACC_BIAS + 4),
+                readFloat(EEP_ACC_BIAS + 8));
+            _mpu9250.setGyroBias(
+                readFloat(EEP_GYRO_BIAS + 0),
+                readFloat(EEP_GYRO_BIAS + 4),
+                readFloat(EEP_GYRO_BIAS + 8));
+            _mpu9250.setMagBias(
+                readFloat(EEP_MAG_BIAS + 0),
+                readFloat(EEP_MAG_BIAS + 4),
+                readFloat(EEP_MAG_BIAS + 8));
+            _mpu9250.setMagScale(
+                readFloat(EEP_MAG_SCALE + 0),
+                readFloat(EEP_MAG_SCALE + 4),
+                readFloat(EEP_MAG_SCALE + 8));
+        }
+        else
+        {
+            Serial1.println("calibrated? : NO");
+            Serial1.println("load default values");
+            _mpu9250.setAccBias(0., 0., 0.);
+            _mpu9250.setGyroBias(0., 0., 0.);
+            _mpu9250.setMagBias(0., 0., 0.);
+            _mpu9250.setMagScale(1., 1., 1.);
+        }
+    } /*-------------------------------- end of loadCalibration ---------------------------------*/
+
+    void printCalibration()
+    {
+        Serial1.print("< calibration parameters >");
+        Serial1.print("calibrated? : ");
+        Serial1.println(readByte(EEP_CALIB_FLAG) ? "YES" : "NO");
+
+        Serial1.print("acc bias x  : ");
+        LOGGER_NOTICE_FMT("acc bias X  : %.3f", (readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
+        Serial1.println(readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+        acc_bias_x = (readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+
+        Serial1.print("acc bias y  : ");
+        LOGGER_NOTICE_FMT("acc bias Y  : %.3f", (readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
+        Serial1.println(readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+        acc_bias_y = (readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+
+        Serial1.print("acc bias z  : ");
+        LOGGER_NOTICE_FMT("acc bias Z  : %.3f", (readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
+        Serial1.println(readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+        acc_bias_z = (readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+
+        Serial1.print("gyro bias X : ");
+        LOGGER_NOTICE_FMT("gyro bias x  : %.3f", (readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY));
+        Serial1.println(readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY);
+        gyro_bias_x = (readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY);
+
+        Serial1.print("gyro bias y : ");
+        LOGGER_NOTICE_FMT("gyro bias Y  : %.3f", (readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY));
+        Serial1.println(readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY);
+        gyro_bias_y = (readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY);
+
+        Serial1.print("gyro bias z : ");
+        LOGGER_NOTICE_FMT("gyro bias Z  : %.3f", (readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY));
+        Serial1.println(readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY);
+        gyro_bias_z = (readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY);
+
+        Serial1.print("mag bias x  : ");
+        LOGGER_NOTICE_FMT("mag bias X  : %.3f", (readFloat(EEP_MAG_BIAS + 0)));
+        Serial1.println(readFloat(EEP_MAG_BIAS + 0));
+        mag_bias_x = (readFloat(EEP_MAG_BIAS + 0));
+
+        Serial1.print("mag bias y  : ");
+        LOGGER_NOTICE_FMT("mag bias Y  : %.3f", (readFloat(EEP_MAG_BIAS + 4)));
+        Serial1.println(readFloat(EEP_MAG_BIAS + 4));
+        mag_bias_y = (readFloat(EEP_MAG_BIAS + 4));
+
+        Serial1.print("mag bias z  : ");
+        LOGGER_NOTICE_FMT("mag bias Z  : %.3f", (readFloat(EEP_MAG_BIAS + 8)));
+        Serial1.println(readFloat(EEP_MAG_BIAS + 8));
+        mag_bias_z = (readFloat(EEP_MAG_BIAS + 8));
+
+        Serial1.print("mag scale x : ");
+        LOGGER_NOTICE_FMT("mag scale X  : %.3f", (readFloat(EEP_MAG_SCALE + 0)));
+        Serial1.println(readFloat(EEP_MAG_SCALE + 0));
+        mag_scale_x = (readFloat(EEP_MAG_SCALE + 0));
+
+        Serial1.print("mag scale y : ");
+        LOGGER_NOTICE_FMT("mag scale Y  : %.3f", (readFloat(EEP_MAG_SCALE + 4)));
+        Serial1.println(readFloat(EEP_MAG_SCALE + 4));
+        mag_scale_Y = (readFloat(EEP_MAG_SCALE + 4));
+
+        Serial1.print("mag scale z : ");
+        LOGGER_NOTICE_FMT("mag scale Z  : %.3f", (readFloat(EEP_MAG_SCALE + 8)));
+        Serial1.println(readFloat(EEP_MAG_SCALE + 8));
+        mag_scale_z = (readFloat(EEP_MAG_SCALE + 8));
+
+    } /*-------------------------------- end of printCalibration --------------------------------*/
+
+    void printBytes()
+    {
+        for (size_t i = 0; i < EEPROM_SIZE; ++i)
+            Serial1.println(readByte(i), HEX);
+    } /*-------------------------------- end of printBytes --------------------------------------*/
+
+    void setupEEPROM()
+    {
+        Serial1.println("EEPROM start");
+
+        if (!isCalibrated())
+        {
+            Serial1.println("Need Calibration!!");
+        }
+        Serial1.println("EEPROM calibration value is : ");
+        printCalibration();
+        Serial1.println("Loaded calibration value is : ");
+        loadCalibration();
+    } /*-------------------------------- end of setupEEPROM -------------------------------------*/
 
 }; /*----------------------------------- end of sensor.h class ----------------------------------*/

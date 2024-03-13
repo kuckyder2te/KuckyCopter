@@ -17,6 +17,9 @@
 #include "..\lib\putty_out.h"
 #include "dictionary.h"
 #include "..\lib\model.h"
+// #include "newPID.h"
+
+#include "sensors.h"
 
 #ifdef _PID_ADJUST
 
@@ -29,7 +32,7 @@
 #define ROW_STATE ROW_MENU + 46 // Position for state message
 #define COL_STATE COL_MENU + 16
 
-class PID_adjust : public Task::Base
+class Config : public Task::Base
 {
 private:
 	uint8_t _pidCount;
@@ -41,6 +44,7 @@ private:
 	double _addOn;
 	uint8_t _maxPID;
 	uint8_t _option;
+	Sensor *_sensor;
 
 	typedef enum
 	{
@@ -104,31 +108,31 @@ private:
 	Dictionary *_dict;
 
 public:
-	PID_adjust(const String &name)
+	Config(const String &name)
 		: Task::Base(name)
 	{
 		_pidCount = 0;
 		_maxPID = 0;
 	}
 
-	virtual ~PID_adjust() {}
+	virtual ~Config() {}
 
-	PID_adjust *setModel(model_t *model)
+	Config *setModel(model_t *model)
 	{
 		LOGGER_VERBOSE("Enter....");
 		_model = model;
 		LOGGER_VERBOSE("....leave");
 		return this;
-	} /* -------------------- end of PID_adjust *setModel -----------------------------*/
+	} /* -------------------- end of Config *setModel -----------------------------*/
 
-	PID_adjust *setSerial(HardwareSerial *serial)
+	Config *setSerial(HardwareSerial *serial)
 	{
 		_serial = serial;
 		_putty_out = new PUTTY_out(*serial);
 		return this;
-	} /* -------------------- end of PID_adjust *setSerial ----------------------------*/
+	} /* -------------------- end of Config *setSerial ----------------------------*/
 
-	PID_adjust *addPID(NewPID *pid, String name)
+	Config *addPID(NewPID *pid, String name)
 	{
 		LOGGER_NOTICE("Enter ...");
 		_namedPID[_pidCount]._pid = pid;
@@ -140,7 +144,13 @@ public:
 		_pidCount++;
 		LOGGER_NOTICE("... leave");
 		return this;
-	} /* -------------------- end of PID_adjust *addPID -----------------------------------------*/
+	} /* -------------------- end of Config *addPID -----------------------------------------*/
+
+	Config *addSensor(Sensor *sensor)
+	{
+		_sensor = sensor;
+		return this;
+	} /* -------------------- end of addSensor --------------------------------------------------*/
 
 	virtual void begin() override
 	{
@@ -153,7 +163,8 @@ public:
 
 	virtual void update() override
 	{
-		uint8_t row_add = -1;
+		uint8_t row_add = 0;
+
 		LOGGER_VERBOSE("Enter....");
 
 		if (_serial->available() > 0)
@@ -423,36 +434,83 @@ public:
 				break;
 
 			case 'K':
-				_putty_out->print(ROW_SELECT, COL_MENU + 44, YELLOW, "primary axis");
-				_putty_out->print(ROW_SELECT + 1, COL_MENU + 45, YELLOW, "P  :");
-				_putty_out->print(ROW_SELECT + 1, COL_MENU + 50, BLUE, 3, _namedPID[axisName::primary]._pid->getP());
-				_putty_out->print(ROW_SELECT + 2, COL_MENU + 45, YELLOW, "I  :");
-				_putty_out->print(ROW_SELECT + 2, COL_MENU + 50, BLUE, 3, _namedPID[axisName::primary]._pid->getI());
-				_putty_out->print(ROW_SELECT + 3, COL_MENU + 45, YELLOW, "D  :");
-				_putty_out->print(ROW_SELECT + 3, COL_MENU + 50, BLUE, 3, _namedPID[axisName::primary]._pid->getD());
-				_putty_out->print(ROW_SELECT + 4, COL_MENU + 45, YELLOW, "EF :");
-				_putty_out->print(ROW_SELECT + 4, COL_MENU + 52, BLUE, 0, _namedPID[axisName::primary]._pid->getEF());
+			row_add = 0;
+				_putty_out->print(ROW_SELECT, COL_MENU + 60, YELLOW, "primary axis");
+				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "P  :");
+				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getP());
+				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "I  :");
+				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getI());
+				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "D  :");
+				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getD());
+				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "EF :");
+				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 67, BLUE, 0, _namedPID[axisName::primary]._pid->getEF());
 
-				_putty_out->print(ROW_SELECT + 5, COL_MENU + 44, YELLOW, "secondary axis");
-				_putty_out->print(ROW_SELECT + 6, COL_MENU + 45, YELLOW, "P  :");
-				_putty_out->print(ROW_SELECT + 6, COL_MENU + 50, BLUE, 3, _namedPID[axisName::secondary]._pid->getP());
-				_putty_out->print(ROW_SELECT + 7, COL_MENU + 45, YELLOW, "I  :");
-				_putty_out->print(ROW_SELECT + 7, COL_MENU + 50, BLUE, 3, _namedPID[axisName::secondary]._pid->getI());
-				_putty_out->print(ROW_SELECT + 8, COL_MENU + 45, YELLOW, "D  :");
-				_putty_out->print(ROW_SELECT + 8, COL_MENU + 50, BLUE, 3, _namedPID[axisName::secondary]._pid->getD());
-				_putty_out->print(ROW_SELECT + 9, COL_MENU + 45, YELLOW, "EF :");
-				_putty_out->print(ROW_SELECT + 9, COL_MENU + 52, BLUE, 0, _namedPID[axisName::secondary]._pid->getEF());
+				_putty_out->print(ROW_SELECT + 5, COL_MENU + 60, YELLOW, "secondary axis");
+				_putty_out->print(ROW_SELECT + 6, COL_MENU + 60, YELLOW, "P  :");
+				_putty_out->print(ROW_SELECT + 6, COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getP());
+				_putty_out->print(ROW_SELECT + 7, COL_MENU + 60, YELLOW, "I  :");
+				_putty_out->print(ROW_SELECT + 7, COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getI());
+				_putty_out->print(ROW_SELECT + 8, COL_MENU + 60, YELLOW, "D  :");
+				_putty_out->print(ROW_SELECT + 8, COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getD());
+				_putty_out->print(ROW_SELECT + 9, COL_MENU + 60, YELLOW, "EF :");
+				_putty_out->print(ROW_SELECT + 9, COL_MENU + 67, BLUE, 0, _namedPID[axisName::secondary]._pid->getEF());
 
-				_putty_out->print(ROW_SELECT + 10, COL_MENU + 44, YELLOW, "yaw axis");
-				_putty_out->print(ROW_SELECT + 11, COL_MENU + 45, YELLOW, "P  :");
-				_putty_out->print(ROW_SELECT + 11, COL_MENU + 50, BLUE, 3, _namedPID[axisName::yaw]._pid->getP());
-				_putty_out->print(ROW_SELECT + 12, COL_MENU + 45, YELLOW, "I  :");
-				_putty_out->print(ROW_SELECT + 12, COL_MENU + 50, BLUE, 3, _namedPID[axisName::yaw]._pid->getI());
-				_putty_out->print(ROW_SELECT + 13, COL_MENU + 45, YELLOW, "D  :");
-				_putty_out->print(ROW_SELECT + 13, COL_MENU + 50, BLUE, 3, _namedPID[axisName::yaw]._pid->getD());
-				_putty_out->print(ROW_SELECT + 14, COL_MENU + 45, YELLOW, "EF :");
-				_putty_out->print(ROW_SELECT + 14, COL_MENU + 52, BLUE, 0, _namedPID[axisName::yaw]._pid->getEF());
+				_putty_out->print(ROW_SELECT + 10, COL_MENU + 60, YELLOW, "yaw axis");
+				_putty_out->print(ROW_SELECT + 11, COL_MENU + 60, YELLOW, "P  :");
+				_putty_out->print(ROW_SELECT + 11, COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getP());
+				_putty_out->print(ROW_SELECT + 12, COL_MENU + 60, YELLOW, "I  :");
+				_putty_out->print(ROW_SELECT + 12, COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getI());
+				_putty_out->print(ROW_SELECT + 13, COL_MENU + 60, YELLOW, "D  :");
+				_putty_out->print(ROW_SELECT + 13, COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getD());
+				_putty_out->print(ROW_SELECT + 14, COL_MENU + 60, YELLOW, "EF :");
+				_putty_out->print(ROW_SELECT + 14, COL_MENU + 67, BLUE, 0, _namedPID[axisName::yaw]._pid->getEF());
+				row_add = 0;
+				break;
 
+			case 'N':
+			row_add = 0;
+				Serial1.println("first option");
+				// Serial1.println("Accel Gyro calibration will start in 5sec.");
+				// Serial1.println("Please leave the device still on the flat plane.");
+
+				_putty_out->print(ROW_SELECT, COL_MENU, YELLOW, "Accel Gyro calibration will start in ca. 5 sec.");
+				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU, YELLOW, "Please leave the device still on the flat plane.");
+
+				delay(2000);
+
+				_putty_out->setCursor(ROW_SELECT, COL_MENU);
+				_putty_out->clearLine();
+				_putty_out->setCursor(ROW_SELECT + 1, COL_MENU);
+				_putty_out->clearLine();
+				_putty_out->print(ROW_SELECT, COL_MENU + 15, RED, "< calibration parameters >");
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 4, YELLOW, "accel bias   gyro bias   mag bias  mag scale");
+				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 4, YELLOW, "   [g]        [deg/s]      [mG]             ");
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "X");
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "Y");
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "Z");
+
+				_sensor->setCalibration(true); // temp_debug
+
+				_putty_out->print(ROW_SELECT + (row_add -= 4), COL_MENU + 7, CYAN, 3, _sensor->acc_bias_x);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, _sensor->gyro_bias_x);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, _sensor->mag_bias_x);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, _sensor->mag_scale_x);
+
+				Serial1.print("row_add = ");
+				Serial1.println(row_add);		//6
+
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, _sensor->acc_bias_y);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, _sensor->gyro_bias_y);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, _sensor->mag_bias_y);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, _sensor->mag_scale_Y);
+
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, _sensor->acc_bias_z);		
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, _sensor->gyro_bias_z);				
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, _sensor->mag_bias_z);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, _sensor->mag_scale_z);
+
+				Serial1.println("end");
+				row_add = 0;
 				break;
 
 			case 'M':
@@ -807,5 +865,5 @@ public:
 		LOGGER_NOTICE_FMT("New Factor = %f", _newAddOn);
 	} /*----------------------------- end of setDecimalPlaces -----------------------------------*/
 
-}; /*------------------------- end of PID_adjust class ------------------------------------------*/
+}; /*------------------------- end of Config class ------------------------------------------*/
 #endif

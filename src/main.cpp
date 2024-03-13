@@ -31,7 +31,7 @@
 #include "..\lib\axisYaw.h"
 #include "..\lib\flyController.h"
 #include "..\lib\performance.h"
-#include "..\lib\configurator.h"
+#include "..\lib\config.h"
 #include "..\lib\pos_LED.h"
 
 #define LOCAL_DEBUG
@@ -49,7 +49,7 @@ HardwareSerial *TestOutput = &Serial2;   /// Bluetooth Putty for PID adjust
 HardwareSerial *DebugOutput = &Serial1;  /// Bluetooth CoolTerm for debuging
 
 #ifdef _PID_ADJUST
-PID_adjust *_pid_adjust;
+Config *_config;
 #endif
 
 void wireModel();
@@ -91,15 +91,16 @@ void main_setup()
 #endif
 
 #ifdef _PID_ADJUST
-  Tasks.add<PID_adjust>("pidadjust")
+  Tasks.add<Config>("pidadjust")
       ->setSerial(&Serial2)
       ->setModel(&model)
       ->addPID(reinterpret_cast<AxisBase *>(Tasks["axismotor_a"].get())->getPid(), "axismotor_a")
       ->addPID(reinterpret_cast<AxisBase *>(Tasks["axismotor_b"].get())->getPid(), "axismotor_b")
       ->addPID(reinterpret_cast<AxisBase *>(Tasks["axisyaw"].get())->getPid(), "axisyaw")
+      ->addSensor(reinterpret_cast<Sensor *>(Tasks["sensor"].get())) 
       ->startFps(100);
-  _pid_adjust = reinterpret_cast<PID_adjust *>(Tasks["pidadjust"].get());
-  _pid_adjust->display_Menu();
+  _config = reinterpret_cast<Config *>(Tasks["pidadjust"].get());
+  _config->display_Menu();
 #endif
 
   LOGGER_NOTICE("Program is initialized");
