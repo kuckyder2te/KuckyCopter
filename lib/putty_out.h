@@ -33,6 +33,17 @@
 #define MAGENTA 6
 #define BLACK 7
 
+//Background colors
+#define BACKGROUND_BLACK		"\e[40m"
+#define BACKGROUND_RED			"\e[41m"
+#define BACKGROUND_GREEN		"\e[42m"
+#define BACKGROUND_YELLOW		"\e[43m"
+#define BACKGROUND_BLUE			"\e[44m"
+#define BACKGROUND_MAGNETA		"\e[45m"
+#define BACKGROUND_CYAN			"\e[46m"
+#define BACKGROUND_WHITE		"\e[47m"
+#define BACKGROUND_DEFAULT		"\e[49m"
+
 class PUTTY_out
 {
 
@@ -215,6 +226,13 @@ public:
 		/* Print characters red */
 		_serial.print("\e[31m");
 	} //*-------------------------- end of red ----------------------------------------*/
+
+	void red_background()
+	{
+		/* Print characters red */
+		_serial.print(BACKGROUND_RED);
+	} //*-------------------------- end of red ----------------------------------------*/
+
 
 	void yellow()
 	{

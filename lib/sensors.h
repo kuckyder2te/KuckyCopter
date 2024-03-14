@@ -46,7 +46,6 @@ const uint8_t EEPROM_SIZE = 1 + sizeof(float) * 3 * 4;
 
 class Sensor : public Task::Base
 {
-
     enum EEP_ADDR
     {
         EEP_CALIB_FLAG = 0x64,
@@ -149,8 +148,8 @@ public:
         //    LOGGER_NOTICE_FMT("Wire %d", Wire.availableForWrite());
         if (!imuCalibration)
         {
- //           Serial1.println("IMU calibration is false");
-
+            //           Serial1.println("IMU calibration is false");
+            LOGGER_NOTICE_CHK("IMU calibration is false");
             if (_mpu9250.update())
             {
                 LOGGER_VERBOSE("_mpu9250.update");
@@ -198,10 +197,9 @@ public:
         }
         else
         {
-            Serial1.println("IMU calibration is true");
-            
-            delay(5000);
+            LOGGER_NOTICE_CHK("IMU calibration is true");
 
+            delay(5000);
             // calibrate anytime you want to
             Serial1.println("Accel Gyro calibration will start in 5sec.");
             Serial1.println("Please leave the device still on the flat plane.");
@@ -224,8 +222,6 @@ public:
             loadCalibration();
 
             setCalibration(false);
-
-
         }
         LOGGER_VERBOSE("....leave");
     } /* ------------------ end of update -------------------------------------------------------*/
@@ -282,6 +278,8 @@ public:
     {
         byte valueIn = 0;
         EEPROM.get(address, valueIn);
+        Serial1.print("Value = ");
+        Serial1.println(valueIn);
         return valueIn;
     } /*-------------------------------- end of readByte ---------------------------------------*/
 
@@ -289,7 +287,8 @@ public:
     {
         float valueIn = 0;
         EEPROM.get(address, valueIn);
-    //    Serial1.print("Value = ");Serial1.println(valueIn);
+        Serial1.print("Value = ");
+        Serial1.println(valueIn);
         return valueIn;
     } /*-------------------------------- end of readFloat ---------------------------------------*/
 
@@ -366,65 +365,64 @@ public:
         Serial1.print("calibrated? : ");
         Serial1.println(readByte(EEP_CALIB_FLAG) ? "YES" : "NO");
 
-        Serial1.print("acc bias x  : ");
-        LOGGER_NOTICE_FMT("acc bias X  : %.3f", (readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
-        Serial1.println(readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
         acc_bias_x = (readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+        Serial1.print("acc bias x  : ");
+        Serial1.println(readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+        LOGGER_NOTICE_FMT("acc bias X  : %.3f", (readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
 
-        Serial1.print("acc bias y  : ");
-        LOGGER_NOTICE_FMT("acc bias Y  : %.3f", (readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
-        Serial1.println(readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
         acc_bias_y = (readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+        Serial1.print("acc bias y  : ");
+        Serial1.println(readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+        LOGGER_NOTICE_FMT("acc bias Y  : %.3f", (readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
 
-        Serial1.print("acc bias z  : ");
-        LOGGER_NOTICE_FMT("acc bias Z  : %.3f", (readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
-        Serial1.println(readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
         acc_bias_z = (readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
-
-        Serial1.print("gyro bias X : ");
-        LOGGER_NOTICE_FMT("gyro bias x  : %.3f", (readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY));
-        Serial1.println(readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY);
+        Serial1.print("acc bias z  : ");
+        Serial1.println(readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
+        LOGGER_NOTICE_FMT("acc bias Z  : %.3f", (readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
         gyro_bias_x = (readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY);
+        Serial1.print("gyro bias X : ");
+        Serial1.println(readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY);
+        LOGGER_NOTICE_FMT("gyro bias x  : %.3f", (readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY));
 
-        Serial1.print("gyro bias y : ");
-        LOGGER_NOTICE_FMT("gyro bias Y  : %.3f", (readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY));
-        Serial1.println(readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY);
         gyro_bias_y = (readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY);
+        Serial1.print("gyro bias y : ");
+        Serial1.println(readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY);
+        LOGGER_NOTICE_FMT("gyro bias Y  : %.3f", (readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY));
 
-        Serial1.print("gyro bias z : ");
-        LOGGER_NOTICE_FMT("gyro bias Z  : %.3f", (readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY));
-        Serial1.println(readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY);
         gyro_bias_z = (readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY);
+        Serial1.print("gyro bias z : ");
+        Serial1.println(readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY);
+        LOGGER_NOTICE_FMT("gyro bias Z  : %.3f", (readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY));
 
-        Serial1.print("mag bias x  : ");
-        LOGGER_NOTICE_FMT("mag bias X  : %.3f", (readFloat(EEP_MAG_BIAS + 0)));
-        Serial1.println(readFloat(EEP_MAG_BIAS + 0));
         mag_bias_x = (readFloat(EEP_MAG_BIAS + 0));
+        Serial1.print("mag bias x  : ");
+        Serial1.println(readFloat(EEP_MAG_BIAS + 0));
+        LOGGER_NOTICE_FMT("mag bias X  : %.3f", (readFloat(EEP_MAG_BIAS + 0)));
 
-        Serial1.print("mag bias y  : ");
-        LOGGER_NOTICE_FMT("mag bias Y  : %.3f", (readFloat(EEP_MAG_BIAS + 4)));
-        Serial1.println(readFloat(EEP_MAG_BIAS + 4));
         mag_bias_y = (readFloat(EEP_MAG_BIAS + 4));
+        Serial1.print("mag bias y  : ");
+        Serial1.println(readFloat(EEP_MAG_BIAS + 4));
+        LOGGER_NOTICE_FMT("mag bias Y  : %.3f", (readFloat(EEP_MAG_BIAS + 4)));
 
-        Serial1.print("mag bias z  : ");
-        LOGGER_NOTICE_FMT("mag bias Z  : %.3f", (readFloat(EEP_MAG_BIAS + 8)));
-        Serial1.println(readFloat(EEP_MAG_BIAS + 8));
         mag_bias_z = (readFloat(EEP_MAG_BIAS + 8));
+        Serial1.print("mag bias z  : ");
+        Serial1.println(readFloat(EEP_MAG_BIAS + 8));
+        LOGGER_NOTICE_FMT("mag bias Z  : %.3f", (readFloat(EEP_MAG_BIAS + 8)));
 
-        Serial1.print("mag scale x : ");
-        LOGGER_NOTICE_FMT("mag scale X  : %.3f", (readFloat(EEP_MAG_SCALE + 0)));
-        Serial1.println(readFloat(EEP_MAG_SCALE + 0));
         mag_scale_x = (readFloat(EEP_MAG_SCALE + 0));
+        Serial1.print("mag scale x : ");
+        Serial1.println(readFloat(EEP_MAG_SCALE + 0));
+        LOGGER_NOTICE_FMT("mag scale X  : %.3f", (readFloat(EEP_MAG_SCALE + 0)));
 
-        Serial1.print("mag scale y : ");
-        LOGGER_NOTICE_FMT("mag scale Y  : %.3f", (readFloat(EEP_MAG_SCALE + 4)));
-        Serial1.println(readFloat(EEP_MAG_SCALE + 4));
         mag_scale_Y = (readFloat(EEP_MAG_SCALE + 4));
+        Serial1.print("mag scale y : ");
+        Serial1.println(readFloat(EEP_MAG_SCALE + 4));
+        LOGGER_NOTICE_FMT("mag scale Y  : %.3f", (readFloat(EEP_MAG_SCALE + 4)));
 
-        Serial1.print("mag scale z : ");
-        LOGGER_NOTICE_FMT("mag scale Z  : %.3f", (readFloat(EEP_MAG_SCALE + 8)));
-        Serial1.println(readFloat(EEP_MAG_SCALE + 8));
         mag_scale_z = (readFloat(EEP_MAG_SCALE + 8));
+        Serial1.print("mag scale z : ");
+        Serial1.println(readFloat(EEP_MAG_SCALE + 8));
+        LOGGER_NOTICE_FMT("mag scale Z  : %.3f", (readFloat(EEP_MAG_SCALE + 8)));
 
     } /*-------------------------------- end of printCalibration --------------------------------*/
 
@@ -447,5 +445,4 @@ public:
         Serial1.println("Loaded calibration value is : ");
         loadCalibration();
     } /*-------------------------------- end of setupEEPROM -------------------------------------*/
-
-}; /*----------------------------------- end of sensor.h class ----------------------------------*/
+};    /*----------------------------------- end of sensor.h class ----------------------------------*/

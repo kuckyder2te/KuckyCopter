@@ -434,7 +434,7 @@ public:
 				break;
 
 			case 'K':
-			row_add = 0;
+				row_add = 0;
 				_putty_out->print(ROW_SELECT, COL_MENU + 60, YELLOW, "primary axis");
 				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "P  :");
 				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getP());
@@ -468,7 +468,7 @@ public:
 				break;
 
 			case 'N':
-			row_add = 0;
+				row_add = 0;
 				Serial1.println("first option");
 				// Serial1.println("Accel Gyro calibration will start in 5sec.");
 				// Serial1.println("Please leave the device still on the flat plane.");
@@ -490,6 +490,8 @@ public:
 				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "Z");
 
 				_sensor->setCalibration(true); // temp_debug
+				// break;
+				// case 'B':
 
 				_putty_out->print(ROW_SELECT + (row_add -= 4), COL_MENU + 7, CYAN, 3, _sensor->acc_bias_x);
 				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, _sensor->gyro_bias_x);
@@ -497,15 +499,15 @@ public:
 				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, _sensor->mag_scale_x);
 
 				Serial1.print("row_add = ");
-				Serial1.println(row_add);		//6
+				Serial1.println(row_add); // 6
 
 				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, _sensor->acc_bias_y);
 				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, _sensor->gyro_bias_y);
 				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, _sensor->mag_bias_y);
 				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, _sensor->mag_scale_Y);
 
-				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, _sensor->acc_bias_z);		
-				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, _sensor->gyro_bias_z);				
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, _sensor->acc_bias_z);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, _sensor->gyro_bias_z);
 				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, _sensor->mag_bias_z);
 				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, _sensor->mag_scale_z);
 
@@ -779,6 +781,8 @@ public:
 		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, YELLOW, "(C) Copies the primary values to the secondary axis");
 		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, YELLOW, "(V) all values are set to 0 in the EEPROM.");
 		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, YELLOW, "(G) get factory defaults");
+		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, YELLOW, "(N) Start IMU calibration");
+		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, YELLOW, "(B) Print IMU vaues");
 		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, YELLOW, "(M) display the menu");
 		_putty_out->print(ROW_MENU + (row_add += 2), COL_MENU, WHITE, "---------------------------------------------------------");
 
