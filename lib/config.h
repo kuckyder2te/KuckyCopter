@@ -398,33 +398,35 @@ public:
 				break;
 
 			case 'V': ///< Set all PID parameters to 0
-				_namedPID[axisName::primary]._pid->setP(PID_P_MIN);
-				_namedPID[axisName::primary]._pid->setI(0);
-				_namedPID[axisName::primary]._pid->setD(0);
-				_namedPID[axisName::primary]._pid->setEF(50);
-				_namedPID[axisName::secondary]._pid->setP(PID_P_MIN);
-				_namedPID[axisName::secondary]._pid->setI(0);
-				_namedPID[axisName::secondary]._pid->setD(0);
-				_namedPID[axisName::secondary]._pid->setEF(50);
-				_namedPID[axisName::yaw]._pid->setP(PID_P_MIN);
-				_namedPID[axisName::yaw]._pid->setI(0);
-				_namedPID[axisName::yaw]._pid->setD(0);
-				_namedPID[axisName::yaw]._pid->setEF(50);
+				set_all_pids_to_null();
+				// _namedPID[axisName::primary]._pid->setP(PID_P_MIN);
+				// _namedPID[axisName::primary]._pid->setI(0);
+				// _namedPID[axisName::primary]._pid->setD(0);
+				// _namedPID[axisName::primary]._pid->setEF(50);
+				// _namedPID[axisName::secondary]._pid->setP(PID_P_MIN);
+				// _namedPID[axisName::secondary]._pid->setI(0);
+				// _namedPID[axisName::secondary]._pid->setD(0);
+				// _namedPID[axisName::secondary]._pid->setEF(50);
+				// _namedPID[axisName::yaw]._pid->setP(PID_P_MIN);
+				// _namedPID[axisName::yaw]._pid->setI(0);
+				// _namedPID[axisName::yaw]._pid->setD(0);
+				// _namedPID[axisName::yaw]._pid->setEF(50);
 				break;
 
 			case 'G': ///< get factory default
-				_namedPID[axisName::primary]._pid->setP(0.1);
-				_namedPID[axisName::primary]._pid->setI(0.15);
-				_namedPID[axisName::primary]._pid->setD(0.08);
-				_namedPID[axisName::primary]._pid->setEF(50);
-				_namedPID[axisName::secondary]._pid->setP(0.1);
-				_namedPID[axisName::secondary]._pid->setI(0.15);
-				_namedPID[axisName::secondary]._pid->setD(0.08);
-				_namedPID[axisName::secondary]._pid->setEF(50);
-				_namedPID[axisName::yaw]._pid->setP(0.01);
-				_namedPID[axisName::yaw]._pid->setI(0);
-				_namedPID[axisName::yaw]._pid->setD(0);
-				_namedPID[axisName::yaw]._pid->setEF(50);
+				set_factory_default();
+				// _namedPID[axisName::primary]._pid->setP(0.1);
+				// _namedPID[axisName::primary]._pid->setI(0.15);
+				// _namedPID[axisName::primary]._pid->setD(0.08);
+				// _namedPID[axisName::primary]._pid->setEF(50);
+				// _namedPID[axisName::secondary]._pid->setP(0.1);
+				// _namedPID[axisName::secondary]._pid->setI(0.15);
+				// _namedPID[axisName::secondary]._pid->setD(0.08);
+				// _namedPID[axisName::secondary]._pid->setEF(50);
+				// _namedPID[axisName::yaw]._pid->setP(0.01);
+				// _namedPID[axisName::yaw]._pid->setI(0);
+				// _namedPID[axisName::yaw]._pid->setD(0);
+				// _namedPID[axisName::yaw]._pid->setEF(50);
 				break;
 
 			case 'C': ///< Copies the primary values to the secondary axis
@@ -435,46 +437,84 @@ public:
 				break;
 
 			case 'K':
-//			print_PID_values();
-				row_add = 0;
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "primary axis");
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "P  :");
-				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getP());
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "I  :");
-				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getI());
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "D  :");
-				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getD());
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "EF :");
-				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 67, BLUE, 0, _namedPID[axisName::primary]._pid->getEF());
+				print_current_pidvalues();
+				// row_add = 0;
+				// 	_putty_out->print(ROW_SELECT, COL_MENU + 60, YELLOW, "primary axis");
+				// 	_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "P  :");
+				// 	_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getP());
+				// 	_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "I  :");
+				// 	_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getI());
+				// 	_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "D  :");
+				// 	_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getD());
+				// 	_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "EF :");
+				// 	_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 67, BLUE, 0, _namedPID[axisName::primary]._pid->getEF());
 
-				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 60, YELLOW, "secondary axis");
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "P  :");
-				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getP());
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "I  :");
-				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getI());
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "D  :");
-				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getD());
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "EF :");
-				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 67, BLUE, 0, _namedPID[axisName::secondary]._pid->getEF());
+				// 	_putty_out->print(ROW_SELECT + 5, COL_MENU + 60, YELLOW, "secondary axis");
+				// 	_putty_out->print(ROW_SELECT + 6, COL_MENU + 60, YELLOW, "P  :");
+				// 	_putty_out->print(ROW_SELECT + 6, COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getP());
+				// 	_putty_out->print(ROW_SELECT + 7, COL_MENU + 60, YELLOW, "I  :");
+				// 	_putty_out->print(ROW_SELECT + 7, COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getI());
+				// 	_putty_out->print(ROW_SELECT + 8, COL_MENU + 60, YELLOW, "D  :");
+				// 	_putty_out->print(ROW_SELECT + 8, COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getD());
+				// 	_putty_out->print(ROW_SELECT + 9, COL_MENU + 60, YELLOW, "EF :");
+				// 	_putty_out->print(ROW_SELECT + 9, COL_MENU + 67, BLUE, 0, _namedPID[axisName::secondary]._pid->getEF());
 
-				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 60, YELLOW, "yaw axis");
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "P  :");
-				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getP());
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "I  :");
-				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getI());
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "D  :");
-				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getD());
-				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "EF :");
-				_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 67, BLUE, 0, _namedPID[axisName::yaw]._pid->getEF());
-				row_add = 0;
+				// 	_putty_out->print(ROW_SELECT + 10, COL_MENU + 60, YELLOW, "yaw axis");
+				// 	_putty_out->print(ROW_SELECT + 11, COL_MENU + 60, YELLOW, "P  :");
+				// 	_putty_out->print(ROW_SELECT + 11, COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getP());
+				// 	_putty_out->print(ROW_SELECT + 12, COL_MENU + 60, YELLOW, "I  :");
+				// 	_putty_out->print(ROW_SELECT + 12, COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getI());
+				// 	_putty_out->print(ROW_SELECT + 13, COL_MENU + 60, YELLOW, "D  :");
+				// 	_putty_out->print(ROW_SELECT + 13, COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getD());
+				// 	_putty_out->print(ROW_SELECT + 14, COL_MENU + 60, YELLOW, "EF :");
+				// 	_putty_out->print(ROW_SELECT + 14, COL_MENU + 67, BLUE, 0, _namedPID[axisName::yaw]._pid->getEF());
+				// 	row_add = 0;
 				break;
 
 			case 'N':
-				_sensor->start_Calibration(true); // temp_debug
-				break;
-				
-			case 'B':
-				_sensor->clearCalibration();
+				row_add = 0;
+				Serial1.println("first option");
+				// Serial1.println("Accel Gyro calibration will start in 5sec.");
+				// Serial1.println("Please leave the device still on the flat plane.");
+
+				_putty_out->print(ROW_SELECT, COL_MENU, YELLOW, "Accel Gyro calibration will start in ca. 5 sec.");
+				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU, YELLOW, "Please leave the device still on the flat plane.");
+
+				delay(2000);
+
+				_putty_out->setCursor(ROW_SELECT, COL_MENU);
+				_putty_out->clearLine();
+				_putty_out->setCursor(ROW_SELECT + 1, COL_MENU);
+				_putty_out->clearLine();
+				_putty_out->print(ROW_SELECT, COL_MENU + 15, RED, "< calibration parameters >");
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 4, YELLOW, "accel bias   gyro bias   mag bias  mag scale");
+				_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 4, YELLOW, "   [g]        [deg/s]      [mG]             ");
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "X");
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "Y");
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "Z");
+
+				_sensor->setCalibration(true); // temp_debug
+
+				_putty_out->print(ROW_SELECT + (row_add -= 4), COL_MENU + 7, CYAN, 3, _sensor->acc_bias_x);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, _sensor->gyro_bias_x);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, _sensor->mag_bias_x);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, _sensor->mag_scale_x);
+
+				Serial1.print("row_add = ");
+				Serial1.println(row_add); // 6
+
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, _sensor->acc_bias_y);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, _sensor->gyro_bias_y);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, _sensor->mag_bias_y);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, _sensor->mag_scale_Y);
+
+				_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, _sensor->acc_bias_z);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, _sensor->gyro_bias_z);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, _sensor->mag_bias_z);
+				_putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, _sensor->mag_scale_z);
+
+				Serial1.println("end");
+				row_add = 0;
 				break;
 
 			case 'M':
@@ -831,5 +871,72 @@ public:
 		LOGGER_NOTICE_FMT("New Factor = %f", _newAddOn);
 	} /*----------------------------- end of setDecimalPlaces -----------------------------------*/
 
-}; /*------------------------- end of Config class ------------------------------------------*/
+	void print_current_pidvalues()
+	{
+		uint8_t row_add = 0;
+		_putty_out->print(ROW_SELECT, COL_MENU + 60, YELLOW, "primary axis");
+		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "P  :");
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getP());
+		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "I  :");
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getI());
+		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "D  :");
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getD());
+		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "EF :");
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 67, BLUE, 0, _namedPID[axisName::primary]._pid->getEF());
+
+		_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 60, YELLOW, "secondary axis");
+		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "P  :");
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getP());
+		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "I  :");
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getI());
+		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 60, YELLOW, "D  :");
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getD());
+		_putty_out->print(ROW_SELECT + 9, COL_MENU + 60, YELLOW, "EF :");
+		_putty_out->print(ROW_SELECT + 9, COL_MENU + 67, BLUE, 0, _namedPID[axisName::secondary]._pid->getEF());
+
+		_putty_out->print(ROW_SELECT + 10, COL_MENU + 60, YELLOW, "yaw axis");
+		_putty_out->print(ROW_SELECT + 11, COL_MENU + 60, YELLOW, "P  :");
+		_putty_out->print(ROW_SELECT + 11, COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getP());
+		_putty_out->print(ROW_SELECT + 12, COL_MENU + 60, YELLOW, "I  :");
+		_putty_out->print(ROW_SELECT + 12, COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getI());
+		_putty_out->print(ROW_SELECT + 13, COL_MENU + 60, YELLOW, "D  :");
+		_putty_out->print(ROW_SELECT + 13, COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getD());
+		_putty_out->print(ROW_SELECT + 14, COL_MENU + 60, YELLOW, "EF :");
+		_putty_out->print(ROW_SELECT + 14, COL_MENU + 67, BLUE, 0, _namedPID[axisName::yaw]._pid->getEF());
+		row_add = 0;
+	} /*----------------------------- end of print_current_pidvalues ----------------------------*/
+
+	void set_all_pids_to_null()
+	{
+		_namedPID[axisName::primary]._pid->setP(PID_P_MIN);
+		_namedPID[axisName::primary]._pid->setI(0);
+		_namedPID[axisName::primary]._pid->setD(0);
+		_namedPID[axisName::primary]._pid->setEF(50);
+		_namedPID[axisName::secondary]._pid->setP(PID_P_MIN);
+		_namedPID[axisName::secondary]._pid->setI(0);
+		_namedPID[axisName::secondary]._pid->setD(0);
+		_namedPID[axisName::secondary]._pid->setEF(50);
+		_namedPID[axisName::yaw]._pid->setP(PID_P_MIN);
+		_namedPID[axisName::yaw]._pid->setI(0);
+		_namedPID[axisName::yaw]._pid->setD(0);
+		_namedPID[axisName::yaw]._pid->setEF(50);
+	} /*----------------------------- end of set_all_pids_to_null -------------------------------*/
+
+	void set_factory_default()
+	{
+		_namedPID[axisName::primary]._pid->setP(0.1);
+		_namedPID[axisName::primary]._pid->setI(0.15);
+		_namedPID[axisName::primary]._pid->setD(0.08);
+		_namedPID[axisName::primary]._pid->setEF(50);
+		_namedPID[axisName::secondary]._pid->setP(0.1);
+		_namedPID[axisName::secondary]._pid->setI(0.15);
+		_namedPID[axisName::secondary]._pid->setD(0.08);
+		_namedPID[axisName::secondary]._pid->setEF(50);
+		_namedPID[axisName::yaw]._pid->setP(0.01);
+		_namedPID[axisName::yaw]._pid->setI(0);
+		_namedPID[axisName::yaw]._pid->setD(0);
+		_namedPID[axisName::yaw]._pid->setEF(50);
+	} /*----------------------------- end of set_factory_default --------------------------------*/
+
+}; /*------------------------- end of Config class ----------------------------------------------*/
 #endif

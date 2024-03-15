@@ -119,12 +119,12 @@ public:
 
         _mpu9250.setMagneticDeclination(51);
 
-        uint8_t ERR = _mpu9250.get_i2c_error(); // temp_debug
-        if (ERR >= 7)
-        { // to avoid stickbreaker-i2c branch's error code
-            Serial.print("I2C ERROR CODE : ");
-            Serial.println(ERR);
-        }
+        // uint8_t ERR = _mpu9250.get_i2c_error(); // temp_debug
+        // if (ERR >= 7)
+        // { // to avoid stickbreaker-i2c branch's error code
+        //     Serial.print("I2C ERROR CODE : ");
+        //     Serial.println(ERR);
+        // }
 
         if (!_mpu9250.setup(0x68))
         {

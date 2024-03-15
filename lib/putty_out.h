@@ -165,19 +165,19 @@ public:
 
 	void clearLine()
 	{ /* Deletes the completely current line. */
-		_serial.print("\e[2K"); 
+		_serial.print("\e[2K");
 	} /*-------------------------- end of clearLine -----------------------------------*/
 
 	void clearLineBefore()
 	{ /* Deletes the completely current line. */
-		_serial.print("\e[1K"); 
+		_serial.print("\e[1K");
 	} /*-------------------------- end of clearLine -----------------------------------*/
-	
+
 	void clearLineAfter()
 	{ /* Deletes the completely current line. */
-		_serial.print("\e[K"); 
+		_serial.print("\e[K");
 	} /*-------------------------- end of clearLine -----------------------------------*/
-	
+
 	void setCursor(uint8_t x, uint8_t y)
 	{
 		_serial.write("\e[");
@@ -191,6 +191,11 @@ public:
 	{
 		_serial.print("\e[?25l");
 	} /*-------------------------- end of setCursor -----------------------------------*/
+
+	void setCursorOn()
+	{
+		_serial.print("\e[?25h");
+	} /*-------------------------- end of setCursorOn -----------------------------------*/
 
 	/* Deletes the line according to the number of characters.
 	 * Beginning by r and c.  */
@@ -275,4 +280,11 @@ public:
 		/* Print characters black */
 		_serial.print("\e[30m");
 	} //-------------------------- end of black ----------------------------------------*/
+
+void green_BG()
+	{
+		/* Print on background green */
+		_serial.print("\e[42m");
+	} //-------------------------- end of green_BG -------------------------------------*/
+
 };
