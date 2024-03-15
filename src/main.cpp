@@ -79,7 +79,7 @@ void main_setup()
       ->init(&model) // He gets the complete model.
       ->setYawAxis(reinterpret_cast<AxisYaw *>(Tasks["axisyaw"].get()))
       ->startFps(10);
-  Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->startFps(100);
+  Tasks.add<Sensor>("sensor")->setModel(&model.sensorData)->setSerial(&Serial2)->startFps(100);
   Tasks.add<Sonic>("sonic")->setModel(&model.sonicData)->startFps(10);
   //  Tasks.add<Battery>("battery")->setModel(&model.batteryData)->startFps(0.1);
   Tasks.add<Temperature>("temperature")->setModel(&model.temperatureData)->startFps(0.01); // One measurement every 100 seconds

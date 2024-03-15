@@ -21,6 +21,13 @@
 #define DOT_3 0.001  //  3       ""
 #define DOT_4 0.0001 //  4       ""
 
+#define ROW_MENU 3 ///< First position for the main menue
+#define COL_MENU 10
+#define ROW_SELECT 24
+#define COL_PID_VALUE 13
+#define ROW_STATE ROW_MENU + 46 // Position for state message
+#define COL_STATE COL_MENU + 16
+
 /* Motos and axis */
 typedef enum
 {
