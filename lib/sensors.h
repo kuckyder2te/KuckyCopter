@@ -223,40 +223,20 @@ public:
             delay(5000);
             _mpu9250.calibrateMag();
 
-        //    printCalibration();
+            Serial1.println("print_calibrate_values");
+            print_calibrate_values();
             _mpu9250.verbose(false);
 
             // save to eeprom
-            Serial1.println("saveCalibration = ");
+            Serial1.println("saveCalibration");
             saveCalibration();
 
             // load from eeprom
-            Serial1.println("loadCalibration = ");
+            Serial1.println("loadCalibration");
             loadCalibration();
 
-            _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 15, RED, "< calibration parameters >");
-            _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 4, YELLOW, "accel bias   gyro bias   mag bias  mag scale");
-            _putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 4, YELLOW, "   [g]        [deg/s]      [mG]             ");
-            _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "X");
-            _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "Y");
-            _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "Z");
-
-            _putty_out->print(ROW_SELECT + (row_add -= 4), COL_MENU + 7, CYAN, 3, (readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
-            _putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, (readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY));
-            _putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, (readFloat(EEP_MAG_BIAS + 0)));
-            _putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, (readFloat(EEP_MAG_SCALE + 0)));
-
-            _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, (readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
-            _putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, (readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY));
-            _putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, (readFloat(EEP_MAG_BIAS + 4)));
-            _putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, (readFloat(EEP_MAG_SCALE + 4)));
-
-            _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, (readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
-            _putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, (readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY));
-            _putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, (readFloat(EEP_MAG_BIAS + 8)));
-            _putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, (readFloat(EEP_MAG_SCALE + 8)));
-
             start_Calibration(false);
+            row_add = 0;
         }
         LOGGER_VERBOSE("....leave");
     } /* ------------------ end of update -------------------------------------------------------*/
@@ -394,9 +374,31 @@ public:
         }
     } /*-------------------------------- end of loadCalibration ---------------------------------*/
 
-    void printCalibration()
+    void print_calibrate_values()
     {
-     
+        uint8_t row_add = 0;
+        _putty_out->print(ROW_SELECT + (row_add += 6), COL_MENU + 15, RED, "< calibration parameters >");
+        _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 4, YELLOW, "accel bias   gyro bias   mag bias  mag scale");
+        _putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 4, YELLOW, "   [g]        [deg/s]      [mG]             ");
+        _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "X");
+        _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "Y");
+        _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "Z");
+
+        _putty_out->print(ROW_SELECT + (row_add -= 4), COL_MENU + 7, CYAN, 3, (readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
+        _putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, (readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY));
+        _putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, (readFloat(EEP_MAG_BIAS + 0)));
+        _putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, (readFloat(EEP_MAG_SCALE + 0)));
+
+        _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, (readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
+        _putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, (readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY));
+        _putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, (readFloat(EEP_MAG_BIAS + 4)));
+        _putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, (readFloat(EEP_MAG_SCALE + 4)));
+
+        _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 7, CYAN, 3, (readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
+        _putty_out->print(ROW_SELECT + row_add, COL_MENU + 19, CYAN, 3, (readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY));
+        _putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, (readFloat(EEP_MAG_BIAS + 8)));
+        _putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, (readFloat(EEP_MAG_SCALE + 8)));
+        row_add = 0;
 
     } /*-------------------------------- end of printCalibration --------------------------------*/
 
@@ -415,7 +417,7 @@ public:
             Serial1.println("Need Calibration!!");
         }
         Serial1.println("EEPROM calibration value is : ");
-        printCalibration();
+        print_calibrate_values();
         Serial1.println("Loaded calibration value is : ");
         loadCalibration();
     } /*-------------------------------- end of setupEEPROM -------------------------------------*/

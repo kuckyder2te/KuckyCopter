@@ -643,7 +643,7 @@ public:
 		uint8_t row_add = -1;
 		LOGGER_VERBOSE("Enter....");
 		_putty_out->clear();
-		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, WHITE, "------ Online PID configurater for KuckyCopter (BT) -----");
+		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, WHITE, "-------- Online configurater for KuckyCopter (BT) -------");
 		_putty_out->print(ROW_MENU + (row_add += 2), COL_MENU, YELLOW, "(X) choose the primary");
 		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, YELLOW, "(Y)           secondary");
 		_putty_out->print(ROW_MENU + (row_add += 1), COL_MENU, YELLOW, "(Z)            YAW axis");
@@ -753,33 +753,33 @@ public:
 		_putty_out->print(ROW_SELECT, COL_MENU + COL_CUR_PID_VAL, YELLOW, " in EEPROM");
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "primary axis");
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "P  :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getP());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, CYAN, 3, _namedPID[axisName::primary]._pid->getP());
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "I  :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getI());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, CYAN, 3, _namedPID[axisName::primary]._pid->getI());
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "D  :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::primary]._pid->getD());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, CYAN, 3, _namedPID[axisName::primary]._pid->getD());
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "EF :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + COL_CUR_PID_VAL + 5, BLUE, 0, _namedPID[axisName::primary]._pid->getEF());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + COL_CUR_PID_VAL + 5, CYAN, 0, _namedPID[axisName::primary]._pid->getEF());
 
 		_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + COL_CUR_PID_VAL, YELLOW, "secondary axis");
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "P  :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getP());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, CYAN, 3, _namedPID[axisName::secondary]._pid->getP());
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "I  :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getI());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, CYAN, 3, _namedPID[axisName::secondary]._pid->getI());
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "D  :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::secondary]._pid->getD());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, CYAN, 3, _namedPID[axisName::secondary]._pid->getD());
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "EF :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + COL_CUR_PID_VAL + 5, BLUE, 0, _namedPID[axisName::secondary]._pid->getEF());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + COL_CUR_PID_VAL + 5, CYAN, 0, _namedPID[axisName::secondary]._pid->getEF());
 
 		_putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + COL_CUR_PID_VAL, YELLOW, "yaw axis");
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "P  :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getP());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, CYAN, 3, _namedPID[axisName::yaw]._pid->getP());
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "I  :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getI());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, CYAN, 3, _namedPID[axisName::yaw]._pid->getI());
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "D  :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, BLUE, 3, _namedPID[axisName::yaw]._pid->getD());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + 65, CYAN, 3, _namedPID[axisName::yaw]._pid->getD());
 		_putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + COL_CUR_PID_VAL, YELLOW, "EF :");
-		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + COL_CUR_PID_VAL + 5, BLUE, 0, _namedPID[axisName::yaw]._pid->getEF());
+		_putty_out->print(ROW_SELECT + (row_add), COL_MENU + COL_CUR_PID_VAL + 5, CYAN, 0, _namedPID[axisName::yaw]._pid->getEF());
 		row_add = 0;
 	} /*----------------------------- end of print_current_pidvalues ----------------------------*/
 
