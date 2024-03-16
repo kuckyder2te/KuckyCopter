@@ -157,10 +157,8 @@ public:
     virtual void update() override
     {
         LOGGER_VERBOSE("Enter....");
-        //    LOGGER_NOTICE_FMT("Wire %d", Wire.availableForWrite());
         if (!startCalibration)
         {
-            //           Serial1.println("IMU calibration is false");
             LOGGER_NOTICE_CHK("IMU calibration is false");
             if (_mpu9250.update())
             {
@@ -197,7 +195,7 @@ public:
             {
                 LOGGER_VERBOSE("_ms5611.read");
                 _ms5611.read(); // uses default OSR_ULTRA_LOW  (fastest)
-                                //    _sensorData->seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE);
+                //    _sensorData->seaLevel = getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE);
                 _sensorData->temperature_baro = _ms5611.getTemperature();
                 _sensorData->pressure = _ms5611.getPressure();
                 _sensorData->altitude = getAltitude(_ms5611.getPressure(), (getSeaLevel(_ms5611.getPressure(), HOME_ALTITUDE)));
@@ -214,7 +212,6 @@ public:
 
             _putty_out->print(ROW_SELECT, COL_MENU, YELLOW, "Accel Gyro calibration will start in ca. 5 sec.");
             _putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU, YELLOW, "Please leave the device still on the flat plane.");
-            // delay(5000);
 
             _mpu9250.verbose(true);
             delay(5000);
@@ -228,11 +225,6 @@ public:
 
         //    printCalibration();
             _mpu9250.verbose(false);
-
-            // _putty_out->setCursor(ROW_SELECT, COL_MENU);
-            // _putty_out->clearLine();
-            // _putty_out->setCursor(ROW_SELECT + 1, COL_MENU);
-            // _putty_out->clearLine();
 
             // save to eeprom
             Serial1.println("saveCalibration = ");
@@ -404,69 +396,7 @@ public:
 
     void printCalibration()
     {
-        // Serial1.print("< calibration parameters >");
-        // Serial1.print("calibrated? : ");
-        // Serial1.println(readByte(EEP_CALIB_FLAG) ? "YES" : "NO");
-
-        //acc_bias_x = (readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
-        // Serial1.print("acc bias x  : ");
-        // Serial1.println(readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
-        // LOGGER_NOTICE_FMT("acc bias X  : %.3f", (readFloat(EEP_ACC_BIAS + 0) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
-
-        //acc_bias_y = (readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
-        // Serial1.print("acc bias y  : ");
-        // Serial1.println(readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
-        // LOGGER_NOTICE_FMT("acc bias Y  : %.3f", (readFloat(EEP_ACC_BIAS + 4) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
-
-        //acc_bias_z = (readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
-        // Serial1.print("acc bias z  : ");
-        // Serial1.println(readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY);
-        // LOGGER_NOTICE_FMT("acc bias Z  : %.3f", (readFloat(EEP_ACC_BIAS + 8) * 1000.f / MPU9250::CALIB_ACCEL_SENSITIVITY));
-        
-        //gyro_bias_x = (readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY);
-        // Serial1.print("gyro bias X : ");
-        // Serial1.println(readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY);
-        // LOGGER_NOTICE_FMT("gyro bias x  : %.3f", (readFloat(EEP_GYRO_BIAS + 0) / MPU9250::CALIB_GYRO_SENSITIVITY));
-
-        //gyro_bias_y = (readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY);
-        // Serial1.print("gyro bias y : ");
-        // Serial1.println(readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY);
-        // LOGGER_NOTICE_FMT("gyro bias Y  : %.3f", (readFloat(EEP_GYRO_BIAS + 4) / MPU9250::CALIB_GYRO_SENSITIVITY));
-
-        //gyro_bias_z = (readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY);
-        // Serial1.print("gyro bias z : ");
-        // Serial1.println(readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY);
-        // LOGGER_NOTICE_FMT("gyro bias Z  : %.3f", (readFloat(EEP_GYRO_BIAS + 8) / MPU9250::CALIB_GYRO_SENSITIVITY));
-
-        // mag_bias_x = (readFloat(EEP_MAG_BIAS + 0));
-        // Serial1.print("mag bias x  : ");
-        // Serial1.println(readFloat(EEP_MAG_BIAS + 0));
-        // LOGGER_NOTICE_FMT("mag bias X  : %.3f", (readFloat(EEP_MAG_BIAS + 0)));
-
-        // mag_bias_y = (readFloat(EEP_MAG_BIAS + 4));
-        // Serial1.print("mag bias y  : ");
-        // Serial1.println(readFloat(EEP_MAG_BIAS + 4));
-        // LOGGER_NOTICE_FMT("mag bias Y  : %.3f", (readFloat(EEP_MAG_BIAS + 4)));
-
-        // mag_bias_z = (readFloat(EEP_MAG_BIAS + 8));
-        // Serial1.print("mag bias z  : ");
-        // Serial1.println(readFloat(EEP_MAG_BIAS + 8));
-        // LOGGER_NOTICE_FMT("mag bias Z  : %.3f", (readFloat(EEP_MAG_BIAS + 8)));
-
-        // mag_scale_x = (readFloat(EEP_MAG_SCALE + 0));
-        // Serial1.print("mag scale x : ");
-        // Serial1.println(readFloat(EEP_MAG_SCALE + 0));
-        // LOGGER_NOTICE_FMT("mag scale X  : %.3f", (readFloat(EEP_MAG_SCALE + 0)));
-
-        // mag_scale_Y = (readFloat(EEP_MAG_SCALE + 4));
-        // Serial1.print("mag scale y : ");
-        // Serial1.println(readFloat(EEP_MAG_SCALE + 4));
-        // LOGGER_NOTICE_FMT("mag scale Y  : %.3f", (readFloat(EEP_MAG_SCALE + 4)));
-
-        // mag_scale_z = (readFloat(EEP_MAG_SCALE + 8));
-        // Serial1.print("mag scale z : ");
-        // Serial1.println(readFloat(EEP_MAG_SCALE + 8));
-        // LOGGER_NOTICE_FMT("mag scale Z  : %.3f", (readFloat(EEP_MAG_SCALE + 8)));
+     
 
     } /*-------------------------------- end of printCalibration --------------------------------*/
 
@@ -489,4 +419,4 @@ public:
         Serial1.println("Loaded calibration value is : ");
         loadCalibration();
     } /*-------------------------------- end of setupEEPROM -------------------------------------*/
-};    /*----------------------------------- end of sensor.h class ----------------------------------*/
+};    /*----------------------------------- end of sensor.h class -------------------------------*/
