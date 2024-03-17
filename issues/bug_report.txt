@@ -7,3 +7,8 @@ Sensors.h
 
 File: void clear_current_eeprom(uint8_t x)  can be delete them?     yes
 Die IMU Daten werden im Config Display als inf angezeigt
+
+Datei Sensor.h
+printBytes() wird nicht verwendet
+setupEEPROM()       "
+
