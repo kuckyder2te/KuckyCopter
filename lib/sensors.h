@@ -233,18 +233,17 @@ public:
             delay(5000);
             _mpu9250.calibrateMag();
 
-            Serial1.println("print_calibrate_values");
+            Serial1.println("Print calibration");
 
-            print_calibrate_values();
             print_calibration();
             _mpu9250.verbose(false);
 
             // save to eeprom
-            Serial1.println("saveCalibration");
+            Serial1.println("Save calibration");
             saveCalibration();
 
             // load from eeprom
-            Serial1.println("loadCalibration");
+            Serial1.println("Load calibration");
             loadCalibration();
 
             start_Calibration(false);
@@ -319,13 +318,6 @@ public:
         return valueIn;
     } /*-------------------------------- end of readFloat ---------------------------------------*/
 
-    float readFloat2(int address)
-    {
-        float valueIn = 0;
-        EEPROM.get(address, valueIn);
-        return valueIn;
-    } /*-------------------------------- end of readFloat ---------------------------------------*/
-
     void clearCalibration()
     {
         writeByte(EEP_CALIB_FLAG, 0);
@@ -393,7 +385,7 @@ public:
         }
     } /*-------------------------------- end of loadCalibration ---------------------------------*/
 
-    void print_calibrate_values()
+    void print_calibration()
     {
         uint8_t row_add = 0;
         _putty_out->print(ROW_SELECT + (row_add += 6), COL_MENU + 15, RED, "< calibration parameters >");
@@ -418,39 +410,6 @@ public:
         _putty_out->print(ROW_SELECT + row_add, COL_MENU + 31, CYAN, 3, (_mpu9250.getMagBiasZ()));
         _putty_out->print(ROW_SELECT + row_add, COL_MENU + 41, CYAN, 3, (_mpu9250.getMagScaleZ()));
         row_add = 0;
-    } /*-------------------------------- end of printCalibration --------------------------------*/
-
-    void print_calibration()
-    {
-        Serial1.println("< calibration parameters >");
-        Serial1.println("accel bias [g]: ");
-        Serial1.print(_mpu9250.getAccBiasX() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
-        Serial1.print(", ");
-        Serial1.print(_mpu9250.getAccBiasY() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
-        Serial1.print(", ");
-        Serial1.print(_mpu9250.getAccBiasZ() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
-        Serial1.println();
-        Serial1.println("gyro bias [deg/s]: ");
-        Serial1.print(_mpu9250.getGyroBiasX() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
-        Serial1.print(", ");
-        Serial1.print(_mpu9250.getGyroBiasY() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
-        Serial1.print(", ");
-        Serial1.print(_mpu9250.getGyroBiasZ() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
-        Serial1.println();
-        Serial1.println("mag bias [mG]: ");
-        Serial1.print(_mpu9250.getMagBiasX());
-        Serial1.print(", ");
-        Serial1.print(_mpu9250.getMagBiasY());
-        Serial1.print(", ");
-        Serial1.print(_mpu9250.getMagBiasZ());
-        Serial1.println();
-        Serial1.println("mag scale []: ");
-        Serial1.print(_mpu9250.getMagScaleX());
-        Serial1.print(", ");
-        Serial1.print(_mpu9250.getMagScaleY());
-        Serial1.print(", ");
-        Serial1.print(_mpu9250.getMagScaleZ());
-        Serial1.println();
     } /*-------------------------------- end of printCalibration --------------------------------*/
 
     // void printBytes()

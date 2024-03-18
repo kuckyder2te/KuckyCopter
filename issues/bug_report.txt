@@ -1,14 +1,14 @@
 Datei: config.h
-bei der Eingabe von  (+) bei option X EF wird die Eingabe ausserhalb des Bereichs angezeigt
+bei der Eingabe von  (+) bei option X EF wird die Eingabe ausserhalb des Bereichs angezeigt fix
 bei der Eingabe Yaw axis wird (P) nicht sofort angezeigt.
 void print_PID_values() wird nicht verwendet, warum?
 Sensors.h
     I"C Error auskommentiert
 
 File: void clear_current_eeprom(uint8_t x)  can be delete them?     yes
-Die IMU Daten werden im Config Display als inf angezeigt
+Die IMU Daten werden im Config Display als inf angezeigt fix
 
 Datei Sensor.h
 printBytes() wird nicht verwendet
 setupEEPROM()       "
-
+daher auskommentiert !
