@@ -159,14 +159,6 @@ public:
         static uint32_t lastMillis1 = 0;
         uint8_t time = 0;
 
-        // if (millis() - lastMillis1 > 1000)
-        // {
-        //     time++;
-        //     Serial1.print(" time = ");
-        //     Serial1.println(time);
-        //     lastMillis1 = millis();
-        // }
-
         LOGGER_VERBOSE("Enter....");
         if (!startCalibration)
         {
@@ -225,7 +217,14 @@ public:
             _putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU, YELLOW, "Please leave the device still on the flat plane.");
 
             _mpu9250.verbose(true);
-            delay(5000);
+
+            // if (millis() - lastMillis1 > 5000)
+            // {
+            //     lastMillis1 = millis();
+            //     break;
+            // }
+
+            //    delay(5000);
             _mpu9250.calibrateAccelGyro();
 
             _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU, YELLOW, "Mag calibration will start in 5sec.");
@@ -234,7 +233,6 @@ public:
             _mpu9250.calibrateMag();
 
             Serial1.println("Print calibration");
-
             print_calibration();
             _mpu9250.verbose(false);
 
@@ -431,4 +429,4 @@ public:
     //     Serial1.println("Loaded calibration value is : ");
     //     loadCalibration();
     // } /*-------------------------------- end of setupEEPROM -------------------------------------*/
-};    /*----------------------------------- end of sensor.h class -------------------------------*/
+}; /*----------------------------------- end of sensor.h class -------------------------------*/
