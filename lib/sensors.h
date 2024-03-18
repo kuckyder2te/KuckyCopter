@@ -386,7 +386,9 @@ public:
     void print_calibration()
     {
         uint8_t row_add = 0;
+        _putty_out->formatText(VT_BRIGHT);
         _putty_out->print(ROW_SELECT + (row_add += 6), COL_MENU + 15, RED, "< calibration parameters >");
+        _putty_out->formatText(VT_RESET);
         _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 4, YELLOW, "accel bias   gyro bias   mag bias  mag scale");
         _putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 4, YELLOW, "   [g]        [deg/s]      [mG]             ");
         _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "X");
