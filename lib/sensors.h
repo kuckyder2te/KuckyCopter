@@ -156,8 +156,8 @@ public:
 
     virtual void update() override
     {
-        static uint32_t lastMillis1 = 0;
-        uint8_t time = 0;
+        // static uint32_t lastMillis1 = 0;
+        // static uint8_t time = 0;
 
         LOGGER_VERBOSE("Enter....");
         if (!startCalibration)
@@ -217,32 +217,29 @@ public:
             _putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU, YELLOW, "Please leave the device still on the flat plane.");
 
             _mpu9250.verbose(true);
-
-            // if (millis() - lastMillis1 > 5000)
-            // {
-            //     lastMillis1 = millis();
-            //     break;
-            // }
-
-            //    delay(5000);
-            _mpu9250.calibrateAccelGyro();
+            delay(5000);
+            _mpu9250.calibrateAccelGyro(); // 1855ms int delays temp_debug
 
             _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU, YELLOW, "Mag calibration will start in 5sec.");
             _putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU, YELLOW, "Please Wave device in a figure eight until done.");
             delay(5000);
-            _mpu9250.calibrateMag();
+            _mpu9250.calibrateMag(); // 4040ms int delays temp_debug
 
             Serial1.println("Print calibration");
+
             print_calibration();
             _mpu9250.verbose(false);
-
+            delay(1000);
             // save to eeprom
             Serial1.println("Save calibration");
+            _putty_out->print(ROW_SELECT + (row_add += 13), COL_MENU, RED, "Save calibration");
             saveCalibration();
-
+            delay(1000);
             // load from eeprom
             Serial1.println("Load calibration");
+            _putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU, RED, "Load calibration");
             loadCalibration();
+            _putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU, RED, "Fineshed");
 
             start_Calibration(false);
             row_add = 0;
@@ -386,9 +383,9 @@ public:
     void print_calibration()
     {
         uint8_t row_add = 0;
-        _putty_out->formatText(VT_BRIGHT);
+ //       _putty_out->formatText(VT_BRIGHT);  // funktioniert nicht
         _putty_out->print(ROW_SELECT + (row_add += 6), COL_MENU + 15, RED, "< calibration parameters >");
-        _putty_out->formatText(VT_RESET);
+ //       _putty_out->formatText(VT_RESET);
         _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 4, YELLOW, "accel bias   gyro bias   mag bias  mag scale");
         _putty_out->print(ROW_SELECT + (row_add += 1), COL_MENU + 4, YELLOW, "   [g]        [deg/s]      [mG]             ");
         _putty_out->print(ROW_SELECT + (row_add += 2), COL_MENU + 2, YELLOW, "X");
